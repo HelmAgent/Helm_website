@@ -1,0 +1,222 @@
+/*
+ * 官网「石澜（Stone）」全局样式与设计变量表。
+ *
+ * 职责与协作：
+ * - 100% 同步桌面端 `hyn_agent_frontend/styles/tokens.css` 与 `.cursor/rules/frontend-ui-style.mdc` 规范。
+ * - 将 VitePress 默认主题变量（--vp-c-*）映射为石澜冷灰石底（#e4e8f0）、纯白侧栏（#ffffff）、靛蓝主色（#0f4c81）与 6px 圆角。
+ * - 严禁使用渐变背景、毛玻璃拟态、大圆角胶囊选中态或软阴影。
+ */
+
+:root {
+  /* 石澜核心 Token（与 hyn_agent_frontend/styles/tokens.css 严格一致） */
+  --bg-sidebar: #ffffff;
+  --bg-app: #e4e8f0;
+  --bg-elevated: #ffffff;
+  --bg-user-bubble: #ffffff;
+  --bg-group: #ffffff;
+  --bg-hover: #f2f4f8;
+  --bg-selected: #e6eef8;
+  --bg-selected-strong: #d5e3f2;
+  --bg-code: #f2f4f8;
+
+  --text-primary: #1a1d27;
+  --text-secondary: #3e4556;
+  --text-tertiary: #5c6574;
+  --text-disabled: #8d96a6;
+  --icon-muted: #5c6574;
+
+  --border-subtle: #d5dbe6;
+  --border-strong: #b7c0ce;
+  --btn-fill: #f2f4f8;
+  --btn-dark: #0f4c81;
+  --on-accent: #f4f8fc;
+  --accent: #0f4c81;
+  --accent-link: #0f4c81;
+
+  --status-success: #1c6b42;
+  --status-success-bg: #e5f4ec;
+  --status-danger: #9f322c;
+  --status-danger-bg: #fbeceb;
+  --status-warning: #b57b2a;
+  --status-warning-bg: #fcf4e6;
+
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, "Sarasa Mono SC", monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
+  --radius-tag: 4px;
+
+  /* 覆盖 VitePress 主题变量以呈现石澜冷灰石底与白侧栏质感 */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f2f4f8;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f2f4f8;
+
+  --vp-c-border: #d5dbe6;
+  --vp-c-divider: #d5dbe6;
+  --vp-c-gutter: #d5dbe6;
+
+  --vp-c-text-1: #1a1d27;
+  --vp-c-text-2: #3e4556;
+  --vp-c-text-3: #5c6574;
+
+  --vp-c-brand-1: #0f4c81;
+  --vp-c-brand-2: #145b99;
+  --vp-c-brand-3: #0f4c81;
+  --vp-c-brand-soft: #e6eef8;
+
+  --vp-font-family-base: var(--font-ui);
+  --vp-font-family-mono: var(--font-mono);
+
+  --vp-custom-block-tip-border: #0f4c81;
+  --vp-custom-block-tip-text: #1a1d27;
+  --vp-custom-block-tip-bg: #e6eef8;
+
+  --vp-custom-block-warning-border: #b57b2a;
+  --vp-custom-block-warning-bg: #fcf4e6;
+
+  --vp-custom-block-danger-border: #9f322c;
+  --vp-custom-block-danger-bg: #fbeceb;
+}
+
+:root:lang(ja),
+:root:lang(ja-JP) {
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Microsoft YaHei UI", sans-serif;
+  --vp-font-family-base: var(--font-ui);
+}
+
+/* 禁用 VitePress 暗黑切换下的毛玻璃与刺眼渐变，保持石澜干净克制风格 */
+.VPNavBar {
+  background-color: var(--bg-sidebar) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  backdrop-filter: none !important;
+}
+
+.VPNavBarTitle .title {
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  color: var(--text-primary) !important;
+}
+
+/* 侧栏选中态遵循石澜五处锁死之二：浅底 #e6eef8 + 靛蓝字 #0f4c81 + 圆角 6 */
+.VPSidebar {
+  background-color: var(--bg-sidebar) !important;
+  border-right: 1px solid var(--border-subtle) !important;
+}
+
+.VPSidebarItem.is-active > .item {
+  background-color: var(--bg-selected) !important;
+  border-radius: var(--radius-sm) !important;
+  padding-left: 10px !important;
+  margin-left: -10px !important;
+}
+
+.VPSidebarItem.is-active > .item .text {
+  color: var(--accent) !important;
+  font-weight: 650 !important;
+}
+
+/* 文档正文表格与代码块石澜化 */
+.vp-doc table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.vp-doc th {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  font-weight: 650;
+  border: 1px solid var(--border-subtle);
+}
+
+.vp-doc td {
+  border: 1px solid var(--border-subtle);
+  background-color: #ffffff;
+}
+
+.vp-doc div[class*='language-'] {
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--border-subtle) !important;
+  background-color: var(--bg-code) !important;
+}
+
+/* Mermaid 图表容器 */
+.stone-mermaid-wrap {
+  margin: 20px 0;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  text-align: center;
+}
+
+.stone-mermaid-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 石澜通用徽章与按钮 */
+.stone-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-tag);
+  background: var(--bg-selected);
+  color: var(--accent);
+  border: 1px solid var(--bg-selected-strong);
+}
+
+.stone-badge.is-success {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border-color: #bfe0ce;
+}
+
+.stone-badge.is-danger {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+  border-color: #f2c9c7;
+}
+
+.stone-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 650;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: #ffffff;
+  color: var(--text-primary);
+  text-decoration: none !important;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  cursor: pointer;
+}
+
+.stone-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+.stone-btn.is-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+.stone-btn.is-primary:hover {
+  background: #0c3d69;
+  color: var(--on-accent);
+}

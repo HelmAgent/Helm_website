@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <!-- 石澜主题品牌标志：外框采用石底白面与细边框，左侧锁死标志性靛蓝竖条 (#0f4c81)，右侧为 H 字母极简几何结构 -->
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="#ffffff" stroke="#d5dbe6" stroke-width="2"/>
+  <rect x="12" y="14" width="5" height="36" rx="2.5" fill="#0f4c81"/>
+  <path d="M25 18V46M47 18V46M25 32H47" stroke="#1a1d27" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47" cy="18" r="3.5" fill="#1c6b42"/>
+</svg>
