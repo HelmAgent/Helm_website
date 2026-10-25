@@ -1,11 +1,10 @@
 <script setup>
 /**
- * 石澜（Stone）风格定制产品首页组件（HomeLanding.vue）。
+ * 日系企业级旗舰产品首页组件（HomeLanding.vue）。
  *
- * 职责与协作：
- * - 用于根路径 `/`（中文）、`/ja/`（日语）、`/en/`（英语）首页。
- * - 将「产品价值主张（全本地离线/数据不出网）」、「免安装浏览器交互沙盒（ProductPlayground）」与「5 篇源码级工程架构白皮书入口」有机整合。
- * - 支持实机演示视频槽位（若用户在 `docs/public/media/hero-demo.mp4` 放入录屏，可一键切换观看高清视频）。
+ * 设计语言与职责：
+ * - 融合「石澜（Stone）」色彩系统与日本 BtoB / 科技大厂（LayerX、SmartHR、PFN 风格）偏爱的「建筑感细线网格（Architectural Hairline Grid）、留白秩序、精密定量指标、结构化拓扑图解」。
+ * - 移除所有文档感 Emoji，采用 1320px 宽幅画布，使首屏三栏交互沙盒（ProductPlayground）以桌面原生比例呈现。
  */
 import { ref, computed } from 'vue'
 import { SITE_META } from '../siteData.js'
@@ -18,7 +17,6 @@ const props = defineProps({
   }
 })
 
-// 首屏展示模式：'interactive'（默认免安装交互沙盒） | 'video'（实机录屏视频槽位）
 const showcaseTab = ref('interactive')
 const videoLoadError = ref(false)
 
@@ -34,116 +32,181 @@ const prefix = computed(() => {
   return ''
 })
 
-const corePillars = computed(() => [
+// 顶部 4 格定量技术指标（日本企业极为看重的定量化背书）
+const kpiMetrics = computed(() => [
   {
-    tag: '01 · PRIVACY & LOCAL LLM',
-    title: tt('100% 数据不出网 · 原生适配 Ollama 与企业内网', '100% ローカル完結 · Ollama＆社内LANモデルにネイティブ対応', '100% Local Data · Native Ollama & Enterprise LAN'),
-    desc: tt(
-      '内置 127.0.0.1 FastAPI 引擎，免密钥直连本机 Ollama 或企业内网私有部署网关（vLLM / SGLang / OneAPI）。会话、记忆、知识库与文档快照全部保存在本机可控目录，Electron 主进程日志自动擦除 API Key。',
-      '127.0.0.1 ローカル FastAPI エンジンを内蔵し、ローカル Ollama や社内LAN（vLLM / SGLang / OneAPI）へAPIキー不要で直結。会話・メモリ・知識ベースはすべてローカル保存され、ログ出力時には認証情報を自動マスクします。',
-      'Embedded 127.0.0.1 FastAPI backend connects directly to local Ollama or intranet gateways (vLLM / SGLang / OneAPI). All sessions, memories, and snapshots stay on disk with automatic log sanitization.'
-    ),
-    codeRef: 'app/catalog/models.py · main.js',
-    link: `${prefix.value}/architecture/overview`
+    num: '0 Byte',
+    unit: 'EXTERNAL EGRESS',
+    label: tt('公网外发数据量', '外部送信データ量', 'External Data Egress'),
+    desc: tt('127.0.0.1 本机闭环与企业内网直连，源码与文档 100% 不出网', '127.0.0.1 ローカル完結および社内LAN直結。機密コードの社外流出ゼロ', '127.0.0.1 local loop & corporate LAN support; zero cloud relay required')
   },
   {
-    tag: '02 · LONG-HORIZON ENGINE (P0–P3)',
-    title: tt('数小时无人值守长程自治 · 影子 Git 检查点', '数時間の無人自律稼働 · 非侵襲シャドウGitチェックポイント', 'Multi-Hour Unattended Autonomy & Shadow Git Checkpoints'),
-    desc: tt(
-      '通过 TurnHub 单调递增 seq 环形缓冲与 stream_reset 重试回滚保障流式高可靠；配备 StuckDetector L2 自省防死循环、4 档运行中实时切换权限，以及不触碰用户 HEAD 与暂存区的影子 Git 检查点，随时一键回滚。',
-      'TurnHub の単調増加 seq バッファと stream_reset により通信断やLLM再試行に完全対応。StuckDetector L2 ループ防止、4段階のリアルタイム権限切替、作業ブランチを一切汚さないシャドウGitチェックポイントを搭載。',
-      'Powered by TurnHub monotonic seq replay, stream_reset on retry, StuckDetector L2 anti-loop notices, 4-tier live permission switching, and non-invasive Shadow Git Checkpoints.'
-    ),
-    codeRef: 'turn_hub.py · stuck_detector.py · git_checkpoints.py',
-    link: `${prefix.value}/architecture/long-running`
+    num: '94.2%',
+    unit: 'PREFIX CACHE HIT',
+    label: tt('长对话前缀缓存命中率', 'Prefix Cache ヒット率', 'Prefix Cache Hit Rate'),
+    desc: tt('会话级冻结记忆快照 + 后台异步水位线提取，杜绝每轮改写 System Prompt', 'セッション凍結メモリスナップショットにより KV キャッシュ破壊を防止', 'Session-frozen memory snapshots preserve LLM KV cache across long runs')
   },
   {
-    tag: '03 · MULTI-AGENT & WORKTREES',
-    title: tt('主从多智能体团队 · Git Worktree 物理隔离并发', 'マルチエージェントチーム · Git Worktree による物理分離並列開発', 'Multi-Agent Team with Git Worktree Isolation'),
-    desc: tt(
-      '主代理（Lead）可招募最多 4 名常驻队友（Teammates），每位队友绑定独立的 Git Worktree 工作树并行编码，通过异步内存收件箱汇报结果，并强制执行「计划未批准前禁止写文件与跑命令」的安全门禁。',
-      'リードエージェントが最大4名の常駐メイトを統括。各メイトは独立した Git Worktree 上で並列実装を行い、非同期メールボックスで連携。「計画承認前は書込・コマンド実行禁止」の安全ゲートを徹底しています。',
-      'Lead agent coordinates up to 4 resident teammates working in isolated Git Worktrees via async inbox messaging, enforced by a strict read-only gate until plans are approved.'
-    ),
-    codeRef: 'team_runtime.py · team_worktree.py',
-    link: `${prefix.value}/architecture/multi-agent-team`
+    num: 'P0–P3',
+    unit: 'AUTONOMOUS ENGINE',
+    label: tt('四阶段长程无人值守架构', '4段階・長時間自律実行基盤', '4-Stage Long-Horizon Engine'),
+    desc: tt('TurnHub 单调 seq 重连、StuckDetector L2 防死循环与无侵入影子 Git 检查点', 'TurnHub seq 再接続、L2 ループ防止、作業ツリーを汚さないシャドウGitチェックポイント', 'TurnHub seq replay, StuckDetector L2 anti-loop, and Shadow Git Checkpoints')
   },
   {
-    tag: '04 · CANVAS WORKBENCH & MEMORY',
-    title: tt('WPS 级多格式工作台 · 划取「✨ AI 局部热替换」', 'WPS級ドキュメントワークベンチ · 選択範囲「✨ AI部分ホットパッチ」', 'WPS-Grade Office Workbench & Selection AI Hot-Patch'),
+    num: '86+',
+    unit: 'VERIFIED TEST SUITE',
+    label: tt('核心状态机自动化单测', '自動単体テスト検証済み', 'Automated Unit Tests'),
+    desc: tt('覆盖截断续写、流式回滚、权限门禁与记忆提取，保障桌面端工业级可靠度', 'ストリーム再試行・権限ゲート・メモリ抽出を網羅した高信頼バックエンド', 'Covers stream reset, permission gates, stuck detection, and memory queues')
+  }
+])
+
+// 四大工程规格 Bento 卡片（带真实底层契约代码预览）
+const bentoSpecs = computed(() => [
+  {
+    index: 'SPEC 01 // PRIVACY & INTRANET TOPOLOGY',
+    title: tt('全本地离线与企业闭域网（LAN）原生架构', '完全オフライン＆社内閉域網（LAN）ネイティブ設計', 'Air-Gapped Local & Enterprise LAN Architecture'),
     desc: tt(
-      '右侧分栏原生渲染并编辑 Word (.docx)、Excel (.xlsx)、PPT (.pptx)、PDF、Markdown 与 HTML。鼠标划取任意段落或单元格即浮起「✨ AI 修改」，后端精准局部写回并通过 SSE 原地无闪烁更新；配合冻结快照的双层异步记忆，保护 94%+ Prefix Cache 命中率。',
-      '右ペインで docx / xlsx / pptx / pdf / md / html を高精細プレビュー＆直接編集。マウスで選択した箇所だけを「✨ AI修正」でピンポイント更新し、SSE で即座に再描画。さらに Prefix Cache を壊さない非同期2層メモリを搭載。',
-      'In-app preview and editing for docx, xlsx, pptx, pdf, md, and html. Select any paragraph, cell range, or slide shape for instant SSE in-place AI patching, backed by a prefix-cache-friendly two-tier memory system.'
+      '在模型目录层将供应商划分为 local（本机 Ollama）、lan（企业内网 vLLM / SGLang / OneAPI）与 cloud 三级。免密钥直连本地与内网算力，Electron 主进程内置写盘前正则脱敏钩子与每秒 50 条 IPC 限流。',
+      'モデルカタログ層で local（端末内 Ollama）・lan（社内LAN vLLM / SGLang / OneAPI）・cloud を明確に分離。APIキー不要で社内GPUクラスタへ直結し、ログ保存前には認証トークンを正規表現で自動消去します。',
+      'Categorizes providers into local (Ollama), lan (corporate vLLM/SGLang/OneAPI), and cloud. Includes pre-write regex log scrubbing and 50 msg/sec IPC rate limiting.'
     ),
-    codeRef: 'PreviewWorkbench.js · file_workbench.py · memory.py',
-    link: `${prefix.value}/architecture/workbench`
+    snippetTitle: 'app/catalog/models.py · Provider Deployment Tiers',
+    snippet: `ProviderDef(
+  id="ollama", deployment="local",
+  default_base_url="http://127.0.0.1:11434/v1",
+  requires_key=False  # 物理断网免密直连
+),
+ProviderDef(
+  id="lan_server", deployment="lan",
+  default_base_url="http://192.168.1.100:8000/v1",
+  requires_key=False  # 社内閉域網 vLLM / OneAPI
+)`,
+    link: `${prefix.value}/architecture/overview`,
+    linkText: tt('第 1 章：总体架构与双进程设计', '第1章：全体設計とデュアルプロセス構造', 'Ch.1: System Overview & Dual-Process')
+  },
+  {
+    index: 'SPEC 02 // NON-INVASIVE GIT TIME MACHINE',
+    title: tt('无侵入影子 Git 检查点与长程自省引擎', '非侵襲シャドウGitチェックポイント＆長時間自律制御', 'Non-Invasive Shadow Git Checkpoints & Anti-Loop Engine'),
+    desc: tt(
+      '摒弃直接 git commit 污染用户分支的做法，采用临时 GIT_INDEX_FILE 与 git commit-tree 将快照写入私有命名空间 refs/hyn/checkpoints/<session_id>。配合 TurnHub 单调 seq 重连与 StuckDetector L2 强制复盘，支撑数小时无人值守重构。',
+      'ユーザーの作業ブランチや .git/index を一切汚さず、一時 GIT_INDEX_FILE と git commit-tree で専用名前空間 refs/hyn/checkpoints/ にスナップショットを記録。TurnHub 再接続と L2 ループ防止により数時間の無人稼働を実現。',
+      'Uses temporary GIT_INDEX_FILE and git commit-tree to write snapshots into private refs/hyn/checkpoints/ without touching user HEAD or index.'
+    ),
+    snippetTitle: 'app/services/git_checkpoints.py · Plumbing Snapshot',
+    snippet: `GIT_INDEX_FILE=<temp_index> git add -A
+tree=$(GIT_INDEX_FILE=<temp_index> git write-tree)
+commit=$(git commit-tree $tree -p $parent -m "hyn checkpoint")
+# 写入私有引用，用户 HEAD、分支与 git status 100% 零污染
+git update-ref refs/hyn/checkpoints/<session_id> $commit`,
+    link: `${prefix.value}/architecture/long-running`,
+    linkText: tt('第 2 章：长程自治引擎 (P0–P3)', '第2章：長時間自律実行エンジン (P0–P3)', 'Ch.2: Long-Horizon Engine (P0–P3)')
+  },
+  {
+    index: 'SPEC 03 // GIT WORKTREE MULTI-AGENT TEAM',
+    title: tt('Git Worktree 物理隔离的多智能体常驻团队', 'Git Worktree 物理分離による常駐マルチエージェントチーム', 'Multi-Agent Resident Team with Git Worktree Isolation'),
+    desc: tt(
+      '主代理（Lead）可招募最多 4 名常驻队友（Teammates），通过 ContextVar 将每名队友的文件读写与终端命令严格约束在各自的 Git Worktree 中，并强制实施「计划未批准前剥离一切写盘权限」的安全门禁。',
+      'リードエージェントが最大4名の常駐メイトを編成。各メイトは独立した Git Worktree にバインドされ、ファイル競合を物理的に排除。「計画承認前は読取専用に制限する」安全ゲートと非同期受信箱を備えています。',
+      'Lead coordinates up to 4 resident teammates bound to isolated Git Worktrees via ContextVar, enforced by a strict read-only gate prior to plan approval.'
+    ),
+    snippetTitle: 'app/services/team_runtime.py · Plan Approval Gate',
+    snippet: `_MUTATING = {"write_file", "edit_file", "apply_patch",
+             "write_docx", "edit_document", "run_powershell"}
+# 计划未获批准前，从底层剥离一切写盘与命令执行工具
+if mate.require_plan and not mate.plan_approved:
+    allowed_tools = _WORKSPACE - _MUTATING`,
+    link: `${prefix.value}/architecture/multi-agent-team`,
+    linkText: tt('第 3 章：多智能体团队与 Worktree 隔离', '第3章：マルチエージェントと Worktree 分離', 'Ch.3: Multi-Agent Team & Worktrees')
+  },
+  {
+    index: 'SPEC 04 // SURGICAL OFFICE & CODE WORKBENCH',
+    title: tt('WPS 级高保真文档工作台与 SelectionAnchor 局部热补丁', 'WPS級ドキュメントワークベンチ＆選択範囲AIホットパッチ', 'WPS-Grade Document Workbench & Selection AI Hot-Patch'),
+    desc: tt(
+      '右侧分栏原生渲染并编辑 docx / xlsx / pptx / pdf / md / html。用户在画布上用鼠标划取任意段落、单元格区间或幻灯片形状，即可触发 patch_file_selection 手术刀级局部写回并通过 SSE 原地热更新，配合冻结快照异步记忆实现极速响应。',
+      '右ペインで Office 文書（docx/xlsx/pptx/pdf）を高精細描画・直接編集。マウスで選択した段落・セル範囲・PPT図形だけを構造化アンカーで特定し、SSE で画面リロードなしのインプレース更新を実行します。',
+      'In-app preview and surgical AI patching for docx, xlsx, pptx, pdf, md, and html via normalized SelectionAnchor coordinates and live SSE hot-reloading.'
+    ),
+    snippetTitle: 'SelectionContext · Cross-Format Surgical Anchor',
+    snippet: `{
+  "file": { "path": "Architecture_Review.pptx", "ext": ".pptx" },
+  "locator": {
+    "type": "pptx_shape",
+    "slide_index": 2, "shape_id": 104, "paragraph_indices": [0]
+  }
+} // -> python-pptx 精准更新单节点，保留全文档排版`,
+    link: `${prefix.value}/architecture/workbench`,
+    linkText: tt('第 4 & 5 章：异步双层记忆与高保真工作台', '第4・5章：非同期2層メモリと高精細ワークベンチ', 'Ch.4 & 5: Memory & Office Workbench')
   }
 ])
 </script>
 
 <template>
-  <div class="stone-home">
-    <!-- 首屏 Hero 区（石澜冷灰石底 #e4e8f0） -->
-    <section class="hero-band">
-      <div class="hero-container">
-        <div class="hero-badges">
-          <span class="stone-badge is-success">🔒 {{ tt('100% 本地可控 · 离线可用', '100% ローカル完結 · オフライン稼働対応', '100% Local & Offline Ready') }}</span>
-          <span class="stone-badge">⏱️ {{ tt('P0–P3 长程无人值守引擎', 'P0–P3 長時間自律実行エンジン', 'P0–P3 Long-Horizon Engine') }}</span>
-          <span class="stone-badge">🌿 {{ tt('Git Worktree 多智能体团队', 'Git Worktree マルチエージェント', 'Git Worktree Multi-Agent') }}</span>
-          <span class="stone-badge">📄 {{ tt('Office / 代码双栖工作台', 'Office・コード直編集ワークベンチ', 'Office & Code Workbench') }}</span>
+  <div class="jp-enterprise-home">
+    <!-- ==================== HERO 舞台区（石澜冷灰底 + 建筑感细线） ==================== -->
+    <section class="hero-stage">
+      <div class="wide-container">
+        <div class="hero-grid-top">
+          <div class="hero-meta-bar">
+            <span class="hero-code-tag">HYN AGENT // DESKTOP AUTONOMOUS RUNTIME</span>
+            <span class="hero-sep">|</span>
+            <span class="hero-code-sub">ELECTRON 44 · VUE 3.5 · FASTAPI (PYTHON 3.13)</span>
+            <span class="hero-sep">|</span>
+            <span class="hero-status-pill">
+              <span class="hero-dot"></span>
+              {{ tt('100% 本地与企业闭域网就绪', '100% ローカル・社内閉域網対応', '100% LOCAL & LAN READY') }}
+            </span>
+          </div>
+
+          <h1 class="hero-headline">
+            {{ tt(
+              '机密代码零出网，支持数小时无人值守的自治型 Coding & Office 桌面智能体',
+              '機密コードを外部に送信しない。数時間の自律稼働を実現するローカル完結型 AI コーディング＆Officeエージェント',
+              'Zero Data Egress. Multi-Hour Autonomous Desktop Coding & Office Agent.'
+            ) }}
+          </h1>
+
+          <p class="hero-lead">
+            {{ tt(
+              '专为对信息安全（情報セキュリティ）与工程可靠性有严苛要求的研发团队打造。原生直连本机 Ollama 与企业内网私有大模型（vLLM / OneAPI），集成 P0–P3 长程自省引擎、无侵入影子 Git 检查点、Git Worktree 多智能体并发团队，以及 Word / Excel / PPT 划取局部 AI 热修改工作台。',
+              '厳格な情報セキュリティ要件と高度なエンジニアリング品質を求める開発現場へ。ローカル Ollama や社内閉域網 LLM（vLLM / OneAPI）へ直結し、P0–P3 長時間自律エンジン、作業ブランチを汚さないシャドウGitチェックポイント、Git Worktree 並列チーム、Word / Excel / PPT の選択範囲AI修正ワークベンチを単一デスクトップに統合しました。',
+              'Engineered for security-critical R&D environments. Connects natively to local Ollama and corporate LAN LLMs, combining a P0–P3 long-horizon engine, non-invasive Shadow Git Checkpoints, Git Worktree multi-agent teams, and surgical in-place Office AI editing.'
+            ) }}
+          </p>
+
+          <div class="hero-actions-bar">
+            <a class="stone-btn is-primary hero-cta-primary" :href="`${prefix}/download`">
+              <span>{{ tt(`免费获取 Windows 客户端 (${SITE_META.version})`, `無料ダウンロード Windows版 (${SITE_META.version})`, `Download for Windows (${SITE_META.version})`) }}</span>
+              <span class="hero-cta-sub">{{ tt('含安装版 .exe 与免安装 .zip', 'インストーラー版 / ポータブル版', 'Installer .exe & Portable .zip') }}</span>
+            </a>
+
+            <a class="stone-btn hero-cta-secondary" :href="`${prefix}/architecture/overview`">
+              {{ tt('阅读工程架构白皮书 (全 5 章) →', '技術アーキテクチャ白書 (全5章) を読む →', 'Read Engineering Whitepaper (5 Parts) →') }}
+            </a>
+
+            <div class="hero-mode-toggle">
+              <button
+                type="button"
+                class="mode-btn"
+                :class="{ 'is-active': showcaseTab === 'interactive' }"
+                @click="showcaseTab = 'interactive'"
+              >
+                {{ tt('实时交互工作台 (1:1 复刻)', '対話型ワークベンチ (操作可能)', 'Interactive Workbench') }}
+              </button>
+              <button
+                type="button"
+                class="mode-btn"
+                :class="{ 'is-active': showcaseTab === 'video' }"
+                @click="showcaseTab = 'video'"
+              >
+                {{ tt('实机录屏演示 (MP4)', '実機デモ動画 (MP4)', 'Screen Recording') }}
+              </button>
+            </div>
+          </div>
         </div>
 
-        <h1 class="hero-title">
-          {{ tt(
-            '数据不出网、支持数小时无人值守的全本地自治型 Coding & Office Agent',
-            '機密コードを外部に送信しない、完全ローカル対応の自律型AIコーディング＆Officeエージェント',
-            'Zero Data Leakage, Multi-Hour Autonomous Desktop Coding & Office Agent'
-          ) }}
-        </h1>
-
-        <p class="hero-subtitle">
-          {{ tt(
-            '基于 Electron + Vue 3 + FastAPI 构建。原生支持本机 Ollama 与企业内网私有大模型、本地 RAGFlow 知识库、无侵入影子 Git 检查点、Git Worktree 团队并发，以及 Word / Excel / PPT 划取局部 AI 热修改。免费下载，安装即用。',
-            'Electron + Vue 3 + FastAPI 構築。ローカル Ollama・社内LANモデル直結、ローカル RAGFlow 知識ベース、作業ブランチを汚さないシャドウGitチェックポイント、Git Worktree 並列チーム、Word/Excel/PPT の選択範囲AI修正を統合。無料ダウンロード・初期設定不要。',
-            'Built with Electron, Vue 3, and FastAPI. Native local Ollama & enterprise LAN LLMs, local RAGFlow knowledge base, non-invasive Shadow Git Checkpoints, Git Worktree multi-agent teams, and in-place Office AI editing.'
-          ) }}
-        </p>
-
-        <div class="hero-cta-row">
-          <a class="stone-btn is-primary hero-btn-lg" :href="`${prefix}/download`">
-            ⬇ {{ tt(`免费下载客户端 (${SITE_META.version})`, `無料ダウンロード (${SITE_META.version})`, `Free Download (${SITE_META.version})`) }}
-          </a>
-          <a class="stone-btn hero-btn-lg" :href="`${prefix}/demo`">
-            ▶ {{ tt('浏览器免安装交互体验', 'ブラウザで操作体験 (インストール不要)', 'Try in Browser (Zero Install)') }}
-          </a>
-          <a class="stone-btn hero-btn-lg" :href="`${prefix}/architecture/overview`">
-            📐 {{ tt('阅读工程架构白皮书', '技術アーキテクチャ白書を読む', 'Read Architecture Whitepaper') }}
-          </a>
-        </div>
-
-        <!-- 首屏交互沙盒 / 实机视频双模式切换 -->
-        <div class="hero-showcase-bar">
-          <button
-            type="button"
-            class="showcase-switch-btn"
-            :class="{ 'is-active': showcaseTab === 'interactive' }"
-            @click="showcaseTab = 'interactive'"
-          >
-            🖱️ {{ tt('实时可点击交互沙盒（石澜 UI 1:1 复刻）', '対話型Webサンドボックス（クリックして操作可能）', 'Interactive Web Sandbox (1:1 Stone UI)') }}
-          </button>
-          <button
-            type="button"
-            class="showcase-switch-btn"
-            :class="{ 'is-active': showcaseTab === 'video' }"
-            @click="showcaseTab = 'video'"
-          >
-            🎬 {{ tt('实机录屏演示视频 (Demo Video)', '実機デモ動画 (Demo Video)', 'Real Screen Recording (Demo Video)') }}
-          </button>
-        </div>
-
-        <div v-if="showcaseTab === 'interactive'">
-          <ProductPlayground :lang="lang" />
+        <!-- 1320px 宽幅实机交互沙盒 / 视频槽位 -->
+        <div v-if="showcaseTab === 'interactive'" class="hero-playground-mount">
+          <ProductPlayground :lang="lang" :standalone="true" />
         </div>
         <div v-else class="hero-video-box">
           <video
@@ -156,42 +219,157 @@ const corePillars = computed(() => [
             @error="videoLoadError = true"
           ></video>
           <div v-else class="hero-video-placeholder">
-            <div class="stone-badge">{{ tt('实机视频槽位已就绪', '実機動画スロット準備完了', 'Demo Video Slot Ready') }}</div>
+            <div class="stone-badge">DEMO VIDEO SLOT // READY</div>
             <h3>{{ tt('将实机录屏放入 docs/public/media/hero-demo.mp4 即可自动播放', 'docs/public/media/hero-demo.mp4 に動画を配置すると自動再生されます', 'Place your recording at docs/public/media/hero-demo.mp4 to auto-enable') }}</h3>
             <p>
               {{ tt(
-                '在放入视频前，访客与面试官可直接使用「实时可点击交互沙盒」完整体验离线重构、影子检查点与文档划取 AI 修改。',
-                '動画配置前でも、「対話型Webサンドボックス」タブにてオフライン改修・シャドウチェックポイント・Office部分AI修正をそのまま体験いただけます。',
-                'Until you drop in the MP4 file, visitors can use the Interactive Web Sandbox tab to test all core workflows.'
+                '在放入视频文件前，访客与面试官可直接使用「实时交互工作台」完整操作体验离线重构、影子 Git 检查点与 PPT 划取 AI 局部修改。',
+                '動画配置前でも、「対話型ワークベンチ」タブにてオフライン改修・シャドウチェックポイント・Office部分AI修正をそのまま操作体験いただけます。',
+                'Until you place the MP4 file, visitors can use the Interactive Workbench tab to test all workflows directly in the browser.'
               ) }}
             </p>
             <button type="button" class="stone-btn is-primary" @click="showcaseTab = 'interactive'">
-              {{ tt('切回交互沙盒体验', '対話型サンドボックスに戻る', 'Back to Interactive Sandbox') }}
+              {{ tt('切回实时交互工作台', '対話型ワークベンチに戻る', 'Return to Interactive Workbench') }}
             </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 四大核心工程支柱 -->
-    <section class="pillars-section">
-      <div class="section-container">
-        <div class="section-head">
-          <span class="stone-badge">{{ tt('核心架构与差异化能力', 'コアアーキテクチャと独自性', 'CORE ARCHITECTURE & DIFFERENTIATORS') }}</span>
-          <h2 class="section-title">
-            {{ tt('不止于“调 API 对话”：专为企业级隐私与复杂长任务工程打造', '単なるAPIラッパーではない：機密保護と長時間自律エンジニアリングのための設計', 'Beyond Thin API Wrappers: Engineered for Local Privacy & Long-Horizon Tasks') }}
+    <!-- ==================== SECTION 01: 建筑感四栏定量指标带 ==================== -->
+    <section class="metrics-strip">
+      <div class="wide-container">
+        <div class="metrics-grid">
+          <div v-for="m in kpiMetrics" :key="m.unit" class="metric-cell">
+            <div class="metric-unit">{{ m.unit }}</div>
+            <div class="metric-num">{{ m.num }}</div>
+            <div class="metric-label">{{ m.label }}</div>
+            <p class="metric-desc">{{ m.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 02: 日本企业最看重的部署安全边界图解 ==================== -->
+    <section class="topology-section">
+      <div class="wide-container">
+        <div class="sec-header">
+          <div class="sec-kicker">SECTION 01 // INFORMATION SECURITY & DEPLOYMENT TOPOLOGY</div>
+          <h2 class="sec-title">
+            {{ tt(
+              '满足严苛「情報セキュリティ」审查的两种零外泄部署架构',
+              '厳格な「情報セキュリティ基準」をクリアする2つのゼロ・イグレス導入構成',
+              'Two Zero-Egress Deployment Topologies for Strict Enterprise Security'
+            ) }}
+          </h2>
+          <p class="sec-sub">
+            {{ tt(
+              '无论是金融/制造业的完全物理断网终端，还是研发部门的社内 GPU 局域网集群，HYN Agent 均可在不经过任何外部云端中转服务器的前提下独立运行。',
+              '外部インターネットから完全に隔離されたオフライン開発端末から、社内GPUサーバー（vLLM / OneAPI）を共有するイントラネット環境まで、外部クラウド中継サーバーを一切介さずに稼働します。',
+              'Whether on an air-gapped workstation or a shared internal GPU cluster, HYN Agent operates without any external cloud relay servers.'
+            ) }}
+          </p>
+        </div>
+
+        <div class="topology-grid">
+          <!-- 拓扑 A：单机完全离线闭环 -->
+          <div class="topo-card">
+            <div class="topo-head">
+              <span class="topo-code">TOPOLOGY A // AIR-GAPPED WORKSTATION</span>
+              <span class="stone-badge is-success">{{ tt('物理断网可用', '完全オフライン完結', '100% Air-Gapped') }}</span>
+            </div>
+            <h3 class="topo-title">{{ tt('单机完全离线闭环模式（本机 Ollama 直连）', '端末内・完全オフライン完結モデル（ローカル Ollama 直結）', 'Standalone Air-Gapped Mode (Local Ollama)') }}</h3>
+            <div class="topo-diagram">
+              <div class="topo-boundary">
+                <div class="topo-boundary-label">{{ tt('物理终端边界 (127.0.0.1 回环 · 可拔除网线运行)', 'ローカルPC境界内 (127.0.0.1 ループバック · LAN抜線稼働可)', 'Local PC Boundary (127.0.0.1 Loopback · Air-Gap Ready)') }}</div>
+                <div class="topo-nodes">
+                  <div class="topo-node">
+                    <strong>Electron + Vue 3</strong>
+                    <span>Stone Workbench UI</span>
+                  </div>
+                  <div class="topo-arrow">⇄</div>
+                  <div class="topo-node is-accent">
+                    <strong>FastAPI Engine</strong>
+                    <span>127.0.0.1:8001</span>
+                  </div>
+                  <div class="topo-arrow">⇄</div>
+                  <div class="topo-node">
+                    <strong>Local Ollama</strong>
+                    <span>127.0.0.1:11434</span>
+                  </div>
+                </div>
+                <div class="topo-storage-bar">
+                  <code>.hyn_agent/</code> — {{ tt('会话 JSON · 双层 Markdown 记忆 · Office 快照 · 影子 Git 引用全本地落盘', '会話履歴 · 2層メモリ · 文書スナップショット · シャドウGit参照をすべてローカル保存', 'Sessions, 2-tier Markdown memory, file snapshots & shadow Git refs stored on local disk') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 拓扑 B：企业内网私有化共享 -->
+          <div class="topo-card">
+            <div class="topo-head">
+              <span class="topo-code">TOPOLOGY B // CORPORATE INTRANET (LAN)</span>
+              <span class="stone-badge">{{ tt('数据不出企业内网', '社内閉域網完結', 'Corporate LAN Only') }}</span>
+            </div>
+            <h3 class="topo-title">{{ tt('企业内网集群模式（社内 vLLM / SGLang / RAGFlow）', '社内閉域網クラスタ共有モデル（社内 vLLM / SGLang / RAGFlow）', 'Corporate Intranet Cluster (Internal vLLM & RAGFlow)') }}</h3>
+            <div class="topo-diagram">
+              <div class="topo-boundary is-lan">
+                <div class="topo-boundary-label">{{ tt('企业防火墙内部闭域网 (192.168.x.x / 10.x.x.x · 阻断公网出站)', '社内イントラネット境界 (外部インターネットへのデータ送信ゼロ)', 'Corporate Firewall Boundary (Zero Public Internet Egress)') }}</div>
+                <div class="topo-nodes">
+                  <div class="topo-node">
+                    <strong>HYN Desktop Client</strong>
+                    <span>Developer PC (Local Git)</span>
+                  </div>
+                  <div class="topo-arrow">⇄</div>
+                  <div class="topo-node is-accent">
+                    <strong>LAN LLM Gateway</strong>
+                    <span>vLLM / SGLang / OneAPI</span>
+                  </div>
+                  <div class="topo-arrow">+</div>
+                  <div class="topo-node">
+                    <strong>LAN RAGFlow</strong>
+                    <span>{{ tt('社内规章与设计书库', '社内規定・設計書RAG', 'Internal Spec RAG') }}</span>
+                  </div>
+                </div>
+                <div class="topo-storage-bar">
+                  <code>lan_server</code> — {{ tt('全团队共享企业内网 GPU 算力与知识库，机密代码 100% 留存社内', 'チーム全体で社内GPUリソースと知識ベースを共有し、機密コードは社外へ一切出ない', 'Share on-premise GPU clusters and RAG datasets across the team with zero external exposure') }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 03: 四大核心工程规格 Bento 矩阵 ==================== -->
+    <section class="bento-section">
+      <div class="wide-container">
+        <div class="sec-header">
+          <div class="sec-kicker">SECTION 02 // CORE ENGINEERING SPECIFICATIONS</div>
+          <h2 class="sec-title">
+            {{ tt(
+              '超越薄封装套壳：深入底层状态机与数据契约的硬核实现',
+              '単なるAPIラッパーではない：状態マシンとデータ契約に基づく深層アーキテクチャ',
+              'Beyond Thin API Wrappers: Deep State-Machine & Data-Contract Engineering'
+            ) }}
           </h2>
         </div>
 
-        <div class="pillars-grid">
-          <div v-for="item in corePillars" :key="item.tag" class="pillar-card">
-            <div class="pillar-tag">{{ item.tag }}</div>
-            <h3 class="pillar-title">{{ item.title }}</h3>
-            <p class="pillar-desc">{{ item.desc }}</p>
-            <div class="pillar-foot">
-              <code class="pillar-code">{{ item.codeRef }}</code>
-              <a class="pillar-link" :href="item.link">
-                {{ tt('查看源码级设计 →', '設計詳細を見る →', 'Read Deep Dive →') }}
+        <div class="bento-grid">
+          <div v-for="spec in bentoSpecs" :key="spec.index" class="bento-card">
+            <div class="bento-index">{{ spec.index }}</div>
+            <h3 class="bento-title">{{ spec.title }}</h3>
+            <p class="bento-desc">{{ spec.desc }}</p>
+
+            <div class="bento-code-window">
+              <div class="bento-code-head">{{ spec.snippetTitle }}</div>
+              <pre class="bento-code-pre"><code>{{ spec.snippet }}</code></pre>
+            </div>
+
+            <div class="bento-footer">
+              <a class="bento-link" :href="spec.link">
+                <span>{{ spec.linkText }}</span>
+                <span>→</span>
               </a>
             </div>
           </div>
@@ -199,50 +377,55 @@ const corePillars = computed(() => [
       </div>
     </section>
 
-    <!-- 对比表：为什么日本与高安全企业需要 HYN Agent -->
-    <section class="compare-section">
-      <div class="section-container">
-        <div class="section-head">
-          <span class="stone-badge is-success">{{ tt('安全合规与工程能力对比', 'セキュリティ・機能比較', 'SECURITY & CAPABILITY COMPARISON') }}</span>
-          <h2 class="section-title">
-            {{ tt('HYN Agent vs. 传统云端 Coding Agent', 'HYN Agent と従来のクラウド型 Coding Agent の比較', 'HYN Agent vs. Cloud-Only Coding Agents') }}
+    <!-- ==================== SECTION 04: 企业级能力对比表 ==================== -->
+    <section class="matrix-section">
+      <div class="wide-container">
+        <div class="sec-header">
+          <div class="sec-kicker">SECTION 03 // ARCHITECTURAL COMPARISON MATRIX</div>
+          <h2 class="sec-title">
+            {{ tt('HYN Agent 与常规云端 Coding Agent 的工程能力对比', 'HYN Agent と一般的なクラウド型 Coding Agent のアーキテクチャ比較', 'HYN Agent vs. Conventional Cloud Coding Agents') }}
           </h2>
         </div>
 
-        <div class="compare-table-wrap">
-          <table class="compare-table">
+        <div class="matrix-wrap">
+          <table class="matrix-table">
             <thead>
               <tr>
-                <th>{{ tt('评估维度', '評価項目', 'Dimension') }}</th>
-                <th class="is-highlight">HYN Agent ({{ tt('本产品', '本プロダクト', 'This Product') }})</th>
-                <th>{{ tt('常规云端 Agent / 简单套壳工具', '一般的なクラウド型 / 簡易エージェント', 'Typical Cloud / Wrapper Agents') }}</th>
+                <th>{{ tt('技术评估维度', '技術評価項目', 'Evaluation Dimension') }}</th>
+                <th class="is-hyn">HYN Agent ({{ tt('本架构', '本プロダクト', 'This Architecture') }})</th>
+                <th>{{ tt('常规云端 Agent / 简单 API 套壳', '一般的なクラウド型 / 簡易エージェント', 'Typical Cloud / Wrapper Agents') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>{{ tt('代码与文档隐私边界', '機密コード・文書の保護', 'Code & Document Privacy') }}</strong></td>
-                <td class="is-highlight"><strong>{{ tt('100% 本地落盘，支持拔网线 + Ollama / 企业内网 vLLM 运行', '100% ローカル保存。完全オフライン（Ollama / 社内LAN）稼働可能', '100% local disk storage; runs completely offline with Ollama / LAN vLLM') }}</strong></td>
-                <td>{{ tt('依赖外部云端中转服务器，企业核心源码存在外泄合规风险', '外部クラウドサーバー経由が必須で、社内規定により導入困難な場合が多い', 'Requires cloud relay servers; blocked by strict enterprise security policies') }}</td>
+                <td><strong>{{ tt('数据主权与离线能力', 'データ主権とオフライン稼働', 'Data Sovereignty & Offline') }}</strong></td>
+                <td class="is-hyn"><strong>{{ tt('100% 本地落盘，原生支持本机 Ollama 与企业闭域网 vLLM', '100% ローカル保存。Ollama / 社内閉域網 vLLM で完全オフライン稼働', '100% local disk; native offline Ollama & corporate LAN vLLM') }}</strong></td>
+                <td>{{ tt('强制经过外部云端中转服务器，难以通过日本企业安全合规审查', '外部クラウド中継が必須で、企業の情報セキュリティ審査を通過困難', 'Requires external cloud relays; blocked by strict enterprise security') }}</td>
               </tr>
               <tr>
-                <td><strong>{{ tt('长时任务防崩与恢复 (P0–P3)', '長時間実行の信頼性・復旧', 'Long-Horizon Reliability') }}</strong></td>
-                <td class="is-highlight"><strong>{{ tt('TurnHub 单调 seq 重连 + StuckDetector 防死循环 + 崩溃断点自动续跑', 'TurnHub seq 再接続 + ループ自動検知(L1/L2) + クラッシュ後の自動再開', 'TurnHub seq replay + StuckDetector anti-loop + crash auto-resume') }}</strong></td>
-                <td>{{ tt('网络抖动即断流，容易陷入重复报错工具调用死循环', '通信瞬断で処理が失われやすく、同一エラーの無限ループに陥りやすい', 'Drops state on network hiccups; prone to infinite tool-error loops') }}</td>
+                <td><strong>{{ tt('长任务流式容错与防死循环', '長時間ストリーム耐障害性・ループ防止', 'Long-Horizon Fault Tolerance') }}</strong></td>
+                <td class="is-hyn"><strong>{{ tt('TurnHub 单调 seq 断线回放 + stream_reset 重试清洗 + StuckDetector L2 自省', 'TurnHub seq 再接続 + stream_reset 洗浄 + StuckDetector L2 強制内省', 'TurnHub seq replay + stream_reset + StuckDetector L2 retrospective') }}</strong></td>
+                <td>{{ tt('刷新窗口或网络抖动即丢失任务，极易在同一报错命令上无限空转', '通信瞬断で処理が失われ、同一エラーコマンドの無限ループに陥りやすい', 'Loses state on hiccups; prone to infinite tool-error loops') }}</td>
               </tr>
               <tr>
-                <td><strong>{{ tt('代码安全回滚机制', 'コード変更のロールバック', 'Safe Code Rollback') }}</strong></td>
-                <td class="is-highlight"><strong>{{ tt('无侵入影子 Git 检查点（私有 refs，绝不污染用户 HEAD 与暂存区）', '非侵襲シャドウGitチェックポイント（作業ブランチ・Indexを一切汚さない）', 'Non-invasive Shadow Git Checkpoints (zero pollution to user HEAD/index)') }}</strong></td>
-                <td>{{ tt('直接改乱用户工作区，或乱建临时 git commit 污染提交历史', '作業ツリーを直接書き換えるか、不要なコミットで履歴を汚す', 'Overwrites working tree directly or pollutes git commit history') }}</td>
+                <td><strong>{{ tt('版本快照与回滚机制', 'スナップショットとロールバック', 'Snapshot & Rollback Mechanism') }}</strong></td>
+                <td class="is-hyn"><strong>{{ tt('无侵入影子 Git 检查点（临时 GIT_INDEX_FILE + 私有 refs，零工作区污染）', '非侵襲シャドウGitチェックポイント（作業ブランチ・Indexを一切汚さない）', 'Non-invasive Shadow Git Checkpoints (zero pollution to user HEAD/index)') }}</strong></td>
+                <td>{{ tt('直接覆盖工作区文件，或产生大量临时 commit 污染用户分支历史', '作業ツリーを直接上書きするか、不要なコミットでブランチ履歴を汚す', 'Overwrites working tree directly or pollutes git commit history') }}</td>
               </tr>
               <tr>
-                <td><strong>{{ tt('多智能体并发冲突隔离', 'マルチエージェント競合分離', 'Multi-Agent Concurrency') }}</strong></td>
-                <td class="is-highlight"><strong>{{ tt('基于 Git Worktree 物理隔离 + 计划批准前强制只读门禁', 'Git Worktree による物理分離 + 計画承認前の読取専用ゲート', 'Physical Git Worktree isolation + read-only gate before plan approval') }}</strong></td>
-                <td>{{ tt('多个子代理同时读写同一目录，导致文件互相覆盖损坏', '複数エージェントが同一ディレクトリを同時編集しファイルが破損', 'Subagents overwrite each other in the same working directory') }}</td>
+                <td><strong>{{ tt('多智能体并发与权限安全', 'マルチエージェント並列性と権限ゲート', 'Multi-Agent Concurrency & Safety') }}</strong></td>
+                <td class="is-hyn"><strong>{{ tt('Git Worktree 物理隔离并发 + 计划批准前强制只读门禁 + 4 档实时权限', 'Git Worktree 物理分離 + 計画承認前の読取専用ゲート + 4段階リアルタイム権限', 'Physical Git Worktree isolation + read-only plan gate + 4-tier live permissions') }}</strong></td>
+                <td>{{ tt('多代理共享同一目录互相覆盖，缺乏细粒度写盘门禁', '同一ディレクトリを同時編集して競合破損。細粒度な書込ゲートがない', 'Subagents overwrite each other in shared directories') }}</td>
               </tr>
               <tr>
-                <td><strong>{{ tt('Office 富文档协同交付', 'Office文書の直接プレビュー・編集', 'Office Document Workbench') }}</strong></td>
-                <td class="is-highlight"><strong>{{ tt('内置 docx / xlsx / pptx / pdf 工作台 + 鼠标划取局部 AI 热更新', 'docx / xlsx / pptx / pdf 高精細プレビュー＋選択範囲のピンポイントAI更新', 'Built-in docx/xlsx/pptx/pdf workbench + mouse-selection in-place AI patch') }}</strong></td>
-                <td>{{ tt('仅能输出纯文本或代码，修改 PPT/Word 需全量重新生成', 'コード・テキストのみで、Office文書の部分修正は不可', 'Text/code only; cannot preview or patch specific Office elements') }}</td>
+                <td><strong>{{ tt('大模型 Prefix Cache 保护', 'LLM Prefix Cache ヒット率保護', 'LLM Prefix Cache Preservation') }}</strong></td>
+                <td class="is-hyn"><strong>{{ tt('会话级冻结记忆快照 + 后台异步队列提取，Prefix Cache 命中率 94%+', 'セッション凍結メモリスナップショット＋非同期抽出により 94%+ ヒット率維持', 'Session-frozen memory snapshot + async queue keeps 94%+ cache hit rate') }}</strong></td>
+                <td>{{ tt('每轮动态改写 System Prompt 记忆区，导致 KV Cache 每轮失效、首字极慢', '毎ターン System Prompt を書き換えるため KV キャッシュが毎回無効化', 'Mutates system prompt every turn, invalidating KV prefix cache') }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ tt('Office 富文档协同交付', 'Office文書の直接プレビュー・部分編集', 'Office Document Workbench') }}</strong></td>
+                <td class="is-hyn"><strong>{{ tt('右侧内建 docx/xlsx/pptx/pdf 工作台 + 鼠标划取 SelectionAnchor 原地热更新', 'docx/xlsx/pptx/pdf ワークベンチ内蔵＋選択範囲のピンポイントSSE更新', 'Built-in docx/xlsx/pptx/pdf workbench + mouse-selection SSE hot-patching') }}</strong></td>
+                <td>{{ tt('仅能输出代码文本，改一行 PPT 文字也必须重新生成整个文件', 'テキスト出力のみで、PPTやWordの1箇所を直すにも全体再生成が必要', 'Text-only; requires regenerating the entire file for minor edits') }}</td>
               </tr>
             </tbody>
           </table>
@@ -250,33 +433,36 @@ const corePillars = computed(() => [
       </div>
     </section>
 
-    <!-- 底部：致日本企业招聘官与技术面试官 + 快速跳转 -->
-    <section class="recruiter-section">
-      <div class="section-container">
-        <div class="recruiter-card">
-          <div class="recruiter-left">
-            <span class="stone-badge">🎯 {{ tt('致招聘负责人与技术面试官 · 採用ご担当者様へ', '採用ご担当者様・エンジニア面接官の方へ', 'FOR RECRUITERS & ENGINEERING INTERVIEWERS') }}</span>
-            <h3>
+    <!-- ==================== SECTION 05: 致日本企业招聘官与技术面试官 ==================== -->
+    <section class="executive-brief-section">
+      <div class="wide-container">
+        <div class="brief-box">
+          <div class="brief-content">
+            <div class="sec-kicker">SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS (採用ご担当者様・技術面接官の方へ)</div>
+            <h3 class="brief-title">
               {{ tt(
-                '为什么提供完整架构白皮书？如何在面试中审阅源码？',
-                'クローズドソースでの公開理由と、面接での全ソースコード・実機ライブデモのご案内',
-                'Why an Architecture Whitepaper & How to Review Full Source Code in Interviews'
+                '关于独立产品形态发布、社用 PC 免安装审阅与技术面试源码走读的说明',
+                '独立プロダクトとしての配布形態、社用PCでのブラウザ検証、および面接時の全ソースコード解説について',
+                'On Standalone Distribution, Zero-Install Review, and Live Source Walkthroughs in Interviews'
               ) }}
             </h3>
-            <p>
+            <p class="brief-text">
               {{ tt(
-                'HYN Agent 作为完整的桌面端独立产品进行构建与分发，目前免费提供安装包下载，暂未将完整仓库直接公开。为了便于技术面试官全面评估本项目的 Agent 架构深度与代码质量，本站「工程架构白皮书」完整公开了核心模块状态机、数据结构与防踩坑设计。在视频面试环节，我随时准备通过屏幕共享（画面共有）进行断网实机演示，并现场打开 IDE 展示 Electron + Vue 3 + FastAPI 全部源码及 86+ 项自动化单元测试。',
-                'HYN Agent は独立したデスクトップ製品としてパッケージング・無料配布しており、現時点ではリポジトリ全体の一般公開を控えております。技術面接官の皆様にアーキテクチャの深さと実装品質を正確に評価いただけるよう、本サイトの「技術アーキテクチャ白書」にて内部状態マシン・データ契約・設計判断を詳細に公開しています。オンライン面接では、画面共有（Live Demo）による完全オフライン実機動作、および IDE 上での全ソースコード・単体テスト（86件以上）のウォークスルーをいつでも実演可能です。',
-                'HYN Agent is distributed as a free standalone desktop product. To give technical interviewers complete visibility into its engineering depth without requiring installation on corporate PCs, our 5-part Whitepaper documents the exact state machines, data contracts, and edge-case handling. During remote interviews, I am ready to run a live offline demo and walk through the entire codebase and 86+ unit tests in my IDE.'
+                '1. 为什么搭建本官网与架构白皮书：HYN Agent 作为完整的桌面端独立产品进行打包分发，目前暂未直接公开源码仓库。为了让技术面试官在不安装客户端的前提下即可深入评估本项目的工程含金量，本站在「工程架构白皮书」中完整公开了双进程架构、P0–P3 状态机、影子检查点、Git Worktree 团队与双层记忆的源码级设计。\n2. 面试现场 Live Demo 与完整源码审阅：在远程视频面试（Zoom / Teams / Google Meet）中，我随时准备通过屏幕共享（画面共有）为您现场演示物理断网下的实机运行，并在 IDE 中直接打开前端（Electron + Vue 3）与后端（FastAPI + 86 项单元测试）完整源码进行逐模块讲解。',
+                '1. 技術白書とWebサンドボックスの公開理由：HYN Agent は完成されたデスクトップ製品として無料配布しており、現時点ではリポジトリ全体の一般公開を控えております。社用PCのセキュリティ制限により .exe の実行が難しい採用ご担当者様・技術面接官の皆様にも、ブラウザ上の「対話型ワークベンチ」と全5章の「技術アーキテクチャ白書」を通じて、内部設計の深さをそのまま検証いただけるよう構成しました。\n2. 面接での実機ライブデモ＆全ソースコード開示：オンライン面接（Zoom / Teams / Meet）の場において、画面共有による完全オフライン実機デモ、および IDE 上でのフロントエンド（Electron + Vue 3）・バックエンド（FastAPI + 単体テスト86件以上）全ソースコードのリアルタイム解説を喜んで実演いたします。',
+                '1. Why an Architecture Whitepaper & Web Sandbox: HYN Agent is packaged as a standalone desktop product. So technical reviewers on locked-down corporate PCs can evaluate its full engineering depth without installing an .exe, this site provides a 1:1 Interactive Workbench and a 5-part Whitepaper detailing our state machines and data contracts.\n2. Live Demo & Full IDE Source Walkthrough: During remote interviews (Zoom / Teams / Meet), I am ready to share my screen for a live offline demonstration and walk through the entire Electron + Vue 3 + FastAPI codebase and 86+ unit tests in my IDE.'
               ) }}
             </p>
           </div>
-          <div class="recruiter-right">
+          <div class="brief-actions">
             <a class="stone-btn is-primary" :href="`${prefix}/architecture/overview`">
-              📖 {{ tt('阅读 5 篇工程架构白皮书', '技術アーキテクチャ白書 (全5章) を読む', 'Read 5-Part Whitepaper') }}
+              {{ tt('审阅 5 篇工程架构白皮书 →', '技術アーキテクチャ白書 (全5章) へ →', 'Read 5-Part Whitepaper →') }}
+            </a>
+            <a class="stone-btn" :href="`${prefix}/demo`">
+              {{ tt('打开全屏交互沙盒 (/demo)', '全画面ワークベンチを開く (/demo)', 'Open Fullscreen Sandbox (/demo)') }}
             </a>
             <a class="stone-btn" :href="`${prefix}/download`">
-              ⬇ {{ tt('前往下载与 SHA-256 校验页', 'ダウンロード・SHA-256検証ページへ', 'Go to Download & SHA-256') }}
+              {{ tt('查看安装包与 SHA-256 校验', 'ダウンロード・SHA-256検証へ', 'Download & SHA-256 Checksums') }}
             </a>
           </div>
         </div>
@@ -286,90 +472,144 @@ const corePillars = computed(() => [
 </template>
 
 <style scoped>
-.stone-home {
+.jp-enterprise-home {
   background: #ffffff;
   color: var(--text-primary);
 }
 
-.hero-band {
-  background: var(--bg-app);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 48px 24px 56px;
-}
-
-.hero-container,
-.section-container {
-  max-width: 1120px;
+.wide-container {
+  max-width: 1320px;
   margin: 0 auto;
 }
 
-.hero-badges {
+/* HERO 舞台区 */
+.hero-stage {
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 44px 24px 56px;
+}
+
+.hero-meta-bar {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
   margin-bottom: 18px;
 }
 
-.hero-title {
-  font-size: 32px;
-  line-height: 1.3;
-  font-weight: 750;
-  color: var(--text-primary);
+.hero-code-tag {
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+
+.hero-sep {
+  color: var(--border-strong);
+}
+
+.hero-code-sub {
+  color: var(--text-tertiary);
+}
+
+.hero-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  font-weight: 650;
+  color: var(--status-success);
+}
+
+.hero-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-success);
+}
+
+.hero-headline {
   margin: 0 0 16px;
-  letter-spacing: -0.01em;
+  font-size: 34px;
+  font-weight: 750;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  max-width: 1080px;
 }
 
-.hero-subtitle {
-  font-size: 15.5px;
-  line-height: 1.65;
+.hero-lead {
+  margin: 0 0 26px;
+  font-size: 15px;
+  line-height: 1.75;
   color: var(--text-secondary);
-  max-width: 900px;
-  margin: 0 0 24px;
+  max-width: 1020px;
 }
 
-.hero-cta-row {
+.hero-actions-bar {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
-.hero-btn-lg {
-  height: 40px;
+.hero-cta-primary {
+  height: 44px;
   padding: 0 20px;
-  font-size: 14px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1px;
+  line-height: 1.15;
 }
 
-.hero-showcase-bar {
+.hero-cta-sub {
+  font-size: 10.5px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.hero-cta-secondary {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 13.5px;
+}
+
+.hero-mode-toggle {
+  margin-left: auto;
   display: inline-flex;
-  gap: 6px;
-  padding: 4px;
+  padding: 3px;
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
 }
 
-.showcase-switch-btn {
-  padding: 6px 14px;
-  font-size: 12.5px;
+.mode-btn {
+  padding: 6px 12px;
+  font-size: 12px;
   font-weight: 600;
+  border: 0;
   border-radius: 4px;
-  border: none;
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
 }
 
-.showcase-switch-btn.is-active {
+.mode-btn.is-active {
   background: var(--bg-selected);
   color: var(--accent);
   font-weight: 650;
 }
 
 .hero-video-box {
-  margin-top: 20px;
   background: #ffffff;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   overflow: hidden;
 }
@@ -377,12 +617,12 @@ const corePillars = computed(() => [
 .hero-video-player {
   display: block;
   width: 100%;
-  max-height: 560px;
+  max-height: 600px;
   background: #1a1d27;
 }
 
 .hero-video-placeholder {
-  padding: 56px 24px;
+  padding: 64px 24px;
   text-align: center;
 }
 
@@ -393,183 +633,412 @@ const corePillars = computed(() => [
 
 .hero-video-placeholder p {
   max-width: 640px;
-  margin: 0 auto 18px;
+  margin: 0 auto 20px;
   font-size: 13.5px;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-.pillars-section {
-  padding: 56px 24px;
+/* SECTION 01: 建筑感四栏定量指标带 */
+.metrics-strip {
   background: #ffffff;
   border-bottom: 1px solid var(--border-subtle);
+  padding: 0 24px;
 }
 
-.section-head {
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+}
+
+.metric-cell {
+  padding: 28px 24px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.metric-cell:last-child {
+  border-right: none;
+}
+
+.metric-unit {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.metric-num {
+  margin: 6px 0 4px;
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 750;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.metric-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.metric-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* 通用章节标题 */
+.sec-header {
   margin-bottom: 32px;
 }
 
-.section-title {
-  margin: 12px 0 0;
-  font-size: 24px;
+.sec-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.sec-title {
+  margin: 0 0 10px;
+  font-size: 25px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
   line-height: 1.35;
 }
 
-.pillars-grid {
+.sec-sub {
+  margin: 0;
+  max-width: 880px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* SECTION 02: 部署拓扑图解 */
+.topology-section {
+  padding: 60px 24px;
+  background: var(--bg-hover);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.topology-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
-.pillar-card {
-  padding: 24px;
-  background: var(--bg-hover);
+.topo-card {
+  background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  padding: 24px;
 }
 
-.pillar-tag {
-  font-size: 11.5px;
+.topo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.topo-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+}
+
+.topo-title {
+  margin: 0 0 16px;
+  font-size: 16.5px;
+  font-weight: 700;
+}
+
+.topo-boundary {
+  border: 1.5px dashed var(--status-success);
+  background: #f9fcfa;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.topo-boundary.is-lan {
+  border-color: var(--accent);
+  background: #f7fafe;
+}
+
+.topo-boundary-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.topo-nodes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.topo-node {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.topo-node.is-accent {
+  border-color: var(--accent);
+  background: var(--bg-selected);
+}
+
+.topo-node strong {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+
+.topo-node span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.topo-arrow {
   font-family: var(--font-mono);
   font-weight: 700;
   color: var(--accent);
 }
 
-.pillar-title {
-  margin: 0;
+.topo-storage-bar {
+  margin-top: 12px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+/* SECTION 03: Bento 工程规格矩阵 */
+.bento-section {
+  padding: 60px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.bento-card {
+  padding: 28px;
+  background: #ffffff;
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+}
+
+.bento-card:nth-child(2n) {
+  border-right: none;
+}
+
+.bento-card:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+.bento-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.bento-title {
+  margin: 0 0 10px;
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-.pillar-desc {
-  margin: 0;
+.bento-desc {
+  margin: 0 0 16px;
   font-size: 13.5px;
-  line-height: 1.65;
+  line-height: 1.7;
   color: var(--text-secondary);
-  flex: 1;
 }
 
-.pillar-foot {
-  margin-top: 8px;
+.bento-code-window {
+  margin-top: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-code);
+  overflow: hidden;
+}
+
+.bento-code-head {
+  padding: 6px 12px;
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.bento-code-pre {
+  margin: 0;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  overflow-x: auto;
+}
+
+.bento-footer {
+  margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid var(--border-subtle);
-  display: flex;
+}
+
+.bento-link {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
   gap: 8px;
-}
-
-.pillar-code {
-  font-size: 11.5px;
-  font-family: var(--font-mono);
-  color: var(--text-tertiary);
-  background: #ffffff;
-  padding: 2px 8px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 4px;
-}
-
-.pillar-link {
   font-size: 13px;
   font-weight: 650;
   color: var(--accent);
   text-decoration: none;
 }
 
-.pillar-link:hover {
+.bento-link:hover {
   text-decoration: underline;
 }
 
-.compare-section {
-  padding: 56px 24px;
+/* SECTION 04: 对比表 */
+.matrix-section {
+  padding: 60px 24px;
   background: var(--bg-hover);
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.compare-table-wrap {
+.matrix-wrap {
   overflow-x: auto;
 }
 
-.compare-table {
+.matrix-table {
   width: 100%;
   border-collapse: collapse;
   background: #ffffff;
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
   font-size: 13.5px;
 }
 
-.compare-table th,
-.compare-table td {
-  padding: 14px 16px;
+.matrix-table th,
+.matrix-table td {
+  padding: 14px 18px;
   border: 1px solid var(--border-subtle);
   text-align: left;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
-.compare-table th {
+.matrix-table th {
   background: var(--bg-app);
   font-weight: 700;
 }
 
-.compare-table .is-highlight {
+.matrix-table .is-hyn {
   background: var(--bg-selected);
-  color: var(--text-primary);
 }
 
-.recruiter-section {
-  padding: 48px 24px 64px;
+/* SECTION 05: 面试官简报卡 */
+.executive-brief-section {
+  padding: 56px 24px 72px;
   background: #ffffff;
 }
 
-.recruiter-card {
-  padding: 28px;
+.brief-box {
+  padding: 32px;
   background: var(--bg-app);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: 32px;
   flex-wrap: wrap;
 }
 
-.recruiter-left {
+.brief-content {
   flex: 1;
-  min-width: 300px;
+  min-width: 320px;
 }
 
-.recruiter-left h3 {
-  margin: 12px 0 8px;
+.brief-title {
+  margin: 6px 0 12px;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 750;
 }
 
-.recruiter-left p {
+.brief-text {
   margin: 0;
   font-size: 13.5px;
-  line-height: 1.65;
+  line-height: 1.75;
   color: var(--text-secondary);
+  white-space: pre-line;
 }
 
-.recruiter-right {
+.brief-actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 250px;
 }
 
-@media (max-width: 768px) {
-  .hero-title {
+@media (max-width: 1024px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .topology-grid,
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .bento-card {
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-headline {
     font-size: 24px;
   }
-  .pillars-grid {
+  .metrics-grid {
     grid-template-columns: 1fr;
+  }
+  .topo-nodes {
+    flex-direction: column;
   }
 }
 </style>

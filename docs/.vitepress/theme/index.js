@@ -2,12 +2,13 @@
  * VitePress 自定义主题入口。
  *
  * 职责与协作：
- * - 继承 VitePress 默认主题并注入 `stone-theme.css`（石澜视觉系统）。
- * - 全局注册三大核心组件：
- *   1. `HomeLanding`：石澜风格定制产品首页（支持 zh / ja / en）。
- *   2. `ProductPlayground`：免安装网页版交互式回放沙盒，1:1 复刻 HYN Agent 桌面端石澜界面与核心工作流。
- *   3. `DownloadCenter`：安装包下载、SHA-256 校验、离线验证指南与致面试官说明组件。
- * - 在浏览器端自动将 Markdown 中的 ` ```mermaid ` 代码块渲染为矢量架构图，避免 SSR 构建报错。
+ * - 继承 VitePress 默认主题并注入 `stone-theme.css`（石澜 + 日系企业级网格视觉系统）。
+ * - 全局注册四大核心组件：
+ *   1. `HomeLanding`：日系企业级旗舰产品首页（1320px 宽屏）。
+ *   2. `ProductPlayground`：1:1 石澜桌面端交互式工作台（带自动巡航与三栏宽屏布局）。
+ *   3. `DemoShowcasePage`：独立宽屏交互沙盒页（脱离 688px 窄文档容器）。
+ *   4. `DownloadCenter`：独立宽屏客户端下载与 3 步物理级离线验证页。
+ * - 在浏览器端自动将 Markdown 中的 ` ```mermaid ` 代码块渲染为矢量架构图。
  */
 import DefaultTheme from 'vitepress/theme'
 import { onMounted, watch, nextTick } from 'vue'
@@ -15,12 +16,9 @@ import { useRoute } from 'vitepress'
 import './stone-theme.css'
 import HomeLanding from './components/HomeLanding.vue'
 import ProductPlayground from './components/ProductPlayground.vue'
+import DemoShowcasePage from './components/DemoShowcasePage.vue'
 import DownloadCenter from './components/DownloadCenter.vue'
 
-/**
- * 扫描当前页面中的 `.language-mermaid` 代码块并在客户端使用 mermaid 渲染为 SVG。
- * 仅在浏览器环境下执行，确保 `vitepress build` 服务端渲染（SSR）零报错。
- */
 async function renderMermaidBlocks() {
   if (typeof window === 'undefined') return
   const blocks = document.querySelectorAll('div.language-mermaid')
@@ -70,6 +68,7 @@ export default {
   enhanceApp({ app }) {
     app.component('HomeLanding', HomeLanding)
     app.component('ProductPlayground', ProductPlayground)
+    app.component('DemoShowcasePage', DemoShowcasePage)
     app.component('DownloadCenter', DownloadCenter)
   },
   setup() {

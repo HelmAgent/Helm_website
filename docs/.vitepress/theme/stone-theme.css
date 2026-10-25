@@ -1,14 +1,13 @@
 /*
- * 官网「石澜（Stone）」全局样式与设计变量表。
+ * 官网「石澜（Stone）+ 日系企业级编辑网格」全局样式表。
  *
  * 职责与协作：
- * - 100% 同步桌面端 `hyn_agent_frontend/styles/tokens.css` 与 `.cursor/rules/frontend-ui-style.mdc` 规范。
- * - 将 VitePress 默认主题变量（--vp-c-*）映射为石澜冷灰石底（#e4e8f0）、纯白侧栏（#ffffff）、靛蓝主色（#0f4c81）与 6px 圆角。
- * - 严禁使用渐变背景、毛玻璃拟态、大圆角胶囊选中态或软阴影。
+ * - 100% 同步桌面端 `hyn_agent_frontend/styles/tokens.css` 色彩与圆角变量。
+ * - 消除 VitePress 默认的「开源文档感」，提升顶部导航栏、技术白皮书正文排版与表格的工业级精密感。
+ * - 拓宽文档阅读容器（由默认狭窄的 688px 拓宽至 880px），使架构图与代码契约舒展易读。
  */
 
 :root {
-  /* 石澜核心 Token（与 hyn_agent_frontend/styles/tokens.css 严格一致） */
   --bg-sidebar: #ffffff;
   --bg-app: #e4e8f0;
   --bg-elevated: #ffffff;
@@ -40,7 +39,7 @@
   --status-warning: #b57b2a;
   --status-warning-bg: #fcf4e6;
 
-  --font-ui: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, "Sarasa Mono SC", monospace;
 
   --radius-sm: 6px;
@@ -48,7 +47,6 @@
   --radius-lg: 6px;
   --radius-tag: 4px;
 
-  /* 覆盖 VitePress 主题变量以呈现石澜冷灰石底与白侧栏质感 */
   --vp-c-bg: #ffffff;
   --vp-c-bg-alt: #f2f4f8;
   --vp-c-bg-elv: #ffffff;
@@ -69,6 +67,7 @@
 
   --vp-font-family-base: var(--font-ui);
   --vp-font-family-mono: var(--font-mono);
+  --vp-layout-max-width: 1440px;
 
   --vp-custom-block-tip-border: #0f4c81;
   --vp-custom-block-tip-text: #1a1d27;
@@ -81,23 +80,40 @@
   --vp-custom-block-danger-bg: #fbeceb;
 }
 
-:root:lang(ja),
-:root:lang(ja-JP) {
-  --font-ui: "Segoe UI Variable Text", "Segoe UI", "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Microsoft YaHei UI", sans-serif;
-  --vp-font-family-base: var(--font-ui);
-}
-
-/* 禁用 VitePress 暗黑切换下的毛玻璃与刺眼渐变，保持石澜干净克制风格 */
+/* 顶部导航栏：日系企业站偏好的克制纯白 + 1px 建筑细线 */
 .VPNavBar {
-  background-color: var(--bg-sidebar) !important;
+  background-color: #ffffff !important;
   border-bottom: 1px solid var(--border-subtle) !important;
   backdrop-filter: none !important;
 }
 
+.VPNavBar .container {
+  max-width: 1320px !important;
+}
+
 .VPNavBarTitle .title {
-  font-weight: 700 !important;
-  letter-spacing: 0.12em !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.14em !important;
+  font-size: 14px !important;
   color: var(--text-primary) !important;
+}
+
+.VPNavBarMenuLink {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+}
+
+/* 拓宽技术白皮书与指南页的正文宽度，彻底告别局促感 */
+.VPDoc .container {
+  max-width: 1360px !important;
+}
+
+.VPDoc:not(.has-sidebar) .content-container {
+  max-width: 1240px !important;
+}
+
+.VPDoc.has-sidebar .content-container {
+  max-width: 860px !important;
 }
 
 /* 侧栏选中态遵循石澜五处锁死之二：浅底 #e6eef8 + 靛蓝字 #0f4c81 + 圆角 6 */
@@ -118,19 +134,35 @@
   font-weight: 650 !important;
 }
 
-/* 文档正文表格与代码块石澜化 */
+/* 白皮书排版精细化 */
+.vp-doc h1 {
+  font-size: 28px !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.02em !important;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.vp-doc h2 {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  margin-top: 36px !important;
+  border-top: 1px solid var(--border-subtle) !important;
+}
+
 .vp-doc table {
   border-collapse: collapse;
   width: 100%;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   overflow: hidden;
+  font-size: 13.5px;
 }
 
 .vp-doc th {
-  background-color: var(--bg-hover);
+  background-color: var(--bg-app);
   color: var(--text-primary);
-  font-weight: 650;
+  font-weight: 700;
   border: 1px solid var(--border-subtle);
 }
 
@@ -147,8 +179,8 @@
 
 /* Mermaid 图表容器 */
 .stone-mermaid-wrap {
-  margin: 20px 0;
-  padding: 20px;
+  margin: 24px 0;
+  padding: 24px;
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -167,8 +199,10 @@
   align-items: center;
   gap: 6px;
   padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.04em;
   border-radius: var(--radius-tag);
   background: var(--bg-selected);
   color: var(--accent);
@@ -192,8 +226,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 36px;
-  padding: 0 16px;
+  height: 38px;
+  padding: 0 18px;
   font-size: 13px;
   font-weight: 650;
   border-radius: var(--radius-sm);
@@ -219,4 +253,9 @@
 .stone-btn.is-primary:hover {
   background: #0c3d69;
   color: var(--on-accent);
+}
+
+.VPFooter {
+  background-color: var(--bg-hover) !important;
+  border-top: 1px solid var(--border-subtle) !important;
 }

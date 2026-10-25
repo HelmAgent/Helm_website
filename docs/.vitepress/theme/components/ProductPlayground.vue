@@ -1,49 +1,40 @@
 <script setup>
 /**
- * 免安装网页版交互式回放沙盒组件（ProductPlayground.vue）。
+ * 免安装网页版交互式产品工作台组件（ProductPlayground.vue）。
  *
  * 职责与协作：
- * - 1:1 复刻 HYN Agent 桌面端「石澜（Stone）」UI 布局（260px 白侧栏 + 3×28 靛蓝竖标 + 石底主对话舞台 + 底部贴边白书写条 + 右侧可开关高保真预览工作台）。
- * - 专为无法在社用 PC 安装 `.exe` 的日本企业 HR 与技术面试官设计，打开网页即可交互体验三大核心场景：
- *   1. 离线 Ollama 长程重构 + 影子 Git 检查点（Shadow Git Checkpoints）查看与回滚。
- *   2. 右侧高保真预览工作台（WPS 格式工具栏 + 鼠标划取「✨ AI 修改」触发 `patch_file_selection` 原地热更新）。
- *   3. 多智能体团队协同（Lead + Git Worktree 物理隔离队友 + 计划审批门禁）。
- * - 接收 `lang` 属性（'zh' | 'ja' | 'en'），所有界面文案支持三语动态响应。
+ * - 严格按 `prototypes/hyn-stone.html` 与 `hyn_agent_frontend/styles/tokens.css` 1:1 还原石澜桌面界面。
+ * - 移除所有廉价 Emoji，改用 16×16 1.6px 描边矢量 SVG 图标，配备桌面窗口顶栏与「自动巡航演示」功能。
+ * - 采用宽屏三栏弹性网格（左栏 232px + 主区自适应 + 右侧工作台 380px），保证在首页与 `/demo` 独立页均宽敞清晰、绝不挤压变形。
  */
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
 
 const props = defineProps({
   lang: {
     type: String,
     default: 'zh'
+  },
+  standalone: {
+    type: Boolean,
+    default: false
   }
 })
 
-// 当前选中的演示剧本：'longrun' | 'workbench' | 'team'
+// 当前演示剧本：'longrun' | 'workbench' | 'team'
 const activeScenario = ref('longrun')
-// 剧本一：当前选中的影子检查点索引
 const selectedCheckpointIdx = ref(1)
-// 剧本二：是否已执行「✨ AI 修改」局部热补丁
 const aiPatchApplied = ref(false)
-// 剧本三：队友计划是否已批准
 const matePlanApproved = ref(false)
-// 底部工具栏：4 档权限模式实时切换演示
 const permMode = ref('full_auto')
 const showPermMenu = ref(false)
-// 底部工具栏：上下文预算圆环弹窗开关
 const showContextPopover = ref(false)
-// 右侧预览工作台开关
 const showWorkbench = ref(true)
-// 已展开的工具调用卡片 ID 集合
-const expandedTools = ref({ t1: false, t2: true, t3: false })
+const expandedTools = ref({ t1: false, t2: true })
 
-/**
- * 三语内联翻译辅助函数。
- * @param {string} zh 中文文案
- * @param {string} ja 日语文案
- * @param {string} en 英文文案
- * @returns {string} 当前语言对应的文案
- */
+// 自动分步巡航演示状态
+const isAutoPlaying = ref(false)
+let autoPlayTimer = null
+
 function tt(zh, ja, en) {
   if (props.lang === 'ja') return ja
   if (props.lang === 'en') return en
@@ -51,10 +42,11 @@ function tt(zh, ja, en) {
 }
 
 /**
- * 切换剧本时重置右侧工作台和局部交互状态，确保每次点击都有清晰反馈。
- * @param {string} key 剧本标识
+ * 切换演示场景并重置弹层状态。
+ * @param {string} key 场景标识
  */
 function selectScenario(key) {
+  stopAutoPlay()
   activeScenario.value = key
   showWorkbench.value = true
   showPermMenu.value = false
@@ -62,24 +54,66 @@ function selectScenario(key) {
 }
 
 /**
- * 切换单个工具调用卡片的展开/折叠状态。
- * @param {string} id 工具卡片 ID
+ * 开启或停止自动巡航演示：自动依次切换场景、触发 AI 局部热替换与队友计划审批。
  */
+function toggleAutoPlay() {
+  if (isAutoPlaying.value) {
+    stopAutoPlay()
+    return
+  }
+  isAutoPlaying.value = true
+  let step = 0
+  const sequence = [
+    () => {
+      activeScenario.value = 'longrun'
+      selectedCheckpointIdx.value = 0
+      expandedTools.value.t1 = true
+    },
+    () => {
+      selectedCheckpointIdx.value = 1
+    },
+    () => {
+      activeScenario.value = 'workbench'
+      aiPatchApplied.value = false
+    },
+    () => {
+      aiPatchApplied.value = true
+    },
+    () => {
+      activeScenario.value = 'team'
+      matePlanApproved.value = false
+    },
+    () => {
+      matePlanApproved.value = true
+    }
+  ]
+  sequence[0]()
+  autoPlayTimer = setInterval(() => {
+    step = (step + 1) % sequence.length
+    sequence[step]()
+  }, 2800)
+}
+
+function stopAutoPlay() {
+  isAutoPlaying.value = false
+  if (autoPlayTimer) {
+    clearInterval(autoPlayTimer)
+    autoPlayTimer = null
+  }
+}
+
+onUnmounted(() => {
+  stopAutoPlay()
+})
+
 function toggleTool(id) {
   expandedTools.value[id] = !expandedTools.value[id]
 }
 
-/**
- * 模拟在右侧预览工作台中点击「✨ AI 修改」并完成 SSE `file_updated` 原地热替换。
- */
 function triggerAiSelectionPatch() {
   aiPatchApplied.value = !aiPatchApplied.value
 }
 
-/**
- * 切换会话级 4 档权限模式，并关闭弹出菜单。
- * @param {string} nextMode 权限档位标识
- */
 function changePermMode(nextMode) {
   permMode.value = nextMode
   showPermMenu.value = false
@@ -88,23 +122,27 @@ function changePermMode(nextMode) {
 const permOptions = computed(() => [
   {
     id: 'ask_all',
-    label: tt('🔒 全部询问', '🔒 すべて確認', '🔒 Ask All'),
-    desc: tt('所有写文件与命令均需人工确认', 'ファイル書込・コマンド実行を毎回確認', 'Confirm every file write and shell command')
+    code: 'ASK_ALL',
+    label: tt('全部询问', 'すべて確認', 'Ask All'),
+    desc: tt('所有写文件与命令均需人工确认', '書込・コマンド実行を毎回確認', 'Confirm every file write and shell command')
   },
   {
     id: 'auto_edit',
-    label: tt('✏️ 自动编辑', '✏️ 自動編集', '✏️ Auto Edit'),
-    desc: tt('工作区内改文件与只读命令自动放行', 'ワークスペース内の編集と読取専用コマンドを許可', 'Auto-approve workspace edits & read-only commands')
+    code: 'AUTO_EDIT',
+    label: tt('自动编辑', '自動編集', 'Auto Edit'),
+    desc: tt('工作区内改文件与只读命令自动放行', 'ワークスペース内編集と読取コマンドを許可', 'Auto-approve workspace edits & read-only commands')
   },
   {
     id: 'default',
-    label: tt('🛡️ 智能确认', '🛡️ スマート確認', '🛡️ Smart Default'),
+    code: 'DEFAULT',
+    label: tt('智能确认', 'スマート確認', 'Smart Default'),
     desc: tt('常规操作放行，破坏性命令需确认', '通常操作は自動、破壊的コマンドのみ確認', 'Confirm only destructive commands')
   },
   {
     id: 'full_auto',
-    label: tt('⚡ 完全放行', '⚡ 完全自動 (無人稼働)', '⚡ Full Auto'),
-    desc: tt('数小时无人值守，仅拦截越界与高危指令', '数時間の無人実行。境界外・危険操作のみハード拒否', 'Unattended long-horizon run with hard-deny guardrails')
+    code: 'FULL_AUTO',
+    label: tt('完全放行', '完全自動 (無人稼働)', 'Full Auto'),
+    desc: tt('数小时无人值守，仅硬拒绝越界与高危指令', '数時間の無人実行。境界外・危険操作はハード拒否', 'Unattended long-horizon run with hard-deny guardrails')
   }
 ])
 
@@ -114,22 +152,22 @@ const currentPermObj = computed(() => {
 
 const checkpoints = computed(() => [
   {
-    id: '#1',
-    step: 'Step 4',
+    id: 'CP-01',
+    step: 'Step 04',
     time: '14:02:11',
     ref: 'refs/hyn/checkpoints/sess_8a9f @ 3c91a0b',
-    summary: tt('完成数据访问层异步超时封装', 'データアクセス層の非同期タイムアウト実装', 'Wrap async timeout in data access layer'),
+    summary: tt('流式重试回滚 (stream_reset) 接入', 'ストリーム再試行時のリセット (stream_reset) 実装', 'Integrate stream_reset rollback on LLM retry'),
     files: 3,
-    diff: `--- a/app/services/llm_retry.py\n+++ b/app/services/llm_retry.py\n@@ -42,6 +42,11 @@ async def stream_with_retry(policy: RetryPolicy):\n+    # 发生网关抖动重试前，先通过 TurnHub 发送 stream_reset 清空前端半截脏输出\n+    await turn_hub.emit(session_id, {"type": "stream_reset", "attempt": attempt})\n+    await asyncio.sleep(policy.backoff_for(attempt))`
+    diff: `--- a/app/services/llm_retry.py\n+++ b/app/services/llm_retry.py\n@@ -42,6 +42,10 @@ async def stream_with_retry(policy: RetryPolicy):\n+    # 网关抖动重试前发送 stream_reset 清空前端半截作废输出\n+    await turn_hub.emit(session_id, {"type": "stream_reset", "attempt": attempt})\n+    await asyncio.sleep(policy.backoff_for(attempt))`
   },
   {
-    id: '#2',
+    id: 'CP-02',
     step: 'Step 11',
     time: '14:18:45',
     ref: 'refs/hyn/checkpoints/sess_8a9f @ 7f4e21d',
-    summary: tt('接入 StuckDetector L2 自省提示并通过 86 项单测', 'StuckDetector L2 内省プロンプト導入・単体テスト86件通過', 'Integrate StuckDetector L2 notice & pass 86 unit tests'),
+    summary: tt('StuckDetector L2 自省注入并通过 86 项单测', 'StuckDetector L2 内省注入・単体テスト86件通過', 'StuckDetector L2 retrospective & 86 unit tests passed'),
     files: 5,
-    diff: `--- a/app/services/stuck_detector.py\n+++ b/app/services/stuck_detector.py\n@@ -88,4 +88,9 @@ class StuckDetector:\n+    if repeat_count >= 3:\n+        # 注入 L2 复盘提醒，强制模型停止重复调用同一报错命令并切换排查路径\n+        return StepObservation(level="L2", inject_notice=L2_RETROSPECTIVE_NOTICE)`
+    diff: `--- a/app/services/stuck_detector.py\n+++ b/app/services/stuck_detector.py\n@@ -88,4 +88,8 @@ class StuckDetector:\n+    if repeat_count >= 3:\n+        # 注入 L2 自省通知，强制停止重复报错调用并切换排查策略\n+        return StepObservation(level="L2", inject_notice=L2_RETROSPECTIVE_NOTICE)`
   }
 ])
 
@@ -143,534 +181,692 @@ watch(
 </script>
 
 <template>
-  <div class="pg-wrapper">
-    <!-- 顶部剧本切换栏（引导面试官点击体验 3 大核心工程亮点） -->
-    <div class="pg-scenario-bar">
-      <div class="pg-scenario-title">
-        <span class="pg-live-dot"></span>
-        <span>{{ tt('免安装交互式沙盒（点击下方场景与界面控件直接体验）', 'インストール不要・対話型Webデモ（シナリオやUIボタンをクリックして操作できます）', 'Zero-Install Interactive Sandbox (Click scenarios & UI controls below)') }}</span>
+  <div class="pg-frame" :class="{ 'is-standalone': standalone }">
+    <!-- 顶部场景控制器（建筑感细线网格 + 自动演示按钮） -->
+    <div class="pg-control-deck">
+      <div class="pg-deck-left">
+        <span class="pg-deck-kicker">INTERACTIVE WORKBENCH</span>
+        <div class="pg-scenario-pills">
+          <button
+            type="button"
+            class="pg-pill-btn"
+            :class="{ 'is-active': activeScenario === 'longrun' }"
+            @click="selectScenario('longrun')"
+          >
+            <span class="pg-pill-num">01</span>
+            <span>{{ tt('离线长程自治 & 影子 Git 检查点', 'オフライン長時間自律＆シャドウGitチェックポイント', 'Offline Long-Horizon & Shadow Checkpoints') }}</span>
+          </button>
+          <button
+            type="button"
+            class="pg-pill-btn"
+            :class="{ 'is-active': activeScenario === 'workbench' }"
+            @click="selectScenario('workbench')"
+          >
+            <span class="pg-pill-num">02</span>
+            <span>{{ tt('WPS 级文档工作台 & 划取 AI 热替换', 'Office高精細ワークベンチ＆選択範囲AI更新', 'Office Workbench & Selection AI Hot-Patch') }}</span>
+          </button>
+          <button
+            type="button"
+            class="pg-pill-btn"
+            :class="{ 'is-active': activeScenario === 'team' }"
+            @click="selectScenario('team')"
+          >
+            <span class="pg-pill-num">03</span>
+            <span>{{ tt('Git Worktree 多智能体团队并发', 'Git Worktree マルチエージェント並列開発', 'Git Worktree Multi-Agent Team') }}</span>
+          </button>
+        </div>
       </div>
-      <div class="pg-scenario-tabs">
+
+      <div class="pg-deck-right">
         <button
           type="button"
-          class="pg-tab-btn"
-          :class="{ 'is-active': activeScenario === 'longrun' }"
-          @click="selectScenario('longrun')"
+          class="pg-autoplay-btn"
+          :class="{ 'is-playing': isAutoPlaying }"
+          @click="toggleAutoPlay"
         >
-          {{ tt('场景 1：离线 Ollama 长程重构 & 影子 Git 检查点', '1. オフライン長時間実行＆シャドウGitチェックポイント', '1. Offline Long-Horizon & Shadow Git Checkpoints') }}
-        </button>
-        <button
-          type="button"
-          class="pg-tab-btn"
-          :class="{ 'is-active': activeScenario === 'workbench' }"
-          @click="selectScenario('workbench')"
-        >
-          {{ tt('场景 2：WPS 级高保真预览 & 划取「✨ AI 修改」', '2. Office高精細プレビュー＆選択範囲「✨ AI修正」', '2. Office Workbench & Selection "✨ AI Edit"') }}
-        </button>
-        <button
-          type="button"
-          class="pg-tab-btn"
-          :class="{ 'is-active': activeScenario === 'team' }"
-          @click="selectScenario('team')"
-        >
-          {{ tt('场景 3：Git Worktree 多智能体团队并行开发', '3. Git Worktree マルチエージェント並列開発', '3. Git Worktree Multi-Agent Team') }}
+          <span class="pg-play-indicator"></span>
+          <span>{{ isAutoPlaying ? tt('停止自动巡航', '自動再生を停止', 'Stop Auto-Tour') : tt('自动巡航演示', '自動ツアー再生', 'Auto-Play Tour') }}</span>
         </button>
       </div>
     </div>
 
-    <!-- 石澜桌面客户端 1:1 窗口壳 -->
-    <div class="stone-window">
-      <!-- 左侧 260px 纯白侧栏（遵循石澜五处锁死之三 & 五） -->
-      <aside class="stone-sidebar">
-        <div class="stone-brand">
-          <span class="stone-mark"></span>
-          <div>
-            <div class="stone-word">HYN</div>
-            <div class="stone-workspace">d:/workspace/core-service</div>
-          </div>
-        </div>
+    <!-- 桌面应用原生窗口顶栏（Window Titlebar） -->
+    <div class="pg-window-titlebar">
+      <div class="pg-win-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="pg-win-caption">
+        <span>HYN Agent Desktop</span>
+        <span class="pg-win-sep">—</span>
+        <code>127.0.0.1:8001 (FastAPI Embedded)</code>
+        <span class="pg-win-badge">{{ tt('完全离线就绪', '完全オフライン稼働中', 'AIR-GAPPED READY') }}</span>
+      </div>
+      <div class="pg-win-meta">Electron 44 · Vue 3.5 · Python 3.13</div>
+    </div>
 
-        <nav class="stone-nav">
-          <div class="stone-nav-item" :class="{ 'is-active': activeScenario !== 'team' }" @click="selectScenario('longrun')">
-            <span>💬</span>
-            <span>{{ tt('对话与工作台', 'チャット＆ワークベンチ', 'Chat & Workbench') }}</span>
-          </div>
-          <div class="stone-nav-item" :class="{ 'is-active': activeScenario === 'team' }" @click="selectScenario('team')">
-            <span>🌿</span>
-            <span>{{ tt('团队协同 (Worktree)', 'チーム協働 (Worktree)', 'Team (Worktree)') }}</span>
-            <span class="stone-nav-tag">3</span>
-          </div>
-          <div class="stone-nav-item" @click="selectScenario('workbench')">
-            <span>📚</span>
-            <span>{{ tt('知识库 (RAGFlow)', 'ナレッジベース (RAG)', 'Knowledge (RAG)') }}</span>
-          </div>
-          <div class="stone-nav-item">
-            <span>⏰</span>
-            <span>{{ tt('定时自动化 (Cron)', 'スケジュール自動化', 'Automations (Cron)') }}</span>
-          </div>
-          <div class="stone-nav-item">
-            <span>🧩</span>
-            <span>{{ tt('定制 (MCP / Skills / Hooks)', '拡張 (MCP / Skills)', 'Customize (MCP / Skills)') }}</span>
-          </div>
-        </nav>
-
-        <div class="stone-recent-header">{{ tt('近日会话', '最近のセッション', 'Recent Sessions') }}</div>
-        <div class="stone-recent-list">
-          <div
-            class="stone-recent-item"
-            :class="{ 'is-active': activeScenario === 'longrun' }"
-            @click="selectScenario('longrun')"
-          >
-            <div class="stone-recent-title">{{ tt('离线重构重试与死循环检测模块', 'リトライ＆ループ検知のオフライン改修', 'Offline refactor retry & loop guard') }}</div>
-            <div class="stone-recent-meta">Ollama · qwen2.5-coder:32b</div>
-          </div>
-          <div
-            class="stone-recent-item"
-            :class="{ 'is-active': activeScenario === 'workbench' }"
-            @click="selectScenario('workbench')"
-          >
-            <div class="stone-recent-title">{{ tt('生成系统安全评审 PPT 与白皮书', 'セキュリティ審査PPTと白書の生成', 'Generate Security Review PPTX') }}</div>
-            <div class="stone-recent-meta">RAGFlow · 127.0.0.1</div>
-          </div>
-          <div
-            class="stone-recent-item"
-            :class="{ 'is-active': activeScenario === 'team' }"
-            @click="selectScenario('team')"
-          >
-            <div class="stone-recent-title">{{ tt('多队友并行迁移权限引擎 P3', '権限エンジンP3のマルチメイト移行', 'Parallel P3 permission migration') }}</div>
-            <div class="stone-recent-meta">Lead + 3 Teammates</div>
-          </div>
-        </div>
-
-        <!-- 底部本地离线安全状态栏 -->
-        <div class="stone-sidebar-footer">
-          <span class="stone-status-pill is-ok">● 127.0.0.1</span>
-          <span class="stone-footer-text">{{ tt('纯本地后端 · 数据零出网', 'ローカル完結 · 外部通信ゼロ', 'Local Backend · Zero Egress') }}</span>
-        </div>
-      </aside>
-
-      <!-- 中间石底主舞台 (#e4e8f0) -->
-      <main class="stone-main">
-        <!-- 顶部会话栏 -->
-        <header class="stone-main-header">
-          <div class="stone-main-title">
-            <span v-if="activeScenario === 'longrun'">{{ tt('离线重构重试与死循环检测模块', 'リトライ＆ループ検知のオフライン改修', 'Offline Refactor: Retry & StuckDetector') }}</span>
-            <span v-else-if="activeScenario === 'workbench'">{{ tt('生成系统安全评审 PPT 与局部 AI 润色', 'セキュリティ審査PPT生成＆選択範囲AI修正', 'Security Review PPTX & In-Place AI Edit') }}</span>
-            <span v-else>{{ tt('多智能体团队协同 · Git Worktree 物理隔离', 'マルチエージェント協働 · Git Worktree 分離', 'Multi-Agent Team · Git Worktree Isolation') }}</span>
-          </div>
-          <div class="stone-header-actions">
-            <span class="stone-tag-chip">seq: 142</span>
-            <button type="button" class="stone-mini-btn" @click="showWorkbench = !showWorkbench">
-              {{ showWorkbench ? tt('收起右侧工作台', '右パネルを隠す', 'Hide Workbench') : tt('展开右侧工作台', '右パネルを表示', 'Show Workbench') }}
-            </button>
-          </div>
-        </header>
-
-        <!-- 对话与状态内容流（助手消息直接落在 #e4e8f0 石底上，不套气泡） -->
-        <div class="stone-chat-scroll">
-          <!-- ==================== 场景 1：离线长程运行 & 影子检查点 ==================== -->
-          <template v-if="activeScenario === 'longrun'">
-            <div class="stone-user-msg">
-              {{ tt(
-                '在不联网环境下连接本机 Ollama，重构 llm_retry 与 stuck_detector 模块，确保单测全部通过，并开启影子 Git 检查点。',
-                'オフライン環境でローカル Ollama に接続し、llm_retry と stuck_detector をリファクタリングして単体テストをすべて通し、シャドウGitチェックポイントを記録してください。',
-                'Using local offline Ollama, refactor llm_retry and stuck_detector, pass all unit tests, and record shadow Git checkpoints.'
-              ) }}
+    <!-- 石澜桌面客户端三栏主体（外层带横向最小宽度保护，绝不挤压变形） -->
+    <div class="pg-viewport-scroll">
+      <div class="stone-window">
+        <!-- 1. 左侧 236px 纯白侧栏（使用与 hyn-stone.html 一致的 16x16 矢量线性图标） -->
+        <aside class="stone-sidebar">
+          <div class="stone-brand">
+            <span class="stone-mark"></span>
+            <div>
+              <div class="stone-word">HYN</div>
+              <div class="stone-workspace">local · core-engine</div>
             </div>
+          </div>
 
-            <div class="stone-assistant-block">
-              <div class="stone-thought-box">
-                <span class="stone-thought-label">🧠 {{ tt('思考链 (Thought · 已持续运行 26 分钟)', '思考プロセス (Thought · 26分連続稼働中)', 'Thought Chain (26m elapsed)') }}</span>
-                <p>
-                  {{ tt(
-                    '已读取会话进度笔记 <progress_notes>。当前工作区为 Git 仓库，已在私有引用 refs/hyn/checkpoints/sess_8a9f 下建立无侵入快照（不触碰用户 HEAD 与暂存区）。正在执行第 11 步回归测试验证……',
-                    'セッション進捗ノート <progress_notes> を読込完了。ユーザーの HEAD やステージング領域を汚さず refs/hyn/checkpoints/sess_8a9f にシャドウチェックポイントを作成しました。単体テストを実行します…',
-                    'Loaded <progress_notes>. Created non-invasive shadow checkpoint under refs/hyn/checkpoints/sess_8a9f without touching user HEAD or index. Running regression tests...'
-                  ) }}
-                </p>
+          <nav class="stone-nav">
+            <button
+              type="button"
+              class="stone-nav-item"
+              :class="{ 'is-active': activeScenario === 'longrun' }"
+              @click="selectScenario('longrun')"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <path d="M8 3.2v9.6M3.2 8h9.6" />
+              </svg>
+              <span>{{ tt('长程会话', '自律セッション', 'Autonomous Session') }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="stone-nav-item"
+              :class="{ 'is-active': activeScenario === 'workbench' }"
+              @click="selectScenario('workbench')"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3.2 3.2h6.2v9.6H3.2zM9.4 3.2h3.4v9.6H9.4" />
+              </svg>
+              <span>{{ tt('文档与知识库', '文書＆知識ベース', 'Docs & Knowledge') }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="stone-nav-item"
+              :class="{ 'is-active': activeScenario === 'team' }"
+              @click="selectScenario('team')"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 4.2h10M3 8h10M3 11.8h6.5" />
+              </svg>
+              <span>{{ tt('团队协同 (Worktree)', 'チーム協働 (Worktree)', 'Team Worktrees') }}</span>
+              <span class="stone-nav-tag">3</span>
+            </button>
+
+            <button type="button" class="stone-nav-item" @click="selectScenario('longrun')">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+                <circle cx="8" cy="8" r="5.2" />
+                <path d="M8 5.1V8l2 1.4" stroke-linecap="round" />
+              </svg>
+              <span>{{ tt('定时自动化 (Cron)', 'スケジュール自動化', 'Automations') }}</span>
+            </button>
+
+            <button type="button" class="stone-nav-item" @click="selectScenario('workbench')">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <path d="M3 4.5h10M3 8h10M3 11.5h10" />
+                <circle cx="6" cy="4.5" r="1.3" fill="#ffffff" />
+                <circle cx="10.5" cy="8" r="1.3" fill="#ffffff" />
+              </svg>
+              <span>{{ tt('定制 (MCP / Skills)', '拡張 (MCP / Skills)', 'MCP & Skills') }}</span>
+            </button>
+          </nav>
+
+          <div class="stone-recent-header">{{ tt('近日会话', '最近のセッション', 'RECENT SESSIONS') }}</div>
+          <div class="stone-recent-list">
+            <div
+              class="stone-recent-item"
+              :class="{ 'is-active': activeScenario === 'longrun' }"
+              @click="selectScenario('longrun')"
+            >
+              <div class="stone-recent-title">{{ tt('离线重构重试与死循环检测', 'リトライ＆ループ検知のオフライン改修', 'Offline retry & stuck guard') }}</div>
+              <div class="stone-recent-meta">Ollama · qwen2.5-coder:32b</div>
+            </div>
+            <div
+              class="stone-recent-item"
+              :class="{ 'is-active': activeScenario === 'workbench' }"
+              @click="selectScenario('workbench')"
+            >
+              <div class="stone-recent-title">{{ tt('安全合规评审 PPT 与局部润色', 'セキュリティ審査PPTと部分AI修正', 'Security Review PPTX & Patch') }}</div>
+              <div class="stone-recent-meta">RAGFlow · Local Evidence</div>
+            </div>
+            <div
+              class="stone-recent-item"
+              :class="{ 'is-active': activeScenario === 'team' }"
+              @click="selectScenario('team')"
+            >
+              <div class="stone-recent-title">{{ tt('多队友并行迁移权限引擎 P3', '権限エンジンP3の並列移行', 'Parallel P3 permission team') }}</div>
+              <div class="stone-recent-meta">Lead + 3 Worktrees</div>
+            </div>
+          </div>
+
+          <div class="stone-sidebar-footer">
+            <span class="stone-live-dot"></span>
+            <span class="stone-footer-text">{{ tt('本机后端 · 127.0.0.1 零外发', 'ローカル完結 · 外部通信ゼロ', 'Local · Zero Egress') }}</span>
+          </div>
+        </aside>
+
+        <!-- 2. 中间石底主舞台 (#e4e8f0) -->
+        <main class="stone-main">
+          <header class="stone-main-header">
+            <div class="stone-main-title">
+              <span v-if="activeScenario === 'longrun'">{{ tt('离线重构重试与死循环检测模块', 'リトライ＆ループ検知のオフライン改修', 'Offline Refactor: Retry & StuckDetector') }}</span>
+              <span v-else-if="activeScenario === 'workbench'">{{ tt('系统安全评审 PPT 生成与局部 AI 热替换', 'セキュリティ審査PPT生成＆選択範囲AI更新', 'Security Review PPTX & In-Place AI Patch') }}</span>
+              <span v-else>{{ tt('多智能体团队协同 · Git Worktree 物理隔离', 'マルチエージェント協働 · Git Worktree 物理分離', 'Multi-Agent Team · Git Worktree Isolation') }}</span>
+            </div>
+            <div class="stone-header-actions">
+              <span class="stone-tag-chip">TurnHub seq: 142</span>
+              <button type="button" class="stone-mini-btn" @click="showWorkbench = !showWorkbench">
+                {{ showWorkbench ? tt('收起右侧工作台', '右ペインを閉じる', 'Hide Workbench') : tt('展开右侧工作台', '右ペインを開く', 'Show Workbench') }}
+              </button>
+            </div>
+          </header>
+
+          <div class="stone-chat-scroll">
+            <!-- 场景 1：离线长程运行 & 影子检查点 -->
+            <template v-if="activeScenario === 'longrun'">
+              <div class="stone-user-msg">
+                {{ tt(
+                  '在不联网环境下连接本机 Ollama，重构 llm_retry 与 stuck_detector 模块，确保单测全部通过，并开启影子 Git 检查点。',
+                  'オフライン環境でローカル Ollama に接続し、llm_retry と stuck_detector を改修して単体テストをすべて通し、シャドウGitチェックポイントを記録してください。',
+                  'Using local offline Ollama, refactor llm_retry and stuck_detector, pass all unit tests, and record Shadow Git Checkpoints.'
+                ) }}
               </div>
 
-              <!-- 可点击展开的工具调用卡片 -->
-              <div class="stone-tool-card" @click="toggleTool('t1')">
-                <div class="stone-tool-head">
-                  <span class="stone-tool-icon">🛠️</span>
-                  <span class="stone-tool-name">apply_patch · <code>app/services/stuck_detector.py</code></span>
-                  <span class="stone-auto-tag">{{ tt('已自动放行 (full_auto)', '自動承認 (full_auto)', 'Auto-approved (full_auto)') }}</span>
-                  <span class="stone-tool-Status is-ok">{{ tt('已完成', '完了', 'Completed') }} ▾</span>
+              <div class="stone-assistant-block">
+                <div class="stone-thought-box">
+                  <div class="stone-thought-head">
+                    <span class="stone-thought-label">THOUGHT CHAIN</span>
+                    <span class="stone-thought-time">{{ tt('已连续自治运行 26m 14s · 进度笔记常驻', '26分14秒連続稼働中 · 進捗ノート常駐', '26m 14s elapsed · Progress Notes active') }}</span>
+                  </div>
+                  <p>
+                    {{ tt(
+                      '已加载会话级 <progress_notes>。在私有引用 refs/hyn/checkpoints/sess_8a9f 下创建无侵入快照（不触碰用户 HEAD 与暂存区）。正在执行第 11 步回归单测验证。',
+                      'セッション進捗ノート <progress_notes> を読込完了。ユーザーの HEAD や Index を一切汚さず refs/hyn/checkpoints/sess_8a9f にシャドウチェックポイントを作成しました。回帰テストを実行します。',
+                      'Loaded <progress_notes>. Created non-invasive shadow checkpoint under refs/hyn/checkpoints/sess_8a9f without touching user HEAD or index. Running regression suite.'
+                    ) }}
+                  </p>
                 </div>
-                <pre v-if="expandedTools.t1" class="stone-tool-code">+ L2_RETROSPECTIVE_NOTICE = "[Runtime notice] Repeated identical tool failure detected..."
+
+                <div class="stone-tool-card" @click="toggleTool('t1')">
+                  <div class="stone-tool-head">
+                    <span class="stone-tool-badge">TOOL</span>
+                    <span class="stone-tool-name">apply_patch · <code>app/services/stuck_detector.py</code></span>
+                    <span class="stone-auto-tag">AUTO · FULL_AUTO</span>
+                    <span class="stone-tool-status is-ok">{{ tt('已完成', '完了', 'Done') }} ▾</span>
+                  </div>
+                  <pre v-if="expandedTools.t1" class="stone-tool-code">+ L2_RETROSPECTIVE_NOTICE = "[Runtime notice] Repeated identical tool failure detected..."
 + def evaluate_step(obs: StepObservation) -> StuckDecision: ...</pre>
-              </div>
-
-              <div class="stone-tool-card" @click="toggleTool('t2')">
-                <div class="stone-tool-head">
-                  <span class="stone-tool-icon">💻</span>
-                  <span class="stone-tool-name">run_powershell · <code>python -m unittest discover -s tests -v</code></span>
-                  <span class="stone-auto-tag">{{ tt('已自动放行 (full_auto)', '自動承認 (full_auto)', 'Auto-approved (full_auto)') }}</span>
-                  <span class="stone-tool-Status is-ok">86 OK (1.8s) ▾</span>
                 </div>
-                <pre v-if="expandedTools.t2" class="stone-tool-code">test_stream_reset_on_llm_retry (tests.test_turn_hub.TurnHubTest) ... ok
+
+                <div class="stone-tool-card" @click="toggleTool('t2')">
+                  <div class="stone-tool-head">
+                    <span class="stone-tool-badge">EXEC</span>
+                    <span class="stone-tool-name">run_powershell · <code>python -m unittest discover -s tests -v</code></span>
+                    <span class="stone-auto-tag">AUTO · FULL_AUTO</span>
+                    <span class="stone-tool-status is-ok">86 OK (1.8s) ▾</span>
+                  </div>
+                  <pre v-if="expandedTools.t2" class="stone-tool-code">test_stream_reset_on_llm_retry (tests.test_turn_hub.TurnHubTest) ... ok
 test_shadow_checkpoint_preserves_user_index (tests.test_git_checkpoints.CheckpointTest) ... ok
 test_stuck_detector_l2_retrospective (tests.test_stuck_detector.StuckTest) ... ok
 ----------------------------------------------------------------------
 Ran 86 tests in 1.842s — OK</pre>
-              </div>
-
-              <!-- 轻量检查点提示 -->
-              <div class="stone-checkpoint-banner">
-                <span>📌 {{ tt('已创建影子 Git 检查点 #2（未改动您的分支与 git status，可在右侧查看 Diff 或一键回滚）', 'シャドウGitチェックポイント #2 を作成しました（ブランチや git status は無変更。右パネルでDiff確認・ロールバック可能）', 'Created Shadow Git Checkpoint #2 (User HEAD & index untouched; inspect Diff or rollback on the right)') }}</span>
-              </div>
-
-              <!-- P2 显式完成协议卡片 -->
-              <div class="stone-completion-card">
-                <div class="stone-completion-head">
-                  <span class="stone-badge is-success">✓ {{ tt('Completion Gate 通过', '完了ゲート検証済み', 'Completion Gate Passed') }}</span>
-                  <span class="stone-completion-sub">P2 Explicit Completion Protocol</span>
                 </div>
-                <div class="stone-completion-body">
+
+                <div class="stone-checkpoint-banner">
+                  <span>{{ tt('影子 Git 检查点 CP-02 已写入私有引用（未改动您的分支与 git status，可在右侧对比 Diff 或一键回滚）', 'シャドウGitチェックポイント CP-02 を専用refへ記録（ブランチや git status は無変更。右ペインでDiff確認・復元可能）', 'Shadow Git Checkpoint CP-02 recorded in private ref (User HEAD & index untouched; inspect Diff on the right)') }}</span>
+                </div>
+
+                <div class="stone-completion-card">
+                  <div class="stone-completion-head">
+                    <span class="stone-badge is-success">COMPLETION GATE PASSED</span>
+                    <span class="stone-completion-sub">P2 Verification Protocol</span>
+                  </div>
+                  <div class="stone-completion-body">
+                    {{ tt(
+                      '已完成流式重试回滚（stream_reset）与二阶卡死自省（StuckDetector L2）改造，86 项单元测试全部通过。',
+                      'ストリーム再試行時のリセット（stream_reset）および2段階スタック検知（StuckDetector L2）の実装が完了し、全86件の単体テスト通過を確認しました。',
+                      'Completed stream_reset retry rollback and StuckDetector L2 retrospective injection. All 86 unit tests passed.'
+                    ) }}
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- 场景 2：高保真文档工作台 & 划取 AI 修改 -->
+            <template v-else-if="activeScenario === 'workbench'">
+              <div class="stone-user-msg">
+                {{ tt(
+                  '结合本地 RAGFlow 知识库里的《企业安全合规规范》，生成架构评审 PPT，并将第 2 页选中的文本框精简为 3 条量化指标。',
+                  'ローカル RAGFlow ナレッジベースの『社内セキュリティ準拠規約』を参照してアーキテクチャ審査用PPTを生成し、2ページ目の選択枠を3つの定量指標に要約してください。',
+                  'Using the local RAGFlow security compliance dataset, generate an Architecture Review PPTX and condense the selected Slide 2 text box into 3 quantitative metrics.'
+                ) }}
+              </div>
+
+              <div class="stone-assistant-block">
+                <div class="stone-tool-card">
+                  <div class="stone-tool-head">
+                    <span class="stone-tool-badge">RAG</span>
+                    <span class="stone-tool-name">knowledge_search · <code>dataset="sec_compliance_jp"</code></span>
+                    <span class="stone-tool-status is-ok">{{ tt('命中 4 条本地证据链', 'ローカル根拠 4件ヒット', '4 Local Evidences') }}</span>
+                  </div>
+                </div>
+
+                <div class="stone-selection-chip-bar">
+                  <span class="stone-sel-chip">
+                    SELECTION ANCHOR · <code>架构评审汇报_2026.pptx</code> · {{ tt('Slide 02 · Shape 104', 'スライド 02 · Shape 104', 'Slide 02 · Shape 104') }}
+                  </span>
+                </div>
+
+                <div class="stone-tool-card">
+                  <div class="stone-tool-head">
+                    <span class="stone-tool-badge">PATCH</span>
+                    <span class="stone-tool-name">patch_file_selection · <code>slide_index=2, shape_id=104</code></span>
+                    <span class="stone-tool-status is-ok">{{ tt('SSE 原地热更新完成', 'SSE インプレース更新完了', 'SSE Hot-Reloaded') }}</span>
+                  </div>
+                </div>
+
+                <div class="stone-artifact-card" @click="showWorkbench = true">
+                  <div class="stone-artifact-badge">PPTX</div>
+                  <div class="stone-artifact-info">
+                    <div class="stone-artifact-name">架构评审汇报_2026.pptx</div>
+                    <div class="stone-artifact-meta">{{ tt('最终交付产物（已自动过滤中间 .py 脚本 · 点击在右侧预览与局部修改）', '最終成果物（中間 .py スクリプトを自動除外 · 右ペインで直接編集可能）', 'Final Deliverable (Intermediate .py scripts filtered · Click to edit on right)') }}</div>
+                  </div>
+                  <span class="stone-badge is-success">{{ tt('工作台已打开', 'プレビュー中', 'Workbench Open') }}</span>
+                </div>
+              </div>
+            </template>
+
+            <!-- 场景 3：Git Worktree 多智能体团队 -->
+            <template v-else>
+              <div class="stone-user-msg">
+                {{ tt(
+                  '启动团队模式：分配 3 名常驻队友分别在独立 Git Worktree 下并行完成「后端权限接口」、「前端按钮组件」与「边界安全单测」。',
+                  'チームモードを起動：3名の常駐メイトをそれぞれ独立した Git Worktree に割り当て、「バックエンド権限API」「フロントエンドUI」「境界セキュリティテスト」を並列実装してください。',
+                  'Launch Team Mode: assign 3 resident teammates in isolated Git Worktrees to build Backend Permission API, Frontend Button, and Security Boundary Tests in parallel.'
+                ) }}
+              </div>
+
+              <div class="stone-assistant-block">
+                <div class="stone-team-grid">
+                  <div class="stone-mate-card">
+                    <div class="stone-mate-top">
+                      <strong>mate-backend</strong>
+                      <span class="stone-badge is-success">RUNNING</span>
+                    </div>
+                    <div class="stone-mate-wt">Worktree: <code>.hyn_wt/mate-backend</code></div>
+                    <p class="stone-mate-desc">{{ tt('已完成 permission_mode.py 与 PATCH /sessions/{id} 实时广播。', 'permission_mode.py と PATCH /sessions/{id} 実装完了。', 'Implemented permission_mode.py & live session PATCH.') }}</p>
+                  </div>
+
+                  <div class="stone-mate-card">
+                    <div class="stone-mate-top">
+                      <strong>mate-frontend</strong>
+                      <span class="stone-badge" :class="matePlanApproved ? 'is-success' : ''">
+                        {{ matePlanApproved ? tt('已批准 · 写入中', '承認済 · 書込中', 'APPROVED · WRITING') : tt('等待计划审批 (只读门禁中)', '計画承認待ち (読取専用ゲート)', 'AWAITING PLAN APPROVAL') }}
+                      </span>
+                    </div>
+                    <div class="stone-mate-wt">Worktree: <code>.hyn_wt/mate-frontend</code></div>
+                    <p class="stone-mate-desc">{{ tt('安全门禁：计划未获批准前强制剥离写盘与执行命令权限，防止越权改乱代码。', '安全ゲート：計画承認前は書込・コマンド権限を剥奪し、勝手な変更を防止。', 'Safety Gate: Mutating tools are stripped until plan is approved.') }}</p>
+                    <button
+                      type="button"
+                      class="stone-approve-btn"
+                      @click="matePlanApproved = !matePlanApproved"
+                    >
+                      {{ matePlanApproved ? tt('✓ 已解锁 Worktree 写入权限（点击可重置）', '✓ Worktree 書込解禁済み（クリックでリセット）', '✓ Worktree Writes Unlocked (Click to reset)') : tt('批准队友重构计划（解锁 Worktree 写入权限）', 'メイトの計画を承認（Worktree 書込を解禁）', 'Approve Teammate Plan (Unlock Worktree Writes)') }}
+                    </button>
+                  </div>
+
+                  <div class="stone-mate-card">
+                    <div class="stone-mate-top">
+                      <strong>mate-sec-test</strong>
+                      <span class="stone-badge is-success">COMPLETED</span>
+                    </div>
+                    <div class="stone-mate-wt">Worktree: <code>.hyn_wt/mate-sec-test</code></div>
+                    <p class="stone-mate-desc">{{ tt('验证 full_auto 模式下越出工作区与高危系统指令 100% 硬拒绝。', 'full_auto 時のワークスペース外アクセス・危険コマンド100%拒否を検証。', 'Verified 100% hard-deny for out-of-workspace & system commands.') }}</p>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- 底部贴边白书写条（遵循石澜五处锁死之四） -->
+          <footer class="stone-composer-band">
+            <div class="stone-composer-inner">
+              <div class="stone-composer-input-mock">
+                {{ tt('输入后续指令，或在右侧预览画布划取任意段落/单元格触发 AI 局部修改…', '指示を入力、または右プレビューで範囲選択して AI 部分修正を実行…', 'Enter instructions, or select any paragraph/cell on the right canvas for in-place AI edit...') }}
+              </div>
+              <div class="stone-composer-toolbar">
+                <span class="stone-toolbar-pill">
+                  <span class="stone-dot-green"></span>
+                  Ollama · qwen2.5-coder:32b (127.0.0.1)
+                </span>
+
+                <div class="stone-toolbar-spacer"></div>
+
+                <!-- 4 档权限实时切换器 -->
+                <div class="stone-pop-anchor">
+                  <button
+                    type="button"
+                    class="stone-perm-btn"
+                    :class="{ 'is-danger': permMode === 'full_auto', 'is-accent': permMode === 'ask_all' }"
+                    @click="showPermMenu = !showPermMenu; showContextPopover = false"
+                  >
+                    <span>{{ currentPermObj.code }} · {{ currentPermObj.label }}</span>
+                    <span>▴</span>
+                  </button>
+                  <div v-if="showPermMenu" class="stone-popover">
+                    <div class="stone-popover-title">{{ tt('4 档实时权限（切换后立即在下一次工具调用生效）', '4段階リアルタイム権限（次のツール呼出から即時反映）', '4-Tier Live Permission Mode') }}</div>
+                    <div
+                      v-for="item in permOptions"
+                      :key="item.id"
+                      class="stone-perm-opt"
+                      :class="{ 'is-selected': permMode === item.id }"
+                      @click="changePermMode(item.id)"
+                    >
+                      <div class="stone-perm-opt-name">{{ item.code }} — {{ item.label }}</div>
+                      <div class="stone-perm-opt-desc">{{ item.desc }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 上下文预算圆环 -->
+                <div class="stone-pop-anchor">
+                  <button
+                    type="button"
+                    class="stone-ring-btn"
+                    @click="showContextPopover = !showContextPopover; showPermMenu = false"
+                  >
+                    <span class="stone-ring-circle"></span>
+                    <span>24% · 31k/128k</span>
+                  </button>
+                  <div v-if="showContextPopover" class="stone-popover">
+                    <div class="stone-popover-title">{{ tt('长程预算与 Prefix Cache 监控', '長時間バジェット＆キャッシュ監視', 'Long-Horizon Budget & Cache') }}</div>
+                    <div class="stone-ring-row"><span>Token Budget:</span> <strong>31,240 / 128,000 (24%)</strong></div>
+                    <div class="stone-ring-row"><span>Time Budget:</span> <strong>26m / 240m</strong></div>
+                    <div class="stone-ring-row"><span>Prefix Cache:</span> <strong class="is-green">94.2% Hit (Frozen Snapshot)</strong></div>
+                    <div class="stone-ring-row"><span>Progress Notes:</span> <strong>1,420 / 8,000 chars</strong></div>
+                  </div>
+                </div>
+
+                <button type="button" class="stone-send-btn">
+                  {{ tt('发送', '送信', 'Send') }}
+                </button>
+              </div>
+            </div>
+          </footer>
+        </main>
+
+        <!-- 3. 右侧高保真预览与检查点工作台 (380px) -->
+        <aside v-if="showWorkbench" class="stone-workbench">
+          <template v-if="activeScenario === 'longrun'">
+            <div class="stone-wb-header">
+              <span class="stone-wb-title">{{ tt('影子 Git 检查点 (Shadow Checkpoints)', 'シャドウGitチェックポイント', 'Shadow Git Checkpoints') }}</span>
+              <span class="stone-badge">ZERO HEAD POLLUTION</span>
+            </div>
+            <div class="stone-wb-body">
+              <div class="stone-cp-tabs">
+                <button
+                  v-for="(cp, idx) in checkpoints"
+                  :key="cp.id"
+                  type="button"
+                  class="stone-cp-tab"
+                  :class="{ 'is-active': selectedCheckpointIdx === idx }"
+                  @click="selectedCheckpointIdx = idx"
+                >
+                  <div class="stone-cp-tab-top">
+                    <strong>{{ cp.id }} · {{ cp.step }}</strong>
+                    <span>{{ cp.time }}</span>
+                  </div>
+                  <div class="stone-cp-tab-sub">{{ cp.summary }}</div>
+                </button>
+              </div>
+              <div class="stone-cp-detail">
+                <div class="stone-cp-ref">{{ checkpoints[selectedCheckpointIdx].ref }}</div>
+                <pre class="stone-cp-diff">{{ checkpoints[selectedCheckpointIdx].diff }}</pre>
+                <div class="stone-cp-note">
                   {{ tt(
-                    '已完成流式重试回滚（stream_reset）与二阶卡死自省（StuckDetector L2）改造，86 项单元测试全部通过，会话进度笔记已归档。',
-                    'ストリーム再試行時のリセット（stream_reset）および2段階スタック検知（StuckDetector L2）の実装が完了し、全86件の単体テスト通過を確認しました。',
-                    'Completed stream_reset retry rollback and StuckDetector L2 retrospective injection. All 86 unit tests passed.'
+                    '底层机制：使用临时 GIT_INDEX_FILE + git commit-tree 写入私有引用 refs/hyn/checkpoints/，100% 不触碰您的工作分支与暂存区。',
+                    '内部機構：一時 GIT_INDEX_FILE と git commit-tree により専用refへ記録。作業ブランチやステージング領域を一切汚しません。',
+                    'Mechanism: Uses temporary GIT_INDEX_FILE + git commit-tree into private refs without touching user HEAD or staging area.'
                   ) }}
                 </div>
               </div>
             </div>
           </template>
 
-          <!-- ==================== 场景 2：高保真文档工作台 & 划取 AI 修改 ==================== -->
-          <template v-else-if="activeScenario === 'workbench'">
-            <div class="stone-user-msg">
-              {{ tt(
-                '结合本地 RAGFlow 知识库里的《企业安全合规规范》，生成一份架构评审 PPT，并把第 2 页的核心结论精简为 3 条量化指标。',
-                'ローカル RAGFlow ナレッジベースの『社内セキュリティ準拠規約』を参照し、アーキテクチャ審査用PPTを作成してください。また2ページ目の結論を3つの定量指標に要約してください。',
-                'Using the local RAGFlow security compliance knowledge base, generate an Architecture Review PPTX and refine Slide 2 into 3 quantitative metrics.'
-              ) }}
-            </div>
-
-            <div class="stone-assistant-block">
-              <div class="stone-tool-card">
-                <div class="stone-tool-head">
-                  <span class="stone-tool-icon">🔍</span>
-                  <span class="stone-tool-name">knowledge_search · <code>dataset="sec_compliance_jp"</code></span>
-                  <span class="stone-tool-Status is-ok">{{ tt('命中 4 条本地证据链', 'ローカル根拠 4件ヒット', '4 Local Evidences') }}</span>
-                </div>
-              </div>
-
-              <!-- 选区胶囊提示 -->
-              <div class="stone-selection-chip-bar">
-                <span class="stone-sel-chip">
-                  🎯 <code>架构评审汇报_2026.pptx</code> · {{ tt('第 2 页 · 标题与正文文本框 (Shape 104)', 'スライド 2 · テキストボックス (Shape 104)', 'Slide 2 · Shape 104') }}
-                </span>
-              </div>
-
-              <div class="stone-tool-card">
-                <div class="stone-tool-head">
-                  <span class="stone-tool-icon">✨</span>
-                  <span class="stone-tool-name">patch_file_selection · <code>slide_index=2, shape_id=104</code></span>
-                  <span class="stone-tool-Status is-ok">{{ tt('SSE 原地热更新完成', 'SSE インプレース更新完了', 'In-place SSE Hot-Reloaded') }}</span>
-                </div>
-              </div>
-
-              <!-- 最终交付产物卡片（ArtifactCardList，自动过滤中间 .py 脚本） -->
-              <div class="stone-artifact-card" @click="showWorkbench = true">
-                <div class="stone-artifact-icon">📊</div>
-                <div class="stone-artifact-info">
-                  <div class="stone-artifact-name">架构评审汇报_2026.pptx</div>
-                  <div class="stone-artifact-meta">{{ tt('最终交付产物（已自动过滤中间生成脚本 · 点击在右侧预览与编辑）', '最終成果物（中間スクリプトを自動除外 · 右パネルで直接編集可能）', 'Final Deliverable (Intermediate scripts filtered · Click to edit on right)') }}</div>
-                </div>
-                <span class="stone-badge is-success">{{ tt('预览中', 'プレビュー中', 'Previewing') }}</span>
-              </div>
-            </div>
-          </template>
-
-          <!-- ==================== 场景 3：Git Worktree 多智能体团队 ==================== -->
           <template v-else>
-            <div class="stone-user-msg">
-              {{ tt(
-                '启动团队模式：分配 3 名常驻队友分别在独立 Git Worktree 下并行完成「后端权限接口」、「前端 PermissionModeButton 组件」与「边界安全测试」。',
-                'チームモードを起動：3名の常駐メイトをそれぞれ独立した Git Worktree に割り当て、「バックエンド権限API」「フロントエンドボタン」「境界セキュリティテスト」を並列実装してください。',
-                'Launch Team Mode: assign 3 resident teammates in isolated Git Worktrees to build Backend Permission API, Frontend Button, and Security Boundary Tests in parallel.'
-              ) }}
+            <div class="stone-wb-header">
+              <span class="stone-wb-title">架构评审汇报_2026.pptx</span>
+              <span class="stone-badge is-success">SNAPSHOT v3/5</span>
+            </div>
+            <div class="stone-wps-bar">
+              <span class="stone-wps-item">Yu Gothic UI ▾</span>
+              <span class="stone-wps-item">16pt ▾</span>
+              <span class="stone-wps-item"><b>B</b></span>
+              <span class="stone-wps-item"><i>I</i></span>
+              <span class="stone-wps-item"><u>U</u></span>
+              <span class="stone-wps-spacer"></span>
+              <button type="button" class="stone-wps-ai-btn" @click="triggerAiSelectionPatch">
+                {{ aiPatchApplied ? tt('撤销 AI 修改', '元に戻す', 'Undo Patch') : tt('点击触发「AI 局部热修改」', 'クリックして「AI部分修正」を実行', 'Click to Run AI In-Place Patch') }}
+              </button>
             </div>
 
-            <div class="stone-assistant-block">
-              <div class="stone-team-grid">
-                <div class="stone-mate-card">
-                  <div class="stone-mate-top">
-                    <strong>👤 mate-backend</strong>
-                    <span class="stone-badge is-success">{{ tt('运行中', '実行中', 'Running') }}</span>
-                  </div>
-                  <div class="stone-mate-wt">🌿 Worktree: <code>.hyn_wt/mate-backend</code></div>
-                  <p class="stone-mate-desc">{{ tt('已完成 permission_mode.py 与 PATCH /sessions/{id} 实时广播。', 'permission_mode.py と PATCH /sessions/{id} 実装完了。', 'Implemented permission_mode.py & live session PATCH.') }}</p>
+            <div class="stone-wb-body">
+              <div class="stone-ppt-canvas">
+                <div class="stone-ppt-slide-tag">SLIDE 02 / 12 · SECURITY & RELIABILITY METRICS</div>
+                <div class="stone-ppt-h1">
+                  {{ tt('全本地离线架构与长程自治可靠性指标', '完全ローカル構成と長時間自律稼働の信頼性指標', '100% Local Architecture & Long-Horizon Reliability') }}
                 </div>
 
-                <div class="stone-mate-card">
-                  <div class="stone-mate-top">
-                    <strong>👤 mate-frontend</strong>
-                    <span class="stone-badge" :class="matePlanApproved ? 'is-success' : ''">
-                      {{ matePlanApproved ? tt('计划已批 · 写入中', '承認済 · 書込中', 'Approved · Writing') : tt('等待批准计划', '計画承認待ち', 'Awaiting Plan Approval') }}
-                    </span>
+                <div class="stone-ppt-shape" :class="{ 'is-patched': aiPatchApplied }" @click="triggerAiSelectionPatch">
+                  <div class="stone-floating-popover">
+                    {{ aiPatchApplied ? tt('✓ SSE 原地热替换已完成 (点击切换)', '✓ SSE インプレース更新完了', '✓ SSE Hot-Reloaded') : tt('AI 修改 (Ctrl+L · 点击此处体验)', 'AI修正 (Ctrl+L · ここをクリック)', 'AI Edit (Ctrl+L · Click here)') }}
                   </div>
-                  <div class="stone-mate-wt">🌿 Worktree: <code>.hyn_wt/mate-frontend</code></div>
-                  <p class="stone-mate-desc">{{ tt('计划在计划获批前仅允许只读探测，防止队友越权改乱工作区。', '計画承認前は読取専用に制限（勝手なファイル変更を防止）。', 'Read-only until plan is approved by Lead/User.') }}</p>
-                  <button
-                    type="button"
-                    class="stone-approve-btn"
-                    @click="matePlanApproved = !matePlanApproved"
-                  >
-                    {{ matePlanApproved ? tt('✓ 已批准写盘权限（点击可重置）', '✓ 書込許可済み（クリックでリセット）', '✓ Write Approved (Click to reset)') : tt('🛡️ 批准队友重构计划（解锁 Worktree 写入）', '🛡️ メイトの計画を承認（Worktree 書込を解禁）', '🛡️ Approve Teammate Plan (Unlock Writes)') }}
-                  </button>
-                </div>
 
-                <div class="stone-mate-card">
-                  <div class="stone-mate-top">
-                    <strong>👤 mate-sec-test</strong>
-                    <span class="stone-badge is-success">{{ tt('已完成', '完了', 'Completed') }}</span>
-                  </div>
-                  <div class="stone-mate-wt">🌿 Worktree: <code>.hyn_wt/mate-sec-test</code></div>
-                  <p class="stone-mate-desc">{{ tt('验证 full_auto 模式下越出工作区与高危系统指令 100% 硬拒绝。', 'full_auto 時のワークスペース外操作・危険コマンド100%拒否を検証。', 'Verified 100% hard-deny for out-of-workspace & system commands.') }}</p>
+                  <template v-if="!aiPatchApplied">
+                    <p class="stone-ppt-raw">
+                      {{ tt(
+                        '【修改前草稿】本系统支持连接本地 Ollama 与企业内网大模型，所有对话、记忆和知识库都在本地处理，同时通过 TurnHub 与影子检查点保障数小时运行不丢失进度。',
+                        '【修正前の下書き】本システムはローカル Ollama や社内LANモデルに接続可能で、会話・メモリ・知識ベースをすべてローカルで処理し、TurnHub とシャドウチェックポイントで長時間稼働を実現します。',
+                        '[Draft Before AI Edit] Connects to local Ollama and intranet LLMs, keeping all data local while using TurnHub and shadow checkpoints for long runs.'
+                      ) }}
+                    </p>
+                  </template>
+                  <template v-else>
+                    <ul class="stone-ppt-refined">
+                      <li><strong>0 Byte 外部通信</strong>：{{ tt('127.0.0.1 闭环运行，机密代码 100% 不出社内网', '127.0.0.1 完結、機密コード・文書の外部送信ゼロ', '127.0.0.1 loop, zero external code egress') }}</li>
+                      <li><strong>94.2% Prefix Cache 命中</strong>：{{ tt('会话冻结记忆快照 + 异步提取，大幅降低首字延迟', 'セッション凍結メモリスナップショットによりTTFTを短縮', 'Session-frozen memory snapshot preserves KV cache') }}</li>
+                      <li><strong>100% 无损状态回滚</strong>：{{ tt('TurnHub 单调 seq 重连 + 无侵入影子 Git 检查点', 'TurnHub 単調増加 seq 再接続 + 非侵襲シャドウGitチェックポイント', 'Monotonic seq replay + Shadow Git Checkpoints') }}</li>
+                    </ul>
+                  </template>
                 </div>
               </div>
             </div>
           </template>
-        </div>
-
-        <!-- 底部贴边白书写条（遵循石澜五处锁死之四：白带贴住主区底边，顶上一条分割线） -->
-        <footer class="stone-composer-band">
-          <div class="stone-composer-inner">
-            <div class="stone-composer-input-mock">
-              {{ tt('输入后续指令，或在右侧预览区用鼠标划取任意段落/单元格触发「✨ AI 修改」…', '指示を入力、または右プレビューで範囲選択して「✨ AI修正」を実行…', 'Type instructions, or select any paragraph/cell in the right preview to trigger "✨ AI Edit"...') }}
-            </div>
-            <div class="stone-composer-toolbar">
-              <!-- 模型选择器（展示 Ollama 本机离线与企业内网） -->
-              <span class="stone-toolbar-pill">
-                🟢 Ollama · qwen2.5-coder:32b (127.0.0.1)
-              </span>
-
-              <div class="stone-toolbar-spacer"></div>
-
-              <!-- 权限模式 4 档实时切换按钮（PermissionModeButton.js 复刻） -->
-              <div class="stone-pop-anchor">
-                <button
-                  type="button"
-                  class="stone-perm-btn"
-                  :class="{ 'is-danger': permMode === 'full_auto', 'is-accent': permMode === 'ask_all' }"
-                  @click="showPermMenu = !showPermMenu; showContextPopover = false"
-                >
-                  {{ currentPermObj.label }} ▴
-                </button>
-                <div v-if="showPermMenu" class="stone-popover stone-perm-popover">
-                  <div class="stone-popover-title">{{ tt('会话权限模式（运行中切换立即在下一次工具调用生效）', '権限モード（実行中の切替も即座に次のツール呼出から反映）', 'Permission Mode (Live switch takes effect on next tool call)') }}</div>
-                  <div
-                    v-for="item in permOptions"
-                    :key="item.id"
-                    class="stone-perm-opt"
-                    :class="{ 'is-selected': permMode === item.id }"
-                    @click="changePermMode(item.id)"
-                  >
-                    <div class="stone-perm-opt-name">{{ item.label }}</div>
-                    <div class="stone-perm-opt-desc">{{ item.desc }}</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 上下文与时长预算圆环（ContextRing.js 复刻） -->
-              <div class="stone-pop-anchor">
-                <button
-                  type="button"
-                  class="stone-ring-btn"
-                  @click="showContextPopover = !showContextPopover; showPermMenu = false"
-                >
-                  <span class="stone-ring-circle"></span>
-                  <span>24% · 31k/128k</span>
-                </button>
-                <div v-if="showContextPopover" class="stone-popover stone-ring-popover">
-                  <div class="stone-popover-title">{{ tt('长程运行预算与记忆状态 (P1 + Memory)', '長時間実行バジェット＆メモリ状態', 'Long-Horizon Budget & Memory Status') }}</div>
-                  <div class="stone-ring-row"><span>Token Budget:</span> <strong>31,240 / 128,000 (24%)</strong></div>
-                  <div class="stone-ring-row"><span>Time Budget:</span> <strong>26m / 240m (Unattended)</strong></div>
-                  <div class="stone-ring-row"><span>Prefix Cache:</span> <strong class="is-green">Frozen Snapshot Hit (94%)</strong></div>
-                  <div class="stone-ring-row"><span>Progress Notes:</span> <strong>Active (1,420 / 8,000 chars)</strong></div>
-                </div>
-              </div>
-
-              <!-- 石澜靛蓝发送按钮 (#0f4c81) -->
-              <button type="button" class="stone-send-btn">
-                {{ tt('发送', '送信', 'Send') }}
-              </button>
-            </div>
-          </div>
-        </footer>
-      </main>
-
-      <!-- 右侧高保真预览与检查点工作台（PreviewWorkbench.js 复刻） -->
-      <aside v-if="showWorkbench" class="stone-workbench">
-        <!-- 场景 1 右侧：影子 Git 检查点与进度笔记面板 -->
-        <template v-if="activeScenario === 'longrun'">
-          <div class="stone-wb-header">
-            <span class="stone-wb-title">🌿 {{ tt('影子 Git 检查点 (Shadow Checkpoints)', 'シャドウGitチェックポイント', 'Shadow Git Checkpoints') }}</span>
-            <span class="stone-badge">{{ tt('零工作区污染', 'HEAD・Index 無変更', 'Zero HEAD Pollution') }}</span>
-          </div>
-          <div class="stone-wb-body">
-            <div class="stone-cp-tabs">
-              <button
-                v-for="(cp, idx) in checkpoints"
-                :key="cp.id"
-                type="button"
-                class="stone-cp-tab"
-                :class="{ 'is-active': selectedCheckpointIdx === idx }"
-                @click="selectedCheckpointIdx = idx"
-              >
-                <div><strong>{{ cp.id }} · {{ cp.step }}</strong> ({{ cp.time }})</div>
-                <div class="stone-cp-tab-sub">{{ cp.summary }}</div>
-              </button>
-            </div>
-            <div class="stone-cp-detail">
-              <div class="stone-cp-ref">{{ checkpoints[selectedCheckpointIdx].ref }}</div>
-              <pre class="stone-cp-diff">{{ checkpoints[selectedCheckpointIdx].diff }}</pre>
-              <div class="stone-cp-note">
-                💡 {{ tt(
-                  '原理：通过临时 GIT_INDEX_FILE + git commit-tree 写入私有引用，绝不改动用户当前分支与暂存区。',
-                  '仕組み：一時 GIT_INDEX_FILE と git commit-tree で専用refに記録。作業中ブランチを一切汚しません。',
-                  'Mechanism: Uses temporary GIT_INDEX_FILE + git commit-tree into private refs without touching user HEAD.'
-                ) }}
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <!-- 场景 2 & 3 右侧：WPS 级高保真文档预览工作台 + 划取 AI 修改 -->
-        <template v-else>
-          <div class="stone-wb-header">
-            <span class="stone-wb-title">📊 架构评审汇报_2026.pptx</span>
-            <span class="stone-badge is-success">{{ tt('历史快照 v3/5', 'スナップショット v3/5', 'Snapshot v3/5') }}</span>
-          </div>
-          <!-- WPS 级格式工具栏（WpsFormatToolbar.js 复刻） -->
-          <div class="stone-wps-bar">
-            <span class="stone-wps-item">Yu Gothic UI ▾</span>
-            <span class="stone-wps-item">18px ▾</span>
-            <span class="stone-wps-item"><b>B</b></span>
-            <span class="stone-wps-item"><i>I</i></span>
-            <span class="stone-wps-item"><u>U</u></span>
-            <span class="stone-wps-item">🎨 #0f4c81</span>
-            <span class="stone-wps-spacer"></span>
-            <button type="button" class="stone-wps-ai-btn" @click="triggerAiSelectionPatch">
-              ✨ {{ aiPatchApplied ? tt('撤销本次 AI 修改', 'AI修正を元に戻す', 'Undo AI Edit') : tt('点此体验「✨ AI 局部修改」', 'クリックして「✨ AI部分修正」を体験', 'Click to Try "✨ AI In-Place Edit"') }}
-            </button>
-          </div>
-
-          <div class="stone-wb-body">
-            <!-- 16:9 PPT 画布预览 -->
-            <div class="stone-ppt-canvas">
-              <div class="stone-ppt-slide-tag">Slide 02 / 12 · Architecture & Security</div>
-              <div class="stone-ppt-h1">
-                {{ tt('全本地离线架构与长程自治可靠性指标', '完全ローカル構成と長時間自律稼働の信頼性指標', '100% Local Architecture & Long-Horizon Reliability') }}
-              </div>
-
-              <!-- 鼠标划取锚点区域（带右上角浮窗按钮 AiSelectionPopover） -->
-              <div class="stone-ppt-shape" :class="{ 'is-patched': aiPatchApplied }" @click="triggerAiSelectionPatch">
-                <div class="stone-floating-popover">
-                  ✨ {{ aiPatchApplied ? tt('已通过 SSE 原地热替换 (点击切换)', 'SSE インプレース更新完了', 'SSE Hot-Reloaded') : tt('✨ AI 修改 (Ctrl+L · 点击我)', '✨ AI修正 (Ctrl+L · クリック)', '✨ AI Edit (Ctrl+L · Click me)') }}
-                </div>
-
-                <template v-if="!aiPatchApplied">
-                  <p class="stone-ppt-raw">
-                    {{ tt(
-                      '【修改前草稿】本系统支持连接本地 Ollama 与企业内网大模型，所有对话、记忆和知识库都在本地处理，同时通过 TurnHub 与影子检查点保障数小时运行不丢失进度。',
-                      '【修正前の下書き】本システムはローカル Ollama や社内LANモデルに接続可能で、会話・メモリ・知識ベースをすべてローカルで処理し、TurnHub とシャドウチェックポイントで長時間稼働を実現します。',
-                      '[Draft Before AI Edit] Connects to local Ollama and intranet LLMs, keeping all data local while using TurnHub and shadow checkpoints for long runs.'
-                    ) }}
-                  </p>
-                </template>
-                <template v-else>
-                  <ul class="stone-ppt-refined">
-                    <li><strong>0 外部通信 (Zero Egress)</strong>：{{ tt('127.0.0.1 原生闭环，源码与文档 100% 不出社内网络', '127.0.0.1 完結、機密コード・文書の外部送信ゼロ', '127.0.0.1 loop, zero external code leakage') }}</li>
-                    <li><strong>94% Prefix Cache 命中率</strong>：{{ tt('会话级冻结记忆快照 + 异步提取队列，大幅降低长任务首字延迟', 'セッション凍結メモリスナップショットによりTTFTを大幅短縮', 'Session-frozen memory snapshot preserves LLM prefix cache') }}</li>
-                    <li><strong>100% 状态可回滚</strong>：{{ tt('TurnHub 单调 seq 流式重连 + 无侵入影子 Git 检查点', 'TurnHub 単調増加 seq 再接続 + 非侵襲シャドウGitチェックポイント', 'Monotonic seq replay + non-invasive Shadow Git Checkpoints') }}</li>
-                  </ul>
-                </template>
-              </div>
-            </div>
-          </div>
-        </template>
-      </aside>
+        </aside>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.pg-wrapper {
-  margin: 24px 0;
-  border: 1px solid var(--border-subtle);
+.pg-frame {
+  width: 100%;
+  margin: 20px 0;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   background: #ffffff;
   overflow: hidden;
 }
 
-.pg-scenario-bar {
+.pg-frame.is-standalone {
+  margin: 0;
+}
+
+/* 顶部建筑感控制栏 */
+.pg-control-deck {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
-  padding: 12px 16px;
-  background: var(--bg-hover);
+  padding: 12px 18px;
+  background: #ffffff;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.pg-scenario-title {
+.pg-deck-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 650;
-  color: var(--text-primary);
+  flex-wrap: wrap;
+  gap: 14px;
 }
 
-.pg-live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--status-success);
+.pg-deck-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
 }
 
-.pg-scenario-tabs {
+.pg-scenario-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.pg-tab-btn {
-  padding: 5px 12px;
+.pg-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
-  background: #ffffff;
+  background: var(--bg-hover);
   color: var(--text-secondary);
   cursor: pointer;
+  transition: all 150ms ease;
 }
 
-.pg-tab-btn.is-active {
+.pg-pill-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.pg-pill-btn.is-active {
   background: var(--bg-selected);
   color: var(--accent);
   border-color: var(--accent);
   font-weight: 650;
 }
 
-/* 石澜桌面客户端主容器 */
-.stone-window {
+.pg-pill-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.pg-autoplay-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 650;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent);
+  background: #ffffff;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.pg-autoplay-btn.is-playing {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.pg-play-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* 桌面窗口顶栏 */
+.pg-window-titlebar {
   display: flex;
-  min-height: 540px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: #f2f4f8;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 11.5px;
+}
+
+.pg-win-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.pg-win-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #cbd2df;
+}
+
+.pg-win-caption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.pg-win-caption code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.pg-win-badge {
+  padding: 1px 6px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  border-radius: 3px;
+  background: var(--status-success-bg);
+  color: var(--status-success);
+}
+
+.pg-win-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* 视口横向保护容器：确保在窄屏下可平滑横向浏览而不挤压变形三栏桌面布局 */
+.pg-viewport-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.stone-window {
+  display: grid;
+  grid-template-columns: 232px minmax(440px, 1fr) auto;
+  min-width: 980px;
+  min-height: 550px;
   background: var(--bg-app);
   color: var(--text-primary);
   font-size: 13px;
 }
 
-/* 左侧 260px 白侧栏 */
+/* 左侧 232px 白侧栏 */
 .stone-sidebar {
-  width: 240px;
-  flex: none;
   display: flex;
   flex-direction: column;
   background: var(--bg-sidebar);
@@ -681,7 +877,7 @@ Ran 86 tests in 1.842s — OK</pre>
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 14px 12px;
+  padding: 18px 16px 12px;
 }
 
 .stone-mark {
@@ -710,26 +906,29 @@ Ran 86 tests in 1.842s — OK</pre>
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 4px 8px;
+  padding: 4px 10px;
 }
 
 .stone-nav-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 30px;
-  padding: 0 8px;
+  gap: 9px;
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 12.5px;
+  text-align: left;
 }
 
 .stone-nav-item:hover {
   background: var(--bg-hover);
 }
 
-/* 遵循石澜规范：选中态浅底 #e6eef8 + 靛蓝字 #0f4c81 + 圆角 6，无左竖条 */
 .stone-nav-item.is-active {
   background: var(--bg-selected);
   color: var(--accent);
@@ -740,15 +939,18 @@ Ran 86 tests in 1.842s — OK</pre>
   margin-left: auto;
   padding: 0 6px;
   font-size: 11px;
+  font-family: var(--font-mono);
   border-radius: 4px;
   background: var(--bg-selected-strong);
   color: var(--accent);
 }
 
 .stone-recent-header {
-  padding: 12px 14px 4px;
-  font-size: 11px;
-  font-weight: 650;
+  padding: 14px 16px 6px;
+  font-size: 10.5px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--text-tertiary);
 }
 
@@ -756,12 +958,12 @@ Ran 86 tests in 1.842s — OK</pre>
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 0 8px;
+  padding: 0 10px;
   flex: 1;
 }
 
 .stone-recent-item {
-  padding: 6px 8px;
+  padding: 7px 10px;
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
@@ -788,6 +990,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-recent-meta {
+  margin-top: 2px;
   font-size: 11px;
   color: var(--text-tertiary);
   font-family: var(--font-mono);
@@ -796,34 +999,30 @@ Ran 86 tests in 1.842s — OK</pre>
 .stone-sidebar-footer {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 10px 14px;
   border-top: 1px solid var(--border-subtle);
-  font-size: 11px;
+  font-size: 11.5px;
 }
 
-.stone-status-pill {
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-weight: 650;
-}
-
-.stone-status-pill.is-ok {
-  background: var(--status-success-bg);
-  color: var(--status-success);
+.stone-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-success);
+  flex: none;
 }
 
 .stone-footer-text {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
+  font-size: 11.5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* 中间石底主舞台 (#e4e8f0) */
+/* 中间石底主舞台 */
 .stone-main {
-  flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -834,7 +1033,8 @@ Ran 86 tests in 1.842s — OK</pre>
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  gap: 12px;
+  padding: 11px 20px;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-app);
 }
@@ -861,7 +1061,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-mini-btn {
-  padding: 3px 10px;
+  padding: 4px 10px;
   font-size: 11.5px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
@@ -872,21 +1072,21 @@ Ran 86 tests in 1.842s — OK</pre>
 
 .stone-chat-scroll {
   flex: 1;
-  padding: 16px 20px;
+  padding: 20px 24px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* 用户消息左细线，助手正文直接落在石底上 */
 .stone-user-msg {
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: #ffffff;
   border-left: 3px solid var(--accent);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-size: 13px;
+  line-height: 1.55;
 }
 
 .stone-assistant-block {
@@ -896,27 +1096,44 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-thought-box {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-left: 2px solid var(--border-strong);
   color: var(--text-secondary);
   font-size: 12px;
 }
 
-.stone-thought-box p {
-  margin: 4px 0 0;
-  line-height: 1.5;
+.stone-thought-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .stone-thought-label {
-  font-weight: 650;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--text-tertiary);
+}
+
+.stone-thought-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.stone-thought-box p {
+  margin: 0;
+  line-height: 1.55;
 }
 
 .stone-tool-card {
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
+  padding: 9px 12px;
   cursor: pointer;
 }
 
@@ -928,6 +1145,17 @@ Ran 86 tests in 1.842s — OK</pre>
   font-size: 12px;
 }
 
+.stone-tool-badge {
+  padding: 1px 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  color: var(--text-secondary);
+}
+
 .stone-tool-name {
   font-weight: 600;
   color: var(--text-primary);
@@ -935,25 +1163,27 @@ Ran 86 tests in 1.842s — OK</pre>
 
 .stone-auto-tag {
   padding: 1px 6px;
-  font-size: 11px;
-  border-radius: 4px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  border-radius: 3px;
   background: var(--bg-selected);
   color: var(--accent);
 }
 
-.stone-tool-Status {
+.stone-tool-status {
   margin-left: auto;
   font-size: 11px;
+  font-family: var(--font-mono);
   font-weight: 650;
 }
 
-.stone-tool-Status.is-ok {
+.stone-tool-status.is-ok {
   color: var(--status-success);
 }
 
 .stone-tool-code {
   margin: 8px 0 0;
-  padding: 8px;
+  padding: 8px 10px;
   background: var(--bg-code);
   border-radius: 4px;
   font-size: 11px;
@@ -963,7 +1193,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-checkpoint-banner {
-  padding: 6px 10px;
+  padding: 8px 12px;
   background: var(--bg-selected);
   border: 1px solid var(--bg-selected-strong);
   border-radius: var(--radius-sm);
@@ -976,7 +1206,7 @@ Ran 86 tests in 1.842s — OK</pre>
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 12px 14px;
 }
 
 .stone-completion-head {
@@ -995,6 +1225,7 @@ Ran 86 tests in 1.842s — OK</pre>
 .stone-completion-body {
   font-size: 12.5px;
   color: var(--text-secondary);
+  line-height: 1.55;
 }
 
 .stone-selection-chip-bar {
@@ -1008,7 +1239,8 @@ Ran 86 tests in 1.842s — OK</pre>
   color: var(--accent);
   border: 1px solid var(--bg-selected-strong);
   border-radius: var(--radius-sm);
-  font-size: 12px;
+  font-size: 11.5px;
+  font-family: var(--font-mono);
   font-weight: 600;
 }
 
@@ -1016,15 +1248,21 @@ Ran 86 tests in 1.842s — OK</pre>
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
+  padding: 12px 14px;
   background: #ffffff;
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
-.stone-artifact-icon {
-  font-size: 22px;
+.stone-artifact-badge {
+  padding: 6px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--bg-selected);
+  color: var(--accent);
+  border-radius: 4px;
 }
 
 .stone-artifact-info {
@@ -1041,7 +1279,6 @@ Ran 86 tests in 1.842s — OK</pre>
   color: var(--text-tertiary);
 }
 
-/* 场景 3 团队网格 */
 .stone-team-grid {
   display: flex;
   flex-direction: column;
@@ -1052,13 +1289,15 @@ Ran 86 tests in 1.842s — OK</pre>
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 10px 14px;
 }
 
 .stone-mate-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 12px;
 }
 
 .stone-mate-wt {
@@ -1076,7 +1315,7 @@ Ran 86 tests in 1.842s — OK</pre>
 
 .stone-approve-btn {
   margin-top: 8px;
-  padding: 5px 10px;
+  padding: 5px 12px;
   font-size: 12px;
   font-weight: 650;
   border-radius: var(--radius-sm);
@@ -1086,15 +1325,15 @@ Ran 86 tests in 1.842s — OK</pre>
   cursor: pointer;
 }
 
-/* 底部贴边白书写条（遵循石澜五处锁死之四） */
+/* 底部贴边白书写条 */
 .stone-composer-band {
   background: #ffffff;
   border-top: 1px solid var(--border-subtle);
-  padding: 10px 16px;
+  padding: 10px 20px;
 }
 
 .stone-composer-inner {
-  max-width: 640px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
@@ -1112,12 +1351,23 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-toolbar-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11.5px;
   font-family: var(--font-mono);
   padding: 3px 8px;
   background: var(--bg-hover);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
+}
+
+.stone-dot-green {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-success);
 }
 
 .stone-toolbar-spacer {
@@ -1132,10 +1382,11 @@ Ran 86 tests in 1.842s — OK</pre>
 .stone-ring-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   height: 28px;
-  padding: 0 8px;
-  font-size: 11.5px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-family: var(--font-mono);
   font-weight: 600;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
@@ -1166,7 +1417,7 @@ Ran 86 tests in 1.842s — OK</pre>
   position: absolute;
   bottom: 34px;
   right: 0;
-  width: 280px;
+  width: 290px;
   background: #ffffff;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
@@ -1198,7 +1449,8 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-perm-opt-name {
-  font-size: 12px;
+  font-size: 11.5px;
+  font-family: var(--font-mono);
   font-weight: 650;
   color: var(--text-primary);
 }
@@ -1219,9 +1471,8 @@ Ran 86 tests in 1.842s — OK</pre>
   color: var(--status-success);
 }
 
-/* 发送按钮锁死靛蓝 #0f4c81、高 32、圆角 6 */
 .stone-send-btn {
-  height: 30px;
+  height: 28px;
   padding: 0 14px;
   border-radius: var(--radius-sm);
   border: none;
@@ -1231,10 +1482,9 @@ Ran 86 tests in 1.842s — OK</pre>
   font-weight: 650;
 }
 
-/* 右侧高保真预览工作台 */
+/* 右侧高保真预览工作台 (380px) */
 .stone-workbench {
-  width: 340px;
-  flex: none;
+  width: 380px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
@@ -1245,7 +1495,7 @@ Ran 86 tests in 1.842s — OK</pre>
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 11px 14px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -1259,14 +1509,14 @@ Ran 86 tests in 1.842s — OK</pre>
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
-  padding: 6px 10px;
+  padding: 6px 12px;
   background: var(--bg-hover);
   border-bottom: 1px solid var(--border-subtle);
   font-size: 11px;
 }
 
 .stone-wps-item {
-  padding: 2px 5px;
+  padding: 2px 6px;
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
@@ -1277,7 +1527,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-wps-ai-btn {
-  padding: 3px 8px;
+  padding: 3px 9px;
   font-size: 11px;
   font-weight: 650;
   border-radius: 4px;
@@ -1289,7 +1539,7 @@ Ran 86 tests in 1.842s — OK</pre>
 
 .stone-wb-body {
   flex: 1;
-  padding: 12px;
+  padding: 14px;
   overflow-y: auto;
 }
 
@@ -1297,7 +1547,7 @@ Ran 86 tests in 1.842s — OK</pre>
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .stone-cp-tab {
@@ -1316,8 +1566,14 @@ Ran 86 tests in 1.842s — OK</pre>
   color: var(--accent);
 }
 
+.stone-cp-tab-top {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+}
+
 .stone-cp-tab-sub {
-  margin-top: 2px;
+  margin-top: 3px;
   color: var(--text-secondary);
 }
 
@@ -1329,7 +1585,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-cp-diff {
-  padding: 8px;
+  padding: 10px;
   background: var(--bg-code);
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
@@ -1340,22 +1596,23 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-cp-note {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 11.5px;
   color: var(--text-secondary);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .stone-ppt-canvas {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 12px;
+  padding: 14px;
   background: var(--bg-hover);
 }
 
 .stone-ppt-slide-tag {
-  font-size: 10.5px;
+  font-size: 10px;
   font-family: var(--font-mono);
+  letter-spacing: 0.05em;
   color: var(--text-tertiary);
 }
 
@@ -1363,30 +1620,31 @@ Ran 86 tests in 1.842s — OK</pre>
   font-size: 13.5px;
   font-weight: 700;
   color: var(--accent);
-  margin: 6px 0 10px;
+  margin: 6px 0 12px;
 }
 
 .stone-ppt-shape {
   position: relative;
-  padding: 26px 10px 10px;
+  padding: 28px 12px 12px;
   background: #ffffff;
-  border: 2px dashed var(--accent);
+  border: 1.5px dashed var(--accent);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background-color 200ms ease, border-color 200ms ease;
+  transition: all 180ms ease;
 }
 
 .stone-ppt-shape.is-patched {
   background: var(--status-success-bg);
-  border: 2px solid var(--status-success);
+  border: 1.5px solid var(--status-success);
 }
 
 .stone-floating-popover {
   position: absolute;
-  top: 4px;
+  top: 5px;
   right: 6px;
   padding: 2px 8px;
-  font-size: 11px;
+  font-size: 10.5px;
+  font-family: var(--font-mono);
   font-weight: 650;
   border-radius: 4px;
   background: var(--accent);
@@ -1401,7 +1659,7 @@ Ran 86 tests in 1.842s — OK</pre>
   margin: 0;
   font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .stone-ppt-refined {
@@ -1409,19 +1667,6 @@ Ran 86 tests in 1.842s — OK</pre>
   padding-left: 16px;
   font-size: 11.5px;
   color: var(--text-primary);
-  line-height: 1.55;
-}
-
-@media (max-width: 960px) {
-  .stone-window {
-    flex-direction: column;
-  }
-  .stone-sidebar,
-  .stone-workbench {
-    width: 100%;
-    border-right: none;
-    border-left: none;
-    border-bottom: 1px solid var(--border-subtle);
-  }
+  line-height: 1.6;
 }
 </style>
