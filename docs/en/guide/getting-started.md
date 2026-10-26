@@ -1,17 +1,17 @@
 ---
 title: Quick Start & Installation
-description: "Get started with HYN Agent in 3 minutes: zero-config startup, workspace binding, and 4-tier live permissions."
+description: "Get started with Helm in 3 minutes: zero-config startup, workspace binding, and 4-tier live permissions."
 ---
 
 # Quick Start & Installation
 
-HYN Agent combines an **Electron + Vue 3 frontend** with an **embedded Python 3.13 FastAPI local backend**. It runs out of the box after installation or extraction—no external Python setup or server deployment required.
+Helm combines an **Electron + Vue 3 frontend** with an **embedded Python 3.13 FastAPI local backend**. It runs out of the box after installation or extraction—no external Python setup or server deployment required.
 
 ## 1. Launch the Desktop Client
 
 Choose either distribution format from [Download & Security](/en/download):
-- **Standard Installer (`HYN-Agent-Setup.exe`)**: Creates desktop shortcuts and sets up an isolated data directory.
-- **Portable Edition (`HYN-Agent-Portable.zip`)**: Requires no admin rights and leaves zero registry footprint. Unzip and launch `hyn_agent.exe`.
+- **Standard Installer (`Helm-Setup.exe`)**: Creates desktop shortcuts and sets up an isolated data directory.
+- **Portable Edition (`Helm-Portable.zip`)**: Requires no admin rights and leaves zero registry footprint. Unzip and launch `hyn_agent.exe`.
 
 ## 2. Three Steps to Your First Autonomous Task
 
@@ -27,7 +27,7 @@ Open **Settings → Models** in the bottom-left sidebar:
 - **For frontier cloud models**: Supports DeepSeek, Kimi, Anthropic Claude, Google Gemini, and any OpenAI-compatible endpoint. API keys are stored strictly on local disk and automatically scrubbed from logs.
 
 ### Step 2: Bind a Local Workspace
-Click the workspace path beneath the top-left **HYN** mark to select your Git repository or document directory.
+Click the workspace path beneath the top-left **Helm** mark to select your Git repository or document directory.
 - When bound to a Git repo, **Shadow Git Checkpoints** are enabled automatically, creating non-invasive snapshots under `refs/hyn/checkpoints/<session_id>` without touching your `HEAD` or staging area.
 
 ### Step 3: Pick a Live Permission Mode

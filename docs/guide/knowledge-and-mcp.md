@@ -1,11 +1,11 @@
 ---
 title: 本地知识库与 MCP / Skills 扩展
-description: 在 HYN Agent 中连接 RAGFlow 本地知识库、挂载 MCP 工具服务器、加载 Skills 技能包与配置定时自动化任务。
+description: 在 Helm 中连接 RAGFlow 本地知识库、挂载 MCP 工具服务器、加载 Skills 技能包与配置定时自动化任务。
 ---
 
 # 本地知识库与 MCP / Skills 扩展
 
-HYN Agent 不仅能直接读写当前工作区文件，还具备完善的知识检索（RAG）与插件化扩展体系。
+Helm 不仅能直接读写当前工作区文件，还具备完善的知识检索（RAG）与插件化扩展体系。
 
 ## 1. 连接本地知识库（RAGFlow 证据链集成）
 

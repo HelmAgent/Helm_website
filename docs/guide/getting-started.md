@@ -1,20 +1,20 @@
 ---
 title: 快速开始与安装指南
-description: 3 分钟上手 HYN Agent：零配置启动、工作区绑定、4 档权限模式与数据存储隔离。
+description: 3 分钟上手 Helm：零配置启动、工作区绑定、4 档权限模式与数据存储隔离。
 ---
 
 # 快速开始与安装指南
 
-HYN Agent 采用 **Electron + Vue 3 前端 + 内嵌 Python 3.13 FastAPI 本地后端** 架构，安装或解压后即可直接运行，无需手动配置 Python 环境或搭建外部数据库。
+Helm 采用 **Electron + Vue 3 前端 + 内嵌 Python 3.13 FastAPI 本地后端** 架构，安装或解压后即可直接运行，无需手动配置 Python 环境或搭建外部数据库。
 
 ## 1. 获取并启动客户端
 
 你可以根据使用环境选择以下任一方式启动（详见 [下载与安全验证](/download)）：
-- **标准桌面安装版 (`HYN-Agent-Setup.exe`)**：双击安装，自动创建桌面快捷方式。
-- **免安装绿色版 (`HYN-Agent-Portable.zip`)**：无需管理员权限、不写注册表，解压至任意非系统目录双击 `hyn_agent.exe` 即可启动。
+- **标准桌面安装版 (`Helm-Setup.exe`)**：双击安装，自动创建桌面快捷方式。
+- **免安装绿色版 (`Helm-Portable.zip`)**：无需管理员权限、不写注册表，解压至任意非系统目录双击 `hyn_agent.exe` 即可启动。
 
 > [!TIP] 零 C 盘空间占用设计
-> HYN Agent 默认将所有会话记录、记忆库、文件历史快照与日志存储在程序父级目录的 `.hyn_agent` 文件夹中（你也可以在 **「设置 → 存储位置」** 中一键迁移至任意磁盘路径，通过 `.hyn_agent_location.json` 引导生效）。
+> Helm 默认将所有会话记录、记忆库、文件历史快照与日志存储在程序父级目录的 `.hyn_agent` 文件夹中（你也可以在 **「设置 → 存储位置」** 中一键迁移至任意磁盘路径，通过 `.hyn_agent_location.json` 引导生效）。
 
 ## 2. 三步完成首次任务
 
@@ -30,7 +30,7 @@ flowchart LR
 - **若使用云端前沿模型**：支持 DeepSeek、Kimi、Anthropic Claude、Google Gemini 及任意 OpenAI 兼容网关，API Key 仅保存在本机 JSON 中，且日志写盘前自动脱敏。
 
 ### 第二步：绑定本地工作区（Workspace）
-点击左侧栏顶部的 **「HYN」** 品牌标识下方的工作区路径，选择你要处理的本地 Git 代码仓库或文档目录。
+点击左侧栏顶部的 **「Helm」** 品牌标识下方的工作区路径，选择你要处理的本地 Git 代码仓库或文档目录。
 - 当工作区为 Git 仓库时，系统默认开启 **无侵入影子 Git 检查点（Shadow Git Checkpoints）**，在每批写文件工具完成后自动记录快照，且绝不污染你的当前分支与 `git status`。
 
 ### 第三步：选择会话权限档位并开始执行

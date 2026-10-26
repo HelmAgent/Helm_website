@@ -11,7 +11,7 @@ description: Prefix-cache-friendly session-frozen memory snapshots, async extrac
 
 ## 4.1 Solving the Three Classic Agent Memory Bottlenecks
 
-1. **Protecting LLM Prefix Cache (90%+ Hit Rate)**: Dynamically mutating the system prompt's memory block on every turn invalidates the LLM KV prefix cache. HYN Agent **freezes a recalled memory snapshot per session** at a fixed prompt offset and provides an on-demand `read_memory` tool for mid-session lookups.
+1. **Protecting LLM Prefix Cache (90%+ Hit Rate)**: Dynamically mutating the system prompt's memory block on every turn invalidates the LLM KV prefix cache. Helm **freezes a recalled memory snapshot per session** at a fixed prompt offset and provides an on-demand `read_memory` tool for mid-session lookups.
 2. **Non-Blocking Async Extraction Queue (`memory_queue.py`)**: Memory extraction runs asynchronously in the background after turn completion (and right before context compaction), adding zero latency to user replies.
 3. **Watermark Filtering & CJK Bigram Scoring (`memory_text.py`)**: Tracks per-session extraction watermarks, strips pseudo-messages (`[Scheduled]`, `[Team events]`) and bulky `tool_result` blocks, and uses **adjacent character bigram scoring** for accurate Chinese/Japanese keyword fallback without requiring a heavy external vector DB.
 

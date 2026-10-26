@@ -13,7 +13,7 @@ description: リード＆常駐チームメイト構造（team_runtime.py）、�
 
 大規模なフルスタック改修では、単一エージェントの逐次実行では時間がかかりすぎます。一方で、複数エージェントを同じディレクトリで並列実行すると、**ファイルの相互上書きや `.git/index.lock` の競合**が発生します。
 
-HYN Agent は、1セッションにつき最大4名の **常駐チームメイト（Resident Teammates, `_MAX_TEAMMATES = 4`）** を編成し、それぞれに独立した **Git Worktree** を割り当てるアーキテクチャを採用しています。
+Helm は、1セッションにつき最大4名の **常駐チームメイト（Resident Teammates, `_MAX_TEAMMATES = 4`）** を編成し、それぞれに独立した **Git Worktree** を割り当てるアーキテクチャを採用しています。
 
 ```mermaid
 sequenceDiagram

@@ -17,7 +17,7 @@ description: Prefix Cache ヒット率を90%以上に保つセッション凍結
 
 ---
 
-## 4.2 HYN Agent の非同期2層メモリアーキテクチャ
+## 4.2 Helm の非同期2層メモリアーキテクチャ
 
 ```mermaid
 flowchart LR

@@ -1,16 +1,16 @@
 ---
 title: 1. 总体架构与桌面端双进程设计
-description: 深入解析 HYN Agent 的 Electron 44 + Vue 3 + FastAPI (Python 3.13) 架构、全链路可观测性、优雅停机序列与密钥脱敏机制。
+description: 深入解析 Helm 的 Electron 44 + Vue 3 + FastAPI (Python 3.13) 架构、全链路可观测性、优雅停机序列与密钥脱敏机制。
 ---
 
 # 1. 总体架构与桌面端双进程设计
 
 > [!NOTE] 工程白皮书导读（致技术面试官）
-> 本系列共 5 篇工程架构文档，旨在向技术审阅者完整还原 **HYN Agent** 的源码级模块划分、状态机流转与工程边界处理。本文对应前端 `hyn_agent_frontend/main.js`、`src/i18n.js` 以及后端 `hyn_agent_backend/app/main.py`、`app/core/*`。
+> 本系列共 5 篇工程架构文档，旨在向技术审阅者完整还原 **Helm** 的源码级模块划分、状态机流转与工程边界处理。本文对应前端 `hyn_agent_frontend/main.js`、`src/i18n.js` 以及后端 `hyn_agent_backend/app/main.py`、`app/core/*`。
 
 ## 1.1 系统分层与进程拓扑
 
-HYN Agent 采用 **「Electron 主进程（壳与系统桥） + Vue 3 渲染进程（石澜工作台） + 本机 FastAPI 异步进程（Agent 核心运行时）」** 的三端解耦拓扑：
+Helm 采用 **「Electron 主进程（壳与系统桥） + Vue 3 渲染进程（石澜工作台） + 本机 FastAPI 异步进程（Agent 核心运行时）」** 的三端解耦拓扑：
 
 ```mermaid
 flowchart TB

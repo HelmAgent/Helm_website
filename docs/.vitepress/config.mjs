@@ -9,8 +9,8 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'HYN Agent',
-  description: '数据不出网、支持数小时无人值守的全本地自治型 Coding & Office Agent',
+  title: 'Helm',
+  description: 'Take the Helm of Long-Running Code & Docs. 执掌长周期代码与文档创作之舵。',
   cleanUrls: true,
   lastUpdated: true,
   head: [
@@ -22,11 +22,11 @@ export default defineConfig({
     root: {
       label: '简体中文',
       lang: 'zh-CN',
-      title: 'HYN Agent',
-      description: '数据不出网 · 数小时长程自治 · 多智能体协同的桌面端 Coding & Office Agent',
+      title: 'Helm',
+      description: '执掌长周期代码与文档创作之舵 · Take the Helm of Long-Running Code & Docs.',
       themeConfig: {
         logo: '/logo.svg',
-        siteTitle: 'HYN AGENT',
+        siteTitle: 'HELM',
         nav: [
           { text: '首页', link: '/' },
           { text: '在线交互沙盒', link: '/demo' },
@@ -86,8 +86,8 @@ export default defineConfig({
           text: '最后更新于'
         },
         footer: {
-          message: '遵循「石澜 (Stone)」工业设计规范 · 100% 本地可控 · 支持离线与企业内网私有部署',
-          copyright: 'Copyright © 2026 HYN Agent · 面向真实复杂工程与文档交付的桌面端智能体'
+          message: 'Take the Helm of Long-Running Code & Docs. · 执掌长周期代码与文档创作之舵',
+          copyright: 'Copyright © 2026 Helm · 数据 100% 本地可控的桌面端自治型 Coding & Office 智能体'
         }
       }
     },
@@ -96,11 +96,11 @@ export default defineConfig({
       label: '日本語',
       lang: 'ja-JP',
       link: '/ja/',
-      title: 'HYN Agent',
-      description: '機密コードを外部に送信しない、完全ローカル対応の自律型AIコーディング＆Officeエージェント',
+      title: 'Helm',
+      description: 'Take the Helm of Long-Running Code & Docs. · 機密コードを外部に送信しない自律型AIコーディング＆Officeエージェント',
       themeConfig: {
         logo: '/logo.svg',
-        siteTitle: 'HYN AGENT',
+        siteTitle: 'HELM',
         nav: [
           { text: 'ホーム', link: '/ja/' },
           { text: 'Web体験デモ (インストール不要)', link: '/ja/demo' },
@@ -160,8 +160,8 @@ export default defineConfig({
           text: '最終更新'
         },
         footer: {
-          message: '「石瀾 (Stone)」デザインシステム準拠 · 100% ローカル完結可能 · オフライン＆社内LAN対応',
-          copyright: 'Copyright © 2026 HYN Agent · エンタープライズ水準のセキュリティを備えたデスクトップAIエージェント'
+          message: 'Take the Helm of Long-Running Code & Docs. · 長時間稼働するコード開発とドキュメント制作の舵を取る',
+          copyright: 'Copyright © 2026 Helm · エンタープライズ水準のセキュリティを備えたデスクトップAIエージェント'
         }
       }
     },
@@ -170,11 +170,11 @@ export default defineConfig({
       label: 'English',
       lang: 'en-US',
       link: '/en/',
-      title: 'HYN Agent',
-      description: '100% Local-Capable, Long-Horizon Autonomous Desktop Coding & Office Agent',
+      title: 'Helm',
+      description: 'Take the Helm of Long-Running Code & Docs. · 100% Local-Capable Autonomous Desktop Coding & Office Agent',
       themeConfig: {
         logo: '/logo.svg',
-        siteTitle: 'HYN AGENT',
+        siteTitle: 'HELM',
         nav: [
           { text: 'Home', link: '/en/' },
           { text: 'Interactive Web Demo', link: '/en/demo' },
@@ -234,8 +234,8 @@ export default defineConfig({
           text: 'Last updated'
         },
         footer: {
-          message: 'Built with the Stone Design System · 100% Local-Capable · Offline & Enterprise LAN Ready',
-          copyright: 'Copyright © 2026 HYN Agent · Autonomous Desktop Coding & Office Agent'
+          message: 'Take the Helm of Long-Running Code & Docs. · Built with the Stone Design System',
+          copyright: 'Copyright © 2026 Helm · Autonomous Desktop Coding & Office Agent'
         }
       }
     }

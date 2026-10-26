@@ -1,6 +1,6 @@
 ---
 layout: page
-title: HYN Agent · 100% Local-Capable, Long-Horizon Desktop Coding & Office Agent
+title: Helm · Take the Helm of Long-Running Code & Docs.
 sidebar: false
 ---
 

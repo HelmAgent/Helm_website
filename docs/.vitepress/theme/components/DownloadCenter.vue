@@ -53,7 +53,7 @@ const auditSteps = computed(() => [
       'ダウンロード完了後、PowerShell で SHA-256 ハッシュ値を照合し、ファイルの完全性を確認します。クライアントには公式 Python 3.13 ランタイムが同梱されており、127.0.0.1:8001 のループバック通信のみで動作します。',
       'Verify binary integrity via PowerShell SHA-256. The client bundles an official Python 3.13 runtime communicating strictly over 127.0.0.1:8001.'
     ),
-    cmd: 'Get-FileHash .\\HYN-Agent-Setup-1.0.0.exe -Algorithm SHA256'
+    cmd: 'Get-FileHash .\\Helm-Setup-1.0.0.exe -Algorithm SHA256'
   },
   {
     step: 'AUDIT 02 // AIR-GAPPED EXECUTION',
@@ -87,15 +87,20 @@ const auditSteps = computed(() => [
     <div class="dl-container">
       <header class="dl-header">
         <div class="dl-header-left">
-          <div class="dl-kicker">DISTRIBUTION & SECURITY AUDIT // {{ SITE_META.version }} ({{ SITE_META.releaseDate }})</div>
-          <h1 class="dl-title">
-            {{ tt('客户端下载与离线安全验证规程', 'クライアント配布・オフライン安全性検証ガイド', 'Client Distribution & Offline Security Verification') }}
-          </h1>
+          <div class="dl-brand-head">
+            <img class="dl-brand-icon" :src="SITE_META.brandIconUrl" alt="Helm" />
+            <div>
+              <div class="dl-kicker">HELM // DISTRIBUTION &amp; SECURITY AUDIT · {{ SITE_META.version }} ({{ SITE_META.releaseDate }})</div>
+              <h1 class="dl-title">
+                {{ tt('Helm 客户端下载与离线安全验证规程', 'Helm クライアント配布・オフライン安全性検証ガイド', 'Helm Client Distribution & Offline Security Verification') }}
+              </h1>
+            </div>
+          </div>
           <p class="dl-sub">
             {{ tt(
-              '内置 Python 3.13 + FastAPI 异步引擎与 Office 多格式预览工作台。无需额外部署服务端，免费下载、安装即用。',
-              'Python 3.13 + FastAPI 非同期エンジンおよび Office 高精細ワークベンチを内蔵。外部サーバーの構築は一切不要で、ダウンロード後すぐにご利用いただけます。',
-              'Bundles Python 3.13 + FastAPI local engine and Office workbench. Zero external server setup required.'
+              'Take the Helm of Long-Running Code & Docs.（执掌长周期代码与文档创作之舵。）内置 Python 3.13 + FastAPI 异步引擎与 Office 多格式预览工作台，无需额外部署服务端，免费下载、安装即用。',
+              'Take the Helm of Long-Running Code & Docs.（長時間稼働するコード開発とドキュメント制作の舵を取る。）Python 3.13 + FastAPI 非同期エンジンおよび Office 高精細ワークベンチを内蔵し、ダウンロード後すぐにご利用いただけます。',
+              'Take the Helm of Long-Running Code & Docs. Bundles Python 3.13 + FastAPI local engine and Office workbench with zero external server setup required.'
             ) }}
           </p>
         </div>
@@ -123,7 +128,7 @@ const auditSteps = computed(() => [
 
           <div class="dl-btn-row">
             <a class="stone-btn is-primary dl-main-btn" :href="SITE_META.installerUrl" target="_blank" rel="noopener">
-              {{ tt('下载 Windows 安装包 (HYN-Agent-Setup.exe)', 'Windows インストーラー版 (.exe) をダウンロード', 'Download Windows Installer (.exe)') }}
+              {{ tt('下载 Windows 安装包 (Helm-Setup.exe)', 'Windows インストーラー版 (Helm-Setup.exe) をダウンロード', 'Download Windows Installer (Helm-Setup.exe)') }}
             </a>
           </div>
 
@@ -154,7 +159,7 @@ const auditSteps = computed(() => [
 
           <div class="dl-btn-row">
             <a class="stone-btn dl-main-btn" :href="SITE_META.portableUrl" target="_blank" rel="noopener">
-              {{ tt('下载免安装绿色版 (HYN-Agent-Portable.zip)', 'ポータブル版 (.zip) をダウンロード', 'Download Portable Archive (.zip)') }}
+              {{ tt('下载免安装绿色版 (Helm-Portable.zip)', 'ポータブル版 (Helm-Portable.zip) をダウンロード', 'Download Portable Archive (Helm-Portable.zip)') }}
             </a>
           </div>
 
@@ -246,6 +251,22 @@ const auditSteps = computed(() => [
 
 .dl-header-left {
   max-width: 820px;
+}
+
+.dl-brand-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.dl-brand-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
+  flex: none;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.14);
 }
 
 .dl-kicker {

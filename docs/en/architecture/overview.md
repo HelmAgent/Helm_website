@@ -1,16 +1,16 @@
 ---
 title: 1. System Overview & Dual-Process Design
-description: Deep dive into HYN Agent's Electron 44 + Vue 3 + FastAPI (Python 3.13) architecture, X-Request-ID observability, deterministic shutdown, and log sanitization.
+description: Deep dive into Helm's Electron 44 + Vue 3 + FastAPI (Python 3.13) architecture, X-Request-ID observability, deterministic shutdown, and log sanitization.
 ---
 
 # 1. System Overview & Dual-Process Design
 
 > [!NOTE] Engineering Whitepaper Series (For Technical Reviewers)
-> This 5-part series documents **HYN Agent**'s internal architecture, state machines, and edge-case handling at the source-code level. Part 1 covers `hyn_agent_frontend/main.js`, `src/i18n.js`, and `hyn_agent_backend/app/main.py`, `app/core/*`.
+> This 5-part series documents **Helm**'s internal architecture, state machines, and edge-case handling at the source-code level. Part 1 covers `hyn_agent_frontend/main.js`, `src/i18n.js`, and `hyn_agent_backend/app/main.py`, `app/core/*`.
 
 ## 1.1 Three-Tier Process Topology
 
-HYN Agent decouples its desktop runtime into three distinct layers: **Electron Main (OS Bridge)**, **Vue 3 Renderer (Stone Workbench)**, and **Local FastAPI Async Runtime (`127.0.0.1:8001`)**.
+Helm decouples its desktop runtime into three distinct layers: **Electron Main (OS Bridge)**, **Vue 3 Renderer (Stone Workbench)**, and **Local FastAPI Async Runtime (`127.0.0.1:8001`)**.
 
 ```mermaid
 flowchart TB

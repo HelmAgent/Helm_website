@@ -1,6 +1,6 @@
 ---
 layout: page
-title: HYN Agent · 完全ローカル対応 · 長時間自律型 AI コーディング＆Officeエージェント
+title: Helm · 長時間稼働するコード開発とドキュメント制作の舵を取る (Take the Helm of Long-Running Code & Docs.)
 sidebar: false
 ---
 

@@ -11,7 +11,7 @@ description: Lead and resident teammate architecture (team_runtime.py), zero-pol
 
 ## 3.1 Resident Teammates vs. One-Shot Subagents
 
-Running multiple subagents concurrently in the same directory causes file overwrites and `.git/index.lock` contention. HYN Agent introduces **Resident Teams** (`team_runtime.py`), allowing a **Lead** agent to coordinate up to **4 resident teammates (`_MAX_TEAMMATES = 4`)**, each bound to an isolated **Git Worktree**.
+Running multiple subagents concurrently in the same directory causes file overwrites and `.git/index.lock` contention. Helm introduces **Resident Teams** (`team_runtime.py`), allowing a **Lead** agent to coordinate up to **4 resident teammates (`_MAX_TEAMMATES = 4`)**, each bound to an isolated **Git Worktree**.
 
 ```mermaid
 sequenceDiagram

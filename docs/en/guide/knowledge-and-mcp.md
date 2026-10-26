@@ -1,6 +1,6 @@
 ---
 title: Local RAG & MCP / Skills
-description: Connect RAGFlow local knowledge bases, mount MCP servers, load Skills, and schedule Cron automations in HYN Agent.
+description: Connect RAGFlow local knowledge bases, mount MCP servers, load Skills, and schedule Cron automations in Helm.
 ---
 
 # Local RAG & MCP / Skills Extensibility

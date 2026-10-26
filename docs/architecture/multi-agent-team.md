@@ -1,6 +1,6 @@
 ---
 title: 3. 多智能体团队与 Git Worktree 物理隔离
-description: 解析 HYN Agent 的主从常驻队友架构（team_runtime.py）、异步内存邮箱通信、Git Worktree 并发隔离（team_worktree.py）与计划审批安全门禁。
+description: 解析 Helm 的主从常驻队友架构（team_runtime.py）、异步内存邮箱通信、Git Worktree 并发隔离（team_worktree.py）与计划审批安全门禁。
 ---
 
 # 3. 多智能体团队与 Git Worktree 物理隔离
@@ -15,7 +15,7 @@ description: 解析 HYN Agent 的主从常驻队友架构（team_runtime.py）�
 1. **无常驻上下文**：每次调用都要重新扫描代码库，无法在多轮迭代中保持模块专精记忆；
 2. **并发写文件冲突**：当多个子代理在同一工作目录下同时修改代码或运行构建脚本时，极易发生文件互相覆盖与 Git 索引锁冲突（`.git/index.lock`）。
 
-为此，HYN Agent 提供了 **「一次性轻量 Subagent」 + 「常驻多智能体团队（Resident Team）」** 双轨架构。
+为此，Helm 提供了 **「一次性轻量 Subagent」 + 「常驻多智能体团队（Resident Team）」** 双轨架构。
 
 ---
 

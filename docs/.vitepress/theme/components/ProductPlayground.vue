@@ -240,7 +240,8 @@ watch(
         <span></span><span></span><span></span>
       </div>
       <div class="pg-win-caption">
-        <span>HYN Agent Desktop</span>
+        <img class="pg-win-helm" src="/logo.svg" alt="Helm" />
+        <span>Helm Desktop</span>
         <span class="pg-win-sep">—</span>
         <code>127.0.0.1:8001 (FastAPI Embedded)</code>
         <span class="pg-win-badge">{{ tt('完全离线就绪', '完全オフライン稼働中', 'AIR-GAPPED READY') }}</span>
@@ -252,9 +253,9 @@ watch(
       <div class="stone-window">
         <aside class="stone-sidebar">
           <div class="stone-brand">
-            <span class="stone-mark"></span>
+            <img class="stone-helm-icon" src="/logo.svg" alt="Helm" />
             <div>
-              <div class="stone-word">HYN</div>
+              <div class="stone-word">HELM</div>
               <div class="stone-workspace">local · core-engine</div>
             </div>
           </div>
@@ -863,6 +864,13 @@ Ran 86 tests in 1.842s — OK</pre>
   border-right: 1px solid var(--border-subtle);
 }
 
+.pg-win-helm {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  flex: none;
+}
+
 .stone-brand {
   display: flex;
   align-items: center;
@@ -870,12 +878,12 @@ Ran 86 tests in 1.842s — OK</pre>
   padding: 18px 16px 12px;
 }
 
-.stone-mark {
-  width: 3px;
+.stone-helm-icon {
+  width: 28px;
   height: 28px;
-  border-radius: 2px;
-  background: var(--accent);
+  border-radius: 6px;
   flex: none;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.14);
 }
 
 .stone-word {

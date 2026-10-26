@@ -209,7 +209,7 @@ if mate.require_plan and not mate.plan_approved:
       <div class="wide-container">
         <div class="hero-grid-top">
           <div class="hero-meta-bar">
-            <span class="hero-code-tag">HYN AGENT // DESKTOP AUTONOMOUS RUNTIME</span>
+            <span class="hero-code-tag">HELM // DESKTOP AUTONOMOUS AGENT HARNESS</span>
             <span class="hero-sep">|</span>
             <span class="hero-code-sub">ELECTRON 44 · VUE 3.5 · FASTAPI (PYTHON 3.13)</span>
             <span class="hero-sep">|</span>
@@ -217,6 +217,30 @@ if mate.require_plan and not mate.plan_approved:
               <span class="hero-dot"></span>
               {{ tt('100% 本地离线与企业内网就绪', '100% ローカル・社内閉域網対応', '100% LOCAL & LAN READY') }}
             </span>
+          </div>
+
+          <!-- Helm 品牌徽章与官方 Slogan 核心视觉带 -->
+          <div class="hero-brand-banner">
+            <div class="hero-emblem-wrap">
+              <img
+                class="hero-emblem-img"
+                :src="SITE_META.brandIconUrl"
+                alt="Helm Geometric Compass Emblem"
+              />
+            </div>
+            <div class="hero-brand-copy">
+              <div class="hero-brand-title-row">
+                <span class="hero-brand-name">HELM</span>
+                <span class="hero-brand-slogan-en">"Take the Helm of Long-Running Code &amp; Docs."</span>
+              </div>
+              <div class="hero-brand-slogan-local">
+                {{ tt(
+                  '执掌长周期代码与文档创作之舵 —— 八向几何罗盘舵轮，驱动主控循环（Agent Loop）、多智能体团队（Worktree Teams）与高保真文档工作台协同运转。',
+                  '長時間稼働するコード開発とドキュメント制作の舵を取る —— 中央の Agent Loop エンジンを軸に、8方向のノード（Subagents・Worktree チーム・高精度ツール）を統合制御。',
+                  'An 8-node Geometric Compass Agent Harness — orchestrating autonomous loops, isolated Git Worktree teams, and surgical Office document editing locally on your desktop.'
+                ) }}
+              </div>
+            </div>
           </div>
 
           <h1 class="hero-headline">
@@ -326,9 +350,9 @@ if mate.require_plan and not mate.plan_approved:
           </h2>
           <p class="sec-sub">
             {{ tt(
-              '无论是金融/制造业的完全物理断网终端，还是研发部门的企业内网 GPU 集群，HYN Agent 均可在不经过任何外部云端中转服务器的前提下独立运行。',
+              '无论是金融/制造业的完全物理断网终端，还是研发部门的企业内网 GPU 集群，Helm 均可在不经过任何外部云端中转服务器的前提下独立运行。',
               '外部インターネットから完全に隔離されたオフライン開発端末から、社内GPUサーバー（vLLM / OneAPI）を共有するイントラネット環境まで、外部クラウド中継サーバーを一切介さずに稼働します。',
-              'Whether on an air-gapped workstation or a shared internal GPU cluster, HYN Agent operates without any external cloud relay servers.'
+              'Whether on an air-gapped workstation or a shared internal GPU cluster, Helm operates without any external cloud relay servers.'
             ) }}
           </p>
         </div>
@@ -379,7 +403,7 @@ if mate.require_plan and not mate.plan_approved:
                 <div class="topo-boundary-label">{{ tt('企业防火墙内部局域网 (192.168.x.x / 10.x.x.x · 阻断公网出站)', '社内イントラネット境界 (外部インターネットへのデータ送信ゼロ)', 'Corporate Firewall Boundary (Zero Public Internet Egress)') }}</div>
                 <div class="topo-nodes">
                   <div class="topo-node">
-                    <strong>HYN Desktop Client</strong>
+                    <strong>Helm Desktop Client</strong>
                     <span>Developer PC (Local Git)</span>
                   </div>
                   <div class="topo-arrow">⇄</div>
@@ -445,7 +469,7 @@ if mate.require_plan and not mate.plan_approved:
         <div class="sec-header">
           <div class="sec-kicker">SECTION 03 // ARCHITECTURAL COMPARISON MATRIX</div>
           <h2 class="sec-title">
-            {{ tt('HYN Agent 与常规云端 Coding Agent 的工程能力对比', 'HYN Agent と一般的なクラウド型 Coding Agent のアーキテクチャ比較', 'HYN Agent vs. Conventional Cloud Coding Agents') }}
+            {{ tt('Helm 与常规云端 Coding Agent 的工程能力对比', 'Helm と一般的なクラウド型 Coding Agent のアーキテクチャ比較', 'Helm vs. Conventional Cloud Coding Agents') }}
           </h2>
         </div>
 
@@ -454,7 +478,7 @@ if mate.require_plan and not mate.plan_approved:
             <thead>
               <tr>
                 <th>{{ tt('技术评估维度', '技術評価項目', 'Evaluation Dimension') }}</th>
-                <th class="is-hyn">HYN Agent ({{ tt('本架构', '本プロダクト', 'This Architecture') }})</th>
+                <th class="is-hyn">Helm ({{ tt('本架构', '本プロダクト', 'This Architecture') }})</th>
                 <th>{{ tt('常规云端 Agent / 简单 API 套壳', '一般的なクラウド型 / 簡易エージェント', 'Typical Cloud / Wrapper Agents') }}</th>
               </tr>
             </thead>
@@ -516,9 +540,9 @@ if mate.require_plan and not mate.plan_approved:
             </h3>
             <p class="brief-text">
               {{ tt(
-                '1. 为什么搭建本官网与架构白皮书：HYN Agent 作为完整的桌面端独立产品进行打包分发，目前暂未直接公开源码仓库。为了让技术面试官在不安装客户端的前提下即可深入评估本项目的工程含金量，本站在「工程架构白皮书」中完整公开了双进程架构、P0–P3 状态机、影子检查点、Git Worktree 团队与双层记忆的源码级设计。\n2. 面试现场 Live Demo 与完整源码审阅：在远程视频面试（Zoom / Teams / Google Meet）中，我随时准备通过屏幕共享为您现场演示物理断网下的实机运行，并在 IDE 中直接打开前端（Electron + Vue 3）与后端（FastAPI + 86 项单元测试）完整源码进行逐模块讲解。',
-                '1. 技術白書とWebサンドボックスの公開理由：HYN Agent は完成されたデスクトップ製品として無料配布しており、現時点ではリポジトリ全体の一般公開を控えております。社用PCのセキュリティ制限により .exe の実行が難しい採用ご担当者様・技術面接官の皆様にも、ブラウザ上の「対話型ワークベンチ」と全5章の「技術アーキテクチャ白書」を通じて、内部設計の深さをそのまま検証いただけるよう構成しました。\n2. 面接での実機ライブデモ＆全ソースコード開示：オンライン面接（Zoom / Teams / Google Meet）の場におきましては、画面共有による完全オフライン環境での実機デモンストレーション、および IDE 上でのフロントエンド（Electron + Vue 3）・バックエンド（FastAPI + 単体テスト86件）全ソースコードのライブ解説を実演いたします。',
-                '1. Why an Architecture Whitepaper & Web Sandbox: HYN Agent is packaged as a standalone desktop product. So technical reviewers on locked-down corporate PCs can evaluate its full engineering depth without installing an .exe, this site provides a 1:1 Interactive Workbench and a 5-part Whitepaper detailing our state machines and data contracts.\n2. Live Demo & Full IDE Source Walkthrough: During remote interviews (Zoom / Teams / Meet), I am ready to share my screen for a live offline demonstration and walk through the entire Electron + Vue 3 + FastAPI codebase and 86+ unit tests in my IDE.'
+                '1. 为什么搭建本官网与架构白皮书：Helm 作为完整的桌面端独立产品进行打包分发，目前暂未直接公开源码仓库。为了让技术面试官在不安装客户端的前提下即可深入评估本项目的工程含金量，本站在「工程架构白皮书」中完整公开了双进程架构、P0–P3 状态机、影子检查点、Git Worktree 团队与双层记忆的源码级设计。\n2. 面试现场 Live Demo 与完整源码审阅：在远程视频面试（Zoom / Teams / Google Meet）中，我随时准备通过屏幕共享为您现场演示物理断网下的实机运行，并在 IDE 中直接打开前端（Electron + Vue 3）与后端（FastAPI + 86 项单元测试）完整源码进行逐模块讲解。',
+                '1. 技術白書とWebサンドボックスの公開理由：Helm は完成されたデスクトップ製品として無料配布しており、現時点ではリポジトリ全体の一般公開を控えております。社用PCのセキュリティ制限により .exe の実行が難しい採用ご担当者様・技術面接官の皆様にも、ブラウザ上の「対話型ワークベンチ」と全5章の「技術アーキテクチャ白書」を通じて、内部設計の深さをそのまま検証いただけるよう構成しました。\n2. 面接での実機ライブデモ＆全ソースコード開示：オンライン面接（Zoom / Teams / Google Meet）の場におきましては、画面共有による完全オフライン環境での実機デモンストレーション、および IDE 上でのフロントエンド（Electron + Vue 3）・バックエンド（FastAPI + 単体テスト86件）全ソースコードのライブ解説を実演いたします。',
+                '1. Why an Architecture Whitepaper & Web Sandbox: Helm is packaged as a standalone desktop product. So technical reviewers on locked-down corporate PCs can evaluate its full engineering depth without installing an .exe, this site provides a 1:1 Interactive Workbench and a 5-part Whitepaper detailing our state machines and data contracts.\n2. Live Demo & Full IDE Source Walkthrough: During remote interviews (Zoom / Teams / Meet), I am ready to share my screen for a live offline demonstration and walk through the entire Electron + Vue 3 + FastAPI codebase and 86+ unit tests in my IDE.'
               ) }}
             </p>
           </div>
@@ -598,6 +622,70 @@ if mate.require_plan and not mate.plan_approved:
   height: 7px;
   border-radius: 50%;
   background: var(--status-success);
+}
+
+.hero-brand-banner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  max-width: 1020px;
+}
+
+.hero-emblem-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex: none;
+  border: 1px solid #1e293b;
+  background: #121722;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.14);
+}
+
+.hero-emblem-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero-brand-title-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-brand-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--text-primary);
+}
+
+.hero-brand-slogan-en {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.hero-brand-slogan-local {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
 }
 
 .hero-headline {

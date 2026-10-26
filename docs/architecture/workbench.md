@@ -1,6 +1,6 @@
 ---
 title: 5. 高保真文档预览工作台与局部 AI 热补丁
-description: 解析 HYN Agent 的右侧分栏多格式工作台（PreviewWorkbench.js）、WPS 级格式工具栏、SelectionAnchor 跨格式锚点协议与 patch_file_selection 原地热更新。
+description: 解析 Helm 的右侧分栏多格式工作台（PreviewWorkbench.js）、WPS 级格式工具栏、SelectionAnchor 跨格式锚点协议与 patch_file_selection 原地热更新。
 ---
 
 # 5. 高保真文档预览工作台与局部 AI 热补丁
@@ -54,7 +54,7 @@ flowchart TD
 
 ## 5.3 第二期架构：鼠标划取「✨ AI 修改」与 SSE 局部热替换
 
-对标 Cursor 的 `Add Selection to Chat` 与 Canvas 局部重绘，HYN Agent 将**「鼠标划选 → 浮起 AI 按钮 → 结构化锚点注入 → 原地无闪烁热替换」**扩展到了全部富文档格式：
+对标 Cursor 的 `Add Selection to Chat` 与 Canvas 局部重绘，Helm 将**「鼠标划选 → 浮起 AI 按钮 → 结构化锚点注入 → 原地无闪烁热替换」**扩展到了全部富文档格式：
 
 ```mermaid
 sequenceDiagram

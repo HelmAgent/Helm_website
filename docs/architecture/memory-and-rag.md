@@ -1,6 +1,6 @@
 ---
 title: 4. Prefix-Cache 友好的异步双层记忆与本地知识库
-description: 深入解析 HYN Agent 的双层记忆架构（memory.py / memory_queue.py）、会话级冻结快照保缓存策略、中日文 Bigram 检索与 RAGFlow 本地证据链。
+description: 深入解析 Helm 的双层记忆架构（memory.py / memory_queue.py）、会话级冻结快照保缓存策略、中日文 Bigram 检索与 RAGFlow 本地证据链。
 ---
 
 # 4. Prefix-Cache 友好的异步双层记忆与本地知识库
@@ -18,7 +18,7 @@ description: 深入解析 HYN Agent 的双层记忆架构（memory.py / memory_q
 
 ---
 
-## 4.2 HYN Agent 的双层异步记忆架构
+## 4.2 Helm 的双层异步记忆架构
 
 ```mermaid
 flowchart LR
@@ -63,6 +63,6 @@ flowchart LR
 
 ## 4.3 本地知识库（RAGFlow）与结构化证据链
 
-对于动辄数百兆的企业内部规章、API 字典与历史 PDF/Word 设计书，HYN Agent 通过 `app/services/knowledge/` 模块对接本地或内网部署的 **RAGFlow** 引擎：
+对于动辄数百兆的企业内部规章、API 字典与历史 PDF/Word 设计书，Helm 通过 `app/services/knowledge/` 模块对接本地或内网部署的 **RAGFlow** 引擎：
 - **门面解耦（`knowledge/service.py`）**：统一封装连接探测（`probe`）、数据集增删改、文档上传与解析状态跟踪，底层客户端（`ragflow.py`）与上层路由及 Agent 工具完全解耦。
 - **可溯源证据链打包（`knowledge/evidence.py`）**：检索结果通过 `pack_evidence` 格式化为包含 `document_name`、`dataset_id`、相似度得分与原文切片的结构化证据块，支持前端界面直接展示引用来源，满足日本企业严苛的合规可解释性要求。

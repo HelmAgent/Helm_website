@@ -1,7 +1,75 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
-  <!-- 石澜主题品牌标志：外框采用石底白面与细边框，左侧锁死标志性靛蓝竖条 (#0f4c81)，右侧为 H 字母极简几何结构 -->
-  <rect x="2" y="2" width="60" height="60" rx="10" fill="#ffffff" stroke="#d5dbe6" stroke-width="2"/>
-  <rect x="12" y="14" width="5" height="36" rx="2.5" fill="#0f4c81"/>
-  <path d="M25 18V46M47 18V46M25 32H47" stroke="#1a1d27" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="47" cy="18" r="3.5" fill="#1c6b42"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <!--
+    Helm 官方品牌图标（方案二：Geometric Compass 多节点编排几何舵轮）
+    寓意："Take the Helm of Long-Running Code & Docs."
+    8 个外圈六角/八角节点与罗盘箭头围绕中心青色发光核，象征 Agent Harness（Loop / Subagent / Teams 协同）。
+  -->
+  <defs>
+    <radialGradient id="helmCoreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#99F6E4" />
+      <stop offset="45%" stop-color="#2DD4BF" />
+      <stop offset="80%" stop-color="#0D9488" />
+      <stop offset="100%" stop-color="#115E59" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="helmBg" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#161C28" />
+      <stop offset="100%" stop-color="#0E131D" />
+    </linearGradient>
+    <!-- 单根辐条 + 八角节点 + 外圈罗盘箭头组件（朝上 0 度基准，通过 rotate 复用 8 个方向） -->
+    <g id="helmSpoke">
+      <!-- 内部双色分面辐条（中心到外圈节点） -->
+      <polygon points="128,104 123,58 128,58" fill="#2DD4BF" />
+      <polygon points="128,104 133,58 128,58" fill="#2563EB" />
+      <!-- 外伸罗盘箭头手柄（双分面皇家蓝） -->
+      <polygon points="128,14 117,29 122,29 123,44 128,44" fill="#3B82F6" />
+      <polygon points="128,14 139,29 134,29 133,44 128,44" fill="#1D4ED8" />
+      <!-- 轮缘八角编排节点（Subagent / Team Node） -->
+      <polygon
+        points="124,41 132,41 138,47 138,55 132,61 124,61 118,55 118,47"
+        fill="#121722"
+        stroke="#2DD4BF"
+        stroke-width="3.5"
+        stroke-linejoin="round"
+      />
+      <polygon
+        points="125.5,45.5 130.5,45.5 133.5,48.5 133.5,53.5 130.5,56.5 125.5,56.5 122.5,53.5 122.5,48.5"
+        fill="#141923"
+      />
+    </g>
+  </defs>
+
+  <!-- 深石板黑圆角底座 -->
+  <rect x="6" y="6" width="244" height="244" rx="52" fill="url(#helmBg)" stroke="#233044" stroke-width="3" />
+
+  <!-- 外层双道皇家蓝舵轮环 -->
+  <circle cx="128" cy="128" r="81" stroke="#2563EB" stroke-width="6.5" />
+  <circle cx="128" cy="128" r="71.5" stroke="#3B82F6" stroke-width="5.5" />
+
+  <!-- 内层青色八段式罗盘轨道环（Agent Loop 脉冲环） -->
+  <circle
+    cx="128"
+    cy="128"
+    r="44"
+    stroke="#2DD4BF"
+    stroke-width="3.5"
+    stroke-dasharray="20 14.55"
+    stroke-dashoffset="10"
+    stroke-linecap="round"
+  />
+
+  <!-- 8 向对称几何辐条、八角节点与罗盘箭头 -->
+  <use href="#helmSpoke" transform="rotate(0 128 128)" />
+  <use href="#helmSpoke" transform="rotate(45 128 128)" />
+  <use href="#helmSpoke" transform="rotate(90 128 128)" />
+  <use href="#helmSpoke" transform="rotate(135 128 128)" />
+  <use href="#helmSpoke" transform="rotate(180 128 128)" />
+  <use href="#helmSpoke" transform="rotate(225 128 128)" />
+  <use href="#helmSpoke" transform="rotate(270 128 128)" />
+  <use href="#helmSpoke" transform="rotate(315 128 128)" />
+
+  <!-- 中心 Agent Harness 编排核 -->
+  <circle cx="128" cy="128" r="24" fill="#172432" stroke="#1E3A5F" stroke-width="3" />
+  <circle cx="128" cy="128" r="19" fill="url(#helmCoreGlow)" />
+  <circle cx="128" cy="128" r="10.5" fill="#5EEAD4" />
+  <circle cx="128" cy="128" r="6" fill="#CCFBF1" />
 </svg>

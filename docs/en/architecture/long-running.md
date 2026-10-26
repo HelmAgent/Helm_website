@@ -1,13 +1,13 @@
 ---
 title: 2. Long-Horizon Autonomous Engine (P0–P3)
-description: How HYN Agent achieves multi-hour unattended coding via TurnHub seq replay, StuckDetector L2 retrospective notices, and Shadow Git Checkpoints.
+description: How Helm achieves multi-hour unattended coding via TurnHub seq replay, StuckDetector L2 retrospective notices, and Shadow Git Checkpoints.
 ---
 
 # 2. Long-Horizon Autonomous Engine (P0–P3)
 
 > [!IMPORTANT] The Four Failure Modes of Long-Running Agents
 > Typical coding agents fail during multi-hour runs due to: **① stream drops on network/gateway hiccups, ② context window exhaustion, ③ infinite tool-error loops or premature exits, and ④ destructive working-tree changes that cannot be cleanly rolled back**.
-> HYN Agent resolves these systematically across four architecture phases (**P0–P3** in `docs/long_running/` and `app/services/`).
+> Helm resolves these systematically across four architecture phases (**P0–P3** in `docs/long_running/` and `app/services/`).
 
 ```mermaid
 stateDiagram-v2
