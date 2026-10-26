@@ -18,10 +18,26 @@ import ProductPlayground from '../components/ProductPlayground.vue'
 
 const { currentLang, navigate, openAuditModal } = useAppRouter()
 
-const showcaseTab = ref('interactive')
+const showcaseTab = ref('video')
 const videoLoadError = ref(false)
+const videoPlayerRef = ref(null)
+const playbackRate = ref(1)
 const activeFeatureIdx = ref(0)
 const showCodeDrawer = ref(false)
+
+function setVideoSpeed(rate) {
+  playbackRate.value = rate
+  if (videoPlayerRef.value) {
+    videoPlayerRef.value.playbackRate = rate
+    videoPlayerRef.value.play().catch(() => {})
+  }
+}
+
+function handleVideoLoaded() {
+  if (videoPlayerRef.value) {
+    videoPlayerRef.value.playbackRate = playbackRate.value
+  }
+}
 
 const prefix = computed(() => getLangPrefix(currentLang.value))
 const archChapters = computed(() => getArchitectureChapters(currentLang.value))
@@ -301,24 +317,24 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
             </a>
           </div>
 
-          <!-- 舞台模式切换胶囊 -->
+          <!-- 舞台模式切换胶囊（默认展示实机演示视频） -->
           <div class="nx-stage-switcher">
-            <button
-              type="button"
-              class="nx-stage-tab"
-              :class="{ 'is-active': showcaseTab === 'interactive' }"
-              @click="showcaseTab = 'interactive'"
-            >
-              <span class="nx-pulse-dot"></span>
-              <span>{{ t('1:1 实时交互工作台 (免安装直接操作)', '1:1 対話型ワークベンチ (ブラウザ上で操作可能)', '1:1 Interactive Desktop Workbench') }}</span>
-            </button>
             <button
               type="button"
               class="nx-stage-tab"
               :class="{ 'is-active': showcaseTab === 'video' }"
               @click="showcaseTab = 'video'"
             >
-              <span>▶ {{ t('实机高清录屏演示 (MP4)', '実機デモ動画 (MP4)', 'HD Screen Recording (MP4)') }}</span>
+              <span class="nx-pulse-dot"></span>
+              <span>▶ {{ t('实机演示视频：一句话 7分35秒 从零开发记账软件', '実機デモ動画：1文の指示で 7分35秒 ゼロから家計簿ソフトを完遂', 'Live Demo Video: 1-Prompt Bookkeeping App Built in 7m 35s') }}</span>
+            </button>
+            <button
+              type="button"
+              class="nx-stage-tab"
+              :class="{ 'is-active': showcaseTab === 'interactive' }"
+              @click="showcaseTab = 'interactive'"
+            >
+              <span>{{ t('1:1 实时交互工作台 (免安装直接操作)', '1:1 対話型ワークベンチ (ブラウザ上で操作可能)', '1:1 Interactive Desktop Workbench') }}</span>
             </button>
           </div>
         </div>
@@ -330,15 +346,100 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
             <ProductPlayground :lang="currentLang" :standalone="true" />
           </div>
           <div v-else class="nx-video-stage nx-glass-card">
-            <video
-              v-if="!videoLoadError"
-              class="nx-video-player"
-              :src="SITE_META.demoVideoUrl"
-              :poster="SITE_META.demoPosterUrl"
-              controls
-              playsinline
-              @error="videoLoadError = true"
-            ></video>
+            <!-- 顶部实机挑战说明与倍速控制栏 -->
+            <div class="nx-video-hud">
+              <div class="nx-video-hud-left">
+                <div class="nx-video-kicker-row">
+                  <span class="nx-badge is-emerald">
+                    <span class="nx-pulse-dot"></span>
+                    {{ t('REAL-WORLD AUTONOMOUS BENCHMARK · 实机端到端交付实录', 'REAL-WORLD AUTONOMOUS BENCHMARK · 実機一気通貫デモ', 'REAL-WORLD AUTONOMOUS BENCHMARK · END-TO-END RUN') }}
+                  </span>
+                  <span class="nx-video-duration-chip">
+                    {{ t('实机任务总耗时：7 分 35 秒', '実機タスク総所要時間：7分35秒', 'Total Task Duration: 7m 35s') }}
+                  </span>
+                </div>
+                <h2 class="nx-video-headline">
+                  {{
+                    t(
+                      '仅凭一句话指令，7 分 35 秒从零搭建完整可用的「记账软件」并自动本地运行',
+                      'わずか1文の指示から 7分35秒 で実用可能な「家計簿・収支管理ソフト」をゼロから構築・ローカル起動',
+                      'From a Single Sentence to a Fully Working Local Bookkeeping App in 7 Minutes 35 Seconds'
+                    )
+                  }}
+                </h2>
+              </div>
+
+              <div class="nx-video-hud-right">
+                <div class="nx-speed-group" role="group" aria-label="Playback Speed">
+                  <span class="nx-speed-label">{{ t('倍速', '再生速度', 'Speed') }}</span>
+                  <button
+                    v-for="rate in [1, 1.5, 2]"
+                    :key="rate"
+                    type="button"
+                    class="nx-speed-btn"
+                    :class="{ 'is-active': playbackRate === rate }"
+                    @click="setVideoSpeed(rate)"
+                  >
+                    {{ rate }}x
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  class="nx-btn nx-btn-glass nx-video-switch-btn"
+                  @click="showcaseTab = 'interactive'"
+                >
+                  <span>{{ t('切换至 1:1 交互工作台亲自操作 →', '1:1 対話型ワークベンチで操作する →', 'Try 1:1 Interactive Workbench →') }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 一句话指令输入与三大硬核战绩指标条 -->
+            <div class="nx-video-mission-bar">
+              <div class="nx-mission-prompt">
+                <span class="nx-mission-tag">{{ t('单句输入指令 (PROMPT)', '入力プロンプト (1文のみ)', 'SINGLE-SENTENCE PROMPT') }}</span>
+                <p class="nx-mission-text">
+                  {{
+                    t(
+                      '“从零开发一个功能完整的记账软件，支持收支录入、分类统计与可视化明细，开发完成后直接在本地打开运行。”',
+                      '「収支登録・カテゴリ別集計・明細表示を備えた家計簿ソフトをゼロから開発し、完了後にローカルで起動して開いてください。」',
+                      '"Develop a full-featured bookkeeping software from scratch with income/expense entry and analytics, then launch and open it locally upon completion."'
+                    )
+                  }}
+                </p>
+              </div>
+
+              <div class="nx-mission-stats">
+                <div class="nx-mission-stat-item">
+                  <span class="nx-ms-val">7m 35s</span>
+                  <span class="nx-ms-lbl">{{ t('从空目录到软件成功运行', '空ディレクトリから起動完了まで', 'Blank Dir to Running App') }}</span>
+                </div>
+                <div class="nx-mission-stat-item">
+                  <span class="nx-ms-val">{{ t('0 人工干预', '人間介入 0回', 'Zero Intervention') }}</span>
+                  <span class="nx-ms-lbl">{{ t('一句话触发全链路自主闭环', '1文の指示で設計・実装・検証を完遂', '1-Prompt Autonomous Loop') }}</span>
+                </div>
+                <div class="nx-mission-stat-item">
+                  <span class="nx-ms-val">{{ t('本地实机拉起', 'ローカル即時起動', 'Auto Local Launch') }}</span>
+                  <span class="nx-ms-lbl">{{ t('完成后自动启动并打开可用成品', '開発完了後に自動でアプリを起動・表示', 'Built, Verified & Opened Locally') }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 视频播放器本体（进入页面默认自动播放） -->
+            <div v-if="!videoLoadError" class="nx-video-viewport">
+              <video
+                ref="videoPlayerRef"
+                class="nx-video-player"
+                :src="SITE_META.demoVideoUrl"
+                autoplay
+                muted
+                loop
+                playsinline
+                controls
+                preload="auto"
+                @loadedmetadata="handleVideoLoaded"
+                @error="videoLoadError = true"
+              ></video>
+            </div>
             <div v-else class="nx-video-fallback">
               <span class="nx-badge">DEMO VIDEO SLOT // READY</span>
               <h3>
@@ -353,15 +454,66 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
               <p>
                 {{
                   t(
-                    '在放入视频文件前，访客与技术审阅者可直接使用「1:1 实时交互工作台」在浏览器内体验离线重构、影子检查点与 PPT 划词局部 AI 热更新。',
-                    '動画配置前でも、「1:1 対話型ワークベンチ」タブにてオフライン改修・シャドウチェックポイント・Office部分AI修正をそのまま操作体験いただけます。',
-                    'Visitors can use the 1:1 Interactive Workbench tab right now to test all workflows directly in the browser.'
+                    '访客与技术审阅者也可随时切换至「1:1 实时交互工作台」，在浏览器内直接体验离线重构、影子检查点与 PPT 划词局部 AI 热更新。',
+                    '「1:1 対話型ワークベンチ」タブにてオフライン改修・シャドウチェックポイント・Office部分AI修正をそのまま操作体験いただけます。',
+                    'Visitors can also switch to the 1:1 Interactive Workbench tab to test all workflows directly in the browser.'
                   )
                 }}
               </p>
               <button type="button" class="nx-btn nx-btn-primary" @click="showcaseTab = 'interactive'">
                 {{ t('切回 1:1 实时交互工作台', '1:1 対話型ワークベンチに戻る', 'Return to Interactive Workbench') }}
               </button>
+            </div>
+
+            <!-- 视频下方：为什么这段 7分35秒 实机录屏具有代表性（三栏亮点卡） -->
+            <div class="nx-video-highlights">
+              <div class="nx-vh-card">
+                <div class="nx-vh-num">01 // ONE-PROMPT ZERO-TO-ONE</div>
+                <h4 class="nx-vh-title">
+                  {{ t('一句话完成从 0 到 1 全栈构建', '1文の指示からゼロベースで一気通貫構築', '1-Prompt Zero-to-One Full Build') }}
+                </h4>
+                <p class="nx-vh-desc">
+                  {{
+                    t(
+                      '无需人工分步拆解任务或手写项目脚手架。仅凭一句话，Helm 自主规划工程结构、账目数据持久化与现代交互界面，展现完整的软件工程落地能力。',
+                      '細かな段階的指示やボイラープレートの手動作成は不要。わずか1文からディレクトリ設計、データ永続化、UI構築までを自律的に完遂します。',
+                      'No step-by-step handholding or manual scaffolding required. From a single sentence, Helm plans the project structure, data persistence, and modern UI.'
+                    )
+                  }}
+                </p>
+              </div>
+
+              <div class="nx-vh-card">
+                <div class="nx-vh-num">02 // 7M 35S UNATTENDED EXECUTION</div>
+                <h4 class="nx-vh-title">
+                  {{ t('7 分 35 秒高密度工具调用零中断', '7分35秒の連続ツール実行・自己検証ループ', '7m 35s Unattended Execution Loop') }}
+                </h4>
+                <p class="nx-vh-desc">
+                  {{
+                    t(
+                      '在 7 分 35 秒的连续运行中，Agent 自动串联文件读写、依赖检查与终端命令执行，遇到环境或运行细节问题自动自检修正，一气呵成跑通全流程。',
+                      '7分35秒の連続稼働中、ファイル作成・依存解決・コマンド実行を自律的に連鎖。実行時の細かな問題も自己検証ループで即座に修正し完走します。',
+                      'Across 7m 35s of continuous execution, the agent chains file writes, dependency checks, and shell commands, automatically self-correcting along the way.'
+                    )
+                  }}
+                </p>
+              </div>
+
+              <div class="nx-vh-card">
+                <div class="nx-vh-num">03 // VERIFIED LOCAL LAUNCH &amp; QUALITY</div>
+                <h4 class="nx-vh-title">
+                  {{ t('高水准交付质量：完成后直接本地打开', '高い完成度：構築完了後にローカルで即時起動', 'High Delivery Quality & Local Launch') }}
+                </h4>
+                <p class="nx-vh-desc">
+                  {{
+                    t(
+                      '告别“只输出代码片段不管能否跑通”的半成品演示。Helm 在完成记账软件编码后，直接在本机启动服务并打开软件界面，交付真正开箱即用的高质量成品。',
+                      '「コード断片を出すだけで動かない」デモとは一線を画し、実装完了後にローカル環境でアプリを直接起動・表示。即座に使える高品質な成果物を実証します。',
+                      'Beyond generating unverified code snippets—upon finishing the code, Helm launches the service and opens the working bookkeeping app locally on screen.'
+                    )
+                  }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -969,21 +1121,233 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
 .nx-video-stage {
   position: relative;
   z-index: 2;
-  padding: 36px;
-  text-align: center;
+  padding: 28px 30px 30px;
+  text-align: left;
+}
+
+.nx-video-hud {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.nx-video-hud-left {
+  max-width: 820px;
+}
+
+.nx-video-kicker-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.nx-video-duration-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.22);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #7dd3fc;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.nx-video-headline {
+  margin: 0;
+  font-size: clamp(19px, 2.2vw, 24px);
+  font-weight: 800;
+  line-height: 1.32;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.nx-video-hud-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nx-speed-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 5px 3px 10px;
+  border-radius: 9px;
+  background: rgba(8, 13, 26, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.nx-speed-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #64748b;
+  margin-right: 4px;
+}
+
+.nx-speed-btn {
+  height: 26px;
+  padding: 0 9px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.nx-speed-btn:hover {
+  color: #ffffff;
+}
+
+.nx-speed-btn.is-active {
+  background: rgba(37, 99, 235, 0.35);
+  color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.45);
+}
+
+.nx-video-switch-btn {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.nx-video-mission-bar {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(11, 20, 40, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  align-items: center;
+}
+
+.nx-mission-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 14px;
+  border-right: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.nx-mission-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+}
+
+.nx-mission-text {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 650;
+  line-height: 1.55;
+  color: #f1f5f9;
+}
+
+.nx-mission-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.nx-mission-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(6, 10, 21, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.nx-ms-val {
+  font-family: var(--font-mono);
+  font-size: 15.5px;
+  font-weight: 850;
+  color: #34d399;
+}
+
+.nx-ms-lbl {
+  font-size: 11px;
+  line-height: 1.35;
+  color: #94a3b8;
+}
+
+.nx-video-viewport {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  background: #020617;
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.85);
 }
 
 .nx-video-player {
+  display: block;
   width: 100%;
-  max-height: 640px;
-  border-radius: 10px;
+  max-height: 680px;
   background: #000;
+}
+
+.nx-video-highlights {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.nx-vh-card {
+  padding: 16px 18px;
+  border-radius: 11px;
+  background: rgba(11, 17, 32, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.nx-vh-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  margin-bottom: 6px;
+}
+
+.nx-vh-title {
+  margin: 0 0 6px;
+  font-size: 14.5px;
+  font-weight: 750;
+  color: #ffffff;
+}
+
+.nx-vh-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.58;
+  color: #94a3b8;
 }
 
 .nx-video-fallback {
   max-width: 640px;
   margin: 0 auto;
   padding: 36px 16px;
+  text-align: center;
 }
 
 .nx-video-fallback h3 {
@@ -1608,6 +1972,18 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
 }
 
 @media (max-width: 1100px) {
+  .nx-video-mission-bar {
+    grid-template-columns: 1fr;
+  }
+  .nx-mission-prompt {
+    padding-right: 0;
+    padding-bottom: 12px;
+    border-right: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  }
+  .nx-video-highlights {
+    grid-template-columns: 1fr;
+  }
   .nx-telemetry-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1621,6 +1997,20 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
 }
 
 @media (max-width: 680px) {
+  .nx-video-stage {
+    padding: 18px;
+  }
+  .nx-mission-stats {
+    grid-template-columns: 1fr;
+  }
+  .nx-stage-switcher {
+    flex-direction: column;
+    width: 100%;
+  }
+  .nx-stage-tab {
+    width: 100%;
+    justify-content: center;
+  }
   .nx-telemetry-grid,
   .nx-blueprint-grid {
     grid-template-columns: 1fr;

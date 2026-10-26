@@ -17,7 +17,7 @@ const props = defineProps({
   }
 })
 
-const showcaseTab = ref('interactive')
+const showcaseTab = ref('video')
 const videoLoadError = ref(false)
 
 function tt(zh, ja, en) {
@@ -273,18 +273,18 @@ if mate.require_plan and not mate.plan_approved:
               <button
                 type="button"
                 class="mode-btn"
-                :class="{ 'is-active': showcaseTab === 'interactive' }"
-                @click="showcaseTab = 'interactive'"
+                :class="{ 'is-active': showcaseTab === 'video' }"
+                @click="showcaseTab = 'video'"
               >
-                {{ tt('实时交互工作台 (1:1 复刻)', '対話型ワークベンチ (操作可能)', 'Interactive Workbench') }}
+                {{ tt('▶ 实机演示：一句话 7分35秒 从零开发记账软件', '▶ 実機デモ動画：1文で7分35秒 家計簿ソフト開発', '▶ Live Demo: 1-Prompt App in 7m 35s') }}
               </button>
               <button
                 type="button"
                 class="mode-btn"
-                :class="{ 'is-active': showcaseTab === 'video' }"
-                @click="showcaseTab = 'video'"
+                :class="{ 'is-active': showcaseTab === 'interactive' }"
+                @click="showcaseTab = 'interactive'"
               >
-                {{ tt('实机录屏演示 (MP4)', '実機デモ動画 (MP4)', 'Screen Recording') }}
+                {{ tt('实时交互工作台 (1:1 复刻)', '対話型ワークベンチ (操作可能)', 'Interactive Workbench') }}
               </button>
             </div>
           </div>
@@ -295,13 +295,25 @@ if mate.require_plan and not mate.plan_approved:
           <ProductPlayground :lang="lang" :standalone="true" />
         </div>
         <div v-else class="hero-video-box">
+          <div class="hero-video-banner">
+            <div class="hero-vb-left">
+              <span class="stone-badge is-success">7m 35s END-TO-END AUTONOMOUS BUILD</span>
+              <strong>{{ tt('一句话指令从零开发完整可用的「记账软件」，耗时 7 分 35 秒自主完成编码并本地打开运行', 'わずか1文の指示でゼロから実用可能な「家計簿ソフト」を7分35秒で自律構築・ローカル起動', 'From a single sentence to a working local bookkeeping app in 7m 35s') }}</strong>
+            </div>
+            <button type="button" class="stone-btn" @click="showcaseTab = 'interactive'">
+              {{ tt('切换至 1:1 实时交互工作台 →', '対話型ワークベンチで操作 →', 'Try 1:1 Interactive Workbench →') }}
+            </button>
+          </div>
           <video
             v-if="!videoLoadError"
             class="hero-video-player"
             :src="SITE_META.demoVideoUrl"
-            :poster="SITE_META.demoPosterUrl"
+            autoplay
+            muted
+            loop
             controls
             playsinline
+            preload="auto"
             @error="videoLoadError = true"
           ></video>
           <div v-else class="hero-video-placeholder">
@@ -768,6 +780,26 @@ if mate.require_plan and not mate.plan_approved:
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   overflow: hidden;
+}
+
+.hero-video-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.hero-vb-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--text-primary);
 }
 
 .hero-video-player {
