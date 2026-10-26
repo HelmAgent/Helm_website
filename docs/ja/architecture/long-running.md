@@ -30,7 +30,7 @@ stateDiagram-v2
 1. **`TurnHub` リングバッファと再接続リプレイ**：
    - SSE ストリームのライフサイクルを単一の HTTP リクエストから切り離し、`TurnHub` が全イベントに単調増加のシーケンス番号 `seq` を付与してバッファリングします。
    - 画面リロードや一時的な切断が発生しても、フロントエンドは `last_seq` を指定して欠落イベントのみを正確にリプレイできます。
-2. **再試行時のストリーム洗浄（`stream_reset`）**：
+2. **再試行時の不完全ストリーム自動破棄（`stream_reset`）**：
    - LLM ストリームの途中でタイムアウトやエラーが発生し `llm_retry.py` が再試行に入る際、バックエンドは `retry` イベントと共に `stream_reset` を送出します。
    - フロントエンドは途中の不完全なテキスト・思考ブロックを即座に破棄し、再試行後のクリーンな出力のみを描画します。
 
@@ -82,4 +82,4 @@ git update-ref refs/hyn/checkpoints/<session_id> $commit
 
 ### 2. 圧縮耐性を持つ進捗ノート（`progress_notes.py`）とリアルタイム4段階権限（`permission_mode.py`）
 - **進捗ノート**：`DATA_DIR/session_state/<session_id>/progress.md` に保存され、毎ターン `<progress_notes>` としてシステムプロンプト末尾に自動注入されるため、何回コンテキスト圧縮が行われても「目標・完了項目・次のステップ」を失いません。
-- **リアルタイム権限切替**：`bind_mode_getter` により、実行中にUI（`PermissionModeButton.js`）でモードを切り替えると**次のツール呼び出しから即座に反映**されます。`full_auto`（完全自動）モードであっても、ワークスペース外へのアクセスやOS破壊コマンドは `permission.py` のハード拒否ルールにより 100% ブロックされます。
+- **リアルタイム権限切替**：`bind_mode_getter` により、実行中にUI（`PermissionModeButton.js`）でモードを切り替えると**次のツール呼び出しから即座に反映**されます。`full_auto`（完全自動）モードであっても、ワークスペース外へのアクセスやOS破壊コマンドは `permission.py` の強制遮断ルール（ハードリジェクト）により 100% ブロックされます。

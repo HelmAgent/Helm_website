@@ -4,7 +4,7 @@
  *
  * 职责与协作：
  * - 用于 `/download`、`/ja/download`、`/en/download`（配合 `layout: page` 使用 1320px 宽屏建筑感布局）。
- * - 集中展示 Windows 安装版 (.exe) 与免安装绿色版 (.zip)、SHA-256 哈希一键复制、3 步物理断网验证规程，以及致日本企业招聘官与面试官说明。
+ * - 严格保持语言纯粹性：中文界面绝不混入日语词汇；日语界面使用地道、得体的日本商务与安全工程表达。
  */
 import { ref, computed } from 'vue'
 import { SITE_META } from '../siteData.js'
@@ -47,30 +47,34 @@ async function copyHash(key, hash) {
 const auditSteps = computed(() => [
   {
     step: 'AUDIT 01 // BINARY INTEGRITY',
-    title: tt('第一步：校验安装包 SHA-256 与官方内嵌运行时', 'Step 1：SHA-256 ハッシュ照合と内蔵ランタイム確認', 'Step 1: Verify SHA-256 Checksum & Embedded Runtime'),
+    title: tt('第一步：校验安装包 SHA-256 与官方内嵌运行时', 'Step 1：SHA-256 ハッシュ値の照合と内蔵ランタイムの確認', 'Step 1: Verify SHA-256 Checksum & Embedded Runtime'),
     desc: tt(
-      '下载完成后在 PowerShell 执行哈希比对，确保分发包未经任何篡改。客户端内置 Python 3.13 官方嵌入式环境，渲染进程仅通过回环地址 127.0.0.1:8001 与本机 FastAPI 子进程通信。',
-      'ダウンロード後に PowerShell で SHA-256 を照合し、改ざんがないことを確認します。クライアントは公式 Python 3.13 ランタイムを内蔵し、127.0.0.1:8001 ループバック通信のみで動作します。',
+      '下载完成后在 PowerShell 执行哈希比对，确认分发包未经任何篡改。客户端内置 Python 3.13 官方嵌入式环境，渲染进程仅通过回环地址 127.0.0.1:8001 与本机 FastAPI 子进程通信。',
+      'ダウンロード完了後、PowerShell で SHA-256 ハッシュ値を照合し、ファイルの完全性を確認します。クライアントには公式 Python 3.13 ランタイムが同梱されており、127.0.0.1:8001 のループバック通信のみで動作します。',
       'Verify binary integrity via PowerShell SHA-256. The client bundles an official Python 3.13 runtime communicating strictly over 127.0.0.1:8001.'
     ),
     cmd: 'Get-FileHash .\\HYN-Agent-Setup-1.0.0.exe -Algorithm SHA256'
   },
   {
     step: 'AUDIT 02 // AIR-GAPPED EXECUTION',
-    title: tt('第二步：拔除网线或配置防火墙出站阻断测试', 'Step 2：LAN抜線・ファイアウォール遮断での完全オフライン検証', 'Step 2: Test Under Air-Gapped / Firewall-Blocked Conditions'),
+    title: tt('第二步：物理断网或配置防火墙出站阻断测试', 'Step 2：ネットワーク遮断（オフライン環境）での動作検証', 'Step 2: Test Under Air-Gapped / Firewall-Blocked Conditions'),
     desc: tt(
       '在本机启动 Ollama（127.0.0.1:11434）后，直接拔掉网线或关闭 Wi-Fi（或用 Windows 防火墙阻断一切公网出站）。在设置页启用「Ollama（本机离线）」，即可在物理断网下完整执行代码重构、单测运行与 Office 局部修改。',
-      'ローカルで Ollama（127.0.0.1:11434）を起動後、Wi-FiオフまたはLANケーブル抜線状態にします。「Ollama（ローカルオフライン）」を選択すれば、外部通信ゼロでコード改修・単体テスト・Office編集が完結します。',
+      'ローカル環境で Ollama（127.0.0.1:11434）を起動後、Wi-Fi をオフにするか LAN ケーブルを抜いた状態（またはファイアウォールで外部通信を遮断した状態）にします。設定画面で「Ollama（ローカル）」を選択すれば、完全オフラインのままコード改修・単体テスト・Office 文書編集が完結します。',
       'Start Ollama locally (127.0.0.1:11434), disconnect Wi-Fi/Ethernet, and select "Ollama (Local Offline)" to run refactoring, unit tests, and Office edits completely offline.'
     ),
-    cmd: 'ollama pull qwen2.5-coder:14b  # 随后可完全断开外部网络运行'
+    cmd: tt(
+      'ollama pull qwen2.5-coder:14b  # 模型就绪后即可断开外部网络独立运行',
+      'ollama pull qwen2.5-coder:14b  # モデル取得後はネットワーク切断状態で稼働可能',
+      'ollama pull qwen2.5-coder:14b  # Disconnect external network after pulling'
+    )
   },
   {
     step: 'AUDIT 03 // TRANSPARENT STORAGE & LOGS',
-    title: tt('第三步：审计本地明文目录与脱敏日志', 'Step 3：ローカル保存データと自動マスク済みログの監査', 'Step 3: Inspect Local Storage & Scrubbed Logs'),
+    title: tt('第三步：审计本地明文目录与脱敏日志', 'Step 3：ローカル保存データとマスキング済みログの監査', 'Step 3: Inspect Local Storage & Scrubbed Logs'),
     desc: tt(
       '所有会话记录、双层 Markdown 记忆、文件快照均以明文结构保存在 .hyn_agent/ 目录下。打开 logs/main.log 可直接验证 sanitizeLogMessage 钩子：任何 sk-*、Bearer、api_key 均在落盘前被擦除为 ***。',
-      '会話履歴・2層メモリ（.md）・ファイルスナップショットはすべて .hyn_agent/ に平文保存されます。logs/main.log では sanitizeLogMessage フックにより APIキー等が *** に自動消去されていることを確認できます。',
+      '会話履歴・2層メモリ（Markdown形式）・ファイルスナップショットはすべて .hyn_agent/ 配下に平文で保存されます。logs/main.log を開くと、sanitizeLogMessage フックによって API キーやトークン文字列が記録前に *** へ自動マスキングされていることを確認できます。',
       'All sessions, Markdown memories, and file snapshots reside transparently under .hyn_agent/. Inspect logs/main.log to confirm API keys are scrubbed into *** prior to disk write.'
     ),
     cmd: 'Get-Content .\\.hyn_agent\\logs\\main.log -Tail 30'
@@ -81,29 +85,27 @@ const auditSteps = computed(() => [
 <template>
   <div class="dl-page">
     <div class="dl-container">
-      <!-- 页头 -->
       <header class="dl-header">
         <div class="dl-header-left">
           <div class="dl-kicker">DISTRIBUTION & SECURITY AUDIT // {{ SITE_META.version }} ({{ SITE_META.releaseDate }})</div>
           <h1 class="dl-title">
-            {{ tt('客户端下载与离线安全验证规程', 'クライアント配布＆オフライン安全性検証プロトコル', 'Client Distribution & Offline Security Verification') }}
+            {{ tt('客户端下载与离线安全验证规程', 'クライアント配布・オフライン安全性検証ガイド', 'Client Distribution & Offline Security Verification') }}
           </h1>
           <p class="dl-sub">
             {{ tt(
               '内置 Python 3.13 + FastAPI 异步引擎与 Office 多格式预览工作台。无需额外部署服务端，免费下载、安装即用。',
-              'Python 3.13 + FastAPI ローカルエンジンおよび Office 高精細ワークベンチを内蔵。外部サーバー構築不要・無料配布。',
+              'Python 3.13 + FastAPI 非同期エンジンおよび Office 高精細ワークベンチを内蔵。外部サーバーの構築は一切不要で、ダウンロード後すぐにご利用いただけます。',
               'Bundles Python 3.13 + FastAPI local engine and Office workbench. Zero external server setup required.'
             ) }}
           </p>
         </div>
         <div class="dl-header-right">
           <a class="stone-btn" :href="`${prefix}/demo`">
-            {{ tt('不便安装？打开浏览器免安装沙盒 →', '社用PCの方：ブラウザ体験デモを開く →', 'Restricted PC? Open Browser Sandbox →') }}
+            {{ tt('不便安装？打开浏览器免安装沙盒 →', 'インストール不要のブラウザ体験デモへ →', 'Restricted PC? Open Browser Sandbox →') }}
           </a>
         </div>
       </header>
 
-      <!-- 双版本下载卡片（建筑感细线对开） -->
       <section class="dl-grid">
         <div class="dl-card is-primary-card">
           <div class="dl-card-top">
@@ -114,14 +116,14 @@ const auditSteps = computed(() => [
           <p class="dl-card-desc">
             {{ tt(
               '自动配置桌面快捷方式与独立数据隔离目录（默认保存在软件同级或自定义磁盘路径，零 C 盘空间侵占）。适合个人开发机与长期主力使用。',
-              'デスクトップショートカットと独立データディレクトリを自動構成（Cドライブを圧迫しない設計）。個人開発機での長期利用に最適です。',
+              'デスクトップショートカットと独立データ保存領域を自動構成します（Cドライブを圧迫しない設計）。個人開発環境での日常利用に最適です。',
               'Automatically configures desktop shortcuts and an isolated data directory without bloating C: drive.'
             ) }}
           </p>
 
           <div class="dl-btn-row">
             <a class="stone-btn is-primary dl-main-btn" :href="SITE_META.installerUrl" target="_blank" rel="noopener">
-              {{ tt('下载 Windows 安装包 (HYN-Agent-Setup.exe)', 'インストーラー版 (.exe) をダウンロード', 'Download Windows Installer (.exe)') }}
+              {{ tt('下载 Windows 安装包 (HYN-Agent-Setup.exe)', 'Windows インストーラー版 (.exe) をダウンロード', 'Download Windows Installer (.exe)') }}
             </a>
           </div>
 
@@ -129,7 +131,7 @@ const auditSteps = computed(() => [
             <div class="dl-checksum-head">
               <span>SHA-256 CHECKSUM</span>
               <button type="button" class="dl-copy-btn" @click="copyHash('exe', SITE_META.installerSha256)">
-                {{ copiedKey === 'exe' ? tt('✓ 已复制', '✓ コピー済', '✓ Copied') : tt('复制 SHA-256', 'SHA-256 をコピー', 'Copy SHA-256') }}
+                {{ copiedKey === 'exe' ? tt('✓ 已复制', '✓ コピー完了', '✓ Copied') : tt('复制 SHA-256', 'SHA-256 をコピー', 'Copy SHA-256') }}
               </button>
             </div>
             <code class="dl-checksum-val">{{ SITE_META.installerSha256 }}</code>
@@ -145,7 +147,7 @@ const auditSteps = computed(() => [
           <p class="dl-card-desc">
             {{ tt(
               '无需管理员权限、不修改系统注册表。解压到任意非系统目录即可直接双击启动，删除文件夹即彻底卸载，适合快速评估与沙盒测试。',
-              '管理者権限不要・レジストリ変更なし。任意のフォルダへ解凍するだけで即座に起動でき、フォルダ削除のみで完全にアンインストール可能です。',
+              '管理者権限不要・レジストリ変更なし。任意のフォルダに解凍するだけですぐに起動でき、フォルダごと削除するだけでクリーンに削除可能です。',
               'Requires no administrator privileges and writes nothing to registry. Unzip to any folder and launch immediately.'
             ) }}
           </p>
@@ -160,7 +162,7 @@ const auditSteps = computed(() => [
             <div class="dl-checksum-head">
               <span>SHA-256 CHECKSUM</span>
               <button type="button" class="dl-copy-btn" @click="copyHash('zip', SITE_META.portableSha256)">
-                {{ copiedKey === 'zip' ? tt('✓ 已复制', '✓ コピー済', '✓ Copied') : tt('复制 SHA-256', 'SHA-256 をコピー', 'Copy SHA-256') }}
+                {{ copiedKey === 'zip' ? tt('✓ 已复制', '✓ コピー完了', '✓ Copied') : tt('复制 SHA-256', 'SHA-256 をコピー', 'Copy SHA-256') }}
               </button>
             </div>
             <code class="dl-checksum-val">{{ SITE_META.portableSha256 }}</code>
@@ -168,12 +170,11 @@ const auditSteps = computed(() => [
         </div>
       </section>
 
-      <!-- 三步物理级离线安全自检规程 -->
       <section class="dl-audit-section">
         <div class="dl-sec-head">
           <div class="dl-kicker">VERIFICATION PROTOCOL // ZERO-TRUST SELF-AUDIT</div>
           <h2 class="dl-sec-title">
-            {{ tt('如何亲手验证「100% 本地闭环、数据零出网」？（3 步物理级自检）', '「100% ローカル完結・外部通信ゼロ」を検証する3ステップ監査手順', 'How to Independently Audit "100% Local & Zero Egress" in 3 Steps') }}
+            {{ tt('如何亲手验证「100% 本地闭环、数据零出网」？（3 步物理级自检）', '「100% ローカル完結・外部送信ゼロ」をご自身で検証する3ステップ', 'How to Independently Audit "100% Local & Zero Egress" in 3 Steps') }}
           </h2>
         </div>
 
@@ -187,21 +188,22 @@ const auditSteps = computed(() => [
         </div>
       </section>
 
-      <!-- 致日本企业 HR 与技术面试官说明栏 -->
       <section class="dl-recruiter-banner">
         <div class="dl-recruiter-left">
-          <div class="dl-kicker">FOR CORPORATE REVIEWERS & INTERVIEWERS // 採用ご担当者様・技術面接官の方へ</div>
+          <div class="dl-kicker">
+            {{ tt('FOR CORPORATE REVIEWERS & INTERVIEWERS // 致招聘负责人与技术面试官', 'FOR CORPORATE REVIEWERS & INTERVIEWERS // 採用ご担当者様・技術面接官の皆様へ', 'FOR CORPORATE REVIEWERS & INTERVIEWERS') }}
+          </div>
           <h3>
             {{ tt(
-              '办公电脑受安全策略限制无法运行 .exe？',
-              '社用PCのセキュリティ制限（SKYSEA等）により .exe の実行が制限されている場合',
+              '办公电脑受终端安全策略限制，不便运行外部 .exe 程序？',
+              '社用PCのセキュリティポリシーにより外部実行ファイル（.exe）の起動が制限されている場合',
               'Working on a Corporate PC with Strict Executable Restrictions?'
             ) }}
           </h3>
           <p>
             {{ tt(
-              '您完全无需在办公电脑上安装软件。请直接通过本站的「浏览器免安装交互工作台」体验真实三栏界面，并阅读全 5 章「工程架构白皮书」审阅源码级设计。在视频面试（Zoom / Teams / Meet）中，我非常乐意通过屏幕共享（画面共有）为您现场演示断网实机运行，并在 IDE 中走读前后端全部源码与 86+ 项单元测试。',
-              '社用PCへ無理にインストールしていただく必要は一切ございません。ブラウザ上でそのまま操作できる「対話型ワークベンチ」および全5章の「技術アーキテクチャ白書」にて内部設計をご確認いただけます。オンライン面接（Zoom / Teams / Meet）では、画面共有による完全オフライン実機デモと IDE 上での全ソースコード・単体テスト（86件以上）のリアルタイム解説を喜んで実演いたします。',
+              '您完全无需在办公电脑上安装软件。请直接通过本站的「浏览器免安装交互工作台」体验真实三栏界面，并阅读全 5 章「工程架构白皮书」审阅源码级设计。在视频面试（Zoom / Teams / Meet）中，我非常乐意通过屏幕共享为您现场演示物理断网下的实机运行，并在 IDE 中走读前后端全部源码与 86+ 项单元测试。',
+              '社用PCへ無理にインストールしていただく必要はございません。ブラウザ上でそのまま操作できる「対話型ワークベンチ」および全5章の「技術アーキテクチャ白書」にて内部設計をご高覧いただけますと幸いです。また、オンライン面接（Zoom / Teams / Google Meet）の場におきましては、画面共有にて完全オフラインでの実機ライブデモ、ならびに IDE 上での全ソースコード・単体テスト（全86件）の解説をさせていただければ幸いです。',
               'You do not need to install anything on your work machine. Explore our Zero-Install Interactive Workbench in your browser and read the 5-part Engineering Whitepaper. During remote interviews, I am happy to share my screen for a live offline demo and full IDE source walkthrough.'
             ) }}
           </p>

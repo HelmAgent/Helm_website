@@ -1,9 +1,9 @@
 ---
-title: 5. 高精細ドキュメントワークベンチと部分AIホットパッチ
-description: 右ペイン分割ワークベンチ（PreviewWorkbench.js）、WPS級書式ツールバー、SelectionAnchor プロトコル、および patch_file_selection によるインプレース更新の設計。
+title: 5. 高精細ドキュメントワークベンチと選択範囲のインプレースAI更新
+description: 右ペイン分割ワークベンチ（PreviewWorkbench.js）、Office互換書式ツールバー、SelectionAnchor プロトコル、および patch_file_selection によるインプレース部分更新の設計。
 ---
 
-# 5. 高精細ドキュメントワークベンチと部分AIホットパッチ
+# 5. 高精細ドキュメントワークベンチと選択範囲のインプレースAI更新
 
 > [!NOTE] 対応ソースコード・設計書
 > - フロントエンド：`src/components/preview/PreviewWorkbench.js`、`WpsFormatToolbar.js`、`AiSelectionPopover.js`、`editors/{DocxEditor,XlsxEditor,PptxEditor,MarkdownEditor,HtmlEditor,PdfViewer,TextEditor}.js`

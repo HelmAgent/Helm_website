@@ -112,7 +112,7 @@ export default defineConfig({
               { text: '2. 長時間自律実行エンジン (P0–P3)', link: '/ja/architecture/long-running' },
               { text: '3. マルチエージェントと Worktree 分離', link: '/ja/architecture/multi-agent-team' },
               { text: '4. 非同期2層メモリとローカルRAG', link: '/ja/architecture/memory-and-rag' },
-              { text: '5. 高精細ワークベンチと部分AIパッチ', link: '/ja/architecture/workbench' }
+              { text: '5. 高精細ワークベンチと選択範囲AI更新', link: '/ja/architecture/workbench' }
             ]
           },
           { text: 'ダウンロード・安全性検証', link: '/ja/download' }
@@ -143,7 +143,7 @@ export default defineConfig({
                 { text: '2. 長時間自律実行エンジン (P0–P3)', link: '/ja/architecture/long-running' },
                 { text: '3. マルチエージェントと Worktree 分離', link: '/ja/architecture/multi-agent-team' },
                 { text: '4. 非同期2層メモリとローカルRAG', link: '/ja/architecture/memory-and-rag' },
-                { text: '5. 高精細ワークベンチと部分AIパッチ', link: '/ja/architecture/workbench' }
+                { text: '5. 高精細ワークベンチと選択範囲AI更新', link: '/ja/architecture/workbench' }
               ]
             }
           ]

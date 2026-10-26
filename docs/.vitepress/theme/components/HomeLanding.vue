@@ -64,14 +64,15 @@ const kpiMetrics = computed(() => [
 const bentoSpecs = computed(() => [
   {
     index: 'SPEC 01 // PRIVACY & INTRANET TOPOLOGY',
-    title: tt('全本地离线与企业闭域网（LAN）原生架构', '完全オフライン＆社内閉域網（LAN）ネイティブ設計', 'Air-Gapped Local & Enterprise LAN Architecture'),
+    title: tt('全本地离线与企业内网（LAN）原生架构', '完全オフライン＆社内閉域網（LAN）ネイティブ設計', 'Air-Gapped Local & Enterprise LAN Architecture'),
     desc: tt(
       '在模型目录层将供应商划分为 local（本机 Ollama）、lan（企业内网 vLLM / SGLang / OneAPI）与 cloud 三级。免密钥直连本地与内网算力，Electron 主进程内置写盘前正则脱敏钩子与每秒 50 条 IPC 限流。',
-      'モデルカタログ層で local（端末内 Ollama）・lan（社内LAN vLLM / SGLang / OneAPI）・cloud を明確に分離。APIキー不要で社内GPUクラスタへ直結し、ログ保存前には認証トークンを正規表現で自動消去します。',
+      'モデルカタログ層で local（端末内 Ollama）・lan（社内LAN vLLM / SGLang / OneAPI）・cloud を明確に分離。APIキー不要で社内GPUクラスタへ直結し、ログ保存前には認証トークンを正規表現で自動マスキングします。',
       'Categorizes providers into local (Ollama), lan (corporate vLLM/SGLang/OneAPI), and cloud. Includes pre-write regex log scrubbing and 50 msg/sec IPC rate limiting.'
     ),
     snippetTitle: 'app/catalog/models.py · Provider Deployment Tiers',
-    snippet: `ProviderDef(
+    snippet: tt(
+      `ProviderDef(
   id="ollama", deployment="local",
   default_base_url="http://127.0.0.1:11434/v1",
   requires_key=False  # 物理断网免密直连
@@ -79,8 +80,29 @@ const bentoSpecs = computed(() => [
 ProviderDef(
   id="lan_server", deployment="lan",
   default_base_url="http://192.168.1.100:8000/v1",
-  requires_key=False  # 社内閉域網 vLLM / OneAPI
+  requires_key=False  # 企业内网私有 vLLM / OneAPI
 )`,
+      `ProviderDef(
+  id="ollama", deployment="local",
+  default_base_url="http://127.0.0.1:11434/v1",
+  requires_key=False  # 完全オフライン・APIキー不要で直結
+),
+ProviderDef(
+  id="lan_server", deployment="lan",
+  default_base_url="http://192.168.1.100:8000/v1",
+  requires_key=False  # 社内閉域網 vLLM / OneAPI クラスタ
+)`,
+      `ProviderDef(
+  id="ollama", deployment="local",
+  default_base_url="http://127.0.0.1:11434/v1",
+  requires_key=False  # Air-gapped local loopback
+),
+ProviderDef(
+  id="lan_server", deployment="lan",
+  default_base_url="http://192.168.1.100:8000/v1",
+  requires_key=False  # Corporate LAN vLLM / OneAPI
+)`
+    ),
     link: `${prefix.value}/architecture/overview`,
     linkText: tt('第 1 章：总体架构与双进程设计', '第1章：全体設計とデュアルプロセス構造', 'Ch.1: System Overview & Dual-Process')
   },
@@ -89,15 +111,27 @@ ProviderDef(
     title: tt('无侵入影子 Git 检查点与长程自省引擎', '非侵襲シャドウGitチェックポイント＆長時間自律制御', 'Non-Invasive Shadow Git Checkpoints & Anti-Loop Engine'),
     desc: tt(
       '摒弃直接 git commit 污染用户分支的做法，采用临时 GIT_INDEX_FILE 与 git commit-tree 将快照写入私有命名空间 refs/hyn/checkpoints/<session_id>。配合 TurnHub 单调 seq 重连与 StuckDetector L2 强制复盘，支撑数小时无人值守重构。',
-      'ユーザーの作業ブランチや .git/index を一切汚さず、一時 GIT_INDEX_FILE と git commit-tree で専用名前空間 refs/hyn/checkpoints/ にスナップショットを記録。TurnHub 再接続と L2 ループ防止により数時間の無人稼働を実現。',
+      'ユーザーの作業ブランチや .git/index を一切汚さず、一時 GIT_INDEX_FILE と git commit-tree で専用名前空間 refs/hyn/checkpoints/ にスナップショットを記録。TurnHub 再接続と L2 ループ検知により数時間の無人稼働を実現します。',
       'Uses temporary GIT_INDEX_FILE and git commit-tree to write snapshots into private refs/hyn/checkpoints/ without touching user HEAD or index.'
     ),
     snippetTitle: 'app/services/git_checkpoints.py · Plumbing Snapshot',
-    snippet: `GIT_INDEX_FILE=<temp_index> git add -A
+    snippet: tt(
+      `GIT_INDEX_FILE=<temp_index> git add -A
 tree=$(GIT_INDEX_FILE=<temp_index> git write-tree)
 commit=$(git commit-tree $tree -p $parent -m "hyn checkpoint")
 # 写入私有引用，用户 HEAD、分支与 git status 100% 零污染
 git update-ref refs/hyn/checkpoints/<session_id> $commit`,
+      `GIT_INDEX_FILE=<temp_index> git add -A
+tree=$(GIT_INDEX_FILE=<temp_index> git write-tree)
+commit=$(git commit-tree $tree -p $parent -m "hyn checkpoint")
+# 専用名前空間へ記録（ユーザーHEAD・作業ブランチ・git status は汚染ゼロ）
+git update-ref refs/hyn/checkpoints/<session_id> $commit`,
+      `GIT_INDEX_FILE=<temp_index> git add -A
+tree=$(GIT_INDEX_FILE=<temp_index> git write-tree)
+commit=$(git commit-tree $tree -p $parent -m "hyn checkpoint")
+# Write to private ref; zero pollution to user HEAD or git status
+git update-ref refs/hyn/checkpoints/<session_id> $commit`
+    ),
     link: `${prefix.value}/architecture/long-running`,
     linkText: tt('第 2 章：长程自治引擎 (P0–P3)', '第2章：長時間自律実行エンジン (P0–P3)', 'Ch.2: Long-Horizon Engine (P0–P3)')
   },
@@ -110,30 +144,58 @@ git update-ref refs/hyn/checkpoints/<session_id> $commit`,
       'Lead coordinates up to 4 resident teammates bound to isolated Git Worktrees via ContextVar, enforced by a strict read-only gate prior to plan approval.'
     ),
     snippetTitle: 'app/services/team_runtime.py · Plan Approval Gate',
-    snippet: `_MUTATING = {"write_file", "edit_file", "apply_patch",
+    snippet: tt(
+      `_MUTATING = {"write_file", "edit_file", "apply_patch",
              "write_docx", "edit_document", "run_powershell"}
 # 计划未获批准前，从底层剥离一切写盘与命令执行工具
 if mate.require_plan and not mate.plan_approved:
     allowed_tools = _WORKSPACE - _MUTATING`,
+      `_MUTATING = {"write_file", "edit_file", "apply_patch",
+             "write_docx", "edit_document", "run_powershell"}
+# 計画が承認されるまで、書込・コマンド実行系ツールを物理的に除外
+if mate.require_plan and not mate.plan_approved:
+    allowed_tools = _WORKSPACE - _MUTATING`,
+      `_MUTATING = {"write_file", "edit_file", "apply_patch",
+             "write_docx", "edit_document", "run_powershell"}
+# Strip all mutating & shell tools until Lead approves the plan
+if mate.require_plan and not mate.plan_approved:
+    allowed_tools = _WORKSPACE - _MUTATING`
+    ),
     link: `${prefix.value}/architecture/multi-agent-team`,
     linkText: tt('第 3 章：多智能体团队与 Worktree 隔离', '第3章：マルチエージェントと Worktree 分離', 'Ch.3: Multi-Agent Team & Worktrees')
   },
   {
     index: 'SPEC 04 // SURGICAL OFFICE & CODE WORKBENCH',
-    title: tt('WPS 级高保真文档工作台与 SelectionAnchor 局部热补丁', 'WPS級ドキュメントワークベンチ＆選択範囲AIホットパッチ', 'WPS-Grade Document Workbench & Selection AI Hot-Patch'),
+    title: tt('WPS 级高保真文档工作台与 SelectionAnchor 局部热补丁', '高精細 Office ワークベンチ＆選択範囲のインプレース AI 部分更新', 'WPS-Grade Document Workbench & Selection AI Hot-Patch'),
     desc: tt(
       '右侧分栏原生渲染并编辑 docx / xlsx / pptx / pdf / md / html。用户在画布上用鼠标划取任意段落、单元格区间或幻灯片形状，即可触发 patch_file_selection 手术刀级局部写回并通过 SSE 原地热更新，配合冻结快照异步记忆实现极速响应。',
-      '右ペインで Office 文書（docx/xlsx/pptx/pdf）を高精細描画・直接編集。マウスで選択した段落・セル範囲・PPT図形だけを構造化アンカーで特定し、SSE で画面リロードなしのインプレース更新を実行します。',
+      '右ペインで Office 文書（docx/xlsx/pptx/pdf）を高精細描画・直接編集。マウスで選択した段落・セル範囲・PPT図形だけを構造化アンカーで特定し、SSE で画面リロードなしのインプレース部分更新を実行します。',
       'In-app preview and surgical AI patching for docx, xlsx, pptx, pdf, md, and html via normalized SelectionAnchor coordinates and live SSE hot-reloading.'
     ),
     snippetTitle: 'SelectionContext · Cross-Format Surgical Anchor',
-    snippet: `{
+    snippet: tt(
+      `{
   "file": { "path": "Architecture_Review.pptx", "ext": ".pptx" },
   "locator": {
     "type": "pptx_shape",
     "slide_index": 2, "shape_id": 104, "paragraph_indices": [0]
   }
 } // -> python-pptx 精准更新单节点，保留全文档排版`,
+      `{
+  "file": { "path": "Architecture_Review.pptx", "ext": ".pptx" },
+  "locator": {
+    "type": "pptx_shape",
+    "slide_index": 2, "shape_id": 104, "paragraph_indices": [0]
+  }
+} // -> python-pptx で該当シェイプのみを更新し、全体の書式を維持`,
+      `{
+  "file": { "path": "Architecture_Review.pptx", "ext": ".pptx" },
+  "locator": {
+    "type": "pptx_shape",
+    "slide_index": 2, "shape_id": 104, "paragraph_indices": [0]
+  }
+} // -> python-pptx updates only the target shape, preserving layout`
+    ),
     link: `${prefix.value}/architecture/workbench`,
     linkText: tt('第 4 & 5 章：异步双层记忆与高保真工作台', '第4・5章：非同期2層メモリと高精細ワークベンチ', 'Ch.4 & 5: Memory & Office Workbench')
   }
@@ -153,7 +215,7 @@ if mate.require_plan and not mate.plan_approved:
             <span class="hero-sep">|</span>
             <span class="hero-status-pill">
               <span class="hero-dot"></span>
-              {{ tt('100% 本地与企业闭域网就绪', '100% ローカル・社内閉域網対応', '100% LOCAL & LAN READY') }}
+              {{ tt('100% 本地离线与企业内网就绪', '100% ローカル・社内閉域網対応', '100% LOCAL & LAN READY') }}
             </span>
           </div>
 
@@ -167,8 +229,8 @@ if mate.require_plan and not mate.plan_approved:
 
           <p class="hero-lead">
             {{ tt(
-              '专为对信息安全（情報セキュリティ）与工程可靠性有严苛要求的研发团队打造。原生直连本机 Ollama 与企业内网私有大模型（vLLM / OneAPI），集成 P0–P3 长程自省引擎、无侵入影子 Git 检查点、Git Worktree 多智能体并发团队，以及 Word / Excel / PPT 划取局部 AI 热修改工作台。',
-              '厳格な情報セキュリティ要件と高度なエンジニアリング品質を求める開発現場へ。ローカル Ollama や社内閉域網 LLM（vLLM / OneAPI）へ直結し、P0–P3 長時間自律エンジン、作業ブランチを汚さないシャドウGitチェックポイント、Git Worktree 並列チーム、Word / Excel / PPT の選択範囲AI修正ワークベンチを単一デスクトップに統合しました。',
+              '专为对信息安全与工程可靠性有严苛要求的研发团队打造。原生直连本机 Ollama 与企业内网私有大模型（vLLM / OneAPI），集成 P0–P3 长程自省引擎、无侵入影子 Git 检查点、Git Worktree 多智能体并发团队，以及 Word / Excel / PPT 划取局部 AI 热修改工作台。',
+              '厳格な情報セキュリティ要件と高度なエンジニアリング品質を求める開発現場へ。ローカル Ollama や社内閉域網 LLM（vLLM / OneAPI）へ直結し、P0–P3 長時間自律エンジン、作業ブランチを汚さないシャドウGitチェックポイント、Git Worktree 並列チーム、Word / Excel / PPT の選択範囲AI部分更新ワークベンチを単一デスクトップに統合しました。',
               'Engineered for security-critical R&D environments. Connects natively to local Ollama and corporate LAN LLMs, combining a P0–P3 long-horizon engine, non-invasive Shadow Git Checkpoints, Git Worktree multi-agent teams, and surgical in-place Office AI editing.'
             ) }}
           </p>
@@ -250,21 +312,21 @@ if mate.require_plan and not mate.plan_approved:
       </div>
     </section>
 
-    <!-- ==================== SECTION 02: 日本企业最看重的部署安全边界图解 ==================== -->
+    <!-- ==================== SECTION 02: 企业级部署安全边界图解 ==================== -->
     <section class="topology-section">
       <div class="wide-container">
         <div class="sec-header">
           <div class="sec-kicker">SECTION 01 // INFORMATION SECURITY & DEPLOYMENT TOPOLOGY</div>
           <h2 class="sec-title">
             {{ tt(
-              '满足严苛「情報セキュリティ」审查的两种零外泄部署架构',
+              '满足严苛企业信息安全审查的两种零外泄部署架构',
               '厳格な「情報セキュリティ基準」をクリアする2つのゼロ・イグレス導入構成',
               'Two Zero-Egress Deployment Topologies for Strict Enterprise Security'
             ) }}
           </h2>
           <p class="sec-sub">
             {{ tt(
-              '无论是金融/制造业的完全物理断网终端，还是研发部门的社内 GPU 局域网集群，HYN Agent 均可在不经过任何外部云端中转服务器的前提下独立运行。',
+              '无论是金融/制造业的完全物理断网终端，还是研发部门的企业内网 GPU 集群，HYN Agent 均可在不经过任何外部云端中转服务器的前提下独立运行。',
               '外部インターネットから完全に隔離されたオフライン開発端末から、社内GPUサーバー（vLLM / OneAPI）を共有するイントラネット環境まで、外部クラウド中継サーバーを一切介さずに稼働します。',
               'Whether on an air-gapped workstation or a shared internal GPU cluster, HYN Agent operates without any external cloud relay servers.'
             ) }}
@@ -311,10 +373,10 @@ if mate.require_plan and not mate.plan_approved:
               <span class="topo-code">TOPOLOGY B // CORPORATE INTRANET (LAN)</span>
               <span class="stone-badge">{{ tt('数据不出企业内网', '社内閉域網完結', 'Corporate LAN Only') }}</span>
             </div>
-            <h3 class="topo-title">{{ tt('企业内网集群模式（社内 vLLM / SGLang / RAGFlow）', '社内閉域網クラスタ共有モデル（社内 vLLM / SGLang / RAGFlow）', 'Corporate Intranet Cluster (Internal vLLM & RAGFlow)') }}</h3>
+            <h3 class="topo-title">{{ tt('企业内网集群模式（私有 vLLM / SGLang / RAGFlow）', '社内閉域網クラスタ共有モデル（社内 vLLM / SGLang / RAGFlow）', 'Corporate Intranet Cluster (Internal vLLM & RAGFlow)') }}</h3>
             <div class="topo-diagram">
               <div class="topo-boundary is-lan">
-                <div class="topo-boundary-label">{{ tt('企业防火墙内部闭域网 (192.168.x.x / 10.x.x.x · 阻断公网出站)', '社内イントラネット境界 (外部インターネットへのデータ送信ゼロ)', 'Corporate Firewall Boundary (Zero Public Internet Egress)') }}</div>
+                <div class="topo-boundary-label">{{ tt('企业防火墙内部局域网 (192.168.x.x / 10.x.x.x · 阻断公网出站)', '社内イントラネット境界 (外部インターネットへのデータ送信ゼロ)', 'Corporate Firewall Boundary (Zero Public Internet Egress)') }}</div>
                 <div class="topo-nodes">
                   <div class="topo-node">
                     <strong>HYN Desktop Client</strong>
@@ -328,11 +390,11 @@ if mate.require_plan and not mate.plan_approved:
                   <div class="topo-arrow">+</div>
                   <div class="topo-node">
                     <strong>LAN RAGFlow</strong>
-                    <span>{{ tt('社内规章与设计书库', '社内規定・設計書RAG', 'Internal Spec RAG') }}</span>
+                    <span>{{ tt('企业内部规范与设计文档库', '社内規定・設計書RAG', 'Internal Spec RAG') }}</span>
                   </div>
                 </div>
                 <div class="topo-storage-bar">
-                  <code>lan_server</code> — {{ tt('全团队共享企业内网 GPU 算力与知识库，机密代码 100% 留存社内', 'チーム全体で社内GPUリソースと知識ベースを共有し、機密コードは社外へ一切出ない', 'Share on-premise GPU clusters and RAG datasets across the team with zero external exposure') }}
+                  <code>lan_server</code> — {{ tt('全团队共享企业内网 GPU 算力与知识库，机密代码 100% 留存内网', 'チーム全体で社内GPUリソースと知識ベースを共有し、機密コードは社外へ一切出ない', 'Share on-premise GPU clusters and RAG datasets across the team with zero external exposure') }}
                 </div>
               </div>
             </div>
@@ -399,12 +461,12 @@ if mate.require_plan and not mate.plan_approved:
             <tbody>
               <tr>
                 <td><strong>{{ tt('数据主权与离线能力', 'データ主権とオフライン稼働', 'Data Sovereignty & Offline') }}</strong></td>
-                <td class="is-hyn"><strong>{{ tt('100% 本地落盘，原生支持本机 Ollama 与企业闭域网 vLLM', '100% ローカル保存。Ollama / 社内閉域網 vLLM で完全オフライン稼働', '100% local disk; native offline Ollama & corporate LAN vLLM') }}</strong></td>
-                <td>{{ tt('强制经过外部云端中转服务器，难以通过日本企业安全合规审查', '外部クラウド中継が必須で、企業の情報セキュリティ審査を通過困難', 'Requires external cloud relays; blocked by strict enterprise security') }}</td>
+                <td class="is-hyn"><strong>{{ tt('100% 本地落盘，原生支持本机 Ollama 与企业内网 vLLM', '100% ローカル保存。Ollama / 社内閉域網 vLLM で完全オフライン稼働', '100% local disk; native offline Ollama & corporate LAN vLLM') }}</strong></td>
+                <td>{{ tt('强制经过外部云端中转服务器，难以通过严苛的企业信息安全合规审查', '外部クラウド中継が必須で、企業の情報セキュリティ審査を通過困難', 'Requires external cloud relays; blocked by strict enterprise security') }}</td>
               </tr>
               <tr>
                 <td><strong>{{ tt('长任务流式容错与防死循环', '長時間ストリーム耐障害性・ループ防止', 'Long-Horizon Fault Tolerance') }}</strong></td>
-                <td class="is-hyn"><strong>{{ tt('TurnHub 单调 seq 断线回放 + stream_reset 重试清洗 + StuckDetector L2 自省', 'TurnHub seq 再接続 + stream_reset 洗浄 + StuckDetector L2 強制内省', 'TurnHub seq replay + stream_reset + StuckDetector L2 retrospective') }}</strong></td>
+                <td class="is-hyn"><strong>{{ tt('TurnHub 单调 seq 断线回放 + stream_reset 重试清洗 + StuckDetector L2 自省', 'TurnHub seq 再接続 + stream_reset 自動破棄・再試行 + StuckDetector L2 ループ検知', 'TurnHub seq replay + stream_reset + StuckDetector L2 retrospective') }}</strong></td>
                 <td>{{ tt('刷新窗口或网络抖动即丢失任务，极易在同一报错命令上无限空转', '通信瞬断で処理が失われ、同一エラーコマンドの無限ループに陥りやすい', 'Loses state on hiccups; prone to infinite tool-error loops') }}</td>
               </tr>
               <tr>
@@ -433,23 +495,29 @@ if mate.require_plan and not mate.plan_approved:
       </div>
     </section>
 
-    <!-- ==================== SECTION 05: 致日本企业招聘官与技术面试官 ==================== -->
+    <!-- ==================== SECTION 05: 致企业招聘负责人与技术面试官 ==================== -->
     <section class="executive-brief-section">
       <div class="wide-container">
         <div class="brief-box">
           <div class="brief-content">
-            <div class="sec-kicker">SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS (採用ご担当者様・技術面接官の方へ)</div>
+            <div class="sec-kicker">
+              {{ tt(
+                'SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS · 致招聘负责人与技术面试官',
+                'SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS · 採用ご担当者様・技術面接官の皆様へ',
+                'SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS'
+              ) }}
+            </div>
             <h3 class="brief-title">
               {{ tt(
-                '关于独立产品形态发布、社用 PC 免安装审阅与技术面试源码走读的说明',
+                '关于独立产品形态发布、办公电脑免安装审阅与技术面试源码走读的说明',
                 '独立プロダクトとしての配布形態、社用PCでのブラウザ検証、および面接時の全ソースコード解説について',
                 'On Standalone Distribution, Zero-Install Review, and Live Source Walkthroughs in Interviews'
               ) }}
             </h3>
             <p class="brief-text">
               {{ tt(
-                '1. 为什么搭建本官网与架构白皮书：HYN Agent 作为完整的桌面端独立产品进行打包分发，目前暂未直接公开源码仓库。为了让技术面试官在不安装客户端的前提下即可深入评估本项目的工程含金量，本站在「工程架构白皮书」中完整公开了双进程架构、P0–P3 状态机、影子检查点、Git Worktree 团队与双层记忆的源码级设计。\n2. 面试现场 Live Demo 与完整源码审阅：在远程视频面试（Zoom / Teams / Google Meet）中，我随时准备通过屏幕共享（画面共有）为您现场演示物理断网下的实机运行，并在 IDE 中直接打开前端（Electron + Vue 3）与后端（FastAPI + 86 项单元测试）完整源码进行逐模块讲解。',
-                '1. 技術白書とWebサンドボックスの公開理由：HYN Agent は完成されたデスクトップ製品として無料配布しており、現時点ではリポジトリ全体の一般公開を控えております。社用PCのセキュリティ制限により .exe の実行が難しい採用ご担当者様・技術面接官の皆様にも、ブラウザ上の「対話型ワークベンチ」と全5章の「技術アーキテクチャ白書」を通じて、内部設計の深さをそのまま検証いただけるよう構成しました。\n2. 面接での実機ライブデモ＆全ソースコード開示：オンライン面接（Zoom / Teams / Meet）の場において、画面共有による完全オフライン実機デモ、および IDE 上でのフロントエンド（Electron + Vue 3）・バックエンド（FastAPI + 単体テスト86件以上）全ソースコードのリアルタイム解説を喜んで実演いたします。',
+                '1. 为什么搭建本官网与架构白皮书：HYN Agent 作为完整的桌面端独立产品进行打包分发，目前暂未直接公开源码仓库。为了让技术面试官在不安装客户端的前提下即可深入评估本项目的工程含金量，本站在「工程架构白皮书」中完整公开了双进程架构、P0–P3 状态机、影子检查点、Git Worktree 团队与双层记忆的源码级设计。\n2. 面试现场 Live Demo 与完整源码审阅：在远程视频面试（Zoom / Teams / Google Meet）中，我随时准备通过屏幕共享为您现场演示物理断网下的实机运行，并在 IDE 中直接打开前端（Electron + Vue 3）与后端（FastAPI + 86 项单元测试）完整源码进行逐模块讲解。',
+                '1. 技術白書とWebサンドボックスの公開理由：HYN Agent は完成されたデスクトップ製品として無料配布しており、現時点ではリポジトリ全体の一般公開を控えております。社用PCのセキュリティ制限により .exe の実行が難しい採用ご担当者様・技術面接官の皆様にも、ブラウザ上の「対話型ワークベンチ」と全5章の「技術アーキテクチャ白書」を通じて、内部設計の深さをそのまま検証いただけるよう構成しました。\n2. 面接での実機ライブデモ＆全ソースコード開示：オンライン面接（Zoom / Teams / Google Meet）の場におきましては、画面共有による完全オフライン環境での実機デモンストレーション、および IDE 上でのフロントエンド（Electron + Vue 3）・バックエンド（FastAPI + 単体テスト86件）全ソースコードのライブ解説を実演いたします。',
                 '1. Why an Architecture Whitepaper & Web Sandbox: HYN Agent is packaged as a standalone desktop product. So technical reviewers on locked-down corporate PCs can evaluate its full engineering depth without installing an .exe, this site provides a 1:1 Interactive Workbench and a 5-part Whitepaper detailing our state machines and data contracts.\n2. Live Demo & Full IDE Source Walkthrough: During remote interviews (Zoom / Teams / Meet), I am ready to share my screen for a live offline demonstration and walk through the entire Electron + Vue 3 + FastAPI codebase and 86+ unit tests in my IDE.'
               ) }}
             </p>

@@ -27,7 +27,7 @@ flowchart LR
   end
 
   subgraph AsyncPipeline["非同期抽出パイプライン (memory_queue.py)"]
-    Watermark["Watermark 水位線フィルタ<br/>(擬似メッセージや冗長な tool_result を除外)"]
+    Watermark["Watermark (処理済みオフセット管理)<br/>(擬似メッセージや冗長な tool_result を除外)"]
     Extractor["非同期 LLM 差分抽出＆矛盾解消<br/>(既存メモリIDを参照し更新・削除)"]
     Sanitizer["機密情報遮断＆アトミック書込<br/>(APIキー除外 · atomic write)"]
     Watermark --> Extractor --> Sanitizer
@@ -50,7 +50,7 @@ flowchart LR
    - セッション途中で追加の記憶が必要になった場合は、`read_memory` ツールでオンデマンド取得します。
 2. **非同期バックグラウンドキュー（`memory_queue.py`）＆圧縮前救出**：
    - 抽出処理はすべてバックグラウンドキューで非同期実行され、UI応答をブロックしません。また `context_compact.py` による履歴圧縮の直前に、切り捨てられる区間を抽出キューへ投入します。
-3. **Watermark 水位線管理とメッセージ前処理（`memory_text.py`）**：
+3. **ウォーターマーク（処理済みオフセット）管理とメッセージ前処理（`memory_text.py`）**：
    - 抽出済みメッセージの位置（Watermark）を記録して重複抽出を防ぎ、`[Scheduled]` や `[Team events]`、巨大な `tool_result` を除外してユーザーの生発言を優先抽出します。
 4. **日本語・中国語対応の隣接2文字分割（CJK Bigram スコアリング）**：
    - 外部ベクトルDBに依存しない軽量検索フォールバックとして、漢字・かな文字列を隣接2文字（Bigram）に分割してスコア計算を行い、高い適合率を実現しています。
