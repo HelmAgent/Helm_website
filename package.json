@@ -1,16 +1,21 @@
 {
-  "name": "hyn-agent-website",
+  "name": "helm-flagship-website",
   "version": "1.0.0",
   "private": true,
-  "description": "HYN Agent 官方产品网站与工程架构白皮书（中 / 日 / 英三语，石澜视觉规范）",
+  "description": "Helm 官方旗舰企业级产品官网与工程架构白皮书（基于 Vue 3 + Vite 深邃科技旗舰风，支持中 / 日 / 英三语）",
   "type": "module",
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "dev": "vite",
+    "build": "vite build && node scripts/postbuild.mjs",
+    "preview": "vite preview",
+    "docs:dev": "vite",
+    "docs:build": "vite build && node scripts/postbuild.mjs",
+    "docs:preview": "vite preview"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
     "mermaid": "^11.4.1",
+    "vite": "^5.4.11",
     "vitepress": "^1.6.3",
     "vue": "^3.5.13"
   }
