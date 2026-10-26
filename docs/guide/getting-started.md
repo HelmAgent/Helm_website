@@ -9,8 +9,13 @@ Helm 采用 **Electron + Vue 3 前端 + 内嵌 Python 3.13 FastAPI 本地后端*
 
 ## 1. 获取并启动客户端
 
-请前往 [客户端下载与安全验证](/download) 获取 Windows 标准桌面安装程序：
-- **标准桌面安装版 (`Helm-Setup-1.0.0.exe`)**：支持自定义非系统盘安装路径，双击安装后自动创建桌面快捷方式。
+请前往 [客户端下载与安全验证](/download) 获取 Windows 桌面安装程序：
+- **[📥 立即下载 Windows 版 (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.1.0.0.exe)**：支持自定义非系统盘安装路径，双击安装后自动创建桌面快捷方式。
+- 🔒 **100% Local & Safe** · [✅ VirusTotal 安全扫描报告 (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) · `SHA-256: c93002b2...536ccf0f`
+
+| File / 文件 | SHA-256 Checksum | VirusTotal Scan Report |
+| :--- | :--- | :--- |
+| `Helm Setup 1.0.0.exe` | `c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f` | [✅ View Report on VirusTotal (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) |
 
 > [!TIP] 零 C 盘空间占用设计
 > Helm 默认将所有会话记录、记忆库、文件历史快照与日志存储在程序父级目录的 `.hyn_agent` 文件夹中（你也可以在 **「设置 → 存储位置」** 中一键迁移至任意磁盘路径，通过 `.hyn_agent_location.json` 引导生效）。

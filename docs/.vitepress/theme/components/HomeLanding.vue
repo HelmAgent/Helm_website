@@ -261,8 +261,8 @@ if mate.require_plan and not mate.plan_approved:
 
           <div class="hero-actions-bar">
             <a class="stone-btn is-primary hero-cta-primary" :href="`${prefix}/download`">
-              <span>{{ tt(`免费获取 Windows 客户端 (${SITE_META.version})`, `無料ダウンロード Windows版 (${SITE_META.version})`, `Download for Windows (${SITE_META.version})`) }}</span>
-              <span class="hero-cta-sub">{{ tt('Windows 64 位安装包 (.exe)', 'Windows 64bit インストーラー (.exe)', 'Windows x64 Installer (.exe)') }}</span>
+              <span>{{ tt(`免费获取 Windows 客户端 (${SITE_META.version} 内测版)`, `無料ダウンロード Windows版 (${SITE_META.version} ベータ版)`, `Download for Windows (${SITE_META.version} Beta)`) }}</span>
+              <span class="hero-cta-sub">{{ tt('Windows 64 位内测版安装包 (.exe)', 'Windows 64bit ベータ版インストーラー (.exe)', 'Windows x64 Beta Installer (.exe)') }}</span>
             </a>
 
             <a class="stone-btn hero-cta-secondary" :href="`${prefix}/architecture/overview`">
@@ -287,6 +287,14 @@ if mate.require_plan and not mate.plan_approved:
                 {{ tt('实时交互工作台 (1:1 复刻)', '対話型ワークベンチ (操作可能)', 'Interactive Workbench') }}
               </button>
             </div>
+          </div>
+
+          <div class="hero-vt-verify-line" style="margin-bottom: 20px; font-size: 12.5px; color: var(--text-secondary);">
+            🔒 <strong>100% Local &amp; Safe</strong> ·
+            <a :href="SITE_META.virusTotalUrl" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 650;">
+              {{ tt(`✅ VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore})`, `✅ VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore})`, `✅ VirusTotal Scan Report (${SITE_META.virusTotalScore})`) }}
+            </a>
+            · <code>SHA-256: {{ SITE_META.installerSha256Short }}</code>
           </div>
         </div>
 

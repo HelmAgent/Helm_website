@@ -9,8 +9,13 @@ Helm combines an **Electron + Vue 3 frontend** with an **embedded Python 3.13 Fa
 
 ## 1. Launch the Desktop Client
 
-Download the official Windows installer from [Download & Security](/en/download):
-- **Standard Installer (`Helm-Setup-1.0.0.exe`)**: Creates desktop shortcuts and sets up an isolated data directory.
+Download the Windows installer from [Download & Security](/en/download):
+- **[📥 Download for Windows (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.1.0.0.exe)**: Creates desktop shortcuts and sets up an isolated data directory.
+- 🔒 **100% Local & Safe** · [✅ VirusTotal Security Scan Report (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) · `SHA-256: c93002b2...536ccf0f`
+
+| File | SHA-256 Checksum | VirusTotal Scan Report |
+| :--- | :--- | :--- |
+| `Helm Setup 1.0.0.exe` | `c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f` | [✅ View Report on VirusTotal (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) |
 
 ## 2. Three Steps to Your First Autonomous Task
 

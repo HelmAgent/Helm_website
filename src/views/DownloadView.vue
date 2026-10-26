@@ -37,11 +37,11 @@ const auditSteps = computed(() => [
     step: 'AUDIT 01 // BINARY INTEGRITY',
     title: t('第一步：校验安装包 SHA-256 与内嵌运行时完整性', 'Step 1：SHA-256 ハッシュ値の照合と内蔵ランタイムの確認', 'Step 1: Verify SHA-256 Checksum & Embedded Runtime'),
     desc: t(
-      '下载完成后在 PowerShell 执行哈希比对，确认分发包未经任何篡改。客户端内置 Python 3.13 官方嵌入式环境，渲染进程仅通过回环地址 127.0.0.1:8001 与本机 FastAPI 子进程通信。',
-      'ダウンロード完了後、PowerShell で SHA-256 ハッシュ値を照合し、ファイルの完全性を確認します。クライアントには公式 Python 3.13 ランタイムが同梱されており、127.0.0.1:8001 のループバック通信のみで動作します。',
-      'Verify binary integrity via PowerShell SHA-256. The client bundles an official Python 3.13 runtime communicating strictly over 127.0.0.1:8001.'
+      '下载完成后在 PowerShell 执行哈希比对，确认分发包未经任何篡改（VirusTotal 57 家安全引擎扫描 0/57 零报毒）。客户端内置 Python 3.13 官方嵌入式环境，渲染进程仅通过回环地址 127.0.0.1:8001 与本机 FastAPI 子进程通信。',
+      'ダウンロード完了後、PowerShell で SHA-256 ハッシュ値を照合し、ファイルの完全性を確認します（VirusTotal 0/57 検出ゼロ検証済）。クライアントには公式 Python 3.13 ランタイムが同梱されており、127.0.0.1:8001 のループバック通信のみで動作します。',
+      'Verify binary integrity via PowerShell SHA-256 (VirusTotal 0/57 Clean). The client bundles an official Python 3.13 runtime communicating strictly over 127.0.0.1:8001.'
     ),
-    cmd: 'Get-FileHash .\\Helm-Setup-1.0.0.exe -Algorithm SHA256'
+    cmd: 'Get-FileHash .\\Helm.Setup.1.0.0.exe -Algorithm SHA256   # SHA-256: c93002b2...536ccf0f'
   },
   {
     step: 'AUDIT 02 // AIR-GAPPED EXECUTION',
@@ -81,7 +81,7 @@ const auditSteps = computed(() => [
           <div class="nx-dl-brand-info">
             <div class="nx-dl-brand-row">
               <strong>HELM DESKTOP</strong>
-              <span class="nx-badge">{{ SITE_META.version }} · {{ SITE_META.releaseDate }}</span>
+              <span class="nx-badge">{{ t(`${SITE_META.version} 内测版`, `${SITE_META.version} ベータ版`, `${SITE_META.version} Beta`) }} · {{ SITE_META.releaseDate }}</span>
               <span class="nx-badge is-emerald">{{ t('零公网中转 · 100% 本地落盘', '外部クラウド中継ゼロ', 'Zero Cloud Relay') }}</span>
             </div>
             <div class="nx-dl-slogan">"Take the Helm of Long-Running Code &amp; Docs."</div>
@@ -110,20 +110,20 @@ const auditSteps = computed(() => [
 
       <!-- 双栏下载与内置运行时规格卡片 -->
       <div class="nx-dl-cards-grid">
-        <!-- 卡片 1：标准桌面安装版 (.exe) -->
+        <!-- 卡片 1：桌面安装版 (.exe) -->
         <div class="nx-dl-card nx-glass-card is-recommended">
           <div class="nx-dl-card-top">
-            <span class="nx-badge">OFFICIAL RELEASE // WINDOWS x64 INSTALLER</span>
+            <span class="nx-badge">{{ t('BETA RELEASE // WINDOWS x64 内测版安装程序', 'BETA RELEASE // WINDOWS x64 ベータ版インストーラー', 'BETA RELEASE // WINDOWS x64 BETA INSTALLER') }}</span>
             <span class="nx-dl-size">{{ SITE_META.installerSize }}</span>
           </div>
           <h2 class="nx-dl-card-title">
-            {{ t('Windows 标准桌面安装版 (.exe)', 'Windows 標準インストーラー版 (.exe)', 'Windows Standard Installer (.exe)') }}
+            {{ t(`Windows 桌面安装版 · ${SITE_META.version} 内测版 (.exe)`, `Windows インストーラー版 · ${SITE_META.version} ベータ版 (.exe)`, `Windows Desktop Installer · ${SITE_META.version} Beta (.exe)`) }}
           </h2>
           <p class="nx-dl-card-sub">
             {{
               t(
-                '适合个人电脑与企业研发工作站长期主力使用。支持自定义非系统盘安装路径、自动创建桌面与开始菜单快捷方式，并提供完整干净的卸载向导。',
-                '個人PCや開発ワークステーションでの長期利用に最適。任意のドライブへのインストール、デスクトップショートカット自動作成、クリーンアンインストールに対応。',
+                '适合个人电脑与企业研发工作站主力使用。支持自定义非系统盘安装路径、自动创建桌面与开始菜单快捷方式，并提供完整干净的卸载向导。',
+                '個人PCや開発ワークステーションでの利用に最適。任意のドライブへのインストール、デスクトップショートカット自動作成、クリーンアンインストールに対応。',
                 'Ideal for personal PCs and developer workstations. Supports custom non-system installation paths, desktop shortcuts, and clean uninstallation.'
               )
             }}
@@ -135,20 +135,52 @@ const auditSteps = computed(() => [
             target="_blank"
             rel="noopener"
           >
-            <span>{{ t(`下载 Helm-Setup-1.0.0.exe (${SITE_META.version})`, `Helm-Setup-1.0.0.exe をダウンロード (${SITE_META.version})`, `Download Helm-Setup-1.0.0.exe (${SITE_META.version})`) }}</span>
+            <span>{{ t(`📥 立即下载 Windows 版 (.exe) · ${SITE_META.version} 内测版`, `📥 無料ダウンロード Windows版 (.exe) · ${SITE_META.version} ベータ版`, `📥 Download for Windows (.exe) · ${SITE_META.version} Beta`) }}</span>
             <span>↓</span>
           </a>
 
+          <!-- 下载按钮正下方：精致安全验证提示行 -->
+          <div class="nx-dl-verify-subline">
+            <span class="nx-dl-v-safe">🔒 <strong>100% Local &amp; Safe</strong></span>
+            <span class="nx-dl-v-sep">·</span>
+            <a
+              class="nx-dl-v-link"
+              :href="SITE_META.virusTotalUrl"
+              target="_blank"
+              rel="noopener"
+            >
+              {{
+                t(
+                  `✅ VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore})`,
+                  `✅ VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore})`,
+                  `✅ VirusTotal Scan Report (${SITE_META.virusTotalScore})`
+                )
+              }} ↗
+            </a>
+            <span class="nx-dl-v-sep">·</span>
+            <code class="nx-dl-v-sha">SHA-256: {{ SITE_META.installerSha256Short }}</code>
+          </div>
+
           <div class="nx-hash-box">
             <div class="nx-hash-top">
-              <span>SHA-256 CHECKSUM</span>
-              <button
-                type="button"
-                class="nx-hash-copy"
-                @click="copyHash('exe', SITE_META.installerSha256)"
-              >
-                {{ copiedKey === 'exe' ? t('✓ 已复制', '✓ コピー完了', '✓ Copied') : t('复制哈希', 'ハッシュをコピー', 'Copy Hash') }}
-              </button>
+              <span>SHA-256 CHECKSUM ({{ SITE_META.installerFileName }})</span>
+              <div class="nx-hash-actions">
+                <a
+                  class="nx-vt-badge-link"
+                  :href="SITE_META.virusTotalUrl"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  ✅ VirusTotal {{ SITE_META.virusTotalScore }} ↗
+                </a>
+                <button
+                  type="button"
+                  class="nx-hash-copy"
+                  @click="copyHash('exe', SITE_META.installerSha256)"
+                >
+                  {{ copiedKey === 'exe' ? t('✓ 已复制', '✓ コピー完了', '✓ Copied') : t('复制哈希', 'ハッシュをコピー', 'Copy Hash') }}
+                </button>
+              </div>
             </div>
             <code class="nx-hash-val">{{ SITE_META.installerSha256 }}</code>
           </div>
@@ -445,7 +477,76 @@ const auditSteps = computed(() => [
   width: 100%;
   height: 48px;
   font-size: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+}
+
+.nx-dl-verify-subline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.nx-dl-v-safe strong {
+  color: #34d399;
+  font-weight: 750;
+}
+
+.nx-dl-v-sep {
+  color: #475569;
+  font-weight: 700;
+}
+
+.nx-dl-v-link {
+  color: #38bdf8;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nx-dl-v-link:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+}
+
+.nx-dl-v-sha {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(5, 8, 17, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #f8fafc;
+}
+
+.nx-hash-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nx-vt-badge-link {
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #34d399;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nx-vt-badge-link:hover {
+  background: rgba(16, 185, 129, 0.24);
+  color: #6ee7b7;
 }
 
 .nx-hash-box {

@@ -53,7 +53,7 @@ const auditSteps = computed(() => [
       'ダウンロード完了後、PowerShell で SHA-256 ハッシュ値を照合し、ファイルの完全性を確認します。クライアントには公式 Python 3.13 ランタイムが同梱されており、127.0.0.1:8001 のループバック通信のみで動作します。',
       'Verify binary integrity via PowerShell SHA-256. The client bundles an official Python 3.13 runtime communicating strictly over 127.0.0.1:8001.'
     ),
-    cmd: 'Get-FileHash .\\Helm-Setup-1.0.0.exe -Algorithm SHA256'
+    cmd: 'Get-FileHash .\\Helm.Setup.1.0.0.exe -Algorithm SHA256   # SHA-256: c93002b2...536ccf0f'
   },
   {
     step: 'AUDIT 02 // AIR-GAPPED EXECUTION',
@@ -90,7 +90,7 @@ const auditSteps = computed(() => [
           <div class="dl-brand-head">
             <img class="dl-brand-icon" :src="SITE_META.brandIconUrl" alt="Helm" />
             <div>
-              <div class="dl-kicker">HELM // DISTRIBUTION &amp; SECURITY AUDIT · {{ SITE_META.version }} ({{ SITE_META.releaseDate }})</div>
+              <div class="dl-kicker">HELM // DISTRIBUTION &amp; SECURITY AUDIT · {{ tt(`${SITE_META.version} 内测版`, `${SITE_META.version} ベータ版`, `${SITE_META.version} Beta`) }} ({{ SITE_META.releaseDate }})</div>
               <h1 class="dl-title">
                 {{ tt('Helm 客户端下载与离线安全验证规程', 'Helm クライアント配布・オフライン安全性検証ガイド', 'Helm Client Distribution & Offline Security Verification') }}
               </h1>
@@ -114,13 +114,13 @@ const auditSteps = computed(() => [
       <section class="dl-grid">
         <div class="dl-card is-primary-card">
           <div class="dl-card-top">
-            <span class="dl-tier-tag">OFFICIAL RELEASE // WINDOWS x64 INSTALLER</span>
+            <span class="dl-tier-tag">{{ tt('BETA RELEASE // WINDOWS x64 内测版安装程序', 'BETA RELEASE // WINDOWS x64 ベータ版インストーラー', 'BETA RELEASE // WINDOWS x64 BETA INSTALLER') }}</span>
             <span class="dl-size-pill">{{ SITE_META.installerSize }} · Windows x64</span>
           </div>
-          <h2 class="dl-card-title">{{ tt('Windows 标准桌面安装版 (.exe)', 'Windows 標準インストーラー版 (.exe)', 'Windows Standard Installer (.exe)') }}</h2>
+          <h2 class="dl-card-title">{{ tt(`Windows 桌面安装版 · ${SITE_META.version} 内测版 (.exe)`, `Windows インストーラー版 · ${SITE_META.version} ベータ版 (.exe)`, `Windows Desktop Installer · ${SITE_META.version} Beta (.exe)`) }}</h2>
           <p class="dl-card-desc">
             {{ tt(
-              '自动配置桌面快捷方式与独立数据隔离目录（默认保存在软件同级或自定义磁盘路径，零 C 盘空间侵占）。适合个人电脑与企业开发机长期主力使用。',
+              '自动配置桌面快捷方式与独立数据隔离目录（默认保存在软件同级或自定义磁盘路径，零 C 盘空间侵占）。适合个人电脑与企业开发机主力使用。',
               'デスクトップショートカットと独立データ保存領域を自動構成します（Cドライブを圧迫しない設計）。個人PCや開発環境での日常利用に最適です。',
               'Automatically configures desktop shortcuts and an isolated data directory without bloating C: drive.'
             ) }}
@@ -128,8 +128,15 @@ const auditSteps = computed(() => [
 
           <div class="dl-btn-row">
             <a class="stone-btn is-primary dl-main-btn" :href="SITE_META.installerUrl" target="_blank" rel="noopener">
-              {{ tt('下载 Windows 安装包 (Helm-Setup-1.0.0.exe)', 'Windows インストーラー版 (Helm-Setup-1.0.0.exe) をダウンロード', 'Download Windows Installer (Helm-Setup-1.0.0.exe)') }}
+              {{ tt('📥 立即下载 Windows 版 (.exe)', '📥 無料ダウンロード Windows版 (.exe)', '📥 Download for Windows (.exe)') }}
             </a>
+            <div class="dl-vt-subline">
+              🔒 <strong>100% Local &amp; Safe</strong> ·
+              <a :href="SITE_META.virusTotalUrl" target="_blank" rel="noopener">
+                {{ tt(`✅ VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore})`, `✅ VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore})`, `✅ VirusTotal Scan Report (${SITE_META.virusTotalScore})`) }}
+              </a>
+              · <code>SHA-256: {{ SITE_META.installerSha256Short }}</code>
+            </div>
           </div>
 
           <div class="dl-checksum">

@@ -107,7 +107,7 @@ async function copyFooterText(key, text) {
             </li>
             <li>
               <a :href="`${prefix}/download`" @click.prevent="navigate(`${prefix}/download`)">
-                {{ t(`Windows 客户端下载 (${SITE_META.version})`, `Windows版ダウンロード (${SITE_META.version})`, `Download for Windows (${SITE_META.version})`) }}
+                {{ t(`Windows 客户端下载 (${SITE_META.version} 内测版)`, `Windows版ダウンロード (${SITE_META.version} ベータ版)`, `Download for Windows (${SITE_META.version} Beta)`) }}
               </a>
             </li>
             <li>

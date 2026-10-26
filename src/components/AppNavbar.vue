@@ -72,7 +72,7 @@ const isArchActive = computed(
             <span class="nx-brand-sub">AGENT HARNESS</span>
           </span>
         </a>
-        <span class="nx-version-chip">{{ SITE_META.version }}</span>
+        <span class="nx-version-chip">{{ t(`${SITE_META.version} 内测版`, `${SITE_META.version} ベータ版`, `${SITE_META.version} Beta`) }}</span>
       </div>
 
       <!-- 中部：企业级产品主导航 -->

@@ -10,7 +10,12 @@ Helm は **Electron + Vue 3 フロントエンド + Python 3.13 FastAPI ロー�
 ## 1. クライアントの起動
 
 [ダウンロード・安全性検証](/ja/download) ページより Windows インストーラーを取得して起動してください：
-- **標準インストーラー版 (`Helm-Setup-1.0.0.exe`)**：任意のドライブへのインストールおよびデスクトップショートカットの自動作成に対応しています。
+- **[📥 無料ダウンロード Windows版 (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.1.0.0.exe)**：任意のドライブへのインストールおよびデスクトップショートカットの自動作成に対応しています。
+- 🔒 **100% Local & Safe** · [✅ VirusTotal セキュリティ検査レポート (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) · `SHA-256: c93002b2...536ccf0f`
+
+| File / ファイル | SHA-256 Checksum | VirusTotal Scan Report |
+| :--- | :--- | :--- |
+| `Helm Setup 1.0.0.exe` | `c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f` | [✅ View Report on VirusTotal (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) |
 
 > [!TIP] Cドライブを圧迫しないデータ隔離設計
 > 会話履歴・2層メモリ・ファイル変更スナップショット・ログはデフォルトで親階層の `.hyn_agent` フォルダに保存されます（設定画面から任意のドライブへいつでも移行可能です）。

@@ -266,7 +266,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
             :href="`${prefix}/architecture/overview`"
             @click.prevent="navigate(`${prefix}/architecture/overview`)"
           >
-            <span class="nx-release-tag">RELEASE {{ SITE_META.version }}</span>
+            <span class="nx-release-tag">{{ t(`BETA ${SITE_META.version} 内测版`, `BETA ${SITE_META.version} ベータ版`, `BETA RELEASE ${SITE_META.version}`) }}</span>
             <span class="nx-release-text">
               {{
                 t(
@@ -317,8 +317,8 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
               :href="`${prefix}/download`"
               @click.prevent="navigate(`${prefix}/download`)"
             >
-              <span>{{ t(`免费下载 Windows 客户端 (${SITE_META.version})`, `無料ダウンロード Windows版 (${SITE_META.version})`, `Download for Windows (${SITE_META.version})`) }}</span>
-              <span class="nx-hero-btn-sub">{{ t('Windows 64 位安装包 (.exe)', 'Windows 64bit インストーラー (.exe)', 'Windows x64 Installer (.exe)') }}</span>
+              <span>{{ t(`免费下载 Windows 客户端 (${SITE_META.version} 内测版)`, `無料ダウンロード Windows版 (${SITE_META.version} ベータ版)`, `Download for Windows (${SITE_META.version} Beta)`) }}</span>
+              <span class="nx-hero-btn-sub">{{ t('Windows 64 位内测版安装包 (.exe)', 'Windows 64bit ベータ版インストーラー (.exe)', 'Windows x64 Beta Installer (.exe)') }}</span>
             </a>
 
             <a
@@ -328,6 +328,47 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
             >
               <span>{{ t('审阅工程架构白皮书 (全 5 卷)', '技術アーキテクチャ白書 (全5章)', 'Architecture Whitepaper (5 Vols)') }}</span>
               <span>→</span>
+            </a>
+          </div>
+
+          <!-- 下载按钮正下方：VirusTotal 0/57 安全扫描报告与 SHA-256 精致验证条 -->
+          <div class="nx-hero-verify-bar">
+            <span class="nx-verify-safe">🔒 <strong>100% Local &amp; Safe</strong></span>
+            <span class="nx-verify-sep">·</span>
+            <a
+              class="nx-verify-vt-link"
+              :href="SITE_META.virusTotalUrl"
+              target="_blank"
+              rel="noopener"
+            >
+              {{
+                t(
+                  `✅ VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore} 零报毒)`,
+                  `✅ VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore} 検出ゼロ)`,
+                  `✅ VirusTotal Security Scan Report (${SITE_META.virusTotalScore} Clean)`
+                )
+              }} ↗
+            </a>
+            <span class="nx-verify-sep">·</span>
+            <button
+              type="button"
+              class="nx-verify-sha-btn"
+              :title="t(`点击复制完整 SHA-256：${SITE_META.installerSha256}`, `クリックして完全な SHA-256 をコピー：${SITE_META.installerSha256}`, `Click to copy full SHA-256: ${SITE_META.installerSha256}`)"
+              @click="copyContactText('hero-sha', SITE_META.installerSha256)"
+            >
+              <code>SHA-256: {{ SITE_META.installerSha256Short }}</code>
+              <span class="nx-verify-copy-tag">
+                {{ copiedContactKey === 'hero-sha' ? t('✓ 已复制', '✓ コピー済', '✓ Copied') : t('复制', 'コピー', 'Copy') }}
+              </span>
+            </button>
+            <span class="nx-verify-sep">·</span>
+            <a
+              class="nx-verify-direct-link"
+              :href="SITE_META.installerUrl"
+              target="_blank"
+              rel="noopener"
+            >
+              {{ t('📥 直接下载 .exe', '📥 .exe 直リンク', '📥 Direct .exe') }}
             </a>
           </div>
 
@@ -773,7 +814,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
                 <tr>
                   <th>{{ t('核心评估维度', '技術評価項目', 'Evaluation Dimension') }}</th>
                   <th class="is-helm-col">
-                    <span class="nx-helm-th-badge">HELM DESKTOP ({{ SITE_META.version }})</span>
+                    <span class="nx-helm-th-badge">{{ t(`HELM DESKTOP (${SITE_META.version} 内测版)`, `HELM DESKTOP (${SITE_META.version} ベータ版)`, `HELM DESKTOP (${SITE_META.version} Beta)`) }}</span>
                   </th>
                   <th>{{ t('常规云端 Agent / 简单 API 套壳', '一般的なクラウド型 / 簡易エージェント', 'Typical Cloud / Wrapper Agents') }}</th>
                 </tr>
@@ -1419,7 +1460,89 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
   justify-content: center;
   flex-wrap: wrap;
   gap: 14px;
-  margin-bottom: 28px;
+  margin-bottom: 14px;
+}
+
+.nx-hero-verify-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 7px 16px;
+  margin-bottom: 26px;
+  border-radius: 999px;
+  background: rgba(11, 18, 34, 0.78);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  font-size: 12.5px;
+  color: #cbd5e1;
+}
+
+.nx-verify-safe {
+  color: #e2e8f0;
+}
+
+.nx-verify-safe strong {
+  color: #34d399;
+  font-weight: 750;
+}
+
+.nx-verify-sep {
+  color: #475569;
+  font-weight: 700;
+}
+
+.nx-verify-vt-link {
+  color: #38bdf8;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.nx-verify-vt-link:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+}
+
+.nx-verify-sha-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(5, 8, 17, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.nx-verify-sha-btn:hover {
+  border-color: rgba(56, 189, 248, 0.55);
+}
+
+.nx-verify-sha-btn code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: #f8fafc;
+}
+
+.nx-verify-copy-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: #38bdf8;
+}
+
+.nx-verify-direct-link {
+  font-size: 12px;
+  font-weight: 650;
+  color: #94a3b8;
+  transition: color 150ms ease;
+}
+
+.nx-verify-direct-link:hover {
+  color: #ffffff;
 }
 
 .nx-hero-btn-main {
