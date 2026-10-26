@@ -180,11 +180,11 @@ watch(
 
             <div class="nx-sb-divider"></div>
 
-            <!-- 精致的面试源码 Live Walkthrough 卡片 -->
+            <!-- 架构透明性与本地安全运行说明卡片 -->
             <button type="button" class="nx-sb-audit-btn" @click="openAuditModal">
-              <span class="nx-sb-audit-tag">⌘ LIVE SOURCE WALKTHROUGH</span>
+              <span class="nx-sb-audit-tag">⌘ ARCHITECTURE &amp; SECURITY</span>
               <strong>
-                {{ t('技术审阅与 IDE 实机源码演示说明 →', '技術審査・面接ライブ解説のご案内 →', 'Interview & IDE Source Walkthrough →') }}
+                {{ t('架构透明性与本地安全运行说明 →', '設計の透明性とローカル安全稼働について →', 'Architecture & Local Security Info →') }}
               </strong>
             </button>
           </div>
@@ -265,7 +265,7 @@ watch(
               <p>
                 {{
                   t(
-                    '免安装直接在浏览器中操作体验影子 Git 检查点、Worktree 团队与 Office 局部热补丁。',
+                    '直接在浏览器中在线操作体验影子 Git 检查点、Worktree 团队与 Office 局部热补丁。',
                     'ブラウザ上でシャドウGit、Worktreeチーム、Office部分AI更新を直接操作できます。',
                     'Test Shadow Git Checkpoints, Worktree Teams, and Office hot-patching right in your browser.'
                   )

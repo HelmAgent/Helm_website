@@ -4,7 +4,7 @@
  *
  * 设计语言（Style 1）：
  * - 对标 Cursor / Linear / Warp 与日本顶尖科技企业（LayerX / Preferred Networks）的深邃黑曜石舞台、径向星光聚光灯、1px 顶部高光玻璃卡片与交互式特性画廊。
- * - 将首页底部的「致面试官说明」升维为得体、尊贵的「Architecture Whitepaper（工程架构白皮书 · 全 5 卷）」导览矩阵 + 精致的「Developer & Interview Live Demo」弹窗触发器。
+ * - 提供「Architecture Whitepaper（工程架构白皮书 · 全 5 卷）」导览矩阵与「架构透明性与离线安全说明」弹窗触发器。
  */
 import { ref, computed } from 'vue'
 import {
@@ -23,7 +23,21 @@ const videoLoadError = ref(false)
 const videoPlayerRef = ref(null)
 const playbackRate = ref(1)
 const activeFeatureIdx = ref(0)
-const showCodeDrawer = ref(false)
+const copiedContactKey = ref('')
+
+async function copyContactText(key, text) {
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      await navigator.clipboard.writeText(text)
+      copiedContactKey.value = key
+      setTimeout(() => {
+        if (copiedContactKey.value === key) copiedContactKey.value = ''
+      }, 2200)
+    }
+  } catch {
+    // 忽略无剪贴板权限环境
+  }
+}
 
 function setVideoSpeed(rate) {
   playbackRate.value = rate
@@ -304,7 +318,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
               @click.prevent="navigate(`${prefix}/download`)"
             >
               <span>{{ t(`免费下载 Windows 客户端 (${SITE_META.version})`, `無料ダウンロード Windows版 (${SITE_META.version})`, `Download for Windows (${SITE_META.version})`) }}</span>
-              <span class="nx-hero-btn-sub">{{ t('安装版 .exe / 免安装 .zip', 'インストーラー / ポータブル版', '.exe Installer & .zip Portable') }}</span>
+              <span class="nx-hero-btn-sub">{{ t('Windows 64 位安装包 (.exe)', 'Windows 64bit インストーラー (.exe)', 'Windows x64 Installer (.exe)') }}</span>
             </a>
 
             <a
@@ -334,7 +348,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
               :class="{ 'is-active': showcaseTab === 'interactive' }"
               @click="showcaseTab = 'interactive'"
             >
-              <span>{{ t('1:1 实时交互工作台 (免安装直接操作)', '1:1 対話型ワークベンチ (ブラウザ上で操作可能)', '1:1 Interactive Desktop Workbench') }}</span>
+              <span>{{ t('1:1 实时交互工作台 (在线体验)', '1:1 対話型ワークベンチ (ブラウザ上で操作可能)', '1:1 Interactive Desktop Workbench') }}</span>
             </button>
           </div>
         </div>
@@ -600,14 +614,6 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
               >
                 {{ activeFeature.docLabel }}
               </a>
-              <button
-                type="button"
-                class="nx-btn nx-btn-glass"
-                @click="showCodeDrawer = !showCodeDrawer"
-              >
-                <span>{{ showCodeDrawer ? t('收起底层代码契约', 'コード契約を閉じる', 'Hide Source Contract') : t('检视底层源码契约', 'ソースコード契約を表示', 'Inspect Source Contract') }}</span>
-                <code>&lt;/&gt;</code>
-              </button>
             </div>
           </div>
 
@@ -636,8 +642,8 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
                 </div>
               </div>
 
-              <!-- 可按需展开或常驻预览的源码契约视窗 -->
-              <div class="nx-contract-window" :class="{ 'is-expanded': showCodeDrawer }">
+              <!-- 常驻预览的源码契约视窗 -->
+              <div class="nx-contract-window">
                 <div class="nx-contract-bar">
                   <div class="nx-contract-dots"><span></span><span></span><span></span></div>
                   <span class="nx-contract-file">{{ activeFeature.snippetTitle }}</span>
@@ -882,7 +888,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
             </a>
             <button type="button" class="nx-btn nx-btn-glass" @click="openAuditModal">
               <span>⌘</span>
-              <span>{{ t('Developer & Interview Live Demo', 'Developer & Interview Live Demo', 'Developer & Interview Live Demo') }}</span>
+              <span>{{ t('架构透明性与离线安全说明', '設計の透明性とオフライン安全仕様', 'Architecture & Offline Security Info') }}</span>
             </button>
           </div>
         </div>
@@ -909,6 +915,380 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
               <span class="nx-bp-read">{{ t('阅读本卷 →', '本章を読む →', 'Read Volume →') }}</span>
             </div>
           </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 7. 核心问答 Q&A：为什么不用 Codex 等通用工具，而要用 Helm？ ==================== -->
+    <section id="why-helm" class="nx-qa-section">
+      <div class="nx-container">
+        <div class="nx-sec-header is-center">
+          <div class="nx-sec-kicker">
+            <span class="nx-pulse-dot"></span>
+            <span>CORE FAQ // 直面最核心的选型拷问</span>
+          </div>
+          <h2 class="nx-sec-title">
+            {{
+              t(
+                '核心问答 Q&A：既然有了 Codex 等大厂工具，为什么还要用 Helm？',
+                'よくある質問 Q&A：なぜ Codex などの既存ツールではなく Helm を選ぶのか？',
+                'Core Q&A: Why Choose Helm Over Conventional Tools Like Codex?'
+              )
+            }}
+          </h2>
+          <p class="nx-sec-desc">
+            {{
+              t(
+                '通用云端 Coding Agent 擅长在公网环境下为程序员辅助编码；而 Helm 聚焦于大厂通用工具无法覆盖的「本地/内网物理合规、可视化同屏精细交付、以及为你免费量身定制垂直行业工作流」三大真实痛点。',
+                '汎用クラウド型エージェントはパブリック環境でのコーディング支援に優れていますが、Helm は「完全オフライン/社内LANのデータ主権・Office同画面でのピンポイント部分更新・業界特化ワークフローの無償共創」という3つの領域に特化しています。',
+                'While cloud coding agents excel at general coding on the public internet, Helm is purpose-built for three areas they do not cover: 100% local/LAN data sovereignty, visual in-place Office hot-patching, and free co-created vertical industry workflows.'
+              )
+            }}
+          </p>
+        </div>
+
+        <div class="nx-qa-grid">
+          <!-- Q&A 理由 01：大厂通用 vs 垂直痛点免费定制 -->
+          <div class="nx-qa-card nx-glass-card">
+            <div class="nx-qa-top">
+              <span class="nx-qa-num">REASON 01 // VERTICAL CO-CREATION</span>
+              <span class="nx-badge is-emerald">{{ t('核心差异 · 行业痛点共创', '業界特化・無償開発', 'Free Vertical Co-Creation') }}</span>
+            </div>
+            <h3 class="nx-qa-title">
+              {{
+                t(
+                  '大厂绝不会为你的细分工作流改一行代码，而 Helm 会免费为你写进下一版',
+                  '巨大テック企業は個別の業務フローに対応しないが、Helm はあなたの課題を次期標準機能として無償開発',
+                  'Big Tech Will Never Customize for Your Niche Workflow—Helm Builds Your Pain Points into the Next Release for Free'
+                )
+              }}
+            </h3>
+            <p class="nx-qa-desc">
+              {{
+                t(
+                  'Codex 等产品只做面向全球的标准化底座，你提出任何针对特定岗位（如财务多表核对、电商运营、科研数据处理、教务排课、标书审查、制造业报表）的痛点都只会石沉大海。而在 Helm，下个版本开发什么完全由用户痛点决定——高票共性需求我直接免费为你开发成官方内置功能；紧急或私密的专属需求更可一对一联系作者私人订制。',
+                  'Codex 等の汎用ツールに特定の業界業務（経理照合、EC運営、研究データ処理、教育、製造帳票など）の要望を出しても反映されません。Helm では次期バージョンの機能をユーザーの声で決定し、共通性の高い課題は無償で公式標準機能として実装します。緊急・非公開の個別要件もメールで直接カスタム受注可能です。',
+                  'General cloud tools will never tailor features for specific industry workflows (finance reconciliation, operations, research, education, or manufacturing). With Helm, users decide the roadmap: high-vote industry pain points are built into official features for free, and urgent private workflows can be custom-built on demand.'
+                )
+              }}
+            </p>
+          </div>
+
+          <!-- Q&A 理由 02：物理级数据主权与零环境折腾 -->
+          <div class="nx-qa-card nx-glass-card">
+            <div class="nx-qa-top">
+              <span class="nx-qa-num">REASON 02 // ZERO EGRESS &amp; MODEL FREEDOM</span>
+              <span class="nx-badge">{{ t('100% 本地/内网闭环', '完全ローカル・社内LAN完結', '100% Local & LAN Ready') }}</span>
+            </div>
+            <h3 class="nx-qa-title">
+              {{
+                t(
+                  '机密数据 100% 不出本机/内网，免环境折腾且不被海外账号与高昂美金订阅绑架',
+                  '機密データは100%端末・社内LAN内で完結。環境構築不要でローカル Ollama や社内 vLLM に直結',
+                  '100% Local/Intranet Data Sovereignty, Zero Environment Setup & Full Model Freedom'
+                )
+              }}
+            </h3>
+            <p class="nx-qa-desc">
+              {{
+                t(
+                  'Codex 强依赖海外网络环境、高昂美元订阅，且要求将源码与业务表格上传至外部云端，在企业研发、金融、政务、医疗及隐私敏感场景下寸步难行，还常需折腾命令行与运行环境。Helm 提供 Windows 标准 .exe 一键安装即用（内嵌完整 Python 3.13 运行时），原生支持 127.0.0.1 本机离线 Ollama、企业内网 vLLM 集群或高性价比国产大模型（DeepSeek / Kimi 等），真正实现零门槛与数据零外泄。',
+                  '海外クラウド必須・高額なドル建て課金・社外サーバーへのデータ送信を伴うツールは、厳格なセキュリティ環境では利用できません。Helm は Python 3.13 ランタイム内蔵の Windows .exe インストーラーで即座に起動し、127.0.0.1 ローカル Ollama や社内閉域網 vLLM、各種 API を自由に選択可能。外部へのデータ流出をゼロにします。',
+                  'Cloud-only agents require external data uploads, overseas connectivity, and costly subscriptions—blocking adoption in strict enterprise or air-gapped environments. Helm installs as a turnkey Windows .exe (bundling Python 3.13) and connects natively to local Ollama, corporate LAN vLLM clusters, or cost-effective APIs with zero data egress.'
+                )
+              }}
+            </p>
+          </div>
+
+          <!-- Q&A 理由 03：同屏可视化指哪改哪与零污染快照 -->
+          <div class="nx-qa-card nx-glass-card">
+            <div class="nx-qa-top">
+              <span class="nx-qa-num">REASON 03 // VISUAL WORKBENCH &amp; SHADOW GIT</span>
+              <span class="nx-badge">{{ t('同屏指哪改哪 · 零污染回滚', '同画面ピンポイント更新', 'Visual Anchor & Shadow Git') }}</span>
+            </div>
+            <h3 class="nx-qa-title">
+              {{
+                t(
+                  '告别“黑盒命令行盲改”：右侧画布可视化“指哪改哪” + 零分支污染的影子快照',
+                  'ブラックボックスなCUI操作からの脱却：右ペインでの選択範囲ピンポイント更新＆非侵襲シャドウGit',
+                  'Beyond Black-Box CLI Scripts: Visual Selection Hot-Patching & Non-Invasive Shadow Git'
+                )
+              }}
+            </h3>
+            <p class="nx-qa-desc">
+              {{
+                t(
+                  '即便让命令行 Agent 写脚本处理文档，也是看不见排版的“黑盒盲改”，经常改坏整篇格式或用临时提交污染 Git 历史。Helm 在右侧内建了高保真文档工作台，你可以一边看着渲染好的 PPT / Word / Excel，一边直接用鼠标框选某一页的某个形状或段落触发局部精准热替换；配合底层 refs/hyn/checkpoints/ 私有影子检查点与 5 版本文件快照，任何一步不满意均可毫秒级一键回退，且用户 git status 100% 保持干净。',
+                  'CUIベースのエージェントによるスクリプト生成はレイアウトが見えない「ブラックボックス処理」になりがちです。Helm は右ペインに高精細プレビューを備え、マウスで選択した PPT 図形や Word 段落だけをピンポイントで即時更新（SSEホットリロード）。さらにブランチ履歴を一切汚さないシャドウGitチェックポイントにより、いつでもワンクリックでロールバック可能です。',
+                  'Running blind CLI scripts to edit documents often breaks formatting or pollutes Git history. Helm features an integrated right-pane visual workbench where you highlight specific PPT shapes or Word paragraphs with your mouse for surgical SSE hot-patching—backed by zero-pollution Shadow Git refs and 5-version file snapshots for instant 1-click undo.'
+                )
+              }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 8. 内测共创计划、公开「3 条客观入选标准」与官方联系方式 ==================== -->
+    <section id="community" class="nx-community-section">
+      <div class="nx-container">
+        <div class="nx-sec-header is-center">
+          <div class="nx-sec-kicker">
+            <span class="nx-pulse-dot"></span>
+            <span>BETA CO-CREATION, FAIR RULES &amp; COMMUNITY // 内测共创计划与官方交流渠道</span>
+          </div>
+          <h2 class="nx-sec-title">
+            {{
+              t(
+                '内测共创计划、3 条客观入选标准与联系方式',
+                'ベータ共創プログラム・無償開発の3つの客観基準・連絡先',
+                'Beta Co-Creation Plan, 3 Objective Selection Rules & Community Channels'
+              )
+            }}
+          </h2>
+        </div>
+
+        <!-- 升级版：内测致谢与「你提痛点 · 我免费开发」共创计划完整说明 -->
+        <div class="nx-remark-banner nx-glass-card">
+          <div class="nx-remark-header">
+            <span class="nx-badge is-emerald">
+              <span class="nx-pulse-dot"></span>
+              {{ t('内测致谢与「你提痛点 · 我免费开发」共创计划', 'ベータ版への感謝と「課題提案・無償開発」共創計画', 'BETA GRATITUDE & FREE PAIN-POINT CO-CREATION PLAN') }}
+            </span>
+            <span class="nx-remark-sub-pill">
+              {{ t('共性痛点免费开发 · 私人紧急需求邮箱定制', '共通課題は無償実装 · 個別緊急要件はメール受注', 'Public Pain Points Built Free · Private Urgent Needs via Email') }}
+            </span>
+          </div>
+          <div class="nx-remark-body">
+            <p>
+              {{
+                t(
+                  '目前处于内测阶段，感谢大家的支持与使用！大家在使用中遇到任何问题都请务必提出，我会尽快优化并修复。',
+                  '現在 Helm はベータテスト段階にあります。皆様のご支援とご利用に心より感謝申し上げます。ご利用中に何か問題やご不便がございましたらぜひお知らせください。迅速に改善・修正いたします。',
+                  'Helm is currently in beta—thank you so much for your support! Please report any issues or friction you encounter during use, and I will optimize and fix them as quickly as possible.'
+                )
+              }}
+            </p>
+            <p>
+              {{
+                t(
+                  '并计划在正式版本发布后，广泛征集大家的意见，由大家来决定下一个版本的新功能——希望 AI 能够真正服务各行各业，尽可能地解决大家的真实痛点。且在后续的升级中，我也会持续积极听取大家的意见，免费为大家开发新的功能！',
+                  '正式版リリースおよび今後のアップデートでは、皆様から広くご意見を募集し、次期バージョンの新機能を皆様と共に決定していきます。AI があらゆる業界に役立ち、日々の実務の痛みを解決できるよう、皆様の声を積極的に取り入れ、新しい機能を無償で開発・提供してまいります。',
+                  'Following the official release and across future upgrades, you decide what comes next! We will actively collect your feedback so AI can serve every industry and solve real-world pain points—continuously developing requested features for everyone for free.'
+                )
+              }}
+            </p>
+            <p class="is-highlight-line">
+              {{
+                t(
+                  '💡 私人订制通道：要是大家有紧急交付、不便公开或高度定制化的私人订制功能，也请通过下方合作邮箱（785430621@qq.com）单独与我联系。',
+                  '💡 個別カスタム開発窓口：緊急の納期対応や社外秘・個別仕様のプライベートカスタム機能開発をご希望の場合は、下記のメールアドレス（785430621@qq.com）まで個別にご連絡ください。',
+                  '💡 Private Custom Development: If you have urgent, confidential, or highly tailored private custom feature requirements, please contact me directly via email (785430621@qq.com).'
+                )
+              }}
+            </p>
+          </div>
+        </div>
+
+        <!-- 专门版块：提前立规矩 · 公开「3 条客观入选标准」与透明排期机制 -->
+        <div class="nx-rules-panel nx-glass-card">
+          <div class="nx-rules-head">
+            <div>
+              <div class="nx-rules-kicker">TRANSPARENT &amp; OBJECTIVE SELECTION PROTOCOL // 公平透明原则</div>
+              <h3 class="nx-rules-title">
+                {{
+                  t(
+                    '提前立规矩：免费需求开发的「3 条客观入选标准」与大众投票机制',
+                    '公平・透明な選考ルール：無償機能開発における「3つの客観的採択基準」',
+                    'Fair & Transparent Rules: 3 Objective Criteria for Free Feature Development'
+                  )
+                }}
+              </h3>
+            </div>
+            <span class="nx-badge">
+              {{ t('同行附议投票排期 · 全程公开透明', 'コミュニティ投票順・完全透明', 'Community Vote Prioritized') }}
+            </span>
+          </div>
+
+          <div class="nx-rules-grid">
+            <div class="nx-rule-card">
+              <div class="nx-rule-num">RULE 01 // INDUSTRY COMMONALITY</div>
+              <h4 class="nx-rule-card-title">
+                {{ t('标准一：具备「行业共性」（拒绝孤立私活）', '基準 1：「業界の共通課題」であること（個別私用案件の除外）', 'Rule 1: Industry Commonality (No Isolated One-Offs)') }}
+              </h4>
+              <p class="nx-rule-card-desc">
+                {{
+                  t(
+                    '提出的痛点不能只是“仅某一家公司独有的奇葩内部流程”，而应是你所在行业（如财务、运营、科研、教育、法务、工程等）同行普遍每天都会遇到的高频痛点，开发后能作为内置功能造福整个行业。',
+                    '特定の1社のみに存在する特殊な内部手順ではなく、経理・運営・研究・教育・法務・製造など、同じ業界の多くの実務者が日々直面している共通の課題であることを基準とします。',
+                    'The pain point should not be an idiosyncratic workflow unique to a single company, but a high-frequency challenge shared by peers across your industry (finance, ops, research, education, legal, engineering) so the built-in feature benefits everyone.'
+                  )
+                }}
+              </p>
+            </div>
+
+            <div class="nx-rule-card">
+              <div class="nx-rule-num">RULE 02 // VERIFIABLE INPUT &amp; OUTPUT</div>
+              <h4 class="nx-rule-card-title">
+                {{ t('标准二：输入与输出边界清晰（附脱敏样例）', '基準 2：入出力の定義が明確であること（匿名化サンプルの提供）', 'Rule 2: Clear Input/Output Boundaries (With Sample Data)') }}
+              </h4>
+              <p class="nx-rule-card-desc">
+                {{
+                  t(
+                    '为避免需求模糊反复拉扯，提交共创需求时请明确：【所在行业/场景】+【目前耗时与痛点】+【一份脱敏的原始输入文件/表格样例】+【期望最终生成的输出成品样式】，以便快速复现与精准验收。',
+                    '曖昧な要件定義を防ぐため、【業界・業務シーン】＋【現状の手間】＋【機密情報を除いた入力ファイル例】＋【期待する出力結果のイメージ】を明記してご提案ください。',
+                    'To ensure rapid and accurate delivery, submissions must include: [Industry/Scenario] + [Current Bottleneck] + [Sanitized Input Sample File] + [Expected Output Format].'
+                  )
+                }}
+              </p>
+            </div>
+
+            <div class="nx-rule-card">
+              <div class="nx-rule-num">RULE 03 // PUBLIC SHARING &amp; VOTE QUEUE</div>
+              <h4 class="nx-rule-card-title">
+                {{ t('标准三：同意公开内置 & 按同行投票排期（私密紧急走邮箱）', '基準 3：標準機能としての公開＆投票順での開発（非公開・緊急はメールへ）', 'Rule 3: Public Built-In Sharing & Vote Queue (Private/Urgent via Email)') }}
+              </h4>
+              <p class="nx-rule-card-desc">
+                {{
+                  t(
+                    '免费开发的功能将内置于 Helm 正式版供所有人免费使用，并严格按照社群需求池中同行「+1 附议投票数」客观决定开发先后顺序。若您的需求涉及商业机密不便公开、属于企业独有业务或需紧急加塞交付，请走下方邮箱私人订制通道。',
+                    '無償開発した機能は全ユーザーが利用できるよう Helm に標準搭載され、開発の優先順位はコミュニティ内の「+1 賛同票数」で客観的に決定します。社外秘で公開できない要件や緊急の個別開発は、下記のメール窓口よりご依頼ください。',
+                    'Free co-created features are shipped in Helm for all users, prioritized objectively by community "+1" votes. If your requirement is confidential, proprietary to your business, or requires urgent expedited delivery, please use the private email channel below.'
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 三大官方联系方式与交流群卡片 -->
+        <div class="nx-community-grid">
+          <!-- 卡片 1：Helm Discord 交流群 -->
+          <div class="nx-community-card nx-glass-card">
+            <div class="nx-comm-head">
+              <span class="nx-comm-tag">DISCORD COMMUNITY</span>
+              <span class="nx-comm-status">{{ t('全球开发者社区', '公式サーバー', 'Official Server') }}</span>
+            </div>
+            <h3 class="nx-comm-title">
+              {{ t('Helm 的 Discord 交流群', 'Helm 公式 Discord 交流サーバー', 'Helm Discord Community') }}
+            </h3>
+            <p class="nx-comm-desc">
+              {{
+                t(
+                  '加入 Discord 频道，实时交流 Agent 工作流配置、反馈使用问题、探讨新功能想法并获取版本更新通知。',
+                  'Discord サーバーに参加して、ワークフローの共有、不具合や使い方の相談、新機能のアイデア提案を行えます。',
+                  'Join our Discord server to discuss workflows, report usage questions, share feature ideas, and get release updates.'
+                )
+              }}
+            </p>
+            <div class="nx-comm-value-box">
+              <span class="nx-comm-label">{{ t('Helm的discord交流群链接', 'Discord 招待リンク', 'Discord Invite Link') }}</span>
+              <code class="nx-comm-code">{{ SITE_META.discordUrl }}</code>
+            </div>
+            <div class="nx-comm-actions">
+              <a
+                class="nx-btn nx-btn-primary nx-comm-btn-main"
+                :href="SITE_META.discordUrl"
+                target="_blank"
+                rel="noopener"
+              >
+                <span>{{ t('立即加入 Discord 交流群 ↗', 'Discord に参加する ↗', 'Join Discord Server ↗') }}</span>
+              </a>
+              <button
+                type="button"
+                class="nx-btn nx-btn-glass nx-comm-btn-copy"
+                @click="copyContactText('discord', SITE_META.discordUrl)"
+              >
+                {{
+                  copiedContactKey === 'discord'
+                    ? t('✓ 已复制链接', '✓ コピー完了', '✓ Copied')
+                    : t('复制链接', 'リンクをコピー', 'Copy Link')
+                }}
+              </button>
+            </div>
+          </div>
+
+          <!-- 卡片 2：QQ 交流群 -->
+          <div class="nx-community-card nx-glass-card">
+            <div class="nx-comm-head">
+              <span class="nx-comm-tag">QQ GROUP // CN COMMUNITY</span>
+              <span class="nx-comm-status">{{ t('实时答疑与需求征集', '迅速サポート・要望受付', 'Fast Q&A & Ideas') }}</span>
+            </div>
+            <h3 class="nx-comm-title">
+              {{ t('QQ 交流群', 'QQ 開発者交流グループ', 'QQ Community Group') }}
+            </h3>
+            <p class="nx-comm-desc">
+              {{
+                t(
+                  '使用过程中遇到任何问题请积极进群联系，群内不定期征集特定需求进行免费开发，欢迎分享你的奇思妙想。',
+                  '利用上の疑問やトラブルの相談、不定期の無償機能開発リクエスト、アイデア共有のための公式 QQ グループです。',
+                  'Connect directly for troubleshooting, usage support, and periodic free feature request selection.'
+                )
+              }}
+            </p>
+            <div class="nx-comm-value-box">
+              <span class="nx-comm-label">{{ t('QQ交流群号', 'QQ グループ番号', 'QQ Group Number') }}</span>
+              <code class="nx-comm-code is-large">{{ SITE_META.qqGroup }}</code>
+            </div>
+            <div class="nx-comm-actions">
+              <button
+                type="button"
+                class="nx-btn nx-btn-primary nx-comm-btn-main"
+                @click="copyContactText('qq', SITE_META.qqGroup)"
+              >
+                <span>
+                  {{
+                    copiedContactKey === 'qq'
+                      ? t(`✓ 已复制群号：${SITE_META.qqGroup}`, `✓ コピー完了：${SITE_META.qqGroup}`, `✓ Copied: ${SITE_META.qqGroup}`)
+                      : t(`一键复制 QQ 群号 (${SITE_META.qqGroup})`, `QQグループ番号をコピー (${SITE_META.qqGroup})`, `Copy QQ Group ID (${SITE_META.qqGroup})`)
+                  }}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 卡片 3：交流合作与私人订制邮箱 -->
+          <div class="nx-community-card nx-glass-card">
+            <div class="nx-comm-head">
+              <span class="nx-comm-tag">DIRECT EMAIL // CUSTOM DEV</span>
+              <span class="nx-comm-status">{{ t('私人订制与商务合作', '個別カスタム開発・提携', 'Custom Dev & Inquiry') }}</span>
+            </div>
+            <h3 class="nx-comm-title">
+              {{ t('交流合作邮箱', '交流・提携・カスタム開発メール', 'Collaboration & Custom Dev Email') }}
+            </h3>
+            <p class="nx-comm-desc">
+              {{
+                t(
+                  '私人订制专属功能、企业内网私有化落地方案、特定业务工作流定制及深度合作交流，请直接发送邮件联系。',
+                  'プライベートなカスタム機能開発（個別受注）、社内閉域網への導入相談、業務提携についてはメールにてご連絡ください。',
+                  'For private custom feature development, tailored enterprise workflows, or partnership inquiries, please contact via email.'
+                )
+              }}
+            </p>
+            <div class="nx-comm-value-box">
+              <span class="nx-comm-label">{{ t('交流合作邮箱', '連絡先メールアドレス', 'Contact Email') }}</span>
+              <code class="nx-comm-code is-large">{{ SITE_META.contactEmail }}</code>
+            </div>
+            <div class="nx-comm-actions">
+              <a
+                class="nx-btn nx-btn-primary nx-comm-btn-main"
+                :href="`mailto:${SITE_META.contactEmail}`"
+              >
+                <span>{{ t('发送邮件联系 ✉', 'メールを送信する ✉', 'Send Email ✉') }}</span>
+              </a>
+              <button
+                type="button"
+                class="nx-btn nx-btn-glass nx-comm-btn-copy"
+                @click="copyContactText('email', SITE_META.contactEmail)"
+              >
+                {{
+                  copiedContactKey === 'email'
+                    ? t('✓ 已复制邮箱', '✓ コピー完了', '✓ Copied')
+                    : t('复制邮箱', 'アドレスをコピー', 'Copy Email')
+                }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1971,6 +2351,287 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
   color: #38bdf8;
 }
 
+/* ==================== 7. CORE Q&A: WHY HELM OVER CODEX ==================== */
+.nx-qa-section {
+  padding: 56px 0 36px;
+  scroll-margin-top: 84px;
+}
+
+.nx-qa-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.nx-qa-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  border-color: rgba(56, 189, 248, 0.28);
+}
+
+.nx-qa-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.nx-qa-num {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+}
+
+.nx-qa-title {
+  margin: 0 0 12px;
+  font-size: 18.5px;
+  font-weight: 800;
+  line-height: 1.38;
+  color: #ffffff;
+}
+
+.nx-qa-desc {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.68;
+  color: #cbd5e1;
+  flex: 1;
+}
+
+/* ==================== 8. COMMUNITY, RULES & CUSTOM DEV ==================== */
+.nx-community-section {
+  padding: 48px 0 36px;
+  scroll-margin-top: 84px;
+}
+
+.nx-remark-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 30px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.92) 45%, rgba(37, 99, 235, 0.16) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.42);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
+    0 18px 48px -12px rgba(16, 185, 129, 0.18);
+}
+
+.nx-remark-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nx-remark-sub-pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.22);
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #7dd3fc;
+}
+
+.nx-remark-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nx-remark-body p {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.7;
+  color: #f1f5f9;
+}
+
+.nx-remark-body p.is-highlight-line {
+  padding-top: 10px;
+  border-top: 1px dashed rgba(52, 211, 153, 0.3);
+  color: #34d399;
+  font-weight: 700;
+}
+
+/* 3 条客观入选标准面板 */
+.nx-rules-panel {
+  padding: 28px 30px;
+  margin-bottom: 24px;
+  border-color: rgba(56, 189, 248, 0.32);
+}
+
+.nx-rules-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.nx-rules-kicker {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  margin-bottom: 6px;
+}
+
+.nx-rules-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.nx-rules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.nx-rule-card {
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(8, 13, 26, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nx-rule-num {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 750;
+  color: #34d399;
+  letter-spacing: 0.06em;
+}
+
+.nx-rule-card-title {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 750;
+  color: #f8fafc;
+}
+
+.nx-rule-card-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #94a3b8;
+}
+
+.nx-community-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.nx-community-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+}
+
+.nx-comm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  margin-bottom: 12px;
+}
+
+.nx-comm-tag {
+  color: #38bdf8;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+}
+
+.nx-comm-status {
+  color: #34d399;
+  font-weight: 650;
+}
+
+.nx-comm-title {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.nx-comm-desc {
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: #94a3b8;
+  flex: 1;
+}
+
+.nx-comm-value-box {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(5, 8, 17, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nx-comm-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: #64748b;
+}
+
+.nx-comm-code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #7dd3fc;
+  word-break: break-all;
+}
+
+.nx-comm-code.is-large {
+  font-size: 16px;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+}
+
+.nx-comm-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nx-comm-btn-main {
+  flex: 1;
+  height: 40px;
+  font-size: 13px;
+}
+
+.nx-comm-btn-copy {
+  height: 40px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  flex: none;
+}
+
 @media (max-width: 1100px) {
   .nx-video-mission-bar {
     grid-template-columns: 1fr;
@@ -1988,8 +2649,16 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
     grid-template-columns: repeat(2, 1fr);
   }
   .nx-spotlight-panel,
-  .nx-topo-grid {
+  .nx-topo-grid,
+  .nx-qa-grid,
+  .nx-rules-grid,
+  .nx-community-grid {
     grid-template-columns: 1fr;
+  }
+  .nx-remark-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
   .nx-blueprint-grid {
     grid-template-columns: repeat(2, 1fr);

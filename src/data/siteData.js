@@ -149,9 +149,9 @@ export function getGuideChapters(lang) {
       ),
       subtitle: tt(
         lang,
-        '3 分钟零配置上手 Helm：安装版与绿色免安装版启动、本地工作区绑定与 4 档实时权限控制。',
-        '3分で完了する初期導入：インストーラー版／ポータブル版の起動、ワークスペース連携、4段階の権限モード。',
-        'Get started in 3 minutes: installer vs. portable launch, workspace binding, and 4-tier live permissions.'
+        '3 分钟零配置上手 Helm：Windows 客户端安装启动、本地工作区绑定与 4 档实时权限控制。',
+        '3分で完了する初期導入：Windows インストーラー版の起動、ワークスペース連携、4段階の権限モード。',
+        'Get started in 3 minutes: Windows client installation, workspace binding, and 4-tier live permissions.'
       )
     },
     {

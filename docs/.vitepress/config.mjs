@@ -56,14 +56,14 @@ export default defineConfig({
             {
               text: '体验与下载',
               items: [
-                { text: '浏览器免安装交互沙盒', link: '/demo' },
+                { text: '在线交互工作台', link: '/demo' },
                 { text: '安装包下载与离线验证', link: '/download' }
               ]
             }
           ],
           '/architecture/': [
             {
-              text: '工程架构白皮书（面试官专栏）',
+              text: '工程架构白皮书',
               items: [
                 { text: '1. 总体架构与桌面端双进程', link: '/architecture/overview' },
                 { text: '2. 长程自治引擎 (P0–P3)', link: '/architecture/long-running' },
@@ -103,7 +103,7 @@ export default defineConfig({
         siteTitle: 'HELM',
         nav: [
           { text: 'ホーム', link: '/ja/' },
-          { text: 'Web体験デモ (インストール不要)', link: '/ja/demo' },
+          { text: 'Web対話型ワークベンチ', link: '/ja/demo' },
           { text: 'クイックスタート', link: '/ja/guide/getting-started' },
           {
             text: '技術アーキテクチャ白書',
@@ -130,14 +130,14 @@ export default defineConfig({
             {
               text: '体験・ダウンロード',
               items: [
-                { text: 'ブラウザ対話型デモ (インストール不要)', link: '/ja/demo' },
+                { text: 'Web対話型ワークベンチ', link: '/ja/demo' },
                 { text: 'ダウンロード＆オフライン検証', link: '/ja/download' }
               ]
             }
           ],
           '/ja/architecture/': [
             {
-              text: '技術設計白書（面接官・エンジニア向け）',
+              text: '技術アーキテクチャ白書',
               items: [
                 { text: '1. 全体設計とデュアルプロセス構造', link: '/ja/architecture/overview' },
                 { text: '2. 長時間自律実行エンジン (P0–P3)', link: '/ja/architecture/long-running' },

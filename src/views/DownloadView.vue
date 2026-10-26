@@ -4,7 +4,7 @@
  *
  * 职责与协作：
  * - 对应 `/download`、`/ja/download`、`/en/download`。
- * - 提供标准桌面安装版（`.exe`）与免管理员权限绿色便携版（`.zip`）分发卡片、一键复制 SHA-256 校验值，以及日本/中国企业安全部门最看重的 3 步物理断网离线验证流程。
+ * - 提供标准桌面安装版（`.exe`）分发卡片、内嵌运行时规格说明、一键复制 SHA-256 校验值，以及 3 步物理断网离线验证流程。
  */
 import { ref, computed } from 'vue'
 import { SITE_META, tt, getLangPrefix } from '../data/siteData.js'
@@ -100,20 +100,20 @@ const auditSteps = computed(() => [
         <p class="nx-dl-desc">
           {{
             t(
-              '提供 Windows 64 位标准安装程序（.exe）与免管理员权限绿色便携包（.zip）。安装包已内嵌 Python 3.13 FastAPI 异步运行时与全套 Office 处理引擎，开箱即用，零 C 盘空间污染。',
-              'Windows 64bit 標準インストーラー版（.exe）と、管理者権限不要・レジストリ非変更のポータブル版（.zip）を提供。Python 3.13 FastAPI ランタイムを内蔵しており、追加の環境構築なしで即座に稼働します。',
-              'Available as a standard Windows x64 Installer (.exe) and a zero-admin Portable Archive (.zip). Bundles the complete Python 3.13 FastAPI runtime out of the box.'
+              '提供 Windows 64 位标准桌面安装程序（.exe）。安装包已内嵌 Python 3.13 FastAPI 异步运行时与全套 Office 文档处理引擎，无需额外部署 Python 环境，安装即用，零 C 盘空间污染。',
+              'Windows 64bit 標準インストーラー版（.exe）を提供。Python 3.13 FastAPI 非同期ランタイムと Office 文書処理エンジンをすべて内蔵しており、追加の環境構築なしでインストール後すぐに稼働します。',
+              'Available as a standard Windows x64 Installer (.exe). Bundles the complete Python 3.13 FastAPI async runtime and Office document engine out of the box.'
             )
           }}
         </p>
       </div>
 
-      <!-- 双栏下载卡片 -->
+      <!-- 双栏下载与内置运行时规格卡片 -->
       <div class="nx-dl-cards-grid">
         <!-- 卡片 1：标准桌面安装版 (.exe) -->
         <div class="nx-dl-card nx-glass-card is-recommended">
           <div class="nx-dl-card-top">
-            <span class="nx-badge">RECOMMENDED // STANDARD INSTALLER</span>
+            <span class="nx-badge">OFFICIAL RELEASE // WINDOWS x64 INSTALLER</span>
             <span class="nx-dl-size">{{ SITE_META.installerSize }}</span>
           </div>
           <h2 class="nx-dl-card-title">
@@ -122,9 +122,9 @@ const auditSteps = computed(() => [
           <p class="nx-dl-card-sub">
             {{
               t(
-                '适合个人研发工作站与长期主力使用。支持自定义非系统盘安装路径、自动创建桌面与开始菜单快捷方式，并提供完整卸载向导。',
-                '個人開発端末やメイン環境での長期利用に最適。任意のドライブへのインストール、デスクトップショートカット自動作成、クリーンアンインストールに対応。',
-                'Ideal for primary developer workstations. Supports custom non-system installation paths, desktop shortcuts, and clean uninstallation.'
+                '适合个人电脑与企业研发工作站长期主力使用。支持自定义非系统盘安装路径、自动创建桌面与开始菜单快捷方式，并提供完整干净的卸载向导。',
+                '個人PCや開発ワークステーションでの長期利用に最適。任意のドライブへのインストール、デスクトップショートカット自動作成、クリーンアンインストールに対応。',
+                'Ideal for personal PCs and developer workstations. Supports custom non-system installation paths, desktop shortcuts, and clean uninstallation.'
               )
             }}
           </p>
@@ -154,88 +154,60 @@ const auditSteps = computed(() => [
           </div>
         </div>
 
-        <!-- 卡片 2：免安装绿色便携版 (.zip) -->
+        <!-- 卡片 2：内嵌运行时与系统环境规格 -->
         <div class="nx-dl-card nx-glass-card">
           <div class="nx-dl-card-top">
-            <span class="nx-badge is-emerald">PORTABLE // ZERO ADMIN PRIVILEGE</span>
-            <span class="nx-dl-size">{{ SITE_META.portableSize }}</span>
+            <span class="nx-badge is-emerald">EMBEDDED RUNTIME // ZERO ENV SETUP</span>
+            <span class="nx-dl-size">Win 10 / 11 (x64)</span>
           </div>
           <h2 class="nx-dl-card-title">
-            {{ t('Windows 免安装绿色便携版 (.zip)', 'Windows ポータブル版・管理者権限不要 (.zip)', 'Windows Portable Archive (.zip)') }}
+            {{ t('内嵌完整运行时与环境规格说明', '内蔵ランタイム・システム環境仕様', 'Embedded Runtime & System Specifications') }}
           </h2>
           <p class="nx-dl-card-sub">
             {{
               t(
-                '专为权限受限的企业办公电脑与内网评测环境打造。无需管理员权限、不写注册表，解压至任意目录双击即可运行，用完即删零残留。',
-                'ソフトウェア導入制限のある社用PCや検証環境に最適。管理者権限不要・レジストリ変更なしで、任意のフォルダへ展開して即座に実行できます。',
-                'Designed for restricted corporate PCs and security evaluation. Requires zero admin privileges and leaves zero registry footprint.'
+                '安装包已完整打包前后端运行环境，无需在本机预先安装 Python、Node.js 或 Microsoft Office，安装完成后双击桌面图标即可直接启动。',
+                'フロントエンドとバックエンドの実行環境をすべて同梱しているため、Python や Node.js、Office の事前導入は不要です。インストール後すぐに起動できます。',
+                'Packages the complete frontend and backend runtime. No prior Python, Node.js, or Office installation is required on your machine.'
               )
             }}
           </p>
 
-          <a
-            class="nx-btn nx-btn-glass nx-dl-main-btn"
-            :href="SITE_META.portableUrl"
-            target="_blank"
-            rel="noopener"
-          >
-            <span>{{ t(`下载 Helm-Portable-1.0.0.zip (${SITE_META.version})`, `Helm-Portable-1.0.0.zip をダウンロード (${SITE_META.version})`, `Download Helm-Portable-1.0.0.zip (${SITE_META.version})`) }}</span>
-            <span>↓</span>
-          </a>
+          <ul class="nx-dl-spec-list">
+            <li>
+              <strong>{{ t('桌面宿主与界面：', 'デスクトップUI：', 'Desktop Host & UI:') }}</strong>
+              <span>Electron 44 + Vue 3.5 (Stone Workbench)</span>
+            </li>
+            <li>
+              <strong>{{ t('内嵌本地后端：', '内蔵バックエンド：', 'Embedded Backend:') }}</strong>
+              <span>Python 3.13 + FastAPI (<code>127.0.0.1:8001</code>)</span>
+            </li>
+            <li>
+              <strong>{{ t('模型接入支持：', '対応モデル：', 'Model Support:') }}</strong>
+              <span>{{ t('本机 Ollama 离线 / 企业内网 vLLM / 主流云端 API', 'ローカル Ollama / 社内LAN vLLM / 各種クラウドAPI', 'Local Ollama / Corporate LAN vLLM / Cloud APIs') }}</span>
+            </li>
+            <li>
+              <strong>{{ t('数据存储隔离：', 'データ保存領域：', 'Isolated Storage:') }}</strong>
+              <span>{{ t('默认存放于独立 .hyn_agent/ 目录，零 C 盘空间侵占', '独立した .hyn_agent/ フォルダに保存（Cドライブ非圧迫）', 'Stored in isolated .hyn_agent/ directory') }}</span>
+            </li>
+          </ul>
 
-          <div class="nx-hash-box">
-            <div class="nx-hash-top">
-              <span>SHA-256 CHECKSUM</span>
-              <button
-                type="button"
-                class="nx-hash-copy"
-                @click="copyHash('zip', SITE_META.portableSha256)"
-              >
-                {{ copiedKey === 'zip' ? t('✓ 已复制', '✓ コピー完了', '✓ Copied') : t('复制哈希', 'ハッシュをコピー', 'Copy Hash') }}
-              </button>
-            </div>
-            <code class="nx-hash-val">{{ SITE_META.portableSha256 }}</code>
+          <div class="nx-dl-spec-actions">
+            <a
+              class="nx-btn nx-btn-glass"
+              :href="`${prefix}/guide/getting-started`"
+              @click.prevent="navigate(`${prefix}/guide/getting-started`)"
+            >
+              {{ t('查看 3 分钟快速上手指南 →', '3分クイックスタートを見る →', 'Read 3-Minute Quick Start →') }}
+            </a>
+            <a
+              class="nx-btn nx-btn-glass"
+              :href="`${prefix}/architecture/overview`"
+              @click.prevent="navigate(`${prefix}/architecture/overview`)"
+            >
+              {{ t('阅读 5 卷架构白皮书', '技術白書 (全5章) を読む', 'Read Whitepaper') }}
+            </a>
           </div>
-        </div>
-      </div>
-
-      <!-- 办公电脑不便安装时的替代引导条 -->
-      <div class="nx-dl-sandbox-banner nx-glass-card">
-        <div class="nx-dl-sb-text">
-          <strong>
-            {{
-              t(
-                '当前使用受管控的企业办公电脑，暂时不便下载运行 .exe？',
-                '現在ご利用中の社用PCで実行ファイル（.exe）の起動が制限されていますか？',
-                'Using a locked-down corporate PC where .exe execution is restricted?'
-              )
-            }}
-          </strong>
-          <span>
-            {{
-              t(
-                '您无需下载任何文件，可直接在浏览器中打开「1:1 实时交互沙盒」完整体验全部桌面端工作流，或直接阅读 5 卷源码级工程架构白皮书。',
-                'インストール不要の「1:1 ブラウザ対話型デモ」にて全ワークフローをそのまま操作体験いただくか、「技術アーキテクチャ白書（全5章）」をご参照ください。',
-                'Launch our zero-install 1:1 Browser Sandbox to test all workflows online, or read the 5-volume Architecture Whitepaper.'
-              )
-            }}
-          </span>
-        </div>
-        <div class="nx-dl-sb-actions">
-          <a
-            class="nx-btn nx-btn-primary"
-            :href="`${prefix}/demo`"
-            @click.prevent="navigate(`${prefix}/demo`)"
-          >
-            {{ t('打开浏览器免安装沙盒 →', 'Web対話型デモを開く →', 'Launch Browser Sandbox →') }}
-          </a>
-          <a
-            class="nx-btn nx-btn-glass"
-            :href="`${prefix}/architecture/overview`"
-            @click.prevent="navigate(`${prefix}/architecture/overview`)"
-          >
-            {{ t('阅读 5 卷架构白皮书', '技術白書 (全5章) を読む', 'Read Whitepaper') }}
-          </a>
         </div>
       </div>
 
@@ -260,6 +232,97 @@ const auditSteps = computed(() => [
             <h3 class="nx-audit-title">{{ item.title }}</h3>
             <p class="nx-audit-desc">{{ item.desc }}</p>
             <pre class="nx-audit-cmd"><code>{{ item.cmd }}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- 社区交流群、使用反馈与私人订制联系区 -->
+      <div class="nx-dl-community-section">
+        <div class="nx-sec-header">
+          <div class="nx-sec-kicker">COMMUNITY, SUPPORT &amp; CUSTOM DEVELOPMENT</div>
+          <h2 class="nx-sec-title">
+            {{
+              t(
+                '交流群、问题反馈与私人订制开发',
+                'コミュニティ・サポート・カスタム機能開発のご相談',
+                'Community Channels, Issue Feedback & Custom Development'
+              )
+            }}
+          </h2>
+        </div>
+
+        <div class="nx-dl-remark-box nx-glass-card">
+          <span class="nx-badge is-emerald">{{ t('内测致谢与痛点共创计划', 'ベータ感謝＆無償共創計画', 'BETA & FREE CO-CREATION') }}</span>
+          <p class="nx-dl-remark-text">
+            {{
+              t(
+                '目前处于内测阶段，感谢大家的支持与使用！遇到任何问题请务必提出，我会尽快优化修复。正式版发布及后续升级中，将由大家的真实痛点决定下一版新功能——具有行业共性、高频高票的痛点需求（符合「行业共性、边界清晰、公开内置」3 条标准），我会免费为大家开发为官方内置功能！若有紧急且私人订制的功能需求，请通过邮箱（785430621@qq.com）单独与我联系。',
+                '現在ベータテスト段階にあり、皆様のご支援に心より感謝申し上げます。不具合やご要望はぜひお知らせください。正式版および今後のアップデートでは、業界共通の課題や賛同票の多いご要望を無償で標準機能として開発いたします。緊急・非公開の個別カスタム機能開発はメール（785430621@qq.com）にて個別にご連絡ください。',
+                'Currently in beta—thank you for your support! Please report any issues for rapid fixes. For the official release and future updates, you decide the roadmap: high-vote industry pain points meeting our 3 fair criteria will be built into official features for free! For urgent or private custom features, please contact me directly via email (785430621@qq.com).'
+              )
+            }}
+          </p>
+        </div>
+
+        <div class="nx-dl-comm-grid">
+          <div class="nx-dl-comm-card nx-glass-card">
+            <div class="nx-dl-comm-label">{{ t('Helm的discord交流群链接', 'Helm Discord 交流サーバー', 'Helm Discord Community') }}</div>
+            <code class="nx-dl-comm-val">{{ SITE_META.discordUrl }}</code>
+            <div class="nx-dl-comm-actions">
+              <a
+                class="nx-btn nx-btn-primary nx-dl-comm-btn"
+                :href="SITE_META.discordUrl"
+                target="_blank"
+                rel="noopener"
+              >
+                {{ t('加入 Discord 交流群 ↗', 'Discord に参加 ↗', 'Join Discord ↗') }}
+              </a>
+              <button
+                type="button"
+                class="nx-btn nx-btn-glass nx-dl-comm-btn"
+                @click="copyHash('discord', SITE_META.discordUrl)"
+              >
+                {{ copiedKey === 'discord' ? t('✓ 已复制', '✓ コピー済', '✓ Copied') : t('复制链接', 'コピー', 'Copy') }}
+              </button>
+            </div>
+          </div>
+
+          <div class="nx-dl-comm-card nx-glass-card">
+            <div class="nx-dl-comm-label">{{ t('QQ交流群号', 'QQ 開発者交流グループ番号', 'QQ Community Group ID') }}</div>
+            <code class="nx-dl-comm-val is-em">{{ SITE_META.qqGroup }}</code>
+            <div class="nx-dl-comm-actions">
+              <button
+                type="button"
+                class="nx-btn nx-btn-primary nx-dl-comm-btn"
+                @click="copyHash('qq', SITE_META.qqGroup)"
+              >
+                {{
+                  copiedKey === 'qq'
+                    ? t(`✓ 已复制群号：${SITE_META.qqGroup}`, `✓ コピー完了：${SITE_META.qqGroup}`, `✓ Copied: ${SITE_META.qqGroup}`)
+                    : t(`复制 QQ 群号 (${SITE_META.qqGroup})`, `QQグループ番号をコピー (${SITE_META.qqGroup})`, `Copy QQ Group ID (${SITE_META.qqGroup})`)
+                }}
+              </button>
+            </div>
+          </div>
+
+          <div class="nx-dl-comm-card nx-glass-card">
+            <div class="nx-dl-comm-label">{{ t('交流合作邮箱（私人订制功能请联系）', '提携・カスタム開発メール', 'Collaboration & Custom Dev Email') }}</div>
+            <code class="nx-dl-comm-val is-em">{{ SITE_META.contactEmail }}</code>
+            <div class="nx-dl-comm-actions">
+              <a
+                class="nx-btn nx-btn-primary nx-dl-comm-btn"
+                :href="`mailto:${SITE_META.contactEmail}`"
+              >
+                {{ t('发送邮件联系 ✉', 'メール送信 ✉', 'Send Email ✉') }}
+              </a>
+              <button
+                type="button"
+                class="nx-btn nx-btn-glass nx-dl-comm-btn"
+                @click="copyHash('email', SITE_META.contactEmail)"
+              >
+                {{ copiedKey === 'email' ? t('✓ 已复制', '✓ コピー済', '✓ Copied') : t('复制邮箱', 'コピー', 'Copy') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -333,7 +396,7 @@ const auditSteps = computed(() => [
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  margin-bottom: 28px;
+  margin-bottom: 56px;
 }
 
 .nx-dl-card {
@@ -421,36 +484,37 @@ const auditSteps = computed(() => [
   word-break: break-all;
 }
 
-.nx-dl-sandbox-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 24px 28px;
-  margin-bottom: 64px;
-  border-color: rgba(56, 189, 248, 0.28);
-}
-
-.nx-dl-sb-text {
-  max-width: 740px;
+.nx-dl-spec-list {
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.nx-dl-sb-text strong {
-  font-size: 15.5px;
-  color: #ffffff;
-}
-
-.nx-dl-sb-text span {
-  font-size: 13.5px;
-  color: #94a3b8;
+  gap: 10px;
+  font-size: 13px;
   line-height: 1.55;
+  color: #cbd5e1;
+  flex: 1;
 }
 
-.nx-dl-sb-actions {
+.nx-dl-spec-list li {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(5, 8, 17, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.nx-dl-spec-list strong {
+  color: #f8fafc;
+}
+
+.nx-dl-spec-list code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: #38bdf8;
+}
+
+.nx-dl-spec-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -503,10 +567,87 @@ const auditSteps = computed(() => [
   overflow-x: auto;
 }
 
+.nx-dl-community-section {
+  margin-top: 56px;
+}
+
+.nx-dl-remark-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  border-color: rgba(52, 211, 153, 0.35);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.88) 100%);
+}
+
+.nx-dl-remark-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.65;
+  color: #f8fafc;
+}
+
+.nx-dl-comm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.nx-dl-comm-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nx-dl-comm-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.nx-dl-comm-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #7dd3fc;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(5, 8, 17, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  word-break: break-all;
+}
+
+.nx-dl-comm-val.is-em {
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.nx-dl-comm-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.nx-dl-comm-btn {
+  flex: 1;
+  height: 38px;
+  font-size: 12.5px;
+}
+
 @media (max-width: 1024px) {
   .nx-dl-cards-grid,
-  .nx-audit-grid {
+  .nx-audit-grid,
+  .nx-dl-comm-grid {
     grid-template-columns: 1fr;
+  }
+  .nx-dl-remark-box {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

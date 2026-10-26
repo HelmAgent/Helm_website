@@ -5,7 +5,7 @@ description: Helm の Electron 44 + Vue 3 + FastAPI (Python 3.13) 構成、フ�
 
 # 1. 全体設計とデュアルプロセス構造
 
-> [!NOTE] 技術白書ガイド（エンジニア面接官・テックリードの方へ）
+> [!NOTE] 技術アーキテクチャ白書ガイド
 > 本シリーズ（全5章）では、**Helm** の内部モジュール構成、状態マシン、およびエッジケースに対するエンジニアリング判断をソースコードレベルで詳述します。本章はフロントエンド `hyn_agent_frontend/main.js`、`src/i18n.js` およびバックエンド `hyn_agent_backend/app/main.py`、`app/core/*` に対応しています。
 
 ## 1.1 プロセス分離トポロジー（3層アーキテクチャ）

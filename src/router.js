@@ -4,7 +4,7 @@
  * 职责与协作：
  * - 完整兼容所有既有 URL（`/`、`/ja/`、`/en/`、`/demo`、`/download`、`/architecture/*`、`/guide/*`）。
  * - 支持三语一键无刷新同页切换（例如从 `/architecture/long-running` 切到日语自动跳转 `/ja/architecture/long-running`）。
- * - 统一管理面试官「技术审阅与实机源码演示（Engineering Audit & Live IDE Demo）」弹窗状态。
+ * - 统一管理「架构透明性与本地安全运行说明」弹窗状态。
  */
 import { ref, computed } from 'vue'
 

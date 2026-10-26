@@ -57,23 +57,23 @@ const scenarios = computed(() => [
         <div class="nx-demo-head-left">
           <div class="nx-sec-kicker">
             <span class="nx-pulse-dot"></span>
-            <span>ZERO-INSTALL INTERACTIVE WORKBENCH // 1:1 STONE DESKTOP REPLICA</span>
+            <span>INTERACTIVE WEB WORKBENCH // 1:1 STONE DESKTOP REPLICA</span>
           </div>
           <h1 class="nx-demo-title">
             {{
               t(
-                'Helm 浏览器免安装交互沙盒（1:1 桌面端实机复刻）',
-                'Helm ブラウザ対話型デモ（インストール不要・実機UI 1:1再現）',
-                'Helm Zero-Install Interactive Web Sandbox (1:1 Desktop UI Replica)'
+                'Helm 在线交互工作台（1:1 桌面端实机复刻）',
+                'Helm Web対話型ワークベンチ（実機UI 1:1再現）',
+                'Helm Interactive Web Workbench (1:1 Desktop UI Replica)'
               )
             }}
           </h1>
           <p class="nx-demo-sub">
             {{
               t(
-                '无需在办公电脑上安装客户端，即可直接在下方 1320px 宽屏工作台中切换三大工程场景、展开工具调用栈、对比影子 Git 检查点、触发 PPT 划词局部 AI 热更新或审批多智能体 Worktree 计划。',
-                '社用PCへのインストール不要で、1320px ワイド画面のまま3つの主要シナリオを切り替え、ツール実行ログの展開、シャドウGit差分の比較、PPTの選択範囲AI修正、マルチエージェント計画の承認を直接操作いただけます。',
-                'Test all core workflows directly in your browser without installing any binaries: switch across 3 engineering scenarios, inspect Shadow Git diffs, trigger surgical PPT AI patches, and approve Git Worktree teammate plans.'
+                '可直接在下方 1320px 宽屏工作台中切换三大工程场景、展开工具调用栈、对比影子 Git 检查点、触发 PPT 划词局部 AI 热更新或审批多智能体 Worktree 计划。',
+                '1320px ワイド画面のまま3つの主要シナリオを切り替え、ツール実行ログの展開、シャドウGit差分の比較、PPTの選択範囲AI修正、マルチエージェント計画の承認を直接操作いただけます。',
+                'Test all core workflows directly in your browser: switch across 3 engineering scenarios, inspect Shadow Git diffs, trigger surgical PPT AI patches, and approve Git Worktree teammate plans.'
               )
             }}
           </p>

@@ -262,7 +262,7 @@ if mate.require_plan and not mate.plan_approved:
           <div class="hero-actions-bar">
             <a class="stone-btn is-primary hero-cta-primary" :href="`${prefix}/download`">
               <span>{{ tt(`免费获取 Windows 客户端 (${SITE_META.version})`, `無料ダウンロード Windows版 (${SITE_META.version})`, `Download for Windows (${SITE_META.version})`) }}</span>
-              <span class="hero-cta-sub">{{ tt('含安装版 .exe 与免安装 .zip', 'インストーラー版 / ポータブル版', 'Installer .exe & Portable .zip') }}</span>
+              <span class="hero-cta-sub">{{ tt('Windows 64 位安装包 (.exe)', 'Windows 64bit インストーラー (.exe)', 'Windows x64 Installer (.exe)') }}</span>
             </a>
 
             <a class="stone-btn hero-cta-secondary" :href="`${prefix}/architecture/overview`">
@@ -321,9 +321,9 @@ if mate.require_plan and not mate.plan_approved:
             <h3>{{ tt('将实机录屏放入 docs/public/media/hero-demo.mp4 即可自动播放', 'docs/public/media/hero-demo.mp4 に動画を配置すると自動再生されます', 'Place your recording at docs/public/media/hero-demo.mp4 to auto-enable') }}</h3>
             <p>
               {{ tt(
-                '在放入视频文件前，访客与面试官可直接使用「实时交互工作台」完整操作体验离线重构、影子 Git 检查点与 PPT 划取 AI 局部修改。',
-                '動画配置前でも、「対話型ワークベンチ」タブにてオフライン改修・シャドウチェックポイント・Office部分AI修正をそのまま操作体験いただけます。',
-                'Until you place the MP4 file, visitors can use the Interactive Workbench tab to test all workflows directly in the browser.'
+                '访客可直接使用「实时交互工作台」完整操作体验离线重构、影子 Git 检查点与 PPT 划取 AI 局部修改。',
+                '「対話型ワークベンチ」タブにてオフライン改修・シャドウチェックポイント・Office部分AI修正をそのまま操作体験いただけます。',
+                'Visitors can use the Interactive Workbench tab to test all workflows directly in the browser.'
               ) }}
             </p>
             <button type="button" class="stone-btn is-primary" @click="showcaseTab = 'interactive'">
@@ -531,30 +531,30 @@ if mate.require_plan and not mate.plan_approved:
       </div>
     </section>
 
-    <!-- ==================== SECTION 05: 致企业招聘负责人与技术面试官 ==================== -->
+    <!-- ==================== SECTION 05: 架构透明性与本地隐私保障说明 ==================== -->
     <section class="executive-brief-section">
       <div class="wide-container">
         <div class="brief-box">
           <div class="brief-content">
             <div class="sec-kicker">
               {{ tt(
-                'SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS · 致招聘负责人与技术面试官',
-                'SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS · 採用ご担当者様・技術面接官の皆様へ',
-                'SECTION 04 // FOR RECRUITERS & TECHNICAL INTERVIEWERS'
+                'SECTION 04 // ARCHITECTURE TRANSPARENCY & LOCAL PRIVACY',
+                'SECTION 04 // ARCHITECTURE TRANSPARENCY & LOCAL PRIVACY',
+                'SECTION 04 // ARCHITECTURE TRANSPARENCY & LOCAL PRIVACY'
               ) }}
             </div>
             <h3 class="brief-title">
               {{ tt(
-                '关于独立产品形态发布、办公电脑免安装审阅与技术面试源码走读的说明',
-                '独立プロダクトとしての配布形態、社用PCでのブラウザ検証、および面接時の全ソースコード解説について',
-                'On Standalone Distribution, Zero-Install Review, and Live Source Walkthroughs in Interviews'
+                '关于独立桌面客户端发布、在线交互工作台与本地离线隐私安全的说明',
+                '独立デスクトップ製品の配布、Web対話型ワークベンチ、およびローカル安全稼働について',
+                'On Standalone Desktop Distribution, Interactive Workbench, and Local Privacy'
               ) }}
             </h3>
             <p class="brief-text">
               {{ tt(
-                '1. 为什么搭建本官网与架构白皮书：Helm 作为完整的桌面端独立产品进行打包分发，目前暂未直接公开源码仓库。为了让技术面试官在不安装客户端的前提下即可深入评估本项目的工程含金量，本站在「工程架构白皮书」中完整公开了双进程架构、P0–P3 状态机、影子检查点、Git Worktree 团队与双层记忆的源码级设计。\n2. 面试现场 Live Demo 与完整源码审阅：在远程视频面试（Zoom / Teams / Google Meet）中，我随时准备通过屏幕共享为您现场演示物理断网下的实机运行，并在 IDE 中直接打开前端（Electron + Vue 3）与后端（FastAPI + 86 项单元测试）完整源码进行逐模块讲解。',
-                '1. 技術白書とWebサンドボックスの公開理由：Helm は完成されたデスクトップ製品として無料配布しており、現時点ではリポジトリ全体の一般公開を控えております。社用PCのセキュリティ制限により .exe の実行が難しい採用ご担当者様・技術面接官の皆様にも、ブラウザ上の「対話型ワークベンチ」と全5章の「技術アーキテクチャ白書」を通じて、内部設計の深さをそのまま検証いただけるよう構成しました。\n2. 面接での実機ライブデモ＆全ソースコード開示：オンライン面接（Zoom / Teams / Google Meet）の場におきましては、画面共有による完全オフライン環境での実機デモンストレーション、および IDE 上でのフロントエンド（Electron + Vue 3）・バックエンド（FastAPI + 単体テスト86件）全ソースコードのライブ解説を実演いたします。',
-                '1. Why an Architecture Whitepaper & Web Sandbox: Helm is packaged as a standalone desktop product. So technical reviewers on locked-down corporate PCs can evaluate its full engineering depth without installing an .exe, this site provides a 1:1 Interactive Workbench and a 5-part Whitepaper detailing our state machines and data contracts.\n2. Live Demo & Full IDE Source Walkthrough: During remote interviews (Zoom / Teams / Meet), I am ready to share my screen for a live offline demonstration and walk through the entire Electron + Vue 3 + FastAPI codebase and 86+ unit tests in my IDE.'
+                '1. 架构透明披露与在线交互工作台：Helm 作为完整的桌面端独立软件提供 Windows 安装包下载。为了让用户在下载前即可直观了解软件功能与底层可靠性，本站在「工程架构白皮书」中完整公开了双进程架构、P0–P3 状态机、影子检查点、Git Worktree 团队与双层记忆的技术实现。\n2. 物理断网实机运行与隐私安全保障：Helm 内置 Python 3.13 FastAPI 异步运行时与 86+ 项自动化核心单测，支持连接本机 Ollama 或企业内网大模型在物理断网环境下独立闭环运行，确保个人文档与企业核心代码 100% 留存本地。',
+                '1. 技術白書とWebワークベンチの公開：Helm は完成されたデスクトップ製品として Windows インストーラー版を配布しています。導入前に操作感や内部設計の信頼性を確認いただけるよう、ブラウザ上の「対話型ワークベンチ」と全5章の「技術アーキテクチャ白書」を公開しています。\n2. 完全オフライン稼働とプライバシー保護：Python 3.13 FastAPI ランタイムと自動単体テスト86件で検証されたコアエンジンを内蔵し、ローカル Ollama や社内閉域網 LLM と連携して外部送信ゼロで安全に稼働します。',
+                '1. Architecture Whitepaper & Web Workbench: Helm is distributed as a standalone Windows desktop product. This site provides a 1:1 Interactive Workbench and a 5-part Whitepaper detailing our state machines and data contracts.\n2. 100% Local Privacy & Reliability: Backed by an embedded Python 3.13 FastAPI runtime and 86+ unit tests, Helm runs completely offline with local Ollama or corporate LAN models.'
               ) }}
             </p>
           </div>
@@ -563,7 +563,7 @@ if mate.require_plan and not mate.plan_approved:
               {{ tt('审阅 5 篇工程架构白皮书 →', '技術アーキテクチャ白書 (全5章) へ →', 'Read 5-Part Whitepaper →') }}
             </a>
             <a class="stone-btn" :href="`${prefix}/demo`">
-              {{ tt('打开全屏交互沙盒 (/demo)', '全画面ワークベンチを開く (/demo)', 'Open Fullscreen Sandbox (/demo)') }}
+              {{ tt('打开在线交互工作台 (/demo)', '全画面ワークベンチを開く (/demo)', 'Open Interactive Workbench (/demo)') }}
             </a>
             <a class="stone-btn" :href="`${prefix}/download`">
               {{ tt('查看安装包与 SHA-256 校验', 'ダウンロード・SHA-256検証へ', 'Download & SHA-256 Checksums') }}
@@ -1160,7 +1160,7 @@ if mate.require_plan and not mate.plan_approved:
   background: var(--bg-selected);
 }
 
-/* SECTION 05: 面试官简报卡 */
+/* SECTION 05: 架构与安全说明卡 */
 .executive-brief-section {
   padding: 56px 24px 72px;
   background: #ffffff;

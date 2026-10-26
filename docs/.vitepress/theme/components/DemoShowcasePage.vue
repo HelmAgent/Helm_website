@@ -64,15 +64,15 @@ const specs = computed(() => [
     <div class="demo-container">
       <header class="demo-header">
         <div class="demo-header-left">
-          <div class="demo-kicker">HELM // ZERO-INSTALL BROWSER SANDBOX · 1:1 STONE UI REPLICA</div>
+          <div class="demo-kicker">HELM // INTERACTIVE WEB WORKBENCH · 1:1 STONE UI REPLICA</div>
           <h1 class="demo-title">
-            {{ tt('Helm 浏览器免安装交互工作台', 'Helm ブラウザ対話型ワークベンチ（インストール不要）', 'Helm Interactive Desktop Workbench (Zero Install)') }}
+            {{ tt('Helm 在线交互工作台', 'Helm ブラウザ対話型ワークベンチ', 'Helm Interactive Desktop Workbench') }}
           </h1>
           <p class="demo-sub">
             {{ tt(
-              '针对企业办公电脑受安全策略限制不便安装外部可执行文件的场景，下方工作台以 1:1 比例完整还原了 Helm 桌面客户端的「石澜」界面与三栏协同交互。您可直接点击顶部场景或开启「自动巡航演示」。',
-              '社内セキュリティ規定により外部実行ファイル（.exe）の導入が制限されている環境向けに、Helm デスクトップ版の「石瀾（Stone）」3ペインUIをブラウザ上で完全再現しました。上部のシナリオ切替または「自動ツアー再生」からお試しください。',
-              'Designed for corporate environments where installing external executables is restricted. Interact directly with Helm’s 3-pane Stone UI or launch the Auto-Play Tour below.'
+              '下方工作台以 1:1 比例完整还原了 Helm 桌面客户端的「石澜」界面与三栏协同交互。您可直接点击顶部场景或开启「自动巡航演示」。',
+              'Helm デスクトップ版の「石瀾（Stone）」3ペインUIをブラウザ上で完全再現しました。上部のシナリオ切替または「自動ツアー再生」からお試しください。',
+              'Interact directly with Helm’s 3-pane Stone UI or launch the Auto-Play Tour below.'
             ) }}
           </p>
         </div>

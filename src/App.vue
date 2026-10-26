@@ -4,7 +4,7 @@
  *
  * 职责与协作：
  * - 承载「风格 1：深邃科技旗舰风」全局星光聚光灯背景（`.nx-ambient-backdrop`）。
- * - 统一调度 `AppNavbar`、四大核心视图（`HomeView` / `DemoView` / `DownloadView` / `WhitepaperView`）、`AppFooter` 以及面试官源码走读弹窗 `AuditModal`。
+ * - 统一调度 `AppNavbar`、四大核心视图（`HomeView` / `DemoView` / `DownloadView` / `WhitepaperView`）、`AppFooter` 以及架构安全说明弹窗 `AuditModal`。
  */
 import { watchEffect } from 'vue'
 import { useAppRouter } from './router.js'
@@ -52,7 +52,7 @@ watchEffect(() => {
     <!-- 企业级多栏大页脚 -->
     <AppFooter />
 
-    <!-- 精致的「Developer & Interview Live Demo」高管弹窗 -->
+    <!-- 架构透明性与本地安全运行说明弹窗 -->
     <AuditModal />
   </div>
 </template>

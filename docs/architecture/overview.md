@@ -5,8 +5,8 @@ description: 深入解析 Helm 的 Electron 44 + Vue 3 + FastAPI (Python 3.13) �
 
 # 1. 总体架构与桌面端双进程设计
 
-> [!NOTE] 工程白皮书导读（致技术面试官）
-> 本系列共 5 篇工程架构文档，旨在向技术审阅者完整还原 **Helm** 的源码级模块划分、状态机流转与工程边界处理。本文对应前端 `hyn_agent_frontend/main.js`、`src/i18n.js` 以及后端 `hyn_agent_backend/app/main.py`、`app/core/*`。
+> [!NOTE] 工程架构白皮书导读
+> 本系列共 5 篇工程架构文档，旨在向广大开发者与企业技术团队完整解析 **Helm** 的模块划分、状态机流转与工程边界处理。本文对应前端 `hyn_agent_frontend/main.js`、`src/i18n.js` 以及后端 `hyn_agent_backend/app/main.py`、`app/core/*`。
 
 ## 1.1 系统分层与进程拓扑
 

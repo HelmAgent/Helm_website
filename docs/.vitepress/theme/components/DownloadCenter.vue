@@ -106,7 +106,7 @@ const auditSteps = computed(() => [
         </div>
         <div class="dl-header-right">
           <a class="stone-btn" :href="`${prefix}/demo`">
-            {{ tt('不便安装？打开浏览器免安装沙盒 →', 'インストール不要のブラウザ体験デモへ →', 'Restricted PC? Open Browser Sandbox →') }}
+            {{ tt('在线交互工作台 →', 'ブラウザ対話型ワークベンチへ →', 'Open Interactive Workbench →') }}
           </a>
         </div>
       </header>
@@ -114,21 +114,21 @@ const auditSteps = computed(() => [
       <section class="dl-grid">
         <div class="dl-card is-primary-card">
           <div class="dl-card-top">
-            <span class="dl-tier-tag">EDITION 01 // RECOMMENDED INSTALLER</span>
+            <span class="dl-tier-tag">OFFICIAL RELEASE // WINDOWS x64 INSTALLER</span>
             <span class="dl-size-pill">{{ SITE_META.installerSize }} · Windows x64</span>
           </div>
           <h2 class="dl-card-title">{{ tt('Windows 标准桌面安装版 (.exe)', 'Windows 標準インストーラー版 (.exe)', 'Windows Standard Installer (.exe)') }}</h2>
           <p class="dl-card-desc">
             {{ tt(
-              '自动配置桌面快捷方式与独立数据隔离目录（默认保存在软件同级或自定义磁盘路径，零 C 盘空间侵占）。适合个人开发机与长期主力使用。',
-              'デスクトップショートカットと独立データ保存領域を自動構成します（Cドライブを圧迫しない設計）。個人開発環境での日常利用に最適です。',
+              '自动配置桌面快捷方式与独立数据隔离目录（默认保存在软件同级或自定义磁盘路径，零 C 盘空间侵占）。适合个人电脑与企业开发机长期主力使用。',
+              'デスクトップショートカットと独立データ保存領域を自動構成します（Cドライブを圧迫しない設計）。個人PCや開発環境での日常利用に最適です。',
               'Automatically configures desktop shortcuts and an isolated data directory without bloating C: drive.'
             ) }}
           </p>
 
           <div class="dl-btn-row">
             <a class="stone-btn is-primary dl-main-btn" :href="SITE_META.installerUrl" target="_blank" rel="noopener">
-              {{ tt('下载 Windows 安装包 (Helm-Setup.exe)', 'Windows インストーラー版 (Helm-Setup.exe) をダウンロード', 'Download Windows Installer (Helm-Setup.exe)') }}
+              {{ tt('下载 Windows 安装包 (Helm-Setup-1.0.0.exe)', 'Windows インストーラー版 (Helm-Setup-1.0.0.exe) をダウンロード', 'Download Windows Installer (Helm-Setup-1.0.0.exe)') }}
             </a>
           </div>
 
@@ -145,32 +145,22 @@ const auditSteps = computed(() => [
 
         <div class="dl-card">
           <div class="dl-card-top">
-            <span class="dl-tier-tag">EDITION 02 // PORTABLE ARCHIVE</span>
-            <span class="dl-size-pill">{{ SITE_META.portableSize }} · No Admin Required</span>
+            <span class="dl-tier-tag">EMBEDDED RUNTIME // ZERO ENV SETUP</span>
+            <span class="dl-size-pill">Windows 10 / 11 (x64)</span>
           </div>
-          <h2 class="dl-card-title">{{ tt('Windows 免安装绿色解压版 (.zip)', 'Windows ポータブル版・インストール不要 (.zip)', 'Windows Portable Edition (.zip)') }}</h2>
+          <h2 class="dl-card-title">{{ tt('内嵌完整运行时与环境规格说明', '内蔵ランタイム・システム環境仕様', 'Embedded Runtime & System Specs') }}</h2>
           <p class="dl-card-desc">
             {{ tt(
-              '无需管理员权限、不修改系统注册表。解压到任意非系统目录即可直接双击启动，删除文件夹即彻底卸载，适合快速评估与沙盒测试。',
-              '管理者権限不要・レジストリ変更なし。任意のフォルダに解凍するだけですぐに起動でき、フォルダごと削除するだけでクリーンに削除可能です。',
-              'Requires no administrator privileges and writes nothing to registry. Unzip to any folder and launch immediately.'
+              '安装包已完整打包 Electron 44 前端与 Python 3.13 FastAPI 异步运行时，无需预先安装 Python 或 Node.js，安装完成后双击桌面图标即可直接运行。',
+              'Electron 44 フロントエンドと Python 3.13 FastAPI 非同期ランタイムをすべて同梱。事前の Python 導入は不要で、インストール後すぐに起動できます。',
+              'Bundles Electron 44 and Python 3.13 FastAPI async runtime out of the box—no prior Python or Node.js installation required.'
             ) }}
           </p>
 
           <div class="dl-btn-row">
-            <a class="stone-btn dl-main-btn" :href="SITE_META.portableUrl" target="_blank" rel="noopener">
-              {{ tt('下载免安装绿色版 (Helm-Portable.zip)', 'ポータブル版 (Helm-Portable.zip) をダウンロード', 'Download Portable Archive (Helm-Portable.zip)') }}
+            <a class="stone-btn dl-main-btn" :href="`${prefix}/guide/getting-started`">
+              {{ tt('查看 3 分钟快速上手指南 →', '3分クイックスタートを見る →', 'Read 3-Minute Quick Start →') }}
             </a>
-          </div>
-
-          <div class="dl-checksum">
-            <div class="dl-checksum-head">
-              <span>SHA-256 CHECKSUM</span>
-              <button type="button" class="dl-copy-btn" @click="copyHash('zip', SITE_META.portableSha256)">
-                {{ copiedKey === 'zip' ? tt('✓ 已复制', '✓ コピー完了', '✓ Copied') : tt('复制 SHA-256', 'SHA-256 をコピー', 'Copy SHA-256') }}
-              </button>
-            </div>
-            <code class="dl-checksum-val">{{ SITE_META.portableSha256 }}</code>
           </div>
         </div>
       </section>
@@ -190,36 +180,6 @@ const auditSteps = computed(() => [
             <p class="dl-audit-desc">{{ item.desc }}</p>
             <pre class="dl-audit-cmd"><code>{{ item.cmd }}</code></pre>
           </div>
-        </div>
-      </section>
-
-      <section class="dl-recruiter-banner">
-        <div class="dl-recruiter-left">
-          <div class="dl-kicker">
-            {{ tt('FOR CORPORATE REVIEWERS & INTERVIEWERS // 致招聘负责人与技术面试官', 'FOR CORPORATE REVIEWERS & INTERVIEWERS // 採用ご担当者様・技術面接官の皆様へ', 'FOR CORPORATE REVIEWERS & INTERVIEWERS') }}
-          </div>
-          <h3>
-            {{ tt(
-              '办公电脑受终端安全策略限制，不便运行外部 .exe 程序？',
-              '社用PCのセキュリティポリシーにより外部実行ファイル（.exe）の起動が制限されている場合',
-              'Working on a Corporate PC with Strict Executable Restrictions?'
-            ) }}
-          </h3>
-          <p>
-            {{ tt(
-              '您完全无需在办公电脑上安装软件。请直接通过本站的「浏览器免安装交互工作台」体验真实三栏界面，并阅读全 5 章「工程架构白皮书」审阅源码级设计。在视频面试（Zoom / Teams / Meet）中，我非常乐意通过屏幕共享为您现场演示物理断网下的实机运行，并在 IDE 中走读前后端全部源码与 86+ 项单元测试。',
-              '社用PCへ無理にインストールしていただく必要はございません。ブラウザ上でそのまま操作できる「対話型ワークベンチ」および全5章の「技術アーキテクチャ白書」にて内部設計をご高覧いただけますと幸いです。また、オンライン面接（Zoom / Teams / Google Meet）の場におきましては、画面共有にて完全オフラインでの実機ライブデモ、ならびに IDE 上での全ソースコード・単体テスト（全86件）の解説をさせていただければ幸いです。',
-              'You do not need to install anything on your work machine. Explore our Zero-Install Interactive Workbench in your browser and read the 5-part Engineering Whitepaper. During remote interviews, I am happy to share my screen for a live offline demo and full IDE source walkthrough.'
-            ) }}
-          </p>
-        </div>
-        <div class="dl-recruiter-right">
-          <a class="stone-btn is-primary" :href="`${prefix}/demo`">
-            {{ tt('打开浏览器免安装沙盒 →', 'ブラウザ体験デモを開く →', 'Open Browser Sandbox →') }}
-          </a>
-          <a class="stone-btn" :href="`${prefix}/architecture/overview`">
-            {{ tt('阅读工程架构白皮书 →', '技術アーキテクチャ白書を読む →', 'Read Architecture Whitepaper →') }}
-          </a>
         </div>
       </section>
     </div>

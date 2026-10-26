@@ -1,10 +1,9 @@
 <script setup>
 /**
- * 精致得体的「Developer & Interview Live Demo（架构审阅与实机源码演示）」高管弹窗组件（AuditModal.vue）。
+ * 「架构透明性与本地离线安全运行说明」弹窗组件（AuditModal.vue）。
  *
  * 职责与协作：
- * - 响应用户定位需求：不再在首页底部放置突兀的大段求职说明文字，而是浓缩为页脚与白皮书栏的精致入口。
- * - 当日本/中国 IT 企业的技术面试官或招聘负责人点击时，以极具质感的技术高管简报卡片展现离线审阅指南与 IDE 全量源码 Live Walkthrough 承诺。
+ * - 面向所有普通用户、开发者及企业安全团队，说明 Helm 的独立桌面软件分发形态、在线交互工作台以及 100% 本地闭环隐私保障。
  */
 import { computed } from 'vue'
 import { tt, getLangPrefix } from '../data/siteData.js'
@@ -36,7 +35,7 @@ function jumpTo(url) {
       <div class="nx-modal-card nx-glass-card">
         <div class="nx-modal-header">
           <div class="nx-modal-badge-row">
-            <span class="nx-badge">DEVELOPER &amp; INTERVIEW LIVE DEMO</span>
+            <span class="nx-badge">ARCHITECTURE &amp; LOCAL SECURITY OVERVIEW</span>
             <span class="nx-modal-code">ELECTRON 44 · VUE 3.5 · FASTAPI (86+ UNIT TESTS)</span>
           </div>
           <button
@@ -52,53 +51,53 @@ function jumpTo(url) {
         <h3 class="nx-modal-title">
           {{
             t(
-              '技术架构审阅、办公环境免安装体验与远程面试源码 Live 走读说明',
-              '技術アーキテクチャ検証、社用PCでのブラウザ体験、および面接時の全ソースコード解説について',
-              'Technical Architecture Review, Zero-Install Sandbox, and Live IDE Source Walkthrough'
+              '系统架构透明披露、在线交互工作台与本地离线隐私安全说明',
+              'システム設計の透明性、Web対話型ワークベンチ、およびローカル安全稼働について',
+              'Architecture Transparency, Interactive Web Workbench, and Local Privacy Overview'
             )
           }}
         </h3>
 
         <div class="nx-modal-grid">
           <div class="nx-modal-item">
-            <div class="nx-modal-item-num">01 // ZERO-INSTALL ARCHITECTURAL AUDIT</div>
+            <div class="nx-modal-item-num">01 // ARCHITECTURE TRANSPARENCY &amp; WEB WORKBENCH</div>
             <h4>
               {{
                 t(
-                  '独立产品分发与全透明架构白皮书',
-                  '独立製品としての配布形態と全5章の技術設計白書',
-                  'Standalone Product Release & 5-Volume Blueprint'
+                  '独立桌面软件分发与全透明架构白皮书',
+                  '独立デスクトップ製品の配布と全5章の技術設計白書',
+                  'Standalone Desktop Release & 5-Volume Blueprint'
                 )
               }}
             </h4>
             <p>
               {{
                 t(
-                  'Helm 作为完整的桌面端独立软件进行打包发布。考虑到企业办公终端通常对运行外部 .exe 设有安全策略限制，本站特别内建了「1:1 浏览器交互沙盒」与「全 5 卷工程架构白皮书」，无需安装即可在线验证双进程拓扑、TurnHub 状态机、无侵入影子 Git 检查点与 Git Worktree 并发隔离的底层实现。',
-                  'Helm は完成されたデスクトップ製品としてパッケージ配布しております。社用PCのセキュリティ制限により実行ファイルの導入が難しい技術面接官・エンジニアの皆様にも、ブラウザ上の「1:1 対話型ワークベンチ」と「全5章の技術アーキテクチャ白書」を通じて、状態マシンやデータ契約の深さをそのまま検証いただけます。',
-                  'Helm is packaged as a standalone desktop application. So technical reviewers on locked-down corporate machines can evaluate its engineering depth without running an installer, this site provides a 1:1 Interactive Sandbox and a 5-volume Architecture Whitepaper.'
+                  'Helm 作为开箱即用的桌面端独立软件面向广大用户提供 Windows 安装包下载。为了让用户在下载前即可直观了解软件功能与底层可靠性，本站特别内建了「1:1 在线交互工作台」与「全 5 卷工程架构白皮书」，完整公开双进程拓扑、TurnHub 状态机、无侵入影子 Git 检查点与 Git Worktree 并发隔离的技术实现。',
+                  'Helm はすぐに使えるデスクトップ製品として Windows インストーラー版を配布しています。導入前に操作感や内部の信頼性を確認いただけるよう、本サイトでは「1:1 対話型ワークベンチ」と「全5章の技術アーキテクチャ白書」を公開し、デュアルプロセス構造やシャドウGitチェックポイント等の設計を詳しく解説しています。',
+                  'Helm is distributed as a standalone Windows desktop application. So users and developers can explore its capabilities and reliability prior to installation, this site provides a 1:1 Interactive Workbench and a 5-volume Architecture Whitepaper.'
                 )
               }}
             </p>
           </div>
 
           <div class="nx-modal-item">
-            <div class="nx-modal-item-num">02 // LIVE OFFLINE DEMO &amp; IDE SOURCE WALKTHROUGH</div>
+            <div class="nx-modal-item-num">02 // 100% LOCAL PRIVACY &amp; RELIABILITY</div>
             <h4>
               {{
                 t(
-                  '面试现场物理断网实机演示与 IDE 全量源码走读',
-                  'オンライン面接での完全オフライン実機デモ＆IDE全ソースコード解説',
-                  'Live Air-Gapped Demo & Full IDE Source Walkthrough'
+                  '物理断网实机运行与工业级工程可靠性保障',
+                  '完全オフライン環境での実機稼働と高信頼エンジニアリング基盤',
+                  'Air-Gapped Local Execution & Industrial-Grade Reliability'
                 )
               }}
             </h4>
             <p>
               {{
                 t(
-                  '在远程视频技术面试（Zoom / Teams / Google Meet）或现场面试中，我随时准备通过屏幕共享为您现场演示物理断网下的 Helm 实机运行（含 Ollama 离线重构与 PPT 划词局部热补丁），并在 IDE 中直接打开前端（Electron + Vue 3）与后端（FastAPI + 86 项自动化单测）完整源码进行逐模块讲解。',
-                  'オンライン面接（Zoom / Teams / Google Meet）や技術面談の場におきましては、画面共有による完全オフライン環境での実機デモンストレーション（ローカルLLM連携・Office選択範囲AI更新）、および IDE 上でのフロントエンド（Electron + Vue 3）・バックエンド（FastAPI + 単体テスト86件）全ソースコードのライブ解説を実演いたします。',
-                  'During remote interviews (Zoom / Teams / Meet), I am ready to share my screen for a live air-gapped demonstration and walk through the entire Electron + Vue 3 + FastAPI codebase and 86+ unit tests directly in my IDE.'
+                  'Helm 内置完整的 Python 3.13 FastAPI 异步运行时与 86+ 项自动化核心单测，支持连接本机 Ollama 或企业内网大模型在物理断网环境下独立闭环运行（含长周期代码开发、影子 Git 检查点与 Office 文档局部 AI 热修改），确保个人隐私文档与企业核心代码 100% 留存本地，绝不经过任何第三方中转服务器。',
+                  'Helm は Python 3.13 FastAPI 非同期ランタイムと 86件以上の自動単体テスト検証済みコアエンジンを内蔵しています。ローカルの Ollama や社内閉域網 LLM と連携し、完全オフライン環境でもコード開発・シャドウGitチェックポイント・Office文書の選択範囲AI更新が完結するため、個人ユーザーから企業現場まで安心してご利用いただけます。',
+                  'Bundling an embedded Python 3.13 FastAPI runtime backed by 86+ automated unit tests, Helm runs 100% locally with Ollama or corporate LAN models—delivering autonomous coding, Shadow Git Checkpoints, and surgical Office AI editing with zero cloud relay.'
                 )
               }}
             </p>
@@ -118,7 +117,7 @@ function jumpTo(url) {
             class="nx-btn nx-btn-glass"
             @click="jumpTo(`${prefix}/demo`)"
           >
-            {{ t('打开全屏交互沙盒 (/demo)', '全画面ワークベンチを開く (/demo)', 'Open Fullscreen Sandbox (/demo)') }}
+            {{ t('打开在线交互工作台 (/demo)', '全画面ワークベンチを開く (/demo)', 'Open Interactive Workbench (/demo)') }}
           </button>
           <button
             type="button"

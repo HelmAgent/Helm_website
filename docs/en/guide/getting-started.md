@@ -5,13 +5,12 @@ description: "Get started with Helm in 3 minutes: zero-config startup, workspace
 
 # Quick Start & Installation
 
-Helm combines an **Electron + Vue 3 frontend** with an **embedded Python 3.13 FastAPI local backend**. It runs out of the box after installation or extraction—no external Python setup or server deployment required.
+Helm combines an **Electron + Vue 3 frontend** with an **embedded Python 3.13 FastAPI local backend**. It runs out of the box after installation—no external Python setup or server deployment required.
 
 ## 1. Launch the Desktop Client
 
-Choose either distribution format from [Download & Security](/en/download):
-- **Standard Installer (`Helm-Setup.exe`)**: Creates desktop shortcuts and sets up an isolated data directory.
-- **Portable Edition (`Helm-Portable.zip`)**: Requires no admin rights and leaves zero registry footprint. Unzip and launch `hyn_agent.exe`.
+Download the official Windows installer from [Download & Security](/en/download):
+- **Standard Installer (`Helm-Setup-1.0.0.exe`)**: Creates desktop shortcuts and sets up an isolated data directory.
 
 ## 2. Three Steps to Your First Autonomous Task
 
@@ -39,3 +38,12 @@ Switch between 4 permission tiers at any time (even mid-run, taking effect on th
 | **✏️ Auto Edit (`auto_edit`)** | Interactive coding & writing | Workspace file edits and whitelisted read-only commands pass automatically |
 | **🛡️ Smart Default (`default`)** | Everyday engineering | Normal edits and test runs pass; destructive commands require confirmation |
 | **⚡ Full Auto (`full_auto`)** | **Multi-hour unattended runs** | Auto-approves workspace tools, MCP, and teammates; **out-of-workspace & system-destructive commands remain 100% hard-denied** |
+
+## 3. Community, Issue Feedback & Custom Development
+
+- **Helm Discord Community**: [https://discord.gg/AsU9Xqd6g](https://discord.gg/AsU9Xqd6g)
+- **QQ Community Group ID**: `1129820733`
+- **Collaboration & Custom Dev Email**: `785430621@qq.com`
+
+> [!IMPORTANT] Beta Gratitude & Free Pain-Point Co-Creation Plan
+> Currently in beta—thank you for your support! Please report any issues so I can optimize and fix them promptly. Following the official release and across future upgrades, we will collect your feedback so you decide the next version's features, helping AI serve every industry. High-vote requests meeting our 3 objective criteria (industry commonality, clear input/output sample, public built-in sharing) will be developed for free. For urgent and private custom features, please contact me directly via email (`785430621@qq.com`).

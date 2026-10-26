@@ -1,6 +1,6 @@
 <script setup>
 /**
- * 免安装网页版交互式产品工作台组件（ProductPlayground.vue）。
+ * 网页版交互式产品工作台组件（ProductPlayground.vue）。
  *
  * 职责与协作：
  * - 严格按 `prototypes/hyn-stone.html` 与 `hyn_agent_frontend/styles/tokens.css` 1:1 还原石澜桌面界面。
