@@ -41,8 +41,8 @@ function parseInline(text) {
 
   // 链接 [text](url)
   working = working.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
-    const isExternal = /^https?:\/\//i.test(href)
-    const attrs = isExternal
+    const isDirectTarget = /^(https?:\/\/|\/benchmarks\/)/i.test(href)
+    const attrs = isDirectTarget
       ? `href="${href}" target="_blank" rel="noopener"`
       : `href="${href}" data-internal-link="true"`
     return `<a class="nx-doc-link" ${attrs}>${label}</a>`

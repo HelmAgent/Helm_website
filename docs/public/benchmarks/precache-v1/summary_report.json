@@ -1,0 +1,1234 @@
+{
+  "schema_version": "hyn.precache.summary.v1",
+  "benchmark_suite": "precache-v1",
+  "run_id": "20261104T121851Z_deepseek-v4-flash",
+  "provider": "deepseek",
+  "model_id": "deepseek-v4-flash",
+  "started_at_utc": "2026-11-04T12:18:51Z",
+  "completed_at_utc": "2026-11-04T12:27:40Z",
+  "started_at_local": "2026-11-04T20:18:51+08:00",
+  "completed_at_local": "2026-11-04T20:27:40+08:00",
+  "methodology": {
+    "run_isolation_nonce_chars": 40,
+    "step_delay_seconds": 1.0,
+    "track_a_replay_max_tokens": 32,
+    "long_context_threshold_tokens": 20000,
+    "pricing_weights": {
+      "cache_read_weight": 0.1,
+      "cache_miss_weight": 1.0,
+      "cache_write_weight": 0.0
+    }
+  },
+  "overall": {
+    "legacy_baseline": {
+      "step_count": 88,
+      "warm_step_count": 83,
+      "input_tokens": 3613525,
+      "output_tokens": 8779,
+      "uncached_input_tokens": 1285973,
+      "cache_read_input_tokens": 2327552,
+      "cache_write_input_tokens": 0,
+      "warm_input_tokens": 3571324,
+      "warm_cache_read_input_tokens": 2327552,
+      "warm_uncached_input_tokens": 1243772,
+      "peak_step_input_tokens": 73835,
+      "cold_start_cache_read_tokens": 0,
+      "chr_all": 0.644122,
+      "chr_all_pct": 64.41,
+      "chr_warm": 0.651734,
+      "chr_warm_pct": 65.17,
+      "effective_billable_input_tokens": 1518728.2,
+      "billable_saved_vs_raw_no_cache_pct": 57.97,
+      "ttft_all_p50_ms": 1066,
+      "ttft_all_p90_ms": 1550,
+      "long_context_step_count": 78,
+      "ttft_long_p50_ms": 1096,
+      "ttft_long_p90_ms": 1542,
+      "broken_layer_counts": {
+        "cold_start": 5,
+        "none": 53,
+        "tools": 1,
+        "system": 20,
+        "messages": 9
+      },
+      "cot_turn_reset_count": 5,
+      "warm_prefix_break_count": 25,
+      "warm_prefix_breaks": [
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 2,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 7,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 11,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 12,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 15,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 16,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 5,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 7,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 8,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 9,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 10,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 12,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 13,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B3_office_selection_8turns",
+          "step_index": 5,
+          "broken_layer": "tools"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 2,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 6,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 13,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 14,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 17,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 19,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 20,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 2,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 10,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 21,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 26,
+          "broken_layer": "system"
+        }
+      ]
+    },
+    "optimized_v1": {
+      "step_count": 72,
+      "warm_step_count": 67,
+      "input_tokens": 3150112,
+      "output_tokens": 4565,
+      "uncached_input_tokens": 371104,
+      "cache_read_input_tokens": 2779008,
+      "cache_write_input_tokens": 0,
+      "warm_input_tokens": 3102365,
+      "warm_cache_read_input_tokens": 2779008,
+      "warm_uncached_input_tokens": 323357,
+      "peak_step_input_tokens": 81487,
+      "cold_start_cache_read_tokens": 0,
+      "chr_all": 0.882193,
+      "chr_all_pct": 88.22,
+      "chr_warm": 0.895771,
+      "chr_warm_pct": 89.58,
+      "effective_billable_input_tokens": 649004.8,
+      "billable_saved_vs_raw_no_cache_pct": 79.4,
+      "ttft_all_p50_ms": 994,
+      "ttft_all_p90_ms": 1421,
+      "long_context_step_count": 62,
+      "ttft_long_p50_ms": 978,
+      "ttft_long_p90_ms": 1375,
+      "broken_layer_counts": {
+        "cold_start": 5,
+        "none": 60,
+        "tools": 0,
+        "system": 0,
+        "messages": 7
+      },
+      "cot_turn_reset_count": 7,
+      "warm_prefix_break_count": 0,
+      "warm_prefix_breaks": []
+    },
+    "comparison": {
+      "chr_all_baseline_pct": 64.41,
+      "chr_all_optimized_pct": 88.22,
+      "chr_all_gain_pp": 23.81,
+      "chr_warm_baseline_pct": 65.17,
+      "chr_warm_optimized_pct": 89.58,
+      "chr_warm_gain_pp": 24.41,
+      "uncached_input_saved_tokens": 914869,
+      "uncached_input_saved_pct": 71.14,
+      "effective_billable_saved_tokens": 869723.4,
+      "billable_saved_vs_baseline_pct": 57.27,
+      "billable_saved_vs_raw_no_cache_pct": 79.4,
+      "baseline_billable_saved_vs_raw_no_cache_pct": 57.97,
+      "ttft_long_p50_baseline_ms": 1096,
+      "ttft_long_p50_optimized_ms": 978,
+      "ttft_long_p50_delta_ms": -118,
+      "ttft_long_p50_reduction_pct": 10.77,
+      "ttft_long_p90_baseline_ms": 1542,
+      "ttft_long_p90_optimized_ms": 1375,
+      "ttft_long_p90_delta_ms": -167,
+      "ttft_long_p90_reduction_pct": 10.83
+    }
+  },
+  "track_a": {
+    "legacy_baseline": {
+      "step_count": 62,
+      "warm_step_count": 58,
+      "input_tokens": 2730835,
+      "output_tokens": 1984,
+      "uncached_input_tokens": 1133267,
+      "cache_read_input_tokens": 1597568,
+      "cache_write_input_tokens": 0,
+      "warm_input_tokens": 2697145,
+      "warm_cache_read_input_tokens": 1597568,
+      "warm_uncached_input_tokens": 1099577,
+      "peak_step_input_tokens": 73835,
+      "cold_start_cache_read_tokens": 0,
+      "chr_all": 0.585011,
+      "chr_all_pct": 58.5,
+      "chr_warm": 0.592318,
+      "chr_warm_pct": 59.23,
+      "effective_billable_input_tokens": 1293023.8,
+      "billable_saved_vs_raw_no_cache_pct": 52.65,
+      "ttft_all_p50_ms": 1108,
+      "ttft_all_p90_ms": 1555,
+      "long_context_step_count": 54,
+      "ttft_long_p50_ms": 1146,
+      "ttft_long_p90_ms": 1554,
+      "broken_layer_counts": {
+        "cold_start": 4,
+        "none": 32,
+        "tools": 1,
+        "system": 16,
+        "messages": 9
+      },
+      "cot_turn_reset_count": 5,
+      "warm_prefix_break_count": 21,
+      "warm_prefix_breaks": [
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 2,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 7,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 11,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 12,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 15,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B1_fullstack_bugfix_16steps",
+          "step_index": 16,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 5,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 7,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 8,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 9,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 10,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 12,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B2_multiturn_mixed_lang_10turns",
+          "step_index": 13,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B3_office_selection_8turns",
+          "step_index": 5,
+          "broken_layer": "tools"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 2,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 6,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 13,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 14,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 17,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 19,
+          "broken_layer": "messages"
+        },
+        {
+          "scenario_id": "B4_longhorizon_milestone_20steps",
+          "step_index": 20,
+          "broken_layer": "system"
+        }
+      ]
+    },
+    "optimized_v1": {
+      "step_count": 62,
+      "warm_step_count": 58,
+      "input_tokens": 2846320,
+      "output_tokens": 1975,
+      "uncached_input_tokens": 335216,
+      "cache_read_input_tokens": 2511104,
+      "cache_write_input_tokens": 0,
+      "warm_input_tokens": 2808191,
+      "warm_cache_read_input_tokens": 2511104,
+      "warm_uncached_input_tokens": 297087,
+      "peak_step_input_tokens": 81487,
+      "cold_start_cache_read_tokens": 0,
+      "chr_all": 0.882228,
+      "chr_all_pct": 88.22,
+      "chr_warm": 0.894207,
+      "chr_warm_pct": 89.42,
+      "effective_billable_input_tokens": 586326.4,
+      "billable_saved_vs_raw_no_cache_pct": 79.4,
+      "ttft_all_p50_ms": 987,
+      "ttft_all_p90_ms": 1353,
+      "long_context_step_count": 54,
+      "ttft_long_p50_ms": 978,
+      "ttft_long_p90_ms": 1331,
+      "broken_layer_counts": {
+        "cold_start": 4,
+        "none": 51,
+        "tools": 0,
+        "system": 0,
+        "messages": 7
+      },
+      "cot_turn_reset_count": 7,
+      "warm_prefix_break_count": 0,
+      "warm_prefix_breaks": []
+    },
+    "comparison": {
+      "chr_all_baseline_pct": 58.5,
+      "chr_all_optimized_pct": 88.22,
+      "chr_all_gain_pp": 29.72,
+      "chr_warm_baseline_pct": 59.23,
+      "chr_warm_optimized_pct": 89.42,
+      "chr_warm_gain_pp": 30.19,
+      "uncached_input_saved_tokens": 798051,
+      "uncached_input_saved_pct": 70.42,
+      "effective_billable_saved_tokens": 706697.4,
+      "billable_saved_vs_baseline_pct": 54.65,
+      "billable_saved_vs_raw_no_cache_pct": 79.4,
+      "baseline_billable_saved_vs_raw_no_cache_pct": 52.65,
+      "ttft_long_p50_baseline_ms": 1146,
+      "ttft_long_p50_optimized_ms": 978,
+      "ttft_long_p50_delta_ms": -168,
+      "ttft_long_p50_reduction_pct": 14.66,
+      "ttft_long_p90_baseline_ms": 1554,
+      "ttft_long_p90_optimized_ms": 1331,
+      "ttft_long_p90_delta_ms": -223,
+      "ttft_long_p90_reduction_pct": 14.35
+    }
+  },
+  "track_b": {
+    "legacy_baseline": {
+      "step_count": 26,
+      "warm_step_count": 25,
+      "input_tokens": 882690,
+      "output_tokens": 6795,
+      "uncached_input_tokens": 152706,
+      "cache_read_input_tokens": 729984,
+      "cache_write_input_tokens": 0,
+      "warm_input_tokens": 874179,
+      "warm_cache_read_input_tokens": 729984,
+      "warm_uncached_input_tokens": 144195,
+      "peak_step_input_tokens": 41932,
+      "cold_start_cache_read_tokens": 0,
+      "chr_all": 0.826999,
+      "chr_all_pct": 82.7,
+      "chr_warm": 0.835051,
+      "chr_warm_pct": 83.51,
+      "effective_billable_input_tokens": 225704.4,
+      "billable_saved_vs_raw_no_cache_pct": 74.43,
+      "ttft_all_p50_ms": 1009,
+      "ttft_all_p90_ms": 1373,
+      "long_context_step_count": 24,
+      "ttft_long_p50_ms": 994,
+      "ttft_long_p90_ms": 1353,
+      "broken_layer_counts": {
+        "cold_start": 1,
+        "none": 21,
+        "tools": 0,
+        "system": 4,
+        "messages": 0
+      },
+      "cot_turn_reset_count": 0,
+      "warm_prefix_break_count": 4,
+      "warm_prefix_breaks": [
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 2,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 10,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 21,
+          "broken_layer": "system"
+        },
+        {
+          "scenario_id": "B5_live_e2e_bugfix",
+          "step_index": 26,
+          "broken_layer": "system"
+        }
+      ]
+    },
+    "optimized_v1": {
+      "step_count": 10,
+      "warm_step_count": 9,
+      "input_tokens": 303792,
+      "output_tokens": 2590,
+      "uncached_input_tokens": 35888,
+      "cache_read_input_tokens": 267904,
+      "cache_write_input_tokens": 0,
+      "warm_input_tokens": 294174,
+      "warm_cache_read_input_tokens": 267904,
+      "warm_uncached_input_tokens": 26270,
+      "peak_step_input_tokens": 37267,
+      "cold_start_cache_read_tokens": 0,
+      "chr_all": 0.881867,
+      "chr_all_pct": 88.19,
+      "chr_warm": 0.910699,
+      "chr_warm_pct": 91.07,
+      "effective_billable_input_tokens": 62678.4,
+      "billable_saved_vs_raw_no_cache_pct": 79.37,
+      "ttft_all_p50_ms": 1208,
+      "ttft_all_p90_ms": 1454,
+      "long_context_step_count": 8,
+      "ttft_long_p50_ms": 1061,
+      "ttft_long_p90_ms": 1426,
+      "broken_layer_counts": {
+        "cold_start": 1,
+        "none": 9,
+        "tools": 0,
+        "system": 0,
+        "messages": 0
+      },
+      "cot_turn_reset_count": 0,
+      "warm_prefix_break_count": 0,
+      "warm_prefix_breaks": []
+    },
+    "comparison": {
+      "chr_all_baseline_pct": 82.7,
+      "chr_all_optimized_pct": 88.19,
+      "chr_all_gain_pp": 5.49,
+      "chr_warm_baseline_pct": 83.51,
+      "chr_warm_optimized_pct": 91.07,
+      "chr_warm_gain_pp": 7.56,
+      "uncached_input_saved_tokens": 116818,
+      "uncached_input_saved_pct": 76.5,
+      "effective_billable_saved_tokens": 163026.0,
+      "billable_saved_vs_baseline_pct": 72.23,
+      "billable_saved_vs_raw_no_cache_pct": 79.37,
+      "baseline_billable_saved_vs_raw_no_cache_pct": 74.43,
+      "ttft_long_p50_baseline_ms": 994,
+      "ttft_long_p50_optimized_ms": 1061,
+      "ttft_long_p50_delta_ms": 67,
+      "ttft_long_p50_reduction_pct": -6.74,
+      "ttft_long_p90_baseline_ms": 1353,
+      "ttft_long_p90_optimized_ms": 1426,
+      "ttft_long_p90_delta_ms": 73,
+      "ttft_long_p90_reduction_pct": -5.4
+    }
+  },
+  "scenarios": [
+    {
+      "scenario_id": "B1_fullstack_bugfix_16steps",
+      "track": "A",
+      "title": "16-Step Full-Stack Ledger & Frontend Currency Bugfix",
+      "description": "1-turn, 16-step full-stack debugging workflow covering 4 todo_write updates, 3 repeated read_file calls on core ledger module, multi-file source reads, grep searches, and deterministic edit_file patches.",
+      "window_started_at_utc": "2026-11-04T12:18:51Z",
+      "window_completed_at_utc": "2026-11-04T12:20:01Z",
+      "nonce_char_length": 40,
+      "trace_files": {
+        "legacy_baseline": "traces/B1_fullstack_bugfix_16steps_legacy_baseline.jsonl",
+        "optimized_v1": "traces/B1_fullstack_bugfix_16steps_optimized_v1.jsonl"
+      },
+      "legacy_baseline": {
+        "step_count": 16,
+        "warm_step_count": 15,
+        "input_tokens": 583948,
+        "output_tokens": 512,
+        "uncached_input_tokens": 242700,
+        "cache_read_input_tokens": 341248,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 575521,
+        "warm_cache_read_input_tokens": 341248,
+        "warm_uncached_input_tokens": 234273,
+        "peak_step_input_tokens": 61040,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.584381,
+        "chr_all_pct": 58.44,
+        "chr_warm": 0.592938,
+        "chr_warm_pct": 59.29,
+        "effective_billable_input_tokens": 276824.8,
+        "billable_saved_vs_raw_no_cache_pct": 52.59,
+        "ttft_all_p50_ms": 962,
+        "ttft_all_p90_ms": 1279,
+        "long_context_step_count": 13,
+        "ttft_long_p50_ms": 976,
+        "ttft_long_p90_ms": 1284,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 9,
+          "tools": 0,
+          "system": 4,
+          "messages": 2
+        },
+        "cot_turn_reset_count": 0,
+        "warm_prefix_break_count": 6,
+        "warm_prefix_breaks": [
+          {
+            "scenario_id": "B1_fullstack_bugfix_16steps",
+            "step_index": 2,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B1_fullstack_bugfix_16steps",
+            "step_index": 7,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B1_fullstack_bugfix_16steps",
+            "step_index": 11,
+            "broken_layer": "messages"
+          },
+          {
+            "scenario_id": "B1_fullstack_bugfix_16steps",
+            "step_index": 12,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B1_fullstack_bugfix_16steps",
+            "step_index": 15,
+            "broken_layer": "messages"
+          },
+          {
+            "scenario_id": "B1_fullstack_bugfix_16steps",
+            "step_index": 16,
+            "broken_layer": "system"
+          }
+        ]
+      },
+      "optimized_v1": {
+        "step_count": 16,
+        "warm_step_count": 15,
+        "input_tokens": 628343,
+        "output_tokens": 512,
+        "uncached_input_tokens": 69879,
+        "cache_read_input_tokens": 558464,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 618809,
+        "warm_cache_read_input_tokens": 558464,
+        "warm_uncached_input_tokens": 60345,
+        "peak_step_input_tokens": 69022,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.888788,
+        "chr_all_pct": 88.88,
+        "chr_warm": 0.902482,
+        "chr_warm_pct": 90.25,
+        "effective_billable_input_tokens": 125725.4,
+        "billable_saved_vs_raw_no_cache_pct": 79.99,
+        "ttft_all_p50_ms": 971,
+        "ttft_all_p90_ms": 1256,
+        "long_context_step_count": 13,
+        "ttft_long_p50_ms": 949,
+        "ttft_long_p90_ms": 1222,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 15,
+          "tools": 0,
+          "system": 0,
+          "messages": 0
+        },
+        "cot_turn_reset_count": 0,
+        "warm_prefix_break_count": 0,
+        "warm_prefix_breaks": []
+      },
+      "comparison": {
+        "chr_all_baseline_pct": 58.44,
+        "chr_all_optimized_pct": 88.88,
+        "chr_all_gain_pp": 30.44,
+        "chr_warm_baseline_pct": 59.29,
+        "chr_warm_optimized_pct": 90.25,
+        "chr_warm_gain_pp": 30.96,
+        "uncached_input_saved_tokens": 172821,
+        "uncached_input_saved_pct": 71.21,
+        "effective_billable_saved_tokens": 151099.4,
+        "billable_saved_vs_baseline_pct": 54.58,
+        "billable_saved_vs_raw_no_cache_pct": 79.99,
+        "baseline_billable_saved_vs_raw_no_cache_pct": 52.59,
+        "ttft_long_p50_baseline_ms": 976,
+        "ttft_long_p50_optimized_ms": 949,
+        "ttft_long_p50_delta_ms": -27,
+        "ttft_long_p50_reduction_pct": 2.77,
+        "ttft_long_p90_baseline_ms": 1284,
+        "ttft_long_p90_optimized_ms": 1222,
+        "ttft_long_p90_delta_ms": -62,
+        "ttft_long_p90_reduction_pct": 4.83
+      }
+    },
+    {
+      "scenario_id": "B2_multiturn_mixed_lang_10turns",
+      "track": "A",
+      "title": "10-Turn Mixed Chinese/English Architecture Q&A, Task Graph & Traceback Triage",
+      "description": "10-turn (14-step) continuous session starting in Chinese, creating & claiming project tasks (create_task / claim_task), pasting pure English Python Tracebacks with local UserPromptSubmit hook context, switching explicitly between English and Chinese while inspecting distributed pipeline modules.",
+      "window_started_at_utc": "2026-11-04T12:20:01Z",
+      "window_completed_at_utc": "2026-11-04T12:21:09Z",
+      "nonce_char_length": 40,
+      "trace_files": {
+        "legacy_baseline": "traces/B2_multiturn_mixed_lang_10turns_legacy_baseline.jsonl",
+        "optimized_v1": "traces/B2_multiturn_mixed_lang_10turns_optimized_v1.jsonl"
+      },
+      "legacy_baseline": {
+        "step_count": 14,
+        "warm_step_count": 13,
+        "input_tokens": 674168,
+        "output_tokens": 448,
+        "uncached_input_tokens": 401144,
+        "cache_read_input_tokens": 273024,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 665795,
+        "warm_cache_read_input_tokens": 273024,
+        "warm_uncached_input_tokens": 392771,
+        "peak_step_input_tokens": 59549,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.404979,
+        "chr_all_pct": 40.5,
+        "chr_warm": 0.410072,
+        "chr_warm_pct": 41.01,
+        "effective_billable_input_tokens": 428446.4,
+        "billable_saved_vs_raw_no_cache_pct": 36.45,
+        "ttft_all_p50_ms": 1336,
+        "ttft_all_p90_ms": 1566,
+        "long_context_step_count": 13,
+        "ttft_long_p50_ms": 1341,
+        "ttft_long_p90_ms": 1567,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 5,
+          "tools": 0,
+          "system": 7,
+          "messages": 1
+        },
+        "cot_turn_reset_count": 1,
+        "warm_prefix_break_count": 7,
+        "warm_prefix_breaks": [
+          {
+            "scenario_id": "B2_multiturn_mixed_lang_10turns",
+            "step_index": 5,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B2_multiturn_mixed_lang_10turns",
+            "step_index": 7,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B2_multiturn_mixed_lang_10turns",
+            "step_index": 8,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B2_multiturn_mixed_lang_10turns",
+            "step_index": 9,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B2_multiturn_mixed_lang_10turns",
+            "step_index": 10,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B2_multiturn_mixed_lang_10turns",
+            "step_index": 12,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B2_multiturn_mixed_lang_10turns",
+            "step_index": 13,
+            "broken_layer": "system"
+          }
+        ]
+      },
+      "optimized_v1": {
+        "step_count": 14,
+        "warm_step_count": 13,
+        "input_tokens": 691136,
+        "output_tokens": 448,
+        "uncached_input_tokens": 111808,
+        "cache_read_input_tokens": 579328,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 681656,
+        "warm_cache_read_input_tokens": 579328,
+        "warm_uncached_input_tokens": 102328,
+        "peak_step_input_tokens": 60926,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.838226,
+        "chr_all_pct": 83.82,
+        "chr_warm": 0.849883,
+        "chr_warm_pct": 84.99,
+        "effective_billable_input_tokens": 169740.8,
+        "billable_saved_vs_raw_no_cache_pct": 75.44,
+        "ttft_all_p50_ms": 967,
+        "ttft_all_p90_ms": 1331,
+        "long_context_step_count": 13,
+        "ttft_long_p50_ms": 960,
+        "ttft_long_p90_ms": 1234,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 10,
+          "tools": 0,
+          "system": 0,
+          "messages": 3
+        },
+        "cot_turn_reset_count": 3,
+        "warm_prefix_break_count": 0,
+        "warm_prefix_breaks": []
+      },
+      "comparison": {
+        "chr_all_baseline_pct": 40.5,
+        "chr_all_optimized_pct": 83.82,
+        "chr_all_gain_pp": 43.32,
+        "chr_warm_baseline_pct": 41.01,
+        "chr_warm_optimized_pct": 84.99,
+        "chr_warm_gain_pp": 43.98,
+        "uncached_input_saved_tokens": 289336,
+        "uncached_input_saved_pct": 72.13,
+        "effective_billable_saved_tokens": 258705.6,
+        "billable_saved_vs_baseline_pct": 60.38,
+        "billable_saved_vs_raw_no_cache_pct": 75.44,
+        "baseline_billable_saved_vs_raw_no_cache_pct": 36.45,
+        "ttft_long_p50_baseline_ms": 1341,
+        "ttft_long_p50_optimized_ms": 960,
+        "ttft_long_p50_delta_ms": -381,
+        "ttft_long_p50_reduction_pct": 28.41,
+        "ttft_long_p90_baseline_ms": 1567,
+        "ttft_long_p90_optimized_ms": 1234,
+        "ttft_long_p90_delta_ms": -333,
+        "ttft_long_p90_reduction_pct": 21.25
+      }
+    },
+    {
+      "scenario_id": "B3_office_selection_8turns",
+      "track": "A",
+      "title": "8-Turn Office Document Workbench Outline Review & Selection Hot-Patching",
+      "description": "8-turn (12-step) document workbench session: Turns 1-3 read .docx/.pptx deliverables and reference specs and review the outline WITHOUT <file_selection> (legacy_baseline omits patch_file_selection tool); Turns 4-8 attach <file_selection> blocks and invoke patch_file_selection across .docx, .md, and .pptx (legacy_baseline injects patch_file_selection at Turn 4, invalidating Layer 1 tools KV cache).",
+      "window_started_at_utc": "2026-11-04T12:21:09Z",
+      "window_completed_at_utc": "2026-11-04T12:22:04Z",
+      "nonce_char_length": 40,
+      "trace_files": {
+        "legacy_baseline": "traces/B3_office_selection_8turns_legacy_baseline.jsonl",
+        "optimized_v1": "traces/B3_office_selection_8turns_optimized_v1.jsonl"
+      },
+      "legacy_baseline": {
+        "step_count": 12,
+        "warm_step_count": 11,
+        "input_tokens": 441932,
+        "output_tokens": 384,
+        "uncached_input_tokens": 101836,
+        "cache_read_input_tokens": 340096,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 433535,
+        "warm_cache_read_input_tokens": 340096,
+        "warm_uncached_input_tokens": 93439,
+        "peak_step_input_tokens": 40632,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.769566,
+        "chr_all_pct": 76.96,
+        "chr_warm": 0.784472,
+        "chr_warm_pct": 78.45,
+        "effective_billable_input_tokens": 135845.6,
+        "billable_saved_vs_raw_no_cache_pct": 69.26,
+        "ttft_all_p50_ms": 1013,
+        "ttft_all_p90_ms": 1511,
+        "long_context_step_count": 11,
+        "ttft_long_p50_ms": 997,
+        "ttft_long_p90_ms": 1524,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 6,
+          "tools": 1,
+          "system": 0,
+          "messages": 4
+        },
+        "cot_turn_reset_count": 4,
+        "warm_prefix_break_count": 1,
+        "warm_prefix_breaks": [
+          {
+            "scenario_id": "B3_office_selection_8turns",
+            "step_index": 5,
+            "broken_layer": "tools"
+          }
+        ]
+      },
+      "optimized_v1": {
+        "step_count": 12,
+        "warm_step_count": 11,
+        "input_tokens": 446349,
+        "output_tokens": 384,
+        "uncached_input_tokens": 71181,
+        "cache_read_input_tokens": 375168,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 436845,
+        "warm_cache_read_input_tokens": 375168,
+        "warm_uncached_input_tokens": 61677,
+        "peak_step_input_tokens": 40630,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.840526,
+        "chr_all_pct": 84.05,
+        "chr_warm": 0.858813,
+        "chr_warm_pct": 85.88,
+        "effective_billable_input_tokens": 108697.8,
+        "billable_saved_vs_raw_no_cache_pct": 75.65,
+        "ttft_all_p50_ms": 1006,
+        "ttft_all_p90_ms": 1239,
+        "long_context_step_count": 11,
+        "ttft_long_p50_ms": 1017,
+        "ttft_long_p90_ms": 1246,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 7,
+          "tools": 0,
+          "system": 0,
+          "messages": 4
+        },
+        "cot_turn_reset_count": 4,
+        "warm_prefix_break_count": 0,
+        "warm_prefix_breaks": []
+      },
+      "comparison": {
+        "chr_all_baseline_pct": 76.96,
+        "chr_all_optimized_pct": 84.05,
+        "chr_all_gain_pp": 7.09,
+        "chr_warm_baseline_pct": 78.45,
+        "chr_warm_optimized_pct": 85.88,
+        "chr_warm_gain_pp": 7.43,
+        "uncached_input_saved_tokens": 30655,
+        "uncached_input_saved_pct": 30.1,
+        "effective_billable_saved_tokens": 27147.8,
+        "billable_saved_vs_baseline_pct": 19.98,
+        "billable_saved_vs_raw_no_cache_pct": 75.65,
+        "baseline_billable_saved_vs_raw_no_cache_pct": 69.26,
+        "ttft_long_p50_baseline_ms": 997,
+        "ttft_long_p50_optimized_ms": 1017,
+        "ttft_long_p50_delta_ms": 20,
+        "ttft_long_p50_reduction_pct": -2.01,
+        "ttft_long_p90_baseline_ms": 1524,
+        "ttft_long_p90_optimized_ms": 1246,
+        "ttft_long_p90_delta_ms": -278,
+        "ttft_long_p90_reduction_pct": 18.24
+      }
+    },
+    {
+      "scenario_id": "B4_longhorizon_milestone_20steps",
+      "track": "A",
+      "title": "20-Step Long-Horizon Multi-Module Refactoring (50k+ Tokens)",
+      "description": "1-turn, 20-step long-horizon architecture refactoring across 8 service modules with 5 todo_write updates, 3 progress_update milestone notes, list_crons/schedule_cron inspection, repeated read_file verification, and multi-file edit_file patches accumulating 50k+ prompt tokens.",
+      "window_started_at_utc": "2026-11-04T12:22:04Z",
+      "window_completed_at_utc": "2026-11-04T12:23:33Z",
+      "nonce_char_length": 40,
+      "trace_files": {
+        "legacy_baseline": "traces/B4_longhorizon_milestone_20steps_legacy_baseline.jsonl",
+        "optimized_v1": "traces/B4_longhorizon_milestone_20steps_optimized_v1.jsonl"
+      },
+      "legacy_baseline": {
+        "step_count": 20,
+        "warm_step_count": 19,
+        "input_tokens": 1030787,
+        "output_tokens": 640,
+        "uncached_input_tokens": 387587,
+        "cache_read_input_tokens": 643200,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 1022294,
+        "warm_cache_read_input_tokens": 643200,
+        "warm_uncached_input_tokens": 379094,
+        "peak_step_input_tokens": 73835,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.623989,
+        "chr_all_pct": 62.4,
+        "chr_warm": 0.629173,
+        "chr_warm_pct": 62.92,
+        "effective_billable_input_tokens": 451907.0,
+        "billable_saved_vs_raw_no_cache_pct": 56.16,
+        "ttft_all_p50_ms": 948,
+        "ttft_all_p90_ms": 1610,
+        "long_context_step_count": 17,
+        "ttft_long_p50_ms": 973,
+        "ttft_long_p90_ms": 1560,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 12,
+          "tools": 0,
+          "system": 5,
+          "messages": 2
+        },
+        "cot_turn_reset_count": 0,
+        "warm_prefix_break_count": 7,
+        "warm_prefix_breaks": [
+          {
+            "scenario_id": "B4_longhorizon_milestone_20steps",
+            "step_index": 2,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B4_longhorizon_milestone_20steps",
+            "step_index": 6,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B4_longhorizon_milestone_20steps",
+            "step_index": 13,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B4_longhorizon_milestone_20steps",
+            "step_index": 14,
+            "broken_layer": "messages"
+          },
+          {
+            "scenario_id": "B4_longhorizon_milestone_20steps",
+            "step_index": 17,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B4_longhorizon_milestone_20steps",
+            "step_index": 19,
+            "broken_layer": "messages"
+          },
+          {
+            "scenario_id": "B4_longhorizon_milestone_20steps",
+            "step_index": 20,
+            "broken_layer": "system"
+          }
+        ]
+      },
+      "optimized_v1": {
+        "step_count": 20,
+        "warm_step_count": 19,
+        "input_tokens": 1080492,
+        "output_tokens": 631,
+        "uncached_input_tokens": 82348,
+        "cache_read_input_tokens": 998144,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 1070881,
+        "warm_cache_read_input_tokens": 998144,
+        "warm_uncached_input_tokens": 72737,
+        "peak_step_input_tokens": 81487,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.923787,
+        "chr_all_pct": 92.38,
+        "chr_warm": 0.932077,
+        "chr_warm_pct": 93.21,
+        "effective_billable_input_tokens": 182162.4,
+        "billable_saved_vs_raw_no_cache_pct": 83.14,
+        "ttft_all_p50_ms": 968,
+        "ttft_all_p90_ms": 1543,
+        "long_context_step_count": 17,
+        "ttft_long_p50_ms": 890,
+        "ttft_long_p90_ms": 1574,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 19,
+          "tools": 0,
+          "system": 0,
+          "messages": 0
+        },
+        "cot_turn_reset_count": 0,
+        "warm_prefix_break_count": 0,
+        "warm_prefix_breaks": []
+      },
+      "comparison": {
+        "chr_all_baseline_pct": 62.4,
+        "chr_all_optimized_pct": 92.38,
+        "chr_all_gain_pp": 29.98,
+        "chr_warm_baseline_pct": 62.92,
+        "chr_warm_optimized_pct": 93.21,
+        "chr_warm_gain_pp": 30.29,
+        "uncached_input_saved_tokens": 305239,
+        "uncached_input_saved_pct": 78.75,
+        "effective_billable_saved_tokens": 269744.6,
+        "billable_saved_vs_baseline_pct": 59.69,
+        "billable_saved_vs_raw_no_cache_pct": 83.14,
+        "baseline_billable_saved_vs_raw_no_cache_pct": 56.16,
+        "ttft_long_p50_baseline_ms": 973,
+        "ttft_long_p50_optimized_ms": 890,
+        "ttft_long_p50_delta_ms": -83,
+        "ttft_long_p50_reduction_pct": 8.53,
+        "ttft_long_p90_baseline_ms": 1560,
+        "ttft_long_p90_optimized_ms": 1574,
+        "ttft_long_p90_delta_ms": 14,
+        "ttft_long_p90_reduction_pct": -0.9
+      }
+    },
+    {
+      "scenario_id": "B5_live_e2e_bugfix",
+      "track": "B",
+      "title": "Live Autonomous End-to-End Bugfix in Temporary Git Repository",
+      "description": "Real unscripted end-to-end autonomous debugging in an isolated tempfile.TemporaryDirectory() Git repository: deepseek-v4-flash independently inspects a multi-module Python settlement package with failing pytest tests, tracks progress via todo_write / progress_update, edits source files, and runs pytest until 100% green.",
+      "window_started_at_utc": "2026-11-04T12:23:33Z",
+      "window_completed_at_utc": "2026-11-04T12:27:40Z",
+      "nonce_char_length": 40,
+      "trace_files": {
+        "legacy_baseline": "traces/B5_live_e2e_bugfix_legacy_baseline.jsonl",
+        "optimized_v1": "traces/B5_live_e2e_bugfix_optimized_v1.jsonl"
+      },
+      "legacy_baseline": {
+        "step_count": 26,
+        "warm_step_count": 25,
+        "input_tokens": 882690,
+        "output_tokens": 6795,
+        "uncached_input_tokens": 152706,
+        "cache_read_input_tokens": 729984,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 874179,
+        "warm_cache_read_input_tokens": 729984,
+        "warm_uncached_input_tokens": 144195,
+        "peak_step_input_tokens": 41932,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.826999,
+        "chr_all_pct": 82.7,
+        "chr_warm": 0.835051,
+        "chr_warm_pct": 83.51,
+        "effective_billable_input_tokens": 225704.4,
+        "billable_saved_vs_raw_no_cache_pct": 74.43,
+        "ttft_all_p50_ms": 1009,
+        "ttft_all_p90_ms": 1373,
+        "long_context_step_count": 24,
+        "ttft_long_p50_ms": 994,
+        "ttft_long_p90_ms": 1353,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 21,
+          "tools": 0,
+          "system": 4,
+          "messages": 0
+        },
+        "cot_turn_reset_count": 0,
+        "warm_prefix_break_count": 4,
+        "warm_prefix_breaks": [
+          {
+            "scenario_id": "B5_live_e2e_bugfix",
+            "step_index": 2,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B5_live_e2e_bugfix",
+            "step_index": 10,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B5_live_e2e_bugfix",
+            "step_index": 21,
+            "broken_layer": "system"
+          },
+          {
+            "scenario_id": "B5_live_e2e_bugfix",
+            "step_index": 26,
+            "broken_layer": "system"
+          }
+        ]
+      },
+      "optimized_v1": {
+        "step_count": 10,
+        "warm_step_count": 9,
+        "input_tokens": 303792,
+        "output_tokens": 2590,
+        "uncached_input_tokens": 35888,
+        "cache_read_input_tokens": 267904,
+        "cache_write_input_tokens": 0,
+        "warm_input_tokens": 294174,
+        "warm_cache_read_input_tokens": 267904,
+        "warm_uncached_input_tokens": 26270,
+        "peak_step_input_tokens": 37267,
+        "cold_start_cache_read_tokens": 0,
+        "chr_all": 0.881867,
+        "chr_all_pct": 88.19,
+        "chr_warm": 0.910699,
+        "chr_warm_pct": 91.07,
+        "effective_billable_input_tokens": 62678.4,
+        "billable_saved_vs_raw_no_cache_pct": 79.37,
+        "ttft_all_p50_ms": 1208,
+        "ttft_all_p90_ms": 1454,
+        "long_context_step_count": 8,
+        "ttft_long_p50_ms": 1061,
+        "ttft_long_p90_ms": 1426,
+        "broken_layer_counts": {
+          "cold_start": 1,
+          "none": 9,
+          "tools": 0,
+          "system": 0,
+          "messages": 0
+        },
+        "cot_turn_reset_count": 0,
+        "warm_prefix_break_count": 0,
+        "warm_prefix_breaks": []
+      },
+      "comparison": {
+        "chr_all_baseline_pct": 82.7,
+        "chr_all_optimized_pct": 88.19,
+        "chr_all_gain_pp": 5.49,
+        "chr_warm_baseline_pct": 83.51,
+        "chr_warm_optimized_pct": 91.07,
+        "chr_warm_gain_pp": 7.56,
+        "uncached_input_saved_tokens": 116818,
+        "uncached_input_saved_pct": 76.5,
+        "effective_billable_saved_tokens": 163026.0,
+        "billable_saved_vs_baseline_pct": 72.23,
+        "billable_saved_vs_raw_no_cache_pct": 79.37,
+        "baseline_billable_saved_vs_raw_no_cache_pct": 74.43,
+        "ttft_long_p50_baseline_ms": 994,
+        "ttft_long_p50_optimized_ms": 1061,
+        "ttft_long_p50_delta_ms": 67,
+        "ttft_long_p50_reduction_pct": -6.74,
+        "ttft_long_p90_baseline_ms": 1353,
+        "ttft_long_p90_optimized_ms": 1426,
+        "ttft_long_p90_delta_ms": 73,
+        "ttft_long_p90_reduction_pct": -5.4
+      },
+      "live_verification": {
+        "legacy_baseline_pytest_passed": true,
+        "legacy_baseline_pytest_summary": "6 passed in 0.02s",
+        "optimized_v1_pytest_passed": true,
+        "optimized_v1_pytest_summary": "6 passed in 0.02s"
+      }
+    }
+  ],
+  "billing_reconciliation": {
+    "platform_url": "https://platform.deepseek.com/usage",
+    "window_started_at_utc": "2026-11-04T12:18:51Z",
+    "window_completed_at_utc": "2026-11-04T12:27:40Z",
+    "window_started_at_local": "2026-11-04T20:18:51+08:00",
+    "window_completed_at_local": "2026-11-04T20:27:40+08:00",
+    "model_id": "deepseek-v4-flash",
+    "combined_requests": 160,
+    "combined_input_tokens": 6763637,
+    "combined_cache_read_input_tokens": 5106560,
+    "combined_uncached_input_tokens": 1657077,
+    "combined_output_tokens": 13344,
+    "combined_effective_billable_input_tokens": 2167733.0
+  }
+}

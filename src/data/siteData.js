@@ -101,12 +101,12 @@ export function getArchitectureChapters(lang) {
       ),
       subtitle: tt(
         lang,
-        '冻结会话级 _memory_snapshot 守护 94.2% 大模型 Prefix Cache 命中率，结合后台异步水位线队列提取 USER.md / MEMORY.md 与内网 RAGFlow 混合检索。',
-        'セッション開始時にメモリスナップショットを凍結して 94.2% の Prefix Cache ヒット率を維持し、非同期キューによる記憶抽出と社内 RAGFlow 検索を統合。',
-        'Session-frozen memory snapshots preserve 94.2% LLM Prefix Cache hit rate, paired with async watermark extraction and internal RAGFlow retrieval.'
+        '四层只增前缀与缓存感知延迟去重：DeepSeek-V4-Flash 实测热态 Prefix Cache 命中率 89.58%（长程峰值 93.21%），等效计费输入节省 57.27%（附 SHA-256 证据包），配合异步水位线记忆与内网 RAGFlow。',
+        '4層追記型プレフィックスとキャッシュ認識圧縮により DeepSeek-V4-Flash 実測ウォームヒット率 89.58%（ピーク 93.21%）・課金入力 -57.27%（SHA-256 証跡同梱）を達成し、非同期メモリ抽出と社内 RAGFlow を統合。',
+        '4-layer append-only prefix & cache-aware compaction deliver 89.58% measured warm Prefix Cache hit rate (93.21% peak) and -57.27% billable input on DeepSeek-V4-Flash (SHA-256 signed bundle), with async memory & RAGFlow.'
       ),
-      modules: ['app/services/memory_queue.py', 'app/services/memory_store.py', 'app/services/ragflow_client.py'],
-      metric: '94.2% KV Cache Hit · Async Watermark'
+      modules: ['app/services/agent_loop.py', 'app/services/context_compact.py', 'app/services/memory_queue.py'],
+      metric: '89.58% Warm Hit · -57.27% Billable'
     },
     {
       id: 'workbench',

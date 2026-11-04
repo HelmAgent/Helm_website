@@ -427,8 +427,9 @@ watch(
 
 .nx-article-metric {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: 11.5px;
-  color: #34d399;
+  color: var(--nx-emerald);
 }
 
 .nx-article-h1 {
@@ -690,28 +691,52 @@ watch(
   font-family: var(--font-mono);
   font-size: 12.5px;
   line-height: 1.6;
-  color: #e2e8f0;
+  color: var(--nx-text-2);
+}
+
+.nx-article-body :deep(.nx-code-pre::-webkit-scrollbar),
+.nx-article-body :deep(.nx-table-wrap::-webkit-scrollbar) {
+  height: 6px;
+  background: transparent;
+}
+
+.nx-article-body :deep(.nx-code-pre::-webkit-scrollbar-track),
+.nx-article-body :deep(.nx-table-wrap::-webkit-scrollbar-track) {
+  background: transparent;
+}
+
+.nx-article-body :deep(.nx-code-pre::-webkit-scrollbar-thumb),
+.nx-article-body :deep(.nx-table-wrap::-webkit-scrollbar-thumb) {
+  background: var(--nx-border-mid);
+  border-radius: var(--nx-radius-xs);
 }
 
 /* 表格 */
 .nx-article-body :deep(.nx-table-wrap) {
   margin: 20px 0;
   overflow-x: auto;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: var(--nx-radius-md);
+  border: 1px solid var(--nx-border-mid);
 }
 
 .nx-article-body :deep(.nx-doc-table) {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
 .nx-article-body :deep(.nx-doc-table th),
 .nx-article-body :deep(.nx-doc-table td) {
-  padding: 12px 14px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--nx-border-subtle);
   text-align: left;
+  white-space: nowrap;
+}
+
+.nx-article-body :deep(.nx-doc-table td:first-child) {
+  white-space: normal;
+  min-width: 156px;
 }
 
 .nx-article-body :deep(.nx-doc-table th) {

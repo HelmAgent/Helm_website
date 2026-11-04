@@ -74,14 +74,14 @@ const kpiMetrics = computed(() => [
     )
   },
   {
-    num: '94.2%',
-    unit: 'PREFIX CACHE HIT RATE',
-    badge: t('首字极速响应', 'KVキャッシュ保護', 'Frozen Snapshot'),
-    label: t('大模型前缀缓存命中率', 'LLM Prefix Cache ヒット率', 'LLM Prefix Cache Hit Rate'),
+    num: '89.58%',
+    unit: 'PREFIX CACHE HIT',
+    badge: t('计费省 57.27%', '課金入力 -57.27%', '-57.27% Billable'),
+    label: t('实测热态前缀缓存命中率', '実測ウォーム Prefix Cache ヒット率', 'Measured Warm Prefix Cache Hit Rate'),
     desc: t(
-      '独创会话级冻结记忆快照 + 后台异步水位线队列提取，彻底根除每轮改写 System Prompt 导致的缓存失效。',
-      'セッション凍結メモリスナップショットと非同期抽出キューにより、毎ターンの KV キャッシュ破壊を防止。',
-      'Session-frozen memory snapshots + async watermark queues prevent per-turn System Prompt cache invalidation.'
+      '基于 DeepSeek-V4-Flash 双轨基准实测（长程峰值 93.21%，全步 88.22%）：四层只增前缀 + 缓存感知裁剪使等效计费输入较基线省 57.27%（较无缓存裸调省 79.40%）。',
+      'DeepSeek-V4-Flash 実測（長時間ピーク 93.21%、全ステップ 88.22%）：4層追記型プレフィックス＋キャッシュ認識圧縮で実効課金入力を 57.27% 削減（素の入力比 -79.40%）。',
+      'Verified on DeepSeek-V4-Flash (93.21% 20-step peak, 88.22% all-step): 4-layer append-only prefix + cache-aware compaction cuts billable input by 57.27% (-79.40% vs raw).'
     )
   },
   {
@@ -231,12 +231,12 @@ if mate.require_plan and not mate.plan_approved:
     highlights: [
       t('告别“改一句话重生成整份 PPT”：精准定位 slide_index 与 shape_id 原地修改', '「1箇所の修正でPPT全体を再生成」する必要なし：該当シェイプのみを書式維持で更新', 'Updates only the targeted slide shape or paragraph while preserving full document styling'),
       t('内置 5 版本文件快照（.hyn_agent/file_snapshots）与一键撤销回退', '最大5世代の自動ファイルスナップショットを保持し、ワンクリックで復元可能', 'Maintains 5-generation automatic file snapshots with instant 1-click undo'),
-      t('冻结记忆快照守护 94.2% Prefix Cache，长会话依然保持秒级首字响应', '凍結メモリスナップショットにより長時間セッションでも高速な初回応答を維持', 'Session-frozen memory snapshots keep TTFT fast across multi-hour sessions')
+      t('四层只增前缀守护 89.58% 热态 Prefix Cache（长程峰值 93.21%），等效计费输入直降 57.27%', '4層追記型プレフィックスで 89.58% ウォームヒット率（ピーク 93.21%）と課金入力 -57.27% を実証', '4-layer append-only prefix achieves 89.58% warm hit rate (93.21% peak) and -57.27% billable input')
     ],
     visualNodes: [
       { tag: 'ANCHOR LOCATOR', name: 'pptx_shape / docx_para', addr: 'slide: 2 · shape: 104', status: t('归一化坐标定位', '構造化アンカー特定', 'Surgical Coordinate') },
       { tag: 'HOT RELOAD', name: 'SSE file_updated Event', addr: '5-Gen File Snapshot', status: t('无闪烁原地刷新', 'リロードなし即時反映', 'In-Place Live Patch') },
-      { tag: 'PREFIX CACHE', name: 'Frozen _memory_snapshot', addr: '94.2% KV Cache Hit', status: t('异步水位线提取', '非同期メモリ抽出', 'Async Watermark Queue') }
+      { tag: 'PREFIX CACHE', name: '4-Layer Append-Only Prefix', addr: '89.58% Warm Hit · -57.27%', status: t('DeepSeek-V4-Flash 实测', 'DeepSeek-V4-Flash 実測', 'Verified Benchmark') }
     ],
     snippetTitle: 'SelectionContext · Cross-Format Surgical Anchor',
     snippet: `{
@@ -868,7 +868,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
                   <td><strong>{{ t('大模型 Prefix Cache 保护', 'LLM Prefix Cache ヒット率保護', 'LLM Prefix Cache Preservation') }}</strong></td>
                   <td class="is-helm-col">
                     <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('会话级冻结记忆快照 + 后台异步队列提取，Prefix Cache 命中率 94.2%', 'セッション凍結メモリスナップショット＋非同期抽出により 94.2% ヒット率維持', 'Session-frozen memory snapshot + async queue keeps 94.2% cache hit rate') }}</strong>
+                    <strong>{{ t('四层只增前缀 + 缓存感知裁剪：DeepSeek-V4-Flash 实测热态命中率 89.58%（峰值 93.21%），计费输入省 57.27%', '4層追記型プレフィックス＋キャッシュ認識圧縮：実測ウォームヒット率 89.58%（ピーク 93.21%）・課金入力 -57.27%', '4-layer append-only prefix + cache-aware compaction: 89.58% warm hit rate (93.21% peak), -57.27% billable input') }}</strong>
                   </td>
                   <td class="is-dim">
                     <span class="nx-status-no">✕</span>
@@ -1900,19 +1900,23 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
 .nx-telemetry-badge {
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.28);
-  color: #34d399;
+  background: var(--nx-emerald-soft);
+  border: 1px solid var(--nx-emerald);
+  color: var(--nx-emerald);
   font-size: 10.5px;
   font-weight: 650;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .nx-telemetry-num {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: 36px;
   font-weight: 850;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--nx-text-1);
   margin-bottom: 6px;
 }
 

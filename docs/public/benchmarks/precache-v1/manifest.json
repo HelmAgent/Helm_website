@@ -1,0 +1,77 @@
+{
+  "schema_version": "hyn.precache.manifest.v1",
+  "benchmark_suite": "precache-v1",
+  "run_id": "20261104T121851Z_deepseek-v4-flash",
+  "provider": "deepseek",
+  "model_id": "deepseek-v4-flash",
+  "started_at_utc": "2026-11-04T12:18:51Z",
+  "completed_at_utc": "2026-11-04T12:27:40Z",
+  "pricing_weights": {
+    "cache_read_weight": 0.1,
+    "cache_miss_weight": 1.0,
+    "cache_write_weight": 0.0
+  },
+  "file_count": 12,
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 4496,
+      "sha256": "7c56fc21938fb8dfd7243cd16302e5fa7a09617527bdf4afbf799a74d2e1c7fd"
+    },
+    {
+      "path": "summary_report.json",
+      "bytes": 43137,
+      "sha256": "357b055b22f143de34e9cdd628cdb1e559f2b19997a418c068c57d2823220150"
+    },
+    {
+      "path": "traces/B1_fullstack_bugfix_16steps_legacy_baseline.jsonl",
+      "bytes": 21188,
+      "sha256": "d431694960dfa137d610344d8562c610968574b1c032d25661f4b46becd2c30b"
+    },
+    {
+      "path": "traces/B1_fullstack_bugfix_16steps_optimized_v1.jsonl",
+      "bytes": 21119,
+      "sha256": "ede5eb26f0e16d39ba7cac54a38e65e1a11c445ac5022dc0190bef8077d39c96"
+    },
+    {
+      "path": "traces/B2_multiturn_mixed_lang_10turns_legacy_baseline.jsonl",
+      "bytes": 18164,
+      "sha256": "6b866c25cbefa41688a882f0eebac369c51c12e1ac5fac37d494eff62ff1ecfa"
+    },
+    {
+      "path": "traces/B2_multiturn_mixed_lang_10turns_optimized_v1.jsonl",
+      "bytes": 18097,
+      "sha256": "4ea852ab981eccaa1057c6293e94ea51822d526ef2b5533ffb32a698aab0d3e8"
+    },
+    {
+      "path": "traces/B3_office_selection_8turns_legacy_baseline.jsonl",
+      "bytes": 15100,
+      "sha256": "98d0707e0f79f6a0fb18b0cdde9a1641eceda10cc6eec9f51b8b313607ea2f79"
+    },
+    {
+      "path": "traces/B3_office_selection_8turns_optimized_v1.jsonl",
+      "bytes": 15060,
+      "sha256": "802aecb336a1cb4b1426dc8b397650d6d049cb018b5ba1269760c61eb62582cc"
+    },
+    {
+      "path": "traces/B4_longhorizon_milestone_20steps_legacy_baseline.jsonl",
+      "bytes": 27871,
+      "sha256": "14df4009b0d91138a3add073898a78ca9eed43de99ac22575903b4132f73c68a"
+    },
+    {
+      "path": "traces/B4_longhorizon_milestone_20steps_optimized_v1.jsonl",
+      "bytes": 27787,
+      "sha256": "d11ecb28f024de88f55af1fd0f466dbd642f1b723ed373ac922a5a77ec239c76"
+    },
+    {
+      "path": "traces/B5_live_e2e_bugfix_legacy_baseline.jsonl",
+      "bytes": 38402,
+      "sha256": "0bad66790550e534cb20f1e03762ed4d56657c0a00b8f544064ca7a9066363cd"
+    },
+    {
+      "path": "traces/B5_live_e2e_bugfix_optimized_v1.jsonl",
+      "bytes": 12151,
+      "sha256": "ec4c37380350274cb286c4785bdc80c720d624b71c25c4bdc13dce900b44de2a"
+    }
+  ]
+}

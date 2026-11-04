@@ -63,7 +63,7 @@ Get-FileHash .\Helm.Setup.1.0.0.exe -Algorithm SHA256
    - Lead 主代理可统筹最多 4 名常驻队友（Teammates），基于 `ContextVar` 将每名队友的文件读写与终端命令严格锁定在各自的 `.hyn_wt/mate-*` 独立工作树中，并在重构计划获批准前从底层物理剥离一切写盘工具。
 4. **WPS 级高保真文档工作台与会话级冻结双层记忆（Surgical Office & Frozen Memory）**
    - 右侧分栏原生渲染并编辑 `docx / xlsx / pptx / pdf / md / html`，支持鼠标框选任意幻灯片形状、Word 段落或表格区间触发 `SelectionAnchor` 手术刀级局部热替换（SSE 无闪烁热刷新）与 5 版本文件快照回退。
-   - 独创会话级冻结记忆快照（`_memory_snapshot`）+ 后台异步水位线队列提取 `USER.md / MEMORY.md`，守护 **94.2% 大模型 Prefix Cache 命中率**。
+   - 独创四层只增前缀架构（固定工具签名 + 会话级冻结 System 快照 + `<system-reminder>` 队尾注入 + 缓存感知延迟去重），经 `DeepSeek-V4-Flash` 双轨实测守护 **89.58% 热态 Prefix Cache 命中率（20 步长程峰值 93.21%，等效计费输入节省 57.27%）**，公开防篡改证据包见 `/benchmarks/precache-v1/manifest.json`。
 
 ---
 

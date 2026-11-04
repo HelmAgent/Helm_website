@@ -580,7 +580,7 @@ Ran 86 tests in 1.842s — OK</pre>
                     <div class="stone-popover-title">{{ tt('长程预算与 Prefix Cache 监控', '実行バジェット＆ Prefix Cache 監視', 'Long-Horizon Budget & Cache') }}</div>
                     <div class="stone-ring-row"><span>Token Budget:</span> <strong>31,240 / 128,000 (24%)</strong></div>
                     <div class="stone-ring-row"><span>Time Budget:</span> <strong>26m / 240m</strong></div>
-                    <div class="stone-ring-row"><span>Prefix Cache:</span> <strong class="is-green">94.2% Hit (Frozen Snapshot)</strong></div>
+                    <div class="stone-ring-row"><span>Prefix Cache:</span> <strong class="is-green">89.58% Warm Hit (-57.27% Billable)</strong></div>
                     <div class="stone-ring-row"><span>Progress Notes:</span> <strong>1,420 / 8,000 chars</strong></div>
                   </div>
                 </div>
@@ -671,7 +671,7 @@ Ran 86 tests in 1.842s — OK</pre>
                   <template v-else>
                     <ul class="stone-ppt-refined">
                       <li><strong>0 Byte {{ tt('外发流量', '外部送信', 'External Egress') }}</strong>：{{ tt('127.0.0.1 闭环运行，核心代码 100% 不出本机与企业内网', '127.0.0.1 ループバック完結、機密コード・文書の社外流出ゼロ', '127.0.0.1 loop, zero external code egress') }}</li>
-                      <li><strong>94.2% Prefix Cache {{ tt('命中', 'ヒット', 'Hit') }}</strong>：{{ tt('会话冻结记忆快照 + 异步提取，大幅降低首字延迟', 'セッション凍結メモリスナップショットにより初回応答遅延（TTFT）を大幅短縮', 'Session-frozen memory snapshot preserves KV cache') }}</li>
+                      <li><strong>89.58% Prefix Cache {{ tt('热态命中', 'ウォームヒット', 'Warm Hit') }}</strong>：{{ tt('四层只增前缀 + 缓存感知裁剪，长程峰值 93.21%、计费输入省 57.27%', '4層追記型プレフィックス＋キャッシュ認識圧縮（ピーク 93.21%・課金入力 -57.27%）', '4-layer append-only prefix (93.21% peak, -57.27% billable input)') }}</li>
                       <li><strong>100% {{ tt('无损状态回滚', '状態ロールバック', 'State Rollback') }}</strong>：{{ tt('TurnHub 单调 seq 重连 + 无侵入影子 Git 检查点', 'TurnHub 単調増加 seq 再接続 + 非侵襲シャドウGitチェックポイント', 'Monotonic seq replay + Shadow Git Checkpoints') }}</li>
                     </ul>
                   </template>

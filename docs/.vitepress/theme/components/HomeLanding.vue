@@ -41,10 +41,10 @@ const kpiMetrics = computed(() => [
     desc: tt('127.0.0.1 本机闭环与企业内网直连，源码与文档 100% 不出网', '127.0.0.1 ローカル完結および社内LAN直結。機密コードの社外流出ゼロ', '127.0.0.1 local loop & corporate LAN support; zero cloud relay required')
   },
   {
-    num: '94.2%',
-    unit: 'PREFIX CACHE HIT',
-    label: tt('长对话前缀缓存命中率', 'Prefix Cache ヒット率', 'Prefix Cache Hit Rate'),
-    desc: tt('会话级冻结记忆快照 + 后台异步水位线提取，杜绝每轮改写 System Prompt', 'セッション凍結メモリスナップショットにより KV キャッシュ破壊を防止', 'Session-frozen memory snapshots preserve LLM KV cache across long runs')
+    num: '89.58%',
+    unit: 'WARM PREFIX CACHE HIT',
+    label: tt('实测热态前缀缓存命中率', '実測ウォーム Prefix Cache ヒット率', 'Measured Warm Prefix Cache Hit'),
+    desc: tt('DeepSeek-V4-Flash 实测（长程峰值 93.21%）：四层只增前缀使计费输入直降 57.27%', 'DeepSeek-V4-Flash 実測（ピーク 93.21%）：4層追記型プレフィックスで課金入力を 57.27% 削減', 'DeepSeek-V4-Flash verified (93.21% peak): 4-layer append-only prefix cuts billable input by 57.27%')
   },
   {
     num: 'P0–P3',

@@ -104,6 +104,22 @@ function jumpTo(url) {
           </div>
         </div>
 
+        <div class="nx-modal-bench-note">
+          <span class="nx-modal-bench-tag">VERIFIABLE BENCHMARK</span>
+          <span>
+            {{
+              t(
+                '本站所有 Pre-Cache 性能指标（DeepSeek-V4-Flash 实测热态命中率 89.58%、计费输入省 57.27%）均附带含原始 response_id 与 SHA-256 签名的公开证据包：',
+                '本サイトの Pre-Cache 性能指標（DeepSeek-V4-Flash 実測ウォームヒット率 89.58%・課金入力 -57.27%）は、生の response_id と SHA-256 署名付き公開証跡で検証可能です：',
+                'All Pre-Cache metrics on this site (89.58% warm hit rate, -57.27% billable input on DeepSeek-V4-Flash) are backed by a public SHA-256 signed evidence bundle with raw response_ids:'
+              )
+            }}
+          </span>
+          <a href="/benchmarks/precache-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
+            /benchmarks/precache-v1/manifest.json ↗
+          </a>
+        </div>
+
         <div class="nx-modal-footer">
           <button
             type="button"
@@ -236,6 +252,39 @@ function jumpTo(url) {
   font-size: 13px;
   line-height: 1.65;
   color: #cbd5e1;
+}
+
+.nx-modal-bench-note {
+  margin-bottom: 18px;
+  padding: 12px 16px;
+  border-radius: var(--nx-radius-sm);
+  background: var(--nx-bg-glass);
+  border: 1px solid var(--nx-border-mid);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--nx-text-2);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.nx-modal-bench-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--nx-radius-xs);
+  background: var(--nx-emerald-soft);
+  color: var(--nx-emerald);
+}
+
+.nx-modal-bench-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--nx-primary-bright);
 }
 
 .nx-modal-footer {
