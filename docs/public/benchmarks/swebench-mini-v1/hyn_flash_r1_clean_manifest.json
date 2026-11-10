@@ -1,0 +1,122 @@
+{
+  "schema_version": "hyn.swebench.manifest.v1",
+  "harness_version": "swe-mini-v1",
+  "run_tag": "hyn_flash_r1_clean",
+  "created_at": "2026-11-09T17:37:07.794204+00:00",
+  "dataset": {
+    "dataset_name": "MariusHobbhahn/swe-bench-verified-mini",
+    "split": "test",
+    "count": 50,
+    "dataset_sha256": "cafe0f03f7f6db133e98ad259f3a1cd0c6a59dce6965ddcb6e220df8b376ba5d",
+    "instance_ids_sha256": "4fe0948cceaedfedc06075975e42540641cae4854a3d043507afd4b93d2f1970",
+    "repo_counts": {
+      "django/django": 25,
+      "sphinx-doc/sphinx": 25
+    },
+    "instance_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11885",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12308",
+      "django__django-12325",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9461",
+      "sphinx-doc__sphinx-9698"
+    ]
+  },
+  "patch_exclusion_rules": [
+    {
+      "id": "internal_dirs",
+      "description": "始终排除 .git / .hyn / .hyn_agent / .worktrees / .tasks / .claude / .cursor / __pycache__ / .pytest_cache / .mypy_cache / .ruff_cache / .tox 目录下的文件"
+    },
+    {
+      "id": "compiled_or_backup_artifacts",
+      "description": "始终排除 *.pyc / *.pyo / *.orig / *.rej / *.bak / .coverage 等编译或冲突备份产物"
+    },
+    {
+      "id": "hyn_temp_scripts_untracked",
+      "description": "对相对 base_commit 新增的未跟踪文件，排除 HYN `is_temp_generator_dir_part` 与 `is_temp_script_path` 命中的临时生成脚本"
+    },
+    {
+      "id": "reproduction_scripts_untracked",
+      "description": "对相对 base_commit 新增的未跟踪文件，排除明显的复现/调试/补丁草稿文件：`reproduce*.*`、`repro_*.*`、`*_repro.py`、`*_reproduce.py`、`test_repro*.py`、`verify_*.py`、`debug_*.py`、`scratch*.*`、`tmp_*.*`、`_tmp*.*`、`patch.txt`、`*.patch`、`*.diff`"
+    }
+  ],
+  "artifacts": {
+    "predictions.jsonl": {
+      "size_bytes": 82564,
+      "sha256": "f84c5dc0d12abe58b4cc9ce402b76133dff462a7d0e3773bcf4d4fd923fec888"
+    },
+    "results.jsonl": {
+      "size_bytes": 127872,
+      "sha256": "2f7fd9fe4dca282f9690a7bc4cbc8526018bf05b77287d568ee8c4109a45888a"
+    },
+    "run_state.json": {
+      "size_bytes": 552,
+      "sha256": "f9499d89f6503b72c9c024612b69ef2a9758a49f354fadd9565c5d9cfd9e94e8"
+    },
+    "frozen_config.json": {
+      "size_bytes": 2728,
+      "sha256": "0c8823621be42912aa15cee4aa6876c04043b0044be709e7337197e3d9bc5e10"
+    },
+    "eval/evaluation_summary.json": {
+      "size_bytes": 173631,
+      "sha256": "a45110dba1d8090b0045fff851c7bbf39cc6d23364d93361b69cc922fe4769f7"
+    },
+    "summary.json": {
+      "size_bytes": 15627,
+      "sha256": "33160e2dfbaf72c9169d87b10fed04e6baf6e3136c1622dceff5e871eb903214"
+    },
+    "REPORT.md": {
+      "size_bytes": 4826,
+      "sha256": "4aac4b942cde83d775f5ac1a021f14a43b8b9e023b77abb8d507f3f1f0589882"
+    }
+  },
+  "traces_bundle": {
+    "trace_file_count": 50,
+    "total_bytes": 3731528,
+    "combined_sha256": "fdde1da051c3d4ee5ccdb401ef4a16703a2b2252054a25caf80566876dd47fd3"
+  }
+}

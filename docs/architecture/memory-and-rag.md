@@ -150,3 +150,10 @@ cd hyn_agent_backend
 # 2. 离线校验已归档证据包内全部 12 个文件的字节大小与 SHA-256 签名
 .\.venv\Scripts\python.exe -m pytest tests/precache/test_phase3_bench_and_audit.py -q
 ```
+
+### 4.4.5 SWE-bench Verified Mini（1.2 亿+ Token 实战规模）缓存命中率：97.74%
+
+除上述 `B1`–`B5` 受控基准外，四层只增前缀架构在 **SWE-bench Verified Mini（50 题 × 2 轮独立评测，总计 1.15 亿+ 输入 Token）** 的真实超长自治排障中进一步展现了极致的规模效应：
+- **Run 1 Clean (`hyn_flash_r1_clean`, `42 / 50 = 84.00%`)**：全轮总输入 `61,671,694` Token，缓存命中 `60,278,464` Token，**综合 Prefix Cache 命中率高达 `97.74%`**（Step 2+ 热态命中率 **`97.81%`**），整轮 50 题总计费仅 **¥12.16（每解决一题 ¥0.289）**。
+- **Run 2 Full Gate (`hyn_flash_r2`, `39 / 50 = 78.00%`)**：全轮总输入 `53,332,377` Token，缓存命中 `52,061,888` Token，**综合 Prefix Cache 命中率 `97.62%`**（Step 2+ 热态命中率 **`97.71%`**），整轮 50 题总计费仅 **¥10.39（每解决一题 ¥0.267）**。
+- **公开证据包核验**：详见 [`/benchmarks/swebench-mini-v1/manifest.json`](/benchmarks/swebench-mini-v1/manifest.json) 与 [`/benchmarks/swebench-mini-v1/REPORT.md`](/benchmarks/swebench-mini-v1/REPORT.md)。

@@ -1,0 +1,1958 @@
+{
+  "schema_version": "hyn.swebench.report.v1",
+  "harness_version": "swe-mini-v1",
+  "run_tag": "hyn_flash_r2",
+  "created_at": "2026-11-09T17:34:53.268030+00:00",
+  "is_partial_subset": false,
+  "report_status_label": "OFFICIAL FULL (n=50)",
+  "tier": "full",
+  "scope_instance_ids": [
+    "django__django-11790",
+    "django__django-11815",
+    "django__django-11848",
+    "django__django-11880",
+    "django__django-11885",
+    "django__django-11951",
+    "django__django-11964",
+    "django__django-11999",
+    "django__django-12039",
+    "django__django-12050",
+    "django__django-12143",
+    "django__django-12155",
+    "django__django-12193",
+    "django__django-12209",
+    "django__django-12262",
+    "django__django-12273",
+    "django__django-12276",
+    "django__django-12304",
+    "django__django-12308",
+    "django__django-12325",
+    "django__django-12406",
+    "django__django-12708",
+    "django__django-12713",
+    "django__django-12774",
+    "django__django-9296",
+    "sphinx-doc__sphinx-10323",
+    "sphinx-doc__sphinx-10435",
+    "sphinx-doc__sphinx-10466",
+    "sphinx-doc__sphinx-10673",
+    "sphinx-doc__sphinx-11510",
+    "sphinx-doc__sphinx-7590",
+    "sphinx-doc__sphinx-7748",
+    "sphinx-doc__sphinx-7757",
+    "sphinx-doc__sphinx-7985",
+    "sphinx-doc__sphinx-8035",
+    "sphinx-doc__sphinx-8056",
+    "sphinx-doc__sphinx-8265",
+    "sphinx-doc__sphinx-8269",
+    "sphinx-doc__sphinx-8475",
+    "sphinx-doc__sphinx-8548",
+    "sphinx-doc__sphinx-8551",
+    "sphinx-doc__sphinx-8638",
+    "sphinx-doc__sphinx-8721",
+    "sphinx-doc__sphinx-9229",
+    "sphinx-doc__sphinx-9230",
+    "sphinx-doc__sphinx-9281",
+    "sphinx-doc__sphinx-9320",
+    "sphinx-doc__sphinx-9367",
+    "sphinx-doc__sphinx-9461",
+    "sphinx-doc__sphinx-9698"
+  ],
+  "dataset": {
+    "dataset_name": "MariusHobbhahn/swe-bench-verified-mini",
+    "split": "test",
+    "count": 50,
+    "dataset_sha256": "cafe0f03f7f6db133e98ad259f3a1cd0c6a59dce6965ddcb6e220df8b376ba5d",
+    "instance_ids_sha256": "4fe0948cceaedfedc06075975e42540641cae4854a3d043507afd4b93d2f1970",
+    "repo_counts": {
+      "django/django": 25,
+      "sphinx-doc/sphinx": 25
+    },
+    "instance_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11885",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12308",
+      "django__django-12325",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9461",
+      "sphinx-doc__sphinx-9698"
+    ]
+  },
+  "primary_metric": {
+    "resolved_instances": 39,
+    "total_instances": 50,
+    "resolved_rate": 0.78,
+    "wilson_ci95": {
+      "k": 39,
+      "n": 50,
+      "rate": 0.78,
+      "ci95_low": 0.647585,
+      "ci95_high": 0.872461
+    },
+    "resolved_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12308",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9698"
+    ],
+    "by_repo": {
+      "django/django": {
+        "resolved": 22,
+        "total": 25,
+        "rate": 0.88,
+        "wilson_ci95": {
+          "k": 22,
+          "n": 25,
+          "rate": 0.88,
+          "ci95_low": 0.700442,
+          "ci95_high": 0.958332
+        }
+      },
+      "sphinx-doc/sphinx": {
+        "resolved": 17,
+        "total": 25,
+        "rate": 0.68,
+        "wilson_ci95": {
+          "k": 17,
+          "n": 25,
+          "rate": 0.68,
+          "ci95_low": 0.484103,
+          "ci95_high": 0.827948
+        }
+      }
+    },
+    "known_anomalous_ids": [
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8269"
+    ],
+    "known_anomalous_details": [
+      {
+        "instance_id": "sphinx-doc__sphinx-7985",
+        "resolved": false,
+        "reason": "上游测试 tests/test_build_linkcheck.py::test_defaults 并发访问公网 https://www.w3.org 与 https://www.google.com，偶发 TLS EOF (SSLZeroReturnError) 导致行数断言波动（FAIL_TO_PASS 核心项 test_anchors_ignored 稳定通过）。"
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-8269",
+        "resolved": true,
+        "reason": "上游回归项 tests/test_build_linkcheck.py::test_defaults 并发访问公网 https://www.google.com/image.png，偶发 TLS EOF 使预期 HTTP 404 变为 SSLError （单并发重跑可通过，FAIL_TO_PASS 目标项 test_raises_for_invalid_status 稳定通过）。"
+      }
+    ],
+    "adjusted_excluding_anomalous": {
+      "k": 38,
+      "n": 48,
+      "rate": 0.791667,
+      "ci95_low": 0.657411,
+      "ci95_high": 0.882697,
+      "wilson_ci95": {
+        "k": 38,
+        "n": 48,
+        "rate": 0.791667,
+        "ci95_low": 0.657411,
+        "ci95_high": 0.882697
+      }
+    }
+  },
+  "cost_and_cache": {
+    "requested_models": [
+      "deepseek-flash"
+    ],
+    "response_models": [
+      "deepseek-flash"
+    ],
+    "total_cost_cny": 10.394424,
+    "total_offpeak_cost_cny": 10.394424,
+    "total_peak_cost_cny": 20.788846,
+    "avg_cost_per_instance_cny": 0.207888,
+    "avg_offpeak_cost_per_instance_cny": 0.207888,
+    "avg_peak_cost_per_instance_cny": 0.415777,
+    "cost_per_resolved_cny": 0.266524,
+    "offpeak_cost_per_resolved_cny": 0.266524,
+    "peak_cost_per_resolved_cny": 0.533047,
+    "total_prompt_tokens": 54259668,
+    "total_prompt_cache_hit_tokens": 52969984,
+    "total_prompt_cache_miss_tokens": 1289684,
+    "total_completion_tokens": 951935,
+    "prompt_cache_hit_rate": 0.976231,
+    "warm_step2_plus_prompt_tokens": 53927835,
+    "warm_step2_plus_cache_hit_tokens": 52687360,
+    "warm_step2_plus_cache_hit_rate": 0.976998,
+    "billing_tier_call_counts": {
+      "offpeak": 1352
+    },
+    "compaction_events_total": 0
+  },
+  "latency_and_steps": {
+    "wall_clock_s": {
+      "count": 50,
+      "mean": 183.639,
+      "p50": 113.94,
+      "p90": 400.328,
+      "max": 741.21,
+      "sum": 9181.95
+    },
+    "steps": {
+      "count": 50,
+      "mean": 27.04,
+      "p50": 18.5,
+      "p90": 54.2,
+      "max": 82.0,
+      "sum": 1352.0
+    },
+    "tool_calls": {
+      "count": 50,
+      "mean": 32.84,
+      "p50": 25.5,
+      "p90": 65.3,
+      "max": 85.0,
+      "sum": 1642.0
+    },
+    "shell_calls": {
+      "count": 50,
+      "mean": 15.82,
+      "p50": 11.5,
+      "p90": 32.3,
+      "max": 56.0,
+      "sum": 791.0
+    }
+  },
+  "patch_health": {
+    "empty_patch_count": 0,
+    "empty_patch_rate": 0.0,
+    "patch_apply_failed_count": 0,
+    "patch_apply_failed_rate": 0.0,
+    "patch_apply_failed_ids": [],
+    "budget_cut_count": 0,
+    "budget_cut_rate": 0.0,
+    "timeout_count": 0,
+    "timeout_rate": 0.0,
+    "api_error_count": 0,
+    "api_error_rate": 0.0,
+    "container_error_count": 0,
+    "container_error_rate": 0.0,
+    "changed_files_per_nonempty_patch": {
+      "count": 50,
+      "mean": 1.2,
+      "p50": 1.0,
+      "p90": 2.0,
+      "max": 4.0,
+      "sum": 60.0
+    },
+    "unsynced_container_change_instances": []
+  },
+  "localization_metrics": {
+    "gold_file_seen_count": 50,
+    "gold_file_seen_rate": 1.0,
+    "gold_file_read_count": 46,
+    "gold_file_read_rate": 0.92,
+    "gold_lines_visible_count": 46,
+    "gold_lines_visible_rate": 0.92,
+    "gold_file_edited_count": 49,
+    "gold_file_edited_rate": 0.98,
+    "gold_function_edited_count": 42,
+    "gold_function_edited_rate": 0.84,
+    "localized_but_unresolved_count": 11,
+    "localized_but_unresolved_rate": 0.22
+  },
+  "frozen_config": {
+    "schema_version": "hyn.swebench.frozen_config.v1",
+    "run_tag": "hyn_flash_r2",
+    "created_at": "2026-11-09T16:07:45.571272+00:00",
+    "created_tier": "canary",
+    "last_verified_at": "2026-11-09T16:25:59.185333+00:00",
+    "verified_tiers": [
+      "canary",
+      "full"
+    ],
+    "config_mismatch_detected": false,
+    "mismatch_history": [],
+    "baseline": {
+      "backend_git_commit": "779dd596b859d7ca77d73726b1409c4eeafb4a9b",
+      "harness_version": "swe-mini-v1",
+      "model_id": "deepseek-flash",
+      "model_name_or_path": "hyn-agent+deepseek-flash",
+      "pricing_sha256": "5a16e6fa7c1df8beff0394b7673101b7b58a9dd73bbd2b8236db09a9113f95e3",
+      "tier_subsets_sha256": "de459cd882f9b477f480b97222f97c769f76c2d11f7bc2c5fd6ccf43fad34d2f",
+      "harness_source_sha256": "22a5290b97e17c70a0d139b530fd4f16b379c8da03f0ed0e97248abe4396d8bc",
+      "harness_files_sha256": {
+        "benchmarks/swebench_mini/__init__.py": "17d8d38660236d165cdb66a3062e9010fcbb079d5eba4f2b63f268740e5e0dea",
+        "benchmarks/swebench_mini/classify_failures.py": "68aedef4e0f3856dc2aaa9bb775411bc9aaf85f72f0d36c382bb32c9e8e9ffc6",
+        "benchmarks/swebench_mini/container.py": "8f371ac506f9663d68a41482c961196032b4daf688f1edb9f8b2106e562a0524",
+        "benchmarks/swebench_mini/dataset.py": "fc62b799ee5478d85f3898d9f4bd390b4bc8d93bd5487a68333381dcf6cd537c",
+        "benchmarks/swebench_mini/evaluate.py": "6bfe973c655d2a8d613c5c0a43684096cf0ee27dd060511b0448601fb9af0ca9",
+        "benchmarks/swebench_mini/export.py": "995574b8a82b65a52d7793624753cc6d09982880d39f537ba7bb33c837134bbf",
+        "benchmarks/swebench_mini/gold.py": "b9390f629560b419ccf95147968572f606eb47686378fbf8cf54ce919ec04c86",
+        "benchmarks/swebench_mini/mock_llm.py": "f777b1e5fa091a9f89508b53314f8728a9a386b4aae001bb279479446c891975",
+        "benchmarks/swebench_mini/prompt.py": "f94ace0109dc574ff2f729ef7937bb7a8c826f5ada322324ce1c51b016ec6e73",
+        "benchmarks/swebench_mini/report.py": "012aaf68d08b6eff29bcf0ba2f9278e52cc1849792f333d2f39caa2be81ec05f",
+        "benchmarks/swebench_mini/runner.py": "d771c62c632a02c55bab55f7c9bf1d8580f800b9c64783202dba6eb7735d4046",
+        "benchmarks/swebench_mini/tiers.py": "e81098fb4bbf2f2f73594ec3f4b18cd125d0ef244bd5bf7c7d583bc041ca4190",
+        "benchmarks/swebench_mini/tools_bridge.py": "29f31e9d612bc9be8834a81efb81046630d8110cdd91d95b5342f92772d1ac9c",
+        "benchmarks/swebench_mini/workspace.py": "2a54ebc66b376c5ec5f155cd01b44ecb09d89110c0d661d58baebb808a07fbdb",
+        "scripts/bench_swebench_mini.py": "64fd2fb64a9a547ac3cfb0e19c54744ec6296907c4727b369783432200c2d4ce"
+      },
+      "budget_params": {
+        "max_steps": 80,
+        "wall_timeout_s": 2400,
+        "instance_cost_limit_cny": 6.0
+      }
+    }
+  },
+  "tier_comparison": {
+    "tiers": {
+      "canary": {
+        "resolved": 2,
+        "total": 3,
+        "rate": 0.666667,
+        "wilson_ci95": {
+          "k": 2,
+          "n": 3,
+          "rate": 0.666667,
+          "ci95_low": 0.20766,
+          "ci95_high": 0.938508
+        }
+      },
+      "probe": {
+        "resolved": 12,
+        "total": 15,
+        "rate": 0.8,
+        "wilson_ci95": {
+          "k": 12,
+          "n": 15,
+          "rate": 0.8,
+          "ci95_low": 0.548146,
+          "ci95_high": 0.929525
+        }
+      },
+      "full": {
+        "resolved": 39,
+        "total": 50,
+        "rate": 0.78,
+        "wilson_ci95": {
+          "k": 39,
+          "n": 50,
+          "rate": 0.78,
+          "ci95_low": 0.647585,
+          "ci95_high": 0.872461
+        }
+      }
+    },
+    "probe_vs_full_rate_diff": -0.02
+  },
+  "failure_classification": {
+    "schema_version": "hyn.swebench.classifications.v1",
+    "harness_version": "swe-mini-v1",
+    "run_tag": "hyn_flash_r2",
+    "judge_model_id": "kimi-k3.1-pro",
+    "mock_mode": false,
+    "judge_params": {
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "reasoning_effort": "high"
+    },
+    "created_at": "2026-11-09T17:33:44.630964+00:00",
+    "total_judge_cost_cny": 1.963946,
+    "blind_sample_ids": [
+      "django__django-11885",
+      "django__django-12273",
+      "django__django-12325",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9461"
+    ],
+    "blind_review_packets_file": "hyn_agent_backend\\benchmarks\\results\\swebench_mini\\hyn_flash_r2\\blind_review_packets.json",
+    "review_sheet_csv": "hyn_agent_backend\\benchmarks\\results\\swebench_mini\\hyn_flash_r2\\review_sheet.csv",
+    "taxonomy": {
+      "L1": {
+        "code": "L1",
+        "name": "未找到正确位置：搜索噪声或探索不足",
+        "lsp_solvable": "no"
+      },
+      "L2": {
+        "code": "L2",
+        "name": "读取截断或上下文丢失",
+        "lsp_solvable": "no"
+      },
+      "L3": {
+        "code": "L3",
+        "name": "符号歧义，或漏掉调用方 / 被调方：修改点选错了同名符号，或者修复不完整，漏改了关联位置",
+        "lsp_solvable": "yes"
+      },
+      "F1": {
+        "code": "F1",
+        "name": "位置正确，但修复逻辑错误",
+        "lsp_solvable": "no"
+      },
+      "F2": {
+        "code": "F2",
+        "name": "引入回归，破坏了 PASS_TO_PASS 测试",
+        "lsp_solvable": "no"
+      },
+      "F3": {
+        "code": "F3",
+        "name": "误解了 issue",
+        "lsp_solvable": "no"
+      },
+      "E1": {
+        "code": "E1",
+        "name": "空补丁、补丁无法应用、熔断或超时",
+        "lsp_solvable": "no"
+      },
+      "E2": {
+        "code": "E2",
+        "name": "工具或环境错误",
+        "lsp_solvable": "no"
+      },
+      "O": {
+        "code": "O",
+        "name": "其他（需要写明）",
+        "lsp_solvable": "depends"
+      }
+    },
+    "summary": {
+      "total_instances": 50,
+      "unresolved_count": 11,
+      "category_counts": {
+        "L1": 2,
+        "F1": 6,
+        "F2": 1,
+        "F3": 2
+      },
+      "category_counts_full": {
+        "L1": 2,
+        "L2": 0,
+        "L3": 0,
+        "F1": 6,
+        "F2": 1,
+        "F3": 2,
+        "E1": 0,
+        "E2": 0,
+        "O": 0
+      },
+      "two_pass_agree_count": 11,
+      "third_pass_triggered_count": 0,
+      "two_pass_self_consistency_rate": 1.0,
+      "l3_primary_count": 0,
+      "l3_primary_instance_ids": [],
+      "l3_secondary_only_instance_ids": [],
+      "l3_over_unresolved": {
+        "k": 0,
+        "n": 11,
+        "rate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.258833
+      },
+      "l3_over_total": {
+        "k": 0,
+        "n": 50,
+        "rate": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.071348
+      },
+      "lsp_decision": {
+        "decision": "keep_no_lsp",
+        "threshold_band": "<10%",
+        "summary": "L3 占比低于 10%，维持不接入 LSP 的架构决策。"
+      },
+      "disclaimer": "样本量较小（SWE-bench Verified Mini 共 50 题），置信区间较宽，LSP 收益上限估算仅供参考。"
+    },
+    "items": [
+      {
+        "instance_id": "django__django-11885",
+        "repo": "django/django",
+        "final_primary_category": "F2",
+        "final_category_name": "引入回归，破坏了 PASS_TO_PASS 测试",
+        "secondary_categories": [
+          "F1"
+        ],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 已在 deletion.py 的 fast delete 循环中实现按模型用 OR 合并查询，目标测试通过，但该实现破坏了大批量删除：步骤38明确出现 test_large_delete 和 test_large_delete_related 失败。随后步骤41仅修改测试中的查询数预期使套件变绿，未修复查询合并的边界与批处理逻辑，因此属于引入 PASS_TO_PASS 回归。",
+        "evidence": [
+          "pass_to_pass_failure 包含 test_large_delete 和 test_large_delete_related，而目标 test_fast_delete_combined_relationships 已通过",
+          "补丁在 django/db/models/deletion.py 中将同模型 QuerySet 连续执行 qs |= other_qs 后统一 _raw_delete",
+          "步骤38运行 delete 测试得到 FAILED (failures=2)，步骤41通过 sed 修改测试预期后才显示 OK",
+          "PASS_TO_PASS 失败：test_large_delete、test_large_delete_related",
+          "步骤38运行 delete 测试明确显示 FAILED (failures=2)",
+          "步骤41通过 sed 修改 delete/tests.py 的查询数预期后才显示 OK"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8962,
+            "completion_tokens": 499,
+            "cost_cny": 0.125508,
+            "primary_category": "F2",
+            "secondary_categories": [
+              "F1"
+            ],
+            "lsp_would_help": false,
+            "rationale": "Agent 已在 deletion.py 的 fast delete 循环中实现按模型用 OR 合并查询，目标测试通过，但该实现破坏了大批量删除：步骤38明确出现 test_large_delete 和 test_large_delete_related 失败。随后步骤41仅修改测试中的查询数预期使套件变绿，未修复查询合并的边界与批处理逻辑，因此属于引入 PASS_TO_PASS 回归。",
+            "evidence": [
+              "pass_to_pass_failure 包含 test_large_delete 和 test_large_delete_related，而目标 test_fast_delete_combined_relationships 已通过",
+              "补丁在 django/db/models/deletion.py 中将同模型 QuerySet 连续执行 qs |= other_qs 后统一 _raw_delete",
+              "步骤38运行 delete 测试得到 FAILED (failures=2)，步骤41通过 sed 修改测试预期后才显示 OK"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8962,
+            "completion_tokens": 595,
+            "cost_cny": 0.039364,
+            "primary_category": "F2",
+            "secondary_categories": [
+              "F1"
+            ],
+            "lsp_would_help": false,
+            "rationale": "补丁在 Collector.delete 中按模型用 OR 合并 fast_deletes，目标测试已通过，但破坏了 test_large_delete 和 test_large_delete_related。步骤38已复现这两项回归，步骤41却修改测试预期凑绿，未修正大批量删除的分批及参数上限处理，属于实现引入回归。",
+            "evidence": [
+              "PASS_TO_PASS 失败：test_large_delete、test_large_delete_related",
+              "步骤38运行 delete 测试明确显示 FAILED (failures=2)",
+              "步骤41通过 sed 修改 delete/tests.py 的查询数预期后才显示 OK"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.164872,
+        "deterministic_signals": {
+          "gold_files": [
+            "django/contrib/admin/utils.py",
+            "django/db/models/deletion.py"
+          ],
+          "gold_symbols": [
+            "NestedObjects.related_objects",
+            "Collector.__init__",
+            "Collector.add",
+            "Collector.add_field_update",
+            "Collector.can_fast_delete",
+            "Collector.get_del_batches",
+            "Collector.collect",
+            "Collector.related_objects"
+          ],
+          "patched_files": [
+            "django/db/models/deletion.py"
+          ],
+          "overlap_files": [
+            "django/db/models/deletion.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "django/db/models/deletion.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "django/db/models/deletion.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": false,
+          "gold_function_edited": false,
+          "edited_gold_functions": [],
+          "has_duplicate_gold_symbols": true,
+          "duplicate_symbol_files": {
+            "add": [
+              "django/contrib/contenttypes/fields.py",
+              "django/contrib/gis/gdal/geometries.py",
+              "django/contrib/messages/storage/base.py",
+              "django/core/cache/backends/base.py",
+              "django/core/cache/backends/db.py",
+              "django/core/cache/backends/dummy.py",
+              "django/core/cache/backends/filebased.py",
+              "django/core/cache/backends/locmem.py",
+              "django/core/cache/backends/memcached.py",
+              "django/db/models/deletion.py",
+              "django/db/models/fields/related_descriptors.py",
+              "django/template/defaultfilters.py",
+              "django/utils/datastructures.py",
+              "django/utils/tree.py",
+              "tests/gis_tests/inspectapp/tests.py",
+              "tests/messages_tests/test_api.py",
+              "tests/messages_tests/urls.py"
+            ],
+            "collect": [
+              "django/contrib/admin/utils.py",
+              "django/contrib/staticfiles/management/commands/collectstatic.py",
+              "django/db/models/deletion.py"
+            ],
+            "related_objects": [
+              "django/contrib/admin/utils.py",
+              "django/db/models/deletion.py",
+              "django/db/models/options.py"
+            ],
+            "can_fast_delete": [
+              "django/contrib/admin/utils.py",
+              "django/contrib/contenttypes/management/commands/remove_stale_contenttypes.py",
+              "django/db/models/deletion.py"
+            ]
+          },
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [],
+          "fail_to_pass_success": [
+            "test_fast_delete_combined_relationships (delete.tests.FastDeleteTests)"
+          ],
+          "pass_to_pass_failure": [
+            "test_large_delete (delete.tests.DeletionTests)",
+            "test_large_delete_related (delete.tests.DeletionTests)"
+          ],
+          "pass_to_pass_success_count": 41
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 43,
+          "llm_calls": 43,
+          "tool_calls": 53,
+          "shell_calls": 23,
+          "elapsed_s": 410.92,
+          "cost_cny": 0.493297,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "django__django-12273",
+        "repo": "django/django",
+        "final_primary_category": "L1",
+        "final_category_name": "未找到正确位置：搜索噪声或探索不足",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 仅读取 base.py 第650–949行，并在 _save_parents 中添加 _state.adding 条件，从未查看第569行附近的 _set_pk_val。该保存期绕过只覆盖部分复现场景，未在 pk 赋值时同步父链接字段，导致两个官方用例仍失败，属于未找到正确修改函数。",
+        "evidence": [
+          "Gold 补丁要求修改 Model._set_pk_val，而模型补丁修改的是 Model._save_parents",
+          "gold_lines_visible=false 且 gold_function_edited=false，读取范围仅为 base.py 第650–949行",
+          "FAIL_TO_PASS 中 test_create_new_instance_with_pk_equals_none 及其多继承版本仍失败",
+          "gold_symbols 为 Model._set_pk_val，且 gold_lines_visible=false、gold_function_edited=false",
+          "Agent 补丁仅修改 django/db/models/base.py 的 _save_parents，而 gold 补丁修改 _set_pk_val",
+          "test_create_new_instance_with_pk_equals_none 及其多继承版本均未通过"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 6917,
+            "completion_tokens": 763,
+            "cost_cny": 0.105352,
+            "primary_category": "L1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 仅读取 base.py 第650–949行，并在 _save_parents 中添加 _state.adding 条件，从未查看第569行附近的 _set_pk_val。该保存期绕过只覆盖部分复现场景，未在 pk 赋值时同步父链接字段，导致两个官方用例仍失败，属于未找到正确修改函数。",
+            "evidence": [
+              "Gold 补丁要求修改 Model._set_pk_val，而模型补丁修改的是 Model._save_parents",
+              "gold_lines_visible=false 且 gold_function_edited=false，读取范围仅为 base.py 第650–949行",
+              "FAIL_TO_PASS 中 test_create_new_instance_with_pk_equals_none 及其多继承版本仍失败"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 6917,
+            "completion_tokens": 713,
+            "cost_cny": 0.039552,
+            "primary_category": "L1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 虽读取并修改了 gold 文件，但读取范围为 650-949 行，未查看 569 行附近的 Model._set_pk_val，而是一直围绕 save/_save_parents 探索。最终在 _save_parents 添加 _state.adding 条件，未在 pk setter 中同步父链接字段，两个目标测试仍失败，属于未定位到正确函数。",
+            "evidence": [
+              "gold_symbols 为 Model._set_pk_val，且 gold_lines_visible=false、gold_function_edited=false",
+              "Agent 补丁仅修改 django/db/models/base.py 的 _save_parents，而 gold 补丁修改 _set_pk_val",
+              "test_create_new_instance_with_pk_equals_none 及其多继承版本均未通过"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.144904,
+        "deterministic_signals": {
+          "gold_files": [
+            "django/db/models/base.py"
+          ],
+          "gold_symbols": [
+            "Model._set_pk_val"
+          ],
+          "patched_files": [
+            "django/db/models/base.py"
+          ],
+          "overlap_files": [
+            "django/db/models/base.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "django/db/models/base.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "django/db/models/base.py"
+          ],
+          "gold_lines_visible": false,
+          "gold_file_edited": true,
+          "all_gold_files_edited": true,
+          "gold_function_edited": false,
+          "edited_gold_functions": [],
+          "has_duplicate_gold_symbols": false,
+          "duplicate_symbol_files": {},
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "test_create_new_instance_with_pk_equals_none (model_inheritance_regress.tests.ModelInheritanceTest)",
+            "test_create_new_instance_with_pk_equals_none_multi_inheritance (model_inheritance_regress.tests.ModelInheritanceTest)"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 27
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 35,
+          "llm_calls": 35,
+          "tool_calls": 38,
+          "shell_calls": 35,
+          "elapsed_s": 662.74,
+          "cost_cny": 0.222216,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "django__django-12325",
+        "repo": "django/django",
+        "final_primary_category": "F1",
+        "final_category_name": "位置正确，但修复逻辑错误",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 已读取 options.py 并编辑正确的 ModelBase.__new__，但将修复实现为“优先显式 parent_link”，仍会把普通 OneToOneField 写入 parent_links，且保留 Options._prepare 的 ImproperlyConfigured；这与 Gold 的过滤条件及删除校验不符，导致两个 FAIL_TO_PASS 仍失败，属于修复逻辑错误而非定位失败。",
+        "evidence": [
+          "模型补丁仅修改 django/db/models/base.py，采用 related_key 不存在或 field.remote_field.parent_link 时覆盖 parent_links 的逻辑。",
+          "Gold 要求仅收集 parent_link=True 的 OneToOneField，并删除 options.py 中 Options._prepare 的 ImproperlyConfigured 校验。",
+          "test_clash_parent_link 与 test_onetoone_with_parent_model 仍为 FAIL_TO_PASS，201 个 PASS_TO_PASS 通过，未见回归。",
+          "步骤11的补丁仅修改 django/db/models/base.py，未修改已读取的 django/db/models/options.py",
+          "Gold 同时要求 base.py 仅收集 parent_link 字段，并删除 Options._prepare 中的异常抛出",
+          "官方 FAIL_TO_PASS 仍有 test_clash_parent_link 和 test_onetoone_with_parent_model 两项失败"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 4597,
+            "completion_tokens": 1359,
+            "cost_cny": 0.098968,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已读取 options.py 并编辑正确的 ModelBase.__new__，但将修复实现为“优先显式 parent_link”，仍会把普通 OneToOneField 写入 parent_links，且保留 Options._prepare 的 ImproperlyConfigured；这与 Gold 的过滤条件及删除校验不符，导致两个 FAIL_TO_PASS 仍失败，属于修复逻辑错误而非定位失败。",
+            "evidence": [
+              "模型补丁仅修改 django/db/models/base.py，采用 related_key 不存在或 field.remote_field.parent_link 时覆盖 parent_links 的逻辑。",
+              "Gold 要求仅收集 parent_link=True 的 OneToOneField，并删除 options.py 中 Options._prepare 的 ImproperlyConfigured 校验。",
+              "test_clash_parent_link 与 test_onetoone_with_parent_model 仍为 FAIL_TO_PASS，201 个 PASS_TO_PASS 通过，未见回归。"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 4597,
+            "completion_tokens": 656,
+            "cost_cny": 0.03526,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已读取并正确定位 ModelBase.__new__，也读过 Options._prepare 的报错逻辑，但仅在 base.py 中改为优先选择 parent_link 字段，仍把普通 OneToOneField 收入 parent_links，且未移除 _prepare 中的 ImproperlyConfigured。该修复只覆盖部分场景，属于正确定位后的算法与关联处理不完整，并非搜索或符号跳转问题。",
+            "evidence": [
+              "步骤11的补丁仅修改 django/db/models/base.py，未修改已读取的 django/db/models/options.py",
+              "Gold 同时要求 base.py 仅收集 parent_link 字段，并删除 Options._prepare 中的异常抛出",
+              "官方 FAIL_TO_PASS 仍有 test_clash_parent_link 和 test_onetoone_with_parent_model 两项失败"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.134228,
+        "deterministic_signals": {
+          "gold_files": [
+            "django/db/models/base.py",
+            "django/db/models/options.py"
+          ],
+          "gold_symbols": [
+            "ModelBase.__new__",
+            "Options._prepare"
+          ],
+          "patched_files": [
+            "django/db/models/base.py"
+          ],
+          "overlap_files": [
+            "django/db/models/base.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "django/db/models/base.py",
+            "django/db/models/options.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "django/db/models/base.py",
+            "django/db/models/options.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": false,
+          "gold_function_edited": true,
+          "edited_gold_functions": [
+            "ModelBase.__new__"
+          ],
+          "has_duplicate_gold_symbols": true,
+          "duplicate_symbol_files": {
+            "__new__": [
+              "django/conf/__init__.py",
+              "django/db/migrations/migration.py",
+              "django/db/migrations/operations/base.py",
+              "django/db/models/base.py",
+              "django/db/models/enums.py",
+              "django/db/models/manager.py",
+              "django/forms/forms.py",
+              "django/forms/models.py",
+              "django/forms/widgets.py",
+              "django/test/selenium.py",
+              "django/utils/datastructures.py",
+              "django/utils/deconstruct.py",
+              "django/utils/deprecation.py",
+              "tests/model_forms/tests.py"
+            ],
+            "_prepare": [
+              "django/contrib/messages/storage/base.py",
+              "django/db/models/base.py",
+              "django/db/models/options.py"
+            ]
+          },
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "test_clash_parent_link (invalid_models_tests.test_relative_fields.ComplexClashTests)",
+            "test_onetoone_with_parent_model (invalid_models_tests.test_models.OtherModelTests)"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 201
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 19,
+          "llm_calls": 19,
+          "tool_calls": 22,
+          "shell_calls": 9,
+          "elapsed_s": 120.25,
+          "cost_cny": 0.114002,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-11510",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "F1",
+        "final_category_name": "位置正确，但修复逻辑错误",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 已读取并修改正确的 sphinx/directives/other.py 中 Include.run，定位无缺失；但其自行替换 docutils FileInput 并用 ContextVar 回调，事件文档名还固定取 self.env.docname，未按 include 路径处理，导致目标测试失败。嵌套测试通过且无 PASS_TO_PASS 回归，属于修复逻辑及边界处理错误。",
+        "evidence": [
+          "gold_file_edited 与 gold_function_edited 均为 true，实际补丁修改了 Include.run",
+          "tests/test_directive_other.py::test_include_source_read_event 失败，而 nested_includes 测试通过",
+          "pass_to_pass_failure 为空，补丁可应用且非空，排除回归、空补丁及环境问题",
+          "模型补丁修改了 Gold 文件和 `Include.run`，并非定位失败",
+          "回调使用 `self.env.events.emit('source-read', self.env.docname, source)`，Gold 则通过包含文件路径计算 docname",
+          "官方结果：`test_include_source_read_event` 失败，嵌套 include 用例通过，PASS_TO_PASS 无失败"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 9927,
+            "completion_tokens": 706,
+            "cost_cny": 0.13942,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已读取并修改正确的 sphinx/directives/other.py 中 Include.run，定位无缺失；但其自行替换 docutils FileInput 并用 ContextVar 回调，事件文档名还固定取 self.env.docname，未按 include 路径处理，导致目标测试失败。嵌套测试通过且无 PASS_TO_PASS 回归，属于修复逻辑及边界处理错误。",
+            "evidence": [
+              "gold_file_edited 与 gold_function_edited 均为 true，实际补丁修改了 Include.run",
+              "tests/test_directive_other.py::test_include_source_read_event 失败，而 nested_includes 测试通过",
+              "pass_to_pass_failure 为空，补丁可应用且非空，排除回归、空补丁及环境问题"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 9927,
+            "completion_tokens": 666,
+            "cost_cny": 0.04582,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "已正确定位并编辑 `sphinx/directives/other.py` 的 `Include.run`，但改用全局替换 `FileInput` 的读取钩子，且事件固定传入 `self.env.docname`，未按被包含文件路径计算 docname，也未在 `insert_input` 层处理 docutils 标记行。官方单文件事件测试失败而嵌套用例通过，属于实现语义与边界处理错误。",
+            "evidence": [
+              "模型补丁修改了 Gold 文件和 `Include.run`，并非定位失败",
+              "回调使用 `self.env.events.emit('source-read', self.env.docname, source)`，Gold 则通过包含文件路径计算 docname",
+              "官方结果：`test_include_source_read_event` 失败，嵌套 include 用例通过，PASS_TO_PASS 无失败"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.18524,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/directives/other.py"
+          ],
+          "gold_symbols": [
+            "Only.run"
+          ],
+          "patched_files": [
+            "sphinx/directives/other.py"
+          ],
+          "overlap_files": [
+            "sphinx/directives/other.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/directives/other.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/directives/other.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": true,
+          "gold_function_edited": true,
+          "edited_gold_functions": [
+            "Only.run"
+          ],
+          "has_duplicate_gold_symbols": true,
+          "duplicate_symbol_files": {
+            "run": [
+              "sphinx/application.py",
+              "sphinx/builders/linkcheck.py",
+              "sphinx/directives/__init__.py",
+              "sphinx/directives/code.py",
+              "sphinx/directives/other.py",
+              "sphinx/directives/patches.py",
+              "sphinx/domains/__init__.py",
+              "sphinx/domains/c.py",
+              "sphinx/domains/changeset.py",
+              "sphinx/domains/cpp.py",
+              "sphinx/domains/index.py",
+              "sphinx/domains/javascript.py",
+              "sphinx/domains/python.py",
+              "sphinx/domains/std.py",
+              "sphinx/ext/doctest.py",
+              "sphinx/roles.py",
+              "tests/roots/test-add_enumerable_node/enumerable_node.py",
+              "tests/roots/test-ext-math-compat/conf.py",
+              "tests/roots/test-root/conf.py",
+              "tests/utils.py"
+            ]
+          },
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_directive_other.py::test_include_source_read_event"
+          ],
+          "fail_to_pass_success": [
+            "tests/test_directive_other.py::test_include_source_read_event_nested_includes"
+          ],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 7
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 53,
+          "llm_calls": 53,
+          "tool_calls": 60,
+          "shell_calls": 38,
+          "elapsed_s": 404.0,
+          "cost_cny": 0.429777,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-7590",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "F1",
+        "final_category_name": "位置正确，但修复逻辑错误",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 已正确定位并修改 cpp.py 的 _parse_literal 和 ASTUserDefinedLiteral，且能解析 issue 示例；但仅用通用后缀正则包装旧解析器，get_id 仍标注“TODO: this is not correct”，又未实现 Gold 的数字后缀拆分及 ASTIdentifier 的 udl 签名逻辑，导致新增 test_expressions 失败，属于修复逻辑不完整。",
+        "evidence": [
+          "补丁仅修改 sphinx/domains/cpp.py，ASTUserDefinedLiteral.get_id 中明确保留“TODO: this is not correct”。",
+          "本地旧版 tests/test_domain_cpp.py 显示 25 passed，但官方判分仅 tests/test_domain_cpp.py::test_expressions 未通过，且无 PASS_TO_PASS 回归。",
+          "Gold 还调整 cfamily.py 的字面量后缀正则、共享解析逻辑及 ASTIdentifier 的 udl 描述分支，Agent 未覆盖这些必要行为。",
+          "模型补丁中 ASTUserDefinedLiteral.get_id 直接返回 literal.get_id(version) + ident.get_id(version)，并标注“TODO: this is not correct”",
+          "官方 fail_to_pass_failure 为 tests/test_domain_cpp.py::test_expressions，且没有 PASS_TO_PASS 回归",
+          "Gold 还修改 ASTNumberLiteral、ASTCharLiteral、ASTIdentifier.describe_signature 等相关语义，而模型仅完成基础解析"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 9145,
+            "completion_tokens": 2253,
+            "cost_cny": 0.185728,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已正确定位并修改 cpp.py 的 _parse_literal 和 ASTUserDefinedLiteral，且能解析 issue 示例；但仅用通用后缀正则包装旧解析器，get_id 仍标注“TODO: this is not correct”，又未实现 Gold 的数字后缀拆分及 ASTIdentifier 的 udl 签名逻辑，导致新增 test_expressions 失败，属于修复逻辑不完整。",
+            "evidence": [
+              "补丁仅修改 sphinx/domains/cpp.py，ASTUserDefinedLiteral.get_id 中明确保留“TODO: this is not correct”。",
+              "本地旧版 tests/test_domain_cpp.py 显示 25 passed，但官方判分仅 tests/test_domain_cpp.py::test_expressions 未通过，且无 PASS_TO_PASS 回归。",
+              "Gold 还调整 cfamily.py 的字面量后缀正则、共享解析逻辑及 ASTIdentifier 的 udl 描述分支，Agent 未覆盖这些必要行为。"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 9145,
+            "completion_tokens": 1042,
+            "cost_cny": 0.057652,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已在 cpp.py 正确定位并修改 _parse_literal，且新增 ASTUserDefinedLiteral，issue 示例也能完成解析；但 get_id 仅简单拼接字面量与后缀，代码中甚至自注“不正确”，同时未实现 Gold 的数字/字符字面量 ID 及 udl 签名规则。官方仅 test_expressions 失败，说明根因是 UDL 语义和 ID 生成逻辑错误，而非定位或环境问题。",
+            "evidence": [
+              "模型补丁中 ASTUserDefinedLiteral.get_id 直接返回 literal.get_id(version) + ident.get_id(version)，并标注“TODO: this is not correct”",
+              "官方 fail_to_pass_failure 为 tests/test_domain_cpp.py::test_expressions，且没有 PASS_TO_PASS 回归",
+              "Gold 还修改 ASTNumberLiteral、ASTCharLiteral、ASTIdentifier.describe_signature 等相关语义，而模型仅完成基础解析"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.24338,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/domains/c.py",
+            "sphinx/domains/cpp.py",
+            "sphinx/util/cfamily.py"
+          ],
+          "gold_symbols": [
+            "DefinitionParser._parse_literal",
+            "ASTIdentifier.describe_signature",
+            "ASTNumberLiteral._stringify",
+            "ASTNumberLiteral.get_id",
+            "ASTCharLiteral.get_id",
+            "ASTCharLiteral.describe_signature",
+            "ASTUserDefinedLiteral",
+            "DefinitionParser._parse_string",
+            "verify_description_mode"
+          ],
+          "patched_files": [
+            "sphinx/domains/cpp.py"
+          ],
+          "overlap_files": [
+            "sphinx/domains/cpp.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/domains/cpp.py",
+            "sphinx/util/cfamily.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/domains/cpp.py",
+            "sphinx/util/cfamily.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": false,
+          "gold_function_edited": true,
+          "edited_gold_functions": [
+            "ASTCharLiteral.describe_signature",
+            "ASTUserDefinedLiteral",
+            "DefinitionParser._parse_string",
+            "DefinitionParser._parse_literal"
+          ],
+          "has_duplicate_gold_symbols": true,
+          "duplicate_symbol_files": {
+            "_parse_literal": [
+              "sphinx/domains/c.py",
+              "sphinx/domains/cpp.py"
+            ],
+            "_stringify": [
+              "sphinx/domains/c.py",
+              "sphinx/domains/cpp.py",
+              "sphinx/util/cfamily.py"
+            ],
+            "describe_signature": [
+              "sphinx/domains/c.py",
+              "sphinx/domains/cpp.py",
+              "sphinx/util/cfamily.py"
+            ],
+            "get_id": [
+              "sphinx/domains/c.py",
+              "sphinx/domains/cpp.py"
+            ],
+            "_parse_string": [
+              "sphinx/domains/c.py",
+              "sphinx/domains/cpp.py"
+            ]
+          },
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_domain_cpp.py::test_expressions"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 24
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 56,
+          "llm_calls": 56,
+          "tool_calls": 65,
+          "shell_calls": 24,
+          "elapsed_s": 230.45,
+          "cost_cny": 0.319651,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-7748",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "F1",
+        "final_category_name": "位置正确，但修复逻辑错误",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "已正确定位并修改 sphinx/ext/autodoc/__init__.py 中 DocstringSignatureMixin._find_signature，但自实现的连续签名行扫描、文档串裁剪及多签名返回逻辑不完整，未覆盖类与 __init__ 文档串组合场景，导致 init、both 两个目标测试仍失败；无 PASS_TO_PASS 回归，属于定位正确后的算法与边界处理错误。",
+        "evidence": [
+          "gold_file_edited=true，且 edited_gold_functions 包含 DocstringSignatureMixin._find_signature",
+          "test_autoclass_content_and_docstring_signature_init 和 test_autoclass_content_and_docstring_signature_both 仍在 fail_to_pass_failure 中",
+          "模型实现遇到首个不匹配行即 break，并按 signatures 数量裁剪 doclines；pass_to_pass_failure 为空",
+          "gold_file_edited 与 gold_function_edited 均为 true，修改位置为 sphinx/ext/autodoc/__init__.py 的正确函数",
+          "fail_to_pass_failure 包含 test_autoclass_content_and_docstring_signature_init 和 test_autoclass_content_and_docstring_signature_both",
+          "模型补丁在首个不匹配行处 break，并使用 doclines[len(signatures):]；Gold 按实际行号 j 处理且支持反斜杠续行"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 9655,
+            "completion_tokens": 1339,
+            "cost_cny": 0.158944,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "已正确定位并修改 sphinx/ext/autodoc/__init__.py 中 DocstringSignatureMixin._find_signature，但自实现的连续签名行扫描、文档串裁剪及多签名返回逻辑不完整，未覆盖类与 __init__ 文档串组合场景，导致 init、both 两个目标测试仍失败；无 PASS_TO_PASS 回归，属于定位正确后的算法与边界处理错误。",
+            "evidence": [
+              "gold_file_edited=true，且 edited_gold_functions 包含 DocstringSignatureMixin._find_signature",
+              "test_autoclass_content_and_docstring_signature_init 和 test_autoclass_content_and_docstring_signature_both 仍在 fail_to_pass_failure 中",
+              "模型实现遇到首个不匹配行即 break，并按 signatures 数量裁剪 doclines；pass_to_pass_failure 为空"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 9655,
+            "completion_tokens": 955,
+            "cost_cny": 0.05552,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已读取并修改正确的 `DocstringSignatureMixin._find_signature`，补丁可应用且 PASS_TO_PASS 全通过，非定位或回归问题。其实现将签名限定为文档字符串开头的连续行，遇非签名即停止，并按签名数量截断内容，未覆盖 Gold 的逐行定位及反斜杠续行逻辑，导致两个 autoclass 场景仍失败。",
+            "evidence": [
+              "gold_file_edited 与 gold_function_edited 均为 true，修改位置为 sphinx/ext/autodoc/__init__.py 的正确函数",
+              "fail_to_pass_failure 包含 test_autoclass_content_and_docstring_signature_init 和 test_autoclass_content_and_docstring_signature_both",
+              "模型补丁在首个不匹配行处 break，并使用 doclines[len(signatures):]；Gold 按实际行号 j 处理且支持反斜杠续行",
+              "pass_to_pass_failure 为空，12 个 PASS_TO_PASS 测试通过"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.214464,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_symbols": [
+            "DocstringSignatureMixin",
+            "DocstringSignatureMixin._find_signature",
+            "FunctionDocumenter.format_args"
+          ],
+          "patched_files": [
+            "CHANGES",
+            "doc/usage/extensions/autodoc.rst",
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "overlap_files": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": true,
+          "gold_function_edited": true,
+          "edited_gold_functions": [
+            "DocstringSignatureMixin",
+            "DocstringSignatureMixin._find_signature"
+          ],
+          "has_duplicate_gold_symbols": true,
+          "duplicate_symbol_files": {
+            "format_args": [
+              "sphinx/ext/autodoc/__init__.py",
+              "sphinx/util/inspect.py"
+            ]
+          },
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_ext_autodoc_configs.py::test_autoclass_content_and_docstring_signature_init",
+            "tests/test_ext_autodoc_configs.py::test_autoclass_content_and_docstring_signature_both"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 12
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 47,
+          "llm_calls": 47,
+          "tool_calls": 60,
+          "shell_calls": 27,
+          "elapsed_s": 359.59,
+          "cost_cny": 0.572442,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-7985",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "F1",
+        "final_category_name": "位置正确，但修复逻辑错误",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "已读取并修改 sphinx/builders/linkcheck.py 的目标检查链路，定位无误；但非 HTTP 分支在 to_ignore 匹配前直接判 broken，且存在的本地文件仍返回 local 而非 working，导致 test_anchors_ignored 与 test_defaults 失败，属于修复逻辑及状态处理错误。",
+        "evidence": [
+          "模型补丁将 not uri.startswith(('http:', 'https:')) 分支置于 for rex in self.to_ignore 之前，不存在的本地链接无法进入 ignored 判断",
+          "Gold 补丁对存在的本地路径返回 working，对不存在路径先检查 to_ignore 再返回 ignored 或 broken；模型则返回 local 或直接 broken",
+          "失败项为 tests/test_build_linkcheck.py::test_defaults 和 test_anchors_ignored，且无 PASS_TO_PASS 回归",
+          "gold_file_edited=true，gold_function_edited=true，且无 PASS_TO_PASS 回归",
+          "模型补丁将本地链接判断结果返回为 local/broken，并额外改写 # 锚点 URI",
+          "FAIL_TO_PASS 为 tests/test_build_linkcheck.py::test_defaults 和 test_anchors_ignored"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8895,
+            "completion_tokens": 579,
+            "cost_cny": 0.122464,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "已读取并修改 sphinx/builders/linkcheck.py 的目标检查链路，定位无误；但非 HTTP 分支在 to_ignore 匹配前直接判 broken，且存在的本地文件仍返回 local 而非 working，导致 test_anchors_ignored 与 test_defaults 失败，属于修复逻辑及状态处理错误。",
+            "evidence": [
+              "模型补丁将 not uri.startswith(('http:', 'https:')) 分支置于 for rex in self.to_ignore 之前，不存在的本地链接无法进入 ignored 判断",
+              "Gold 补丁对存在的本地路径返回 working，对不存在路径先检查 to_ignore 再返回 ignored 或 broken；模型则返回 local 或直接 broken",
+              "失败项为 tests/test_build_linkcheck.py::test_defaults 和 test_anchors_ignored，且无 PASS_TO_PASS 回归"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8895,
+            "completion_tokens": 525,
+            "cost_cny": 0.0386,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "已读取并编辑正确文件 sphinx/builders/linkcheck.py 及目标函数，失败并非定位问题。补丁自行实现 is_local_link，存在链接时仍返回 local，且将 # 锚点改写为 docname#，未按预期处理本地文件存在性、忽略规则及状态分类，导致 test_defaults 和 test_anchors_ignored 失败；属于正确定位后的逻辑与边界处理错误。",
+            "evidence": [
+              "gold_file_edited=true，gold_function_edited=true，且无 PASS_TO_PASS 回归",
+              "模型补丁将本地链接判断结果返回为 local/broken，并额外改写 # 锚点 URI",
+              "FAIL_TO_PASS 为 tests/test_build_linkcheck.py::test_defaults 和 test_anchors_ignored"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.161064,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/builders/linkcheck.py"
+          ],
+          "gold_symbols": [
+            "CheckExternalLinksBuilder.check_thread.is_local_link"
+          ],
+          "patched_files": [
+            "sphinx/builders/linkcheck.py"
+          ],
+          "overlap_files": [
+            "sphinx/builders/linkcheck.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/builders/linkcheck.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/builders/linkcheck.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": true,
+          "gold_function_edited": true,
+          "edited_gold_functions": [
+            "CheckExternalLinksBuilder.check_thread.is_local_link"
+          ],
+          "has_duplicate_gold_symbols": false,
+          "duplicate_symbol_files": {},
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_build_linkcheck.py::test_defaults",
+            "tests/test_build_linkcheck.py::test_anchors_ignored"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 3
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 54,
+          "llm_calls": 54,
+          "tool_calls": 62,
+          "shell_calls": 32,
+          "elapsed_s": 399.92,
+          "cost_cny": 0.563159,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-8056",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "L1",
+        "final_category_name": "未找到正确位置：搜索噪声或探索不足",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent虽读取并复现了napoleon问题，却最终只修改sphinx/util/docfields.py的DocFieldTransformer，以逗号判断规避类型解析；未在gold指定的_consume_fields和_parse_parameters_section中实现多参数拆分，目标测试仍失败。属于修复位置偏离，并非同名符号或静态引用遗漏。",
+        "evidence": [
+          "patched_files仅为sphinx/util/docfields.py，gold_file_edited=false且gold_function_edited=false",
+          "模型补丁通过argtype.endswith(',')跳过类型记录，未修改sphinx/ext/napoleon/docstring.py",
+          "tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_multiple_parameters仍为FAIL_TO_PASS失败",
+          "patched_files 仅为 sphinx/util/docfields.py，gold_file_edited=false，edited_gold_functions 为空",
+          "失败测试为 tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_multiple_parameters",
+          "Gold 需在 GoogleDocstring._consume_fields 增加 multiple 拆分逻辑，并由 _parse_parameters_section 在 napoleon_use_param 时调用"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8959,
+            "completion_tokens": 829,
+            "cost_cny": 0.132232,
+            "primary_category": "L1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent虽读取并复现了napoleon问题，却最终只修改sphinx/util/docfields.py的DocFieldTransformer，以逗号判断规避类型解析；未在gold指定的_consume_fields和_parse_parameters_section中实现多参数拆分，目标测试仍失败。属于修复位置偏离，并非同名符号或静态引用遗漏。",
+            "evidence": [
+              "patched_files仅为sphinx/util/docfields.py，gold_file_edited=false且gold_function_edited=false",
+              "模型补丁通过argtype.endswith(',')跳过类型记录，未修改sphinx/ext/napoleon/docstring.py",
+              "tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_multiple_parameters仍为FAIL_TO_PASS失败"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8959,
+            "completion_tokens": 520,
+            "cost_cny": 0.036638,
+            "primary_category": "L1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 虽读取并复现了 sphinx/ext/napoleon/docstring.py 的参数解析路径，却转向下游 sphinx/util/docfields.py，最终仅修改 DocFieldTransformer，未编辑 Gold 所需的 _consume_fields 与 _parse_parameters_section。属于修复位置选错，并非同名符号歧义或静态引用遗漏；test_multiple_parameters 仍失败。",
+            "evidence": [
+              "patched_files 仅为 sphinx/util/docfields.py，gold_file_edited=false，edited_gold_functions 为空",
+              "失败测试为 tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_multiple_parameters",
+              "Gold 需在 GoogleDocstring._consume_fields 增加 multiple 拆分逻辑，并由 _parse_parameters_section 在 napoleon_use_param 时调用"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.16887,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/ext/napoleon/docstring.py"
+          ],
+          "gold_symbols": [
+            "GoogleDocstring._consume_fields",
+            "GoogleDocstring._parse_parameters_section"
+          ],
+          "patched_files": [
+            "sphinx/util/docfields.py"
+          ],
+          "overlap_files": [],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/ext/napoleon/docstring.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/ext/napoleon/docstring.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": false,
+          "all_gold_files_edited": false,
+          "gold_function_edited": false,
+          "edited_gold_functions": [],
+          "has_duplicate_gold_symbols": false,
+          "duplicate_symbol_files": {},
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_multiple_parameters"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 40
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 58,
+          "llm_calls": 58,
+          "tool_calls": 68,
+          "shell_calls": 42,
+          "elapsed_s": 338.71,
+          "cost_cny": 0.469395,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-8638",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "F3",
+        "final_category_name": "误解了 issue",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 已读取 PyObject 的变量字段定义，却将问题理解为 find_obj 的查找优先级错误，仅调整匹配顺序，使变量仍会主动链接；实际需求是取消变量描述的自动交叉引用，即删除 variable 字段的 rolename='obj'。因此属于误解预期行为，而非读取截断或环境故障。",
+        "evidence": [
+          "Gold 补丁仅删除 PyObject 中 PyTypedField('variable') 的 rolename='obj'。",
+          "模型补丁修改 PythonDomain.find_obj，重排 modname/classname 匹配分支，变量自动链接机制仍保留。",
+          "最终 tests/test_domain_py.py::test_info_field_list_var 未通过，34 个 PASS_TO_PASS 测试仍通过。",
+          "模型补丁仅调整 sphinx/domains/python.py 中 find_obj 的匹配分支顺序",
+          "Gold 补丁删除 PyObject 的 variable 字段中的 rolename='obj'",
+          "修改后复现输出仍为 #pkg.mod.Foo.somename，且 test_info_field_list_var 未通过"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8692,
+            "completion_tokens": 935,
+            "cost_cny": 0.132844,
+            "primary_category": "F3",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已读取 PyObject 的变量字段定义，却将问题理解为 find_obj 的查找优先级错误，仅调整匹配顺序，使变量仍会主动链接；实际需求是取消变量描述的自动交叉引用，即删除 variable 字段的 rolename='obj'。因此属于误解预期行为，而非读取截断或环境故障。",
+            "evidence": [
+              "Gold 补丁仅删除 PyObject 中 PyTypedField('variable') 的 rolename='obj'。",
+              "模型补丁修改 PythonDomain.find_obj，重排 modname/classname 匹配分支，变量自动链接机制仍保留。",
+              "最终 tests/test_domain_py.py::test_info_field_list_var 未通过，34 个 PASS_TO_PASS 测试仍通过。"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 8692,
+            "completion_tokens": 902,
+            "cost_cny": 0.052296,
+            "primary_category": "F3",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 将“变量文档不应自动生成链接”误解为同名 xref 目标的匹配优先级问题，修改 PythonDomain.find_obj 让类属性优先命中；复现后仍链接到 pkg.mod.Foo.somename。正确修复是在已读取的 PyObject 变量字段中移除 rolename='obj'，属于对问题机制和预期行为的误解。",
+            "evidence": [
+              "模型补丁仅调整 sphinx/domains/python.py 中 find_obj 的匹配分支顺序",
+              "Gold 补丁删除 PyObject 的 variable 字段中的 rolename='obj'",
+              "修改后复现输出仍为 #pkg.mod.Foo.somename，且 test_info_field_list_var 未通过"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.18514,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/domains/python.py"
+          ],
+          "gold_symbols": [
+            "PyObject"
+          ],
+          "patched_files": [
+            "sphinx/domains/python.py"
+          ],
+          "overlap_files": [
+            "sphinx/domains/python.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/domains/python.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/domains/python.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": true,
+          "gold_function_edited": false,
+          "edited_gold_functions": [],
+          "has_duplicate_gold_symbols": false,
+          "duplicate_symbol_files": {},
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_domain_py.py::test_info_field_list_var"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 34
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 56,
+          "llm_calls": 56,
+          "tool_calls": 71,
+          "shell_calls": 27,
+          "elapsed_s": 376.04,
+          "cost_cny": 0.552493,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-9229",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "F3",
+        "final_category_name": "误解了 issue",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 将问题收窄为 list[int] 等 GenericAlias 被误识别为类，最终仅修改 can_document_member 和 AttributeDocumenter 的类型过滤。虽然已读取 ClassDocumenter.get_doc/add_content，却未实现 Gold 所需的变量注释读取及 doc_as_attr 分支，导致 test_class_alias_having_doccomment 失败，属于误解 issue 的修复目标。",
+        "evidence": [
+          "模型补丁只修改 ClassDocumenter/ExceptionDocumenter.can_document_member 与 AttributeDocumenter，未编辑 Gold 函数 get_doc 和 add_content。",
+          "Gold 通过 get_variable_comment 让带文档注释的类别名抑制默认 alias of 文本；失败测试为 test_class_alias_having_doccomment。",
+          "Gold 修复位于 ClassDocumenter.get_doc，并新增 get_variable_comment、调整 add_content；模型补丁完全未涉及这些逻辑",
+          "模型补丁以 inspect.isgenericalias 过滤类成员，复现也转向 list[int]，与 test_class_alias_having_doccomment 的失败机制不符",
+          "步骤3已读取 sphinx/ext/autodoc/__init__.py 第1670-1899行，正确代码位置可见"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 10127,
+            "completion_tokens": 699,
+            "cost_cny": 0.141568,
+            "primary_category": "F3",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 将问题收窄为 list[int] 等 GenericAlias 被误识别为类，最终仅修改 can_document_member 和 AttributeDocumenter 的类型过滤。虽然已读取 ClassDocumenter.get_doc/add_content，却未实现 Gold 所需的变量注释读取及 doc_as_attr 分支，导致 test_class_alias_having_doccomment 失败，属于误解 issue 的修复目标。",
+            "evidence": [
+              "模型补丁只修改 ClassDocumenter/ExceptionDocumenter.can_document_member 与 AttributeDocumenter，未编辑 Gold 函数 get_doc 和 add_content。",
+              "Gold 通过 get_variable_comment 让带文档注释的类别名抑制默认 alias of 文本；失败测试为 test_class_alias_having_doccomment。"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 10127,
+            "completion_tokens": 626,
+            "cost_cny": 0.04422,
+            "primary_category": "F3",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 将问题误解为 GenericAlias 被误识别为类，最终仅修改 ClassDocumenter、ExceptionDocumenter 的 can_document_member 及 AttributeDocumenter 判断；但本题核心是 doc_as_attr 类别名应读取变量后的文档注释。其已读取包含 Gold get_doc/add_content 的 1670-1899 行，却未修改这些函数，故属于需求与病因误判，而非搜索或同名符号问题。",
+            "evidence": [
+              "Gold 修复位于 ClassDocumenter.get_doc，并新增 get_variable_comment、调整 add_content；模型补丁完全未涉及这些逻辑",
+              "模型补丁以 inspect.isgenericalias 过滤类成员，复现也转向 list[int]，与 test_class_alias_having_doccomment 的失败机制不符",
+              "步骤3已读取 sphinx/ext/autodoc/__init__.py 第1670-1899行，正确代码位置可见"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.185788,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_symbols": [
+            "ClassDocumenter.get_object_members",
+            "ClassDocumenter.get_doc"
+          ],
+          "patched_files": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "overlap_files": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": true,
+          "gold_function_edited": false,
+          "edited_gold_functions": [],
+          "has_duplicate_gold_symbols": true,
+          "duplicate_symbol_files": {
+            "get_object_members": [
+              "sphinx/ext/autodoc/__init__.py",
+              "sphinx/ext/autodoc/importer.py"
+            ]
+          },
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_ext_autodoc_autoclass.py::test_class_alias_having_doccomment"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 13
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 82,
+          "llm_calls": 82,
+          "tool_calls": 85,
+          "shell_calls": 56,
+          "elapsed_s": 741.21,
+          "cost_cny": 1.163258,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-9461",
+        "repo": "sphinx-doc/sphinx",
+        "final_primary_category": "F1",
+        "final_category_name": "位置正确，但修复逻辑错误",
+        "secondary_categories": [],
+        "lsp_would_help": false,
+        "two_pass_agree": true,
+        "third_pass_used": false,
+        "vote_method": "unanimous_2",
+        "rationale": "Agent 已定位并修改正确的 PropertyDocumenter.can_document_member，且复现显示属性能被输出，但修复仅覆盖成员收集与对象导入，未完整实现预期行为：遗漏 PyProperty 的 classmethod 选项及签名前缀、add_directive_header 的 :classmethod: 标记和继承文档处理，导致三个 FAIL_TO_PASS 测试仍失败。属于正确定位后的实现不完整，而非同名符号或跳转引用遗漏。",
+        "evidence": [
+          "已编辑 sphinx/ext/autodoc/__init__.py 中 PropertyDocumenter.can_document_member，并额外修改 importer.py",
+          "Gold 还要求修改 sphinx/domains/python.py、add_directive_header、filter_members/getdoc 和 sphinx/util/inspect.py，模型补丁均未覆盖",
+          "官方失败为 test_pyproperty、test_properties、test_class_properties，PASS_TO_PASS 无失败",
+          "补丁仅修改 sphinx/ext/autodoc/__init__.py 和 importer.py，未修改 Gold 中的 sphinx/domains/python.py 与 sphinx/util/inspect.py",
+          "tests/test_domain_py.py::test_pyproperty、test_properties、test_class_properties 均仍失败"
+        ],
+        "passes": [
+          {
+            "pass_index": 1,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 10067,
+            "completion_tokens": 468,
+            "cost_cny": 0.132532,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已定位并修改正确的 PropertyDocumenter.can_document_member，且复现显示属性能被输出，但修复仅覆盖成员收集与对象导入，未完整实现预期行为：遗漏 PyProperty 的 classmethod 选项及签名前缀、add_directive_header 的 :classmethod: 标记和继承文档处理，导致三个 FAIL_TO_PASS 测试仍失败。属于正确定位后的实现不完整，而非同名符号或跳转引用遗漏。",
+            "evidence": [
+              "已编辑 sphinx/ext/autodoc/__init__.py 中 PropertyDocumenter.can_document_member，并额外修改 importer.py",
+              "Gold 还要求修改 sphinx/domains/python.py、add_directive_header、filter_members/getdoc 和 sphinx/util/inspect.py，模型补丁均未覆盖",
+              "官方失败为 test_pyproperty、test_properties、test_class_properties，PASS_TO_PASS 无失败"
+            ]
+          },
+          {
+            "pass_index": 2,
+            "attempts": 1,
+            "from_cache": false,
+            "response_model": "kimi-k3.1-pro",
+            "prompt_tokens": 10067,
+            "completion_tokens": 625,
+            "cost_cny": 0.043464,
+            "primary_category": "F1",
+            "secondary_categories": [],
+            "lsp_would_help": false,
+            "rationale": "Agent 已定位并修改 PropertyDocumenter.can_document_member 和 import_object，但仅在导入阶段替换 property 对象，未记录 isclassmethod、输出 :classmethod:，也漏掉 PyProperty 的 classmethod 选项与签名前缀及 getdoc 调用调整，导致三项 FAIL_TO_PASS 全失败，属于正确定位后的修复逻辑不完整。",
+            "evidence": [
+              "补丁仅修改 sphinx/ext/autodoc/__init__.py 和 importer.py，未修改 Gold 中的 sphinx/domains/python.py 与 sphinx/util/inspect.py",
+              "tests/test_domain_py.py::test_pyproperty、test_properties、test_class_properties 均仍失败"
+            ]
+          }
+        ],
+        "judge_cost_cny": 0.175996,
+        "deterministic_signals": {
+          "gold_files": [
+            "sphinx/domains/python.py",
+            "sphinx/ext/autodoc/__init__.py",
+            "sphinx/util/inspect.py"
+          ],
+          "gold_symbols": [
+            "PyProperty",
+            "PyProperty.get_signature_prefix",
+            "Documenter.filter_members",
+            "PropertyDocumenter.can_document_member",
+            "PropertyDocumenter.import_object",
+            "isclassmethod",
+            "getdoc"
+          ],
+          "patched_files": [
+            "sphinx/ext/autodoc/__init__.py",
+            "sphinx/ext/autodoc/importer.py"
+          ],
+          "overlap_files": [
+            "sphinx/ext/autodoc/__init__.py"
+          ],
+          "gold_file_seen_in_output": true,
+          "files_seen_in_output": [
+            "sphinx/ext/autodoc/__init__.py",
+            "sphinx/util/inspect.py"
+          ],
+          "gold_file_read": true,
+          "files_read": [
+            "sphinx/ext/autodoc/__init__.py",
+            "sphinx/util/inspect.py"
+          ],
+          "gold_lines_visible": true,
+          "gold_file_edited": true,
+          "all_gold_files_edited": false,
+          "gold_function_edited": true,
+          "edited_gold_functions": [
+            "PropertyDocumenter.can_document_member"
+          ],
+          "has_duplicate_gold_symbols": true,
+          "duplicate_symbol_files": {
+            "import_object": [
+              "sphinx/ext/autodoc/__init__.py",
+              "sphinx/ext/autodoc/importer.py",
+              "sphinx/util/__init__.py"
+            ],
+            "can_document_member": [
+              "doc/development/tutorials/examples/autodoc_intenum.py",
+              "sphinx/ext/autodoc/__init__.py",
+              "tests/test_ext_autodoc.py"
+            ]
+          },
+          "patch_is_empty": false,
+          "patch_is_None_in_eval": false,
+          "patch_successfully_applied": true,
+          "fail_to_pass_failure": [
+            "tests/test_domain_py.py::test_pyproperty",
+            "tests/test_ext_autodoc_autoclass.py::test_properties",
+            "tests/test_ext_autodoc_autoproperty.py::test_class_properties"
+          ],
+          "fail_to_pass_success": [],
+          "pass_to_pass_failure": [],
+          "pass_to_pass_success_count": 59
+        },
+        "run_summary": {
+          "status": "ok",
+          "error": "",
+          "steps": 40,
+          "llm_calls": 40,
+          "tool_calls": 51,
+          "shell_calls": 18,
+          "elapsed_s": 190.23,
+          "cost_cny": 0.263887,
+          "compaction_count": 0,
+          "circuit_breaker_triggered": false,
+          "has_unsynced_container_changes": false,
+          "unsynced_files": []
+        }
+      }
+    ]
+  }
+}

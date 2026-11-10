@@ -1,0 +1,1354 @@
+{
+  "hyn_flash_r1": {
+    "run_tag": "hyn_flash_r1",
+    "resolved_count": 42,
+    "total_instances": 50,
+    "resolved_rate": 0.84,
+    "wilson_ci95": {
+      "k": 42,
+      "n": 50,
+      "rate": 0.84,
+      "ci95_low": 0.714858,
+      "ci95_high": 0.916626
+    },
+    "by_repo": {
+      "django/django": {
+        "resolved": 22,
+        "total": 25,
+        "rate": 0.88,
+        "wilson_ci95": {
+          "k": 22,
+          "n": 25,
+          "rate": 0.88,
+          "ci95_low": 0.700442,
+          "ci95_high": 0.958332
+        }
+      },
+      "sphinx-doc/sphinx": {
+        "resolved": 20,
+        "total": 25,
+        "rate": 0.8,
+        "wilson_ci95": {
+          "k": 20,
+          "n": 25,
+          "rate": 0.8,
+          "ci95_low": 0.60869,
+          "ci95_high": 0.911394
+        }
+      }
+    },
+    "by_difficulty": {
+      "<15 min fix": {
+        "resolved": 18,
+        "total": 19,
+        "rate": 0.947368
+      },
+      "15 min - 1 hour": {
+        "resolved": 20,
+        "total": 23,
+        "rate": 0.869565
+      },
+      "1-4 hours": {
+        "resolved": 4,
+        "total": 7,
+        "rate": 0.571429
+      },
+      ">4 hours": {
+        "resolved": 0,
+        "total": 1,
+        "rate": 0.0
+      }
+    },
+    "adjusted_excluding_anomalous": {
+      "k": 40,
+      "n": 48,
+      "rate": 0.833333,
+      "ci95_low": 0.704222,
+      "ci95_high": 0.913045,
+      "wilson_ci95": {
+        "k": 40,
+        "n": 48,
+        "rate": 0.833333,
+        "ci95_low": 0.704222,
+        "ci95_high": 0.913045
+      }
+    },
+    "tier_comparison": {
+      "tiers": {
+        "canary": {
+          "resolved": 2,
+          "total": 3,
+          "rate": 0.666667,
+          "wilson_ci95": {
+            "k": 2,
+            "n": 3,
+            "rate": 0.666667,
+            "ci95_low": 0.20766,
+            "ci95_high": 0.938508
+          }
+        },
+        "probe": {
+          "resolved": 13,
+          "total": 15,
+          "rate": 0.866667,
+          "wilson_ci95": {
+            "k": 13,
+            "n": 15,
+            "rate": 0.866667,
+            "ci95_low": 0.62118,
+            "ci95_high": 0.962639
+          }
+        },
+        "full": {
+          "resolved": 42,
+          "total": 50,
+          "rate": 0.84,
+          "wilson_ci95": {
+            "k": 42,
+            "n": 50,
+            "rate": 0.84,
+            "ci95_low": 0.714858,
+            "ci95_high": 0.916626
+          }
+        }
+      },
+      "probe_vs_full_rate_diff": -0.026667
+    },
+    "cost_and_cache": {
+      "requested_models": [
+        "deepseek-flash"
+      ],
+      "response_models": [
+        "deepseek-flash"
+      ],
+      "total_cost_cny": 11.929897,
+      "total_offpeak_cost_cny": 11.929897,
+      "total_peak_cost_cny": 23.859796,
+      "avg_cost_per_instance_cny": 0.238598,
+      "avg_offpeak_cost_per_instance_cny": 0.238598,
+      "avg_peak_cost_per_instance_cny": 0.477196,
+      "cost_per_resolved_cny": 0.284045,
+      "offpeak_cost_per_resolved_cny": 0.284045,
+      "peak_cost_per_resolved_cny": 0.56809,
+      "total_prompt_tokens": 65783839,
+      "total_prompt_cache_hit_tokens": 64287872,
+      "total_prompt_cache_miss_tokens": 1495967,
+      "total_completion_tokens": 1001286,
+      "prompt_cache_hit_rate": 0.977259,
+      "warm_step2_plus_prompt_tokens": 65455156,
+      "warm_step2_plus_cache_hit_tokens": 64012544,
+      "warm_step2_plus_cache_hit_rate": 0.97796,
+      "billing_tier_call_counts": {
+        "offpeak": 1602
+      },
+      "compaction_events_total": 0
+    },
+    "latency_and_steps": {
+      "wall_clock_s": {
+        "count": 50,
+        "mean": 211.5702,
+        "p50": 129.655,
+        "p90": 495.079,
+        "max": 810.44,
+        "sum": 10578.51
+      },
+      "steps": {
+        "count": 50,
+        "mean": 32.04,
+        "p50": 23.0,
+        "p90": 66.1,
+        "max": 83.0,
+        "sum": 1602.0
+      },
+      "tool_calls": {
+        "count": 50,
+        "mean": 37.52,
+        "p50": 30.0,
+        "p90": 79.1,
+        "max": 85.0,
+        "sum": 1876.0
+      },
+      "shell_calls": {
+        "count": 50,
+        "mean": 21.14,
+        "p50": 12.5,
+        "p90": 44.4,
+        "max": 75.0,
+        "sum": 1057.0
+      }
+    },
+    "patch_health": {
+      "empty_patch_count": 0,
+      "empty_patch_rate": 0.0,
+      "patch_apply_failed_count": 0,
+      "patch_apply_failed_rate": 0.0,
+      "patch_apply_failed_ids": [],
+      "budget_cut_count": 0,
+      "budget_cut_rate": 0.0,
+      "timeout_count": 0,
+      "timeout_rate": 0.0,
+      "api_error_count": 0,
+      "api_error_rate": 0.0,
+      "container_error_count": 0,
+      "container_error_rate": 0.0,
+      "changed_files_per_nonempty_patch": {
+        "count": 50,
+        "mean": 1.26,
+        "p50": 1.0,
+        "p90": 2.0,
+        "max": 3.0,
+        "sum": 63.0
+      },
+      "unsynced_container_change_instances": [
+        "sphinx-doc__sphinx-9229"
+      ]
+    },
+    "localization_metrics": {
+      "gold_file_seen_count": 50,
+      "gold_file_seen_rate": 1.0,
+      "gold_file_read_count": 49,
+      "gold_file_read_rate": 0.98,
+      "gold_lines_visible_count": 49,
+      "gold_lines_visible_rate": 0.98,
+      "gold_file_edited_count": 49,
+      "gold_file_edited_rate": 0.98,
+      "gold_function_edited_count": 44,
+      "gold_function_edited_rate": 0.88,
+      "localized_but_unresolved_count": 8,
+      "localized_but_unresolved_rate": 0.16
+    },
+    "resolved_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9461",
+      "sphinx-doc__sphinx-9698"
+    ],
+    "unresolved_ids": [
+      "django__django-11885",
+      "django__django-12308",
+      "django__django-12325",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8638"
+    ],
+    "trace_audit": {
+      "allow_network_true_count": 2,
+      "allow_network_false_count": 48,
+      "allow_network_true_ids": [
+        "sphinx-doc__sphinx-7985",
+        "sphinx-doc__sphinx-8269"
+      ],
+      "ts_min_bj": "2026-11-09T02:26:01.861998+08:00",
+      "ts_max_bj": "2026-11-09T19:06:26.323026+08:00",
+      "peak_calls": [],
+      "tool_counts": {
+        "grep": 341,
+        "read_file": 322,
+        "run_shell": 1057,
+        "edit_file": 39,
+        "apply_patch": 51,
+        "web_search": 23,
+        "glob": 39,
+        "write_file": 2,
+        "code_outline": 1,
+        "search": 1
+      },
+      "instances_using_tool": {
+        "run_shell": 50,
+        "grep": 49,
+        "read_file": 50,
+        "edit_file": 31,
+        "apply_patch": 31,
+        "web_search": 18,
+        "glob": 22,
+        "write_file": 2,
+        "code_outline": 1,
+        "search": 1
+      },
+      "total_tool_calls": 1876,
+      "chmod_mode_noise_patch_ids": [],
+      "chmod_shell_cmd_instance_count": 24,
+      "hallucinated_tool_instance_count": 18,
+      "network_cmd_instance_count": 21,
+      "git_history_probe_instance_count": 31,
+      "any_probe_instance_count": 32,
+      "unblocked_net_leak_events": [
+        {
+          "instance_id": "sphinx-doc__sphinx-7985",
+          "tool_call_index": 9,
+          "cmd": "pip download sphinx==3.3.0 --no-deps -d /tmp/s 2>&1 | tail -3; ls /opt 2>/dev/null; find / -name \"linkcheck.py\" -path \"*sphinx*\" 2>/dev/null",
+          "out": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.9/2.9 MB 6.5 MB/s eta 0:00:00\nSaved /tmp/s/Sphinx-3.3.0-py3-none-any.whl\nSuccessfully downloaded "
+        },
+        {
+          "instance_id": "sphinx-doc__sphinx-7985",
+          "tool_call_index": 13,
+          "cmd": "pip download sphinx==3.3.0 --no-deps --no-binary :all: -d /tmp/s 2>&1 | tail -3 && ls /tmp/s && cd /tmp/s && tar xf Sphinx-3.3.0.tar.gz && d",
+          "out": "Preparing metadata (setup.py): finished with status 'done'\nSaved /tmp/s/Sphinx-3.3.0.tar.gz\nSuccessfully downloaded sphinx\nSphinx-3.3.0-py3-"
+        },
+        {
+          "instance_id": "sphinx-doc__sphinx-7985",
+          "tool_call_index": 14,
+          "cmd": "cd /tmp && git clone --filter=blob:none --no-checkout https://github.com/sphinx-doc/sphinx.git sphinx-up 2>&1 | tail -3",
+          "out": "Cloning into 'sphinx-up'..."
+        }
+      ]
+    }
+  },
+  "hyn_flash_r1_clean": {
+    "run_tag": "hyn_flash_r1_clean",
+    "resolved_count": 42,
+    "total_instances": 50,
+    "resolved_rate": 0.84,
+    "wilson_ci95": {
+      "k": 42,
+      "n": 50,
+      "rate": 0.84,
+      "ci95_low": 0.714858,
+      "ci95_high": 0.916626
+    },
+    "by_repo": {
+      "django/django": {
+        "resolved": 22,
+        "total": 25,
+        "rate": 0.88,
+        "wilson_ci95": {
+          "k": 22,
+          "n": 25,
+          "rate": 0.88,
+          "ci95_low": 0.700442,
+          "ci95_high": 0.958332
+        }
+      },
+      "sphinx-doc/sphinx": {
+        "resolved": 20,
+        "total": 25,
+        "rate": 0.8,
+        "wilson_ci95": {
+          "k": 20,
+          "n": 25,
+          "rate": 0.8,
+          "ci95_low": 0.60869,
+          "ci95_high": 0.911394
+        }
+      }
+    },
+    "by_difficulty": {
+      "<15 min fix": {
+        "resolved": 18,
+        "total": 19,
+        "rate": 0.947368
+      },
+      "15 min - 1 hour": {
+        "resolved": 20,
+        "total": 23,
+        "rate": 0.869565
+      },
+      "1-4 hours": {
+        "resolved": 4,
+        "total": 7,
+        "rate": 0.571429
+      },
+      ">4 hours": {
+        "resolved": 0,
+        "total": 1,
+        "rate": 0.0
+      }
+    },
+    "adjusted_excluding_anomalous": {
+      "k": 40,
+      "n": 48,
+      "rate": 0.833333,
+      "ci95_low": 0.704222,
+      "ci95_high": 0.913045,
+      "wilson_ci95": {
+        "k": 40,
+        "n": 48,
+        "rate": 0.833333,
+        "ci95_low": 0.704222,
+        "ci95_high": 0.913045
+      }
+    },
+    "tier_comparison": {
+      "tiers": {
+        "canary": {
+          "resolved": 2,
+          "total": 3,
+          "rate": 0.666667,
+          "wilson_ci95": {
+            "k": 2,
+            "n": 3,
+            "rate": 0.666667,
+            "ci95_low": 0.20766,
+            "ci95_high": 0.938508
+          }
+        },
+        "probe": {
+          "resolved": 13,
+          "total": 15,
+          "rate": 0.866667,
+          "wilson_ci95": {
+            "k": 13,
+            "n": 15,
+            "rate": 0.866667,
+            "ci95_low": 0.62118,
+            "ci95_high": 0.962639
+          }
+        },
+        "full": {
+          "resolved": 42,
+          "total": 50,
+          "rate": 0.84,
+          "wilson_ci95": {
+            "k": 42,
+            "n": 50,
+            "rate": 0.84,
+            "ci95_low": 0.714858,
+            "ci95_high": 0.916626
+          }
+        }
+      },
+      "probe_vs_full_rate_diff": -0.026667
+    },
+    "cost_and_cache": {
+      "requested_models": [
+        "deepseek-flash"
+      ],
+      "response_models": [
+        "deepseek-flash"
+      ],
+      "total_cost_cny": 12.158495,
+      "total_offpeak_cost_cny": 12.158495,
+      "total_peak_cost_cny": 24.316991,
+      "avg_cost_per_instance_cny": 0.24317,
+      "avg_offpeak_cost_per_instance_cny": 0.24317,
+      "avg_peak_cost_per_instance_cny": 0.48634,
+      "cost_per_resolved_cny": 0.289488,
+      "offpeak_cost_per_resolved_cny": 0.289488,
+      "peak_cost_per_resolved_cny": 0.578976,
+      "total_prompt_tokens": 66603182,
+      "total_prompt_cache_hit_tokens": 65099136,
+      "total_prompt_cache_miss_tokens": 1504046,
+      "total_completion_tokens": 1036134,
+      "prompt_cache_hit_rate": 0.977418,
+      "warm_step2_plus_prompt_tokens": 66274436,
+      "warm_step2_plus_cache_hit_tokens": 64823808,
+      "warm_step2_plus_cache_hit_rate": 0.978112,
+      "billing_tier_call_counts": {
+        "offpeak": 1606
+      },
+      "compaction_events_total": 0
+    },
+    "latency_and_steps": {
+      "wall_clock_s": {
+        "count": 50,
+        "mean": 214.6362,
+        "p50": 129.655,
+        "p90": 495.079,
+        "max": 810.44,
+        "sum": 10731.81
+      },
+      "steps": {
+        "count": 50,
+        "mean": 32.12,
+        "p50": 23.0,
+        "p90": 66.1,
+        "max": 83.0,
+        "sum": 1606.0
+      },
+      "tool_calls": {
+        "count": 50,
+        "mean": 37.76,
+        "p50": 30.0,
+        "p90": 79.1,
+        "max": 85.0,
+        "sum": 1888.0
+      },
+      "shell_calls": {
+        "count": 50,
+        "mean": 21.12,
+        "p50": 12.5,
+        "p90": 44.4,
+        "max": 75.0,
+        "sum": 1056.0
+      }
+    },
+    "patch_health": {
+      "empty_patch_count": 0,
+      "empty_patch_rate": 0.0,
+      "patch_apply_failed_count": 0,
+      "patch_apply_failed_rate": 0.0,
+      "patch_apply_failed_ids": [],
+      "budget_cut_count": 0,
+      "budget_cut_rate": 0.0,
+      "timeout_count": 0,
+      "timeout_rate": 0.0,
+      "api_error_count": 0,
+      "api_error_rate": 0.0,
+      "container_error_count": 0,
+      "container_error_rate": 0.0,
+      "changed_files_per_nonempty_patch": {
+        "count": 50,
+        "mean": 1.26,
+        "p50": 1.0,
+        "p90": 2.0,
+        "max": 3.0,
+        "sum": 63.0
+      },
+      "unsynced_container_change_instances": [
+        "sphinx-doc__sphinx-9229"
+      ]
+    },
+    "localization_metrics": {
+      "gold_file_seen_count": 50,
+      "gold_file_seen_rate": 1.0,
+      "gold_file_read_count": 49,
+      "gold_file_read_rate": 0.98,
+      "gold_lines_visible_count": 49,
+      "gold_lines_visible_rate": 0.98,
+      "gold_file_edited_count": 49,
+      "gold_file_edited_rate": 0.98,
+      "gold_function_edited_count": 44,
+      "gold_function_edited_rate": 0.88,
+      "localized_but_unresolved_count": 8,
+      "localized_but_unresolved_rate": 0.16
+    },
+    "resolved_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9461",
+      "sphinx-doc__sphinx-9698"
+    ],
+    "unresolved_ids": [
+      "django__django-11885",
+      "django__django-12308",
+      "django__django-12325",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8638"
+    ],
+    "trace_audit": {
+      "allow_network_true_count": 1,
+      "allow_network_false_count": 49,
+      "allow_network_true_ids": [
+        "sphinx-doc__sphinx-8269"
+      ],
+      "ts_min_bj": "2026-11-09T02:26:01.861998+08:00",
+      "ts_max_bj": "2026-11-09T23:46:57.587384+08:00",
+      "peak_calls": [],
+      "tool_counts": {
+        "grep": 343,
+        "read_file": 330,
+        "run_shell": 1056,
+        "edit_file": 39,
+        "apply_patch": 52,
+        "web_search": 23,
+        "glob": 40,
+        "write_file": 2,
+        "code_outline": 2,
+        "search": 1
+      },
+      "instances_using_tool": {
+        "run_shell": 50,
+        "grep": 50,
+        "read_file": 50,
+        "edit_file": 31,
+        "apply_patch": 31,
+        "web_search": 18,
+        "glob": 23,
+        "write_file": 2,
+        "code_outline": 2,
+        "search": 1
+      },
+      "total_tool_calls": 1888,
+      "chmod_mode_noise_patch_ids": [],
+      "chmod_shell_cmd_instance_count": 23,
+      "hallucinated_tool_instance_count": 18,
+      "network_cmd_instance_count": 20,
+      "git_history_probe_instance_count": 31,
+      "any_probe_instance_count": 31,
+      "unblocked_net_leak_events": []
+    }
+  },
+  "hyn_flash_r2": {
+    "run_tag": "hyn_flash_r2",
+    "resolved_count": 39,
+    "total_instances": 50,
+    "resolved_rate": 0.78,
+    "wilson_ci95": {
+      "k": 39,
+      "n": 50,
+      "rate": 0.78,
+      "ci95_low": 0.647585,
+      "ci95_high": 0.872461
+    },
+    "by_repo": {
+      "django/django": {
+        "resolved": 22,
+        "total": 25,
+        "rate": 0.88,
+        "wilson_ci95": {
+          "k": 22,
+          "n": 25,
+          "rate": 0.88,
+          "ci95_low": 0.700442,
+          "ci95_high": 0.958332
+        }
+      },
+      "sphinx-doc/sphinx": {
+        "resolved": 17,
+        "total": 25,
+        "rate": 0.68,
+        "wilson_ci95": {
+          "k": 17,
+          "n": 25,
+          "rate": 0.68,
+          "ci95_low": 0.484103,
+          "ci95_high": 0.827948
+        }
+      }
+    },
+    "by_difficulty": {
+      "<15 min fix": {
+        "resolved": 19,
+        "total": 19,
+        "rate": 1.0
+      },
+      "15 min - 1 hour": {
+        "resolved": 18,
+        "total": 23,
+        "rate": 0.782609
+      },
+      "1-4 hours": {
+        "resolved": 2,
+        "total": 7,
+        "rate": 0.285714
+      },
+      ">4 hours": {
+        "resolved": 0,
+        "total": 1,
+        "rate": 0.0
+      }
+    },
+    "adjusted_excluding_anomalous": {
+      "k": 38,
+      "n": 48,
+      "rate": 0.791667,
+      "ci95_low": 0.657411,
+      "ci95_high": 0.882697,
+      "wilson_ci95": {
+        "k": 38,
+        "n": 48,
+        "rate": 0.791667,
+        "ci95_low": 0.657411,
+        "ci95_high": 0.882697
+      }
+    },
+    "tier_comparison": {
+      "tiers": {
+        "canary": {
+          "resolved": 2,
+          "total": 3,
+          "rate": 0.666667,
+          "wilson_ci95": {
+            "k": 2,
+            "n": 3,
+            "rate": 0.666667,
+            "ci95_low": 0.20766,
+            "ci95_high": 0.938508
+          }
+        },
+        "probe": {
+          "resolved": 12,
+          "total": 15,
+          "rate": 0.8,
+          "wilson_ci95": {
+            "k": 12,
+            "n": 15,
+            "rate": 0.8,
+            "ci95_low": 0.548146,
+            "ci95_high": 0.929525
+          }
+        },
+        "full": {
+          "resolved": 39,
+          "total": 50,
+          "rate": 0.78,
+          "wilson_ci95": {
+            "k": 39,
+            "n": 50,
+            "rate": 0.78,
+            "ci95_low": 0.647585,
+            "ci95_high": 0.872461
+          }
+        }
+      },
+      "probe_vs_full_rate_diff": -0.02
+    },
+    "cost_and_cache": {
+      "requested_models": [
+        "deepseek-flash"
+      ],
+      "response_models": [
+        "deepseek-flash"
+      ],
+      "total_cost_cny": 10.394424,
+      "total_offpeak_cost_cny": 10.394424,
+      "total_peak_cost_cny": 20.788846,
+      "avg_cost_per_instance_cny": 0.207888,
+      "avg_offpeak_cost_per_instance_cny": 0.207888,
+      "avg_peak_cost_per_instance_cny": 0.415777,
+      "cost_per_resolved_cny": 0.266524,
+      "offpeak_cost_per_resolved_cny": 0.266524,
+      "peak_cost_per_resolved_cny": 0.533047,
+      "total_prompt_tokens": 54259668,
+      "total_prompt_cache_hit_tokens": 52969984,
+      "total_prompt_cache_miss_tokens": 1289684,
+      "total_completion_tokens": 951935,
+      "prompt_cache_hit_rate": 0.976231,
+      "warm_step2_plus_prompt_tokens": 53927835,
+      "warm_step2_plus_cache_hit_tokens": 52687360,
+      "warm_step2_plus_cache_hit_rate": 0.976998,
+      "billing_tier_call_counts": {
+        "offpeak": 1352
+      },
+      "compaction_events_total": 0
+    },
+    "latency_and_steps": {
+      "wall_clock_s": {
+        "count": 50,
+        "mean": 183.639,
+        "p50": 113.94,
+        "p90": 400.328,
+        "max": 741.21,
+        "sum": 9181.95
+      },
+      "steps": {
+        "count": 50,
+        "mean": 27.04,
+        "p50": 18.5,
+        "p90": 54.2,
+        "max": 82.0,
+        "sum": 1352.0
+      },
+      "tool_calls": {
+        "count": 50,
+        "mean": 32.84,
+        "p50": 25.5,
+        "p90": 65.3,
+        "max": 85.0,
+        "sum": 1642.0
+      },
+      "shell_calls": {
+        "count": 50,
+        "mean": 15.82,
+        "p50": 11.5,
+        "p90": 32.3,
+        "max": 56.0,
+        "sum": 791.0
+      }
+    },
+    "patch_health": {
+      "empty_patch_count": 0,
+      "empty_patch_rate": 0.0,
+      "patch_apply_failed_count": 0,
+      "patch_apply_failed_rate": 0.0,
+      "patch_apply_failed_ids": [],
+      "budget_cut_count": 0,
+      "budget_cut_rate": 0.0,
+      "timeout_count": 0,
+      "timeout_rate": 0.0,
+      "api_error_count": 0,
+      "api_error_rate": 0.0,
+      "container_error_count": 0,
+      "container_error_rate": 0.0,
+      "changed_files_per_nonempty_patch": {
+        "count": 50,
+        "mean": 1.2,
+        "p50": 1.0,
+        "p90": 2.0,
+        "max": 4.0,
+        "sum": 60.0
+      },
+      "unsynced_container_change_instances": []
+    },
+    "localization_metrics": {
+      "gold_file_seen_count": 50,
+      "gold_file_seen_rate": 1.0,
+      "gold_file_read_count": 46,
+      "gold_file_read_rate": 0.92,
+      "gold_lines_visible_count": 46,
+      "gold_lines_visible_rate": 0.92,
+      "gold_file_edited_count": 49,
+      "gold_file_edited_rate": 0.98,
+      "gold_function_edited_count": 42,
+      "gold_function_edited_rate": 0.84,
+      "localized_but_unresolved_count": 11,
+      "localized_but_unresolved_rate": 0.22
+    },
+    "resolved_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12308",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9698"
+    ],
+    "unresolved_ids": [
+      "django__django-11885",
+      "django__django-12273",
+      "django__django-12325",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9461"
+    ],
+    "trace_audit": {
+      "allow_network_true_count": 0,
+      "allow_network_false_count": 50,
+      "allow_network_true_ids": [],
+      "ts_min_bj": "2026-11-10T00:08:12.037270+08:00",
+      "ts_max_bj": "2026-11-10T01:05:23.865508+08:00",
+      "peak_calls": [],
+      "tool_counts": {
+        "grep": 382,
+        "read_file": 341,
+        "edit_file": 26,
+        "run_shell": 791,
+        "apply_patch": 52,
+        "glob": 36,
+        "write_file": 9,
+        "bash": 1,
+        "todo_write": 3,
+        "code_outline": 1
+      },
+      "instances_using_tool": {
+        "run_shell": 50,
+        "grep": 46,
+        "read_file": 46,
+        "edit_file": 20,
+        "apply_patch": 35,
+        "glob": 20,
+        "write_file": 9,
+        "bash": 1,
+        "todo_write": 1,
+        "code_outline": 1
+      },
+      "total_tool_calls": 1642,
+      "chmod_mode_noise_patch_ids": [],
+      "chmod_shell_cmd_instance_count": 0,
+      "hallucinated_tool_instance_count": 1,
+      "network_cmd_instance_count": 1,
+      "git_history_probe_instance_count": 5,
+      "any_probe_instance_count": 7,
+      "unblocked_net_leak_events": []
+    }
+  },
+  "mini_swe_flash_r1": {
+    "run_tag": "mini_swe_flash_r1",
+    "resolved_count": 41,
+    "total_instances": 50,
+    "resolved_rate": 0.82,
+    "wilson_ci95": {
+      "k": 41,
+      "n": 50,
+      "rate": 0.82,
+      "ci95_low": 0.692039,
+      "ci95_high": 0.902298
+    },
+    "by_repo": {
+      "django/django": {
+        "resolved": 22,
+        "total": 25,
+        "rate": 0.88,
+        "wilson_ci95": {
+          "k": 22,
+          "n": 25,
+          "rate": 0.88,
+          "ci95_low": 0.700442,
+          "ci95_high": 0.958332
+        }
+      },
+      "sphinx-doc/sphinx": {
+        "resolved": 19,
+        "total": 25,
+        "rate": 0.76,
+        "wilson_ci95": {
+          "k": 19,
+          "n": 25,
+          "rate": 0.76,
+          "ci95_low": 0.565703,
+          "ci95_high": 0.885037
+        }
+      }
+    },
+    "by_difficulty": {
+      "<15 min fix": {
+        "resolved": 18,
+        "total": 19,
+        "rate": 0.947368
+      },
+      "15 min - 1 hour": {
+        "resolved": 21,
+        "total": 23,
+        "rate": 0.913043
+      },
+      "1-4 hours": {
+        "resolved": 2,
+        "total": 7,
+        "rate": 0.285714
+      },
+      ">4 hours": {
+        "resolved": 0,
+        "total": 1,
+        "rate": 0.0
+      }
+    },
+    "adjusted_excluding_anomalous": {
+      "k": 39,
+      "n": 48,
+      "rate": 0.8125,
+      "ci95_low": 0.680601,
+      "ci95_high": 0.898086,
+      "wilson_ci95": {
+        "k": 39,
+        "n": 48,
+        "rate": 0.8125,
+        "ci95_low": 0.680601,
+        "ci95_high": 0.898086
+      }
+    },
+    "tier_comparison": {
+      "tiers": {
+        "canary": {
+          "resolved": 3,
+          "total": 3,
+          "rate": 1.0,
+          "wilson_ci95": {
+            "k": 3,
+            "n": 3,
+            "rate": 1.0,
+            "ci95_low": 0.438503,
+            "ci95_high": 1.0
+          }
+        },
+        "probe": {
+          "resolved": 14,
+          "total": 15,
+          "rate": 0.933333,
+          "wilson_ci95": {
+            "k": 14,
+            "n": 15,
+            "rate": 0.933333,
+            "ci95_low": 0.701835,
+            "ci95_high": 0.988133
+          }
+        },
+        "full": {
+          "resolved": 41,
+          "total": 50,
+          "rate": 0.82,
+          "wilson_ci95": {
+            "k": 41,
+            "n": 50,
+            "rate": 0.82,
+            "ci95_low": 0.692039,
+            "ci95_high": 0.902298
+          }
+        }
+      },
+      "probe_vs_full_rate_diff": -0.113333
+    },
+    "patch_health": {
+      "empty_patch_count": 2,
+      "empty_patch_rate": 0.04,
+      "patch_apply_failed_count": 0,
+      "patch_apply_failed_rate": 0.0,
+      "patch_apply_failed_ids": [],
+      "budget_cut_count": 0,
+      "budget_cut_rate": 0.0,
+      "timeout_count": 0,
+      "timeout_rate": 0.0,
+      "api_error_count": 0,
+      "api_error_rate": 0.0,
+      "container_error_count": 0,
+      "container_error_rate": 0.0,
+      "changed_files_per_nonempty_patch": {
+        "count": 48,
+        "mean": 1.2292,
+        "p50": 1.0,
+        "p90": 2.0,
+        "max": 4.0,
+        "sum": 59.0
+      },
+      "unsynced_container_change_instances": []
+    },
+    "localization_metrics": {
+      "gold_file_seen_count": 0,
+      "gold_file_seen_rate": 0.0,
+      "gold_file_read_count": 0,
+      "gold_file_read_rate": 0.0,
+      "gold_lines_visible_count": 0,
+      "gold_lines_visible_rate": 0.0,
+      "gold_file_edited_count": 48,
+      "gold_file_edited_rate": 0.96,
+      "gold_function_edited_count": 43,
+      "gold_function_edited_rate": 0.86,
+      "localized_but_unresolved_count": 7,
+      "localized_but_unresolved_rate": 0.14
+    },
+    "resolved_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11880",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12325",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9698"
+    ],
+    "unresolved_ids": [
+      "django__django-11848",
+      "django__django-11885",
+      "django__django-12308",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9461"
+    ],
+    "raw_trajectory_stats": {
+      "total_trajectories": 50,
+      "ts_min_bj": "2026-11-09T22:34:59+08:00",
+      "ts_max_bj": "2026-11-09T23:28:47+08:00",
+      "exit_statuses": {
+        "Submitted": 48,
+        "LimitsExceeded": 2
+      },
+      "total_steps": 1379,
+      "steps_dist": {
+        "mean": 27.58,
+        "p50": 16.5,
+        "p90": 58.2,
+        "max": 80,
+        "min": 8,
+        "sum": 1379
+      },
+      "elapsed_s_approx_dist": {
+        "mean": 175.2,
+        "p50": 59.5,
+        "p90": 541.2,
+        "max": 729.0,
+        "min": 24.0,
+        "sum": 8760.0
+      },
+      "prompt_tokens": 45731100,
+      "prompt_cache_hit_tokens": 44447104,
+      "prompt_cache_miss_tokens": 1283996,
+      "completion_tokens": 707050,
+      "prompt_cache_hit_rate": 0.971923,
+      "warm_prompt_cache_hit_rate": 0.973493,
+      "cost_offpeak_cny": 6.789281,
+      "cost_standard_cny": 13.578563,
+      "avg_cost_per_instance_offpeak_cny": 0.135786,
+      "avg_cost_per_resolved_offpeak_cny": 0.165592,
+      "net_attempts": []
+    }
+  },
+  "multirun_comparison": {
+    "runs": [
+      "hyn_flash_r1_clean",
+      "hyn_flash_r2"
+    ],
+    "resolved_counts": [
+      42,
+      39
+    ],
+    "resolved_rates": [
+      0.84,
+      0.78
+    ],
+    "mean_resolved_count": 40.5,
+    "mean_resolved_rate": 0.81,
+    "sample_sd_rate": 0.042426,
+    "pop_sd_rate": 0.03,
+    "intersection_resolved_count": 38,
+    "intersection_resolved_rate": 0.76,
+    "union_resolved_count": 43,
+    "union_resolved_rate": 0.86,
+    "only_r1_clean_ids": [
+      "django__django-12273",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9461"
+    ],
+    "only_r2_ids": [
+      "django__django-12308"
+    ],
+    "both_unresolved_ids": [
+      "django__django-11885",
+      "django__django-12325",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8638"
+    ],
+    "mcnemar_r1_clean_vs_r2": {
+      "both_resolved_count": 38,
+      "only_a_resolved_count": 4,
+      "only_b_resolved_count": 1,
+      "neither_resolved_count": 7,
+      "only_a_ids": [
+        "django__django-12273",
+        "sphinx-doc__sphinx-7985",
+        "sphinx-doc__sphinx-9229",
+        "sphinx-doc__sphinx-9461"
+      ],
+      "only_b_ids": [
+        "django__django-12308"
+      ],
+      "neither_ids": [
+        "django__django-11885",
+        "django__django-12325",
+        "sphinx-doc__sphinx-11510",
+        "sphinx-doc__sphinx-7590",
+        "sphinx-doc__sphinx-7748",
+        "sphinx-doc__sphinx-8056",
+        "sphinx-doc__sphinx-8638"
+      ],
+      "p_value": 0.375,
+      "significant_005": false
+    },
+    "mcnemar_r1_clean_vs_mini": {
+      "both_resolved_count": 38,
+      "only_a_resolved_count": 4,
+      "only_b_resolved_count": 3,
+      "neither_resolved_count": 5,
+      "only_a_ids": [
+        "django__django-11848",
+        "sphinx-doc__sphinx-8548",
+        "sphinx-doc__sphinx-9229",
+        "sphinx-doc__sphinx-9461"
+      ],
+      "only_b_ids": [
+        "django__django-12325",
+        "sphinx-doc__sphinx-8056",
+        "sphinx-doc__sphinx-8638"
+      ],
+      "neither_ids": [
+        "django__django-11885",
+        "django__django-12308",
+        "sphinx-doc__sphinx-11510",
+        "sphinx-doc__sphinx-7590",
+        "sphinx-doc__sphinx-7748"
+      ],
+      "p_value": 1.0,
+      "significant_005": false
+    },
+    "mcnemar_r2_vs_mini": {
+      "both_resolved_count": 36,
+      "only_a_resolved_count": 3,
+      "only_b_resolved_count": 5,
+      "neither_resolved_count": 6,
+      "only_a_ids": [
+        "django__django-11848",
+        "django__django-12308",
+        "sphinx-doc__sphinx-8548"
+      ],
+      "only_b_ids": [
+        "django__django-12273",
+        "django__django-12325",
+        "sphinx-doc__sphinx-7985",
+        "sphinx-doc__sphinx-8056",
+        "sphinx-doc__sphinx-8638"
+      ],
+      "neither_ids": [
+        "django__django-11885",
+        "sphinx-doc__sphinx-11510",
+        "sphinx-doc__sphinx-7590",
+        "sphinx-doc__sphinx-7748",
+        "sphinx-doc__sphinx-9229",
+        "sphinx-doc__sphinx-9461"
+      ],
+      "p_value": 0.726562,
+      "significant_005": false
+    },
+    "mcnemar_hyn_union_vs_mini": {
+      "both_resolved_count": 38,
+      "only_a_resolved_count": 5,
+      "only_b_resolved_count": 3,
+      "neither_resolved_count": 4,
+      "only_a_ids": [
+        "django__django-11848",
+        "django__django-12308",
+        "sphinx-doc__sphinx-8548",
+        "sphinx-doc__sphinx-9229",
+        "sphinx-doc__sphinx-9461"
+      ],
+      "only_b_ids": [
+        "django__django-12325",
+        "sphinx-doc__sphinx-8056",
+        "sphinx-doc__sphinx-8638"
+      ],
+      "neither_ids": [
+        "django__django-11885",
+        "sphinx-doc__sphinx-11510",
+        "sphinx-doc__sphinx-7590",
+        "sphinx-doc__sphinx-7748"
+      ],
+      "p_value": 0.726562,
+      "significant_005": false
+    }
+  }
+}

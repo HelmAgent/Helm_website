@@ -1,0 +1,153 @@
+{
+  "schema_version": "hyn.swebench.blind_agreement.v1",
+  "run_tag": "hyn_flash_r1",
+  "blind_labels_sha256": "2B50A8B23E5E2370F4382C0353601FF200D2783F944B358F61D3742A8250FF60",
+  "blind_labels_locked_at": "2026-11-09T19:39:28+08:00",
+  "compared_count": 8,
+  "agree_count": 7,
+  "agreement_rate": 0.875,
+  "wilson_ci95": {
+    "k": 7,
+    "n": 8,
+    "rate": 0.875,
+    "ci95_low": 0.529112,
+    "ci95_high": 0.977583
+  },
+  "details": [
+    {
+      "instance_id": "django__django-11885",
+      "blind_category": "F2",
+      "judge_category": "F2",
+      "agree": true,
+      "judge_secondary": [
+        "F1"
+      ],
+      "blind_secondary": [],
+      "judge_passes": [
+        "F2",
+        "F2"
+      ],
+      "judge_rationale": "Agent 已在 deletion.py 的 Collector.collect 正确接入 fast delete 合并，新增场景测试也通过；但 add_fast_delete 对同模型 QuerySet 一律执行 qs | objs，改变了大批量删除的查询次数。步骤35显示 test_large_delete_related 出现 23 != 25，最终两项原通过测试回归。",
+      "agree_loose": true
+    },
+    {
+      "instance_id": "django__django-12308",
+      "blind_category": "F1",
+      "judge_category": "F1",
+      "agree": true,
+      "judge_secondary": [
+        "F3"
+      ],
+      "blind_secondary": [
+        "F3"
+      ],
+      "judge_passes": [
+        "F1",
+        "F1"
+      ],
+      "judge_rationale": "Agent 已读取并编辑正确函数 display_for_field，但在 issue 明确提示不要直接调用 json.dumps、需处理 InvalidJSONInput 的情况下，仍使用 json.dumps(value, cls=field.encoder)，未采用 get_prep_value 并捕获 TypeError 回退，导致两个目标测试失败；无 PASS_TO_PASS 回归。",
+      "agree_loose": true
+    },
+    {
+      "instance_id": "django__django-12325",
+      "blind_category": "F1",
+      "judge_category": "F1",
+      "agree": true,
+      "judge_secondary": [],
+      "blind_secondary": [
+        "L3"
+      ],
+      "judge_passes": [
+        "F1",
+        "F1"
+      ],
+      "judge_rationale": "Agent 已读取正确定位 base.py 与 options.py，并编辑了 Gold 函数 ModelBase.__new__，但用 setdefault 保留非 parent_link 的 OneToOneField，未按 Gold 过滤；同时未删除 Options._prepare 中的 parent_link 异常，属于正确定位后的修复逻辑不完整，最终两个 FAIL_TO_PASS 仍失败。",
+      "agree_loose": true
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-11510",
+      "blind_category": "F1",
+      "judge_category": "F1",
+      "agree": true,
+      "judge_secondary": [],
+      "blind_secondary": [],
+      "judge_passes": [
+        "F1",
+        "F1"
+      ],
+      "judge_rationale": "Agent 已读取并编辑正确文件 sphinx/directives/other.py 的 Include.run，定位无误；但其预读文件并代理 misc.io 的实现未保持官方在 StateMachine.insert_input 中处理文本及末尾标记行的语义，导致基础 source-read 测试失败、嵌套 include 测试却通过，属于修复逻辑及边界处理错误，且无 PASS_TO_PASS 回归。",
+      "agree_loose": true
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7590",
+      "blind_category": "F1",
+      "judge_category": "F1",
+      "agree": true,
+      "judge_secondary": [],
+      "blind_secondary": [],
+      "judge_passes": [
+        "F1",
+        "F1"
+      ],
+      "judge_rationale": "Agent 已正确定位并修改 sphinx/domains/cpp.py 的 DefinitionParser._parse_literal，但仅在数字字面量后粗略吞掉字母或下划线后缀。该实现未覆盖完整 UDL 解析、标识及相关 AST 行为，也未同步修改 c.py 和 cfamily.py；自测仅围绕 issue 示例，最终 test_expressions 仍失败，属于正确定位后的修复逻辑与覆盖范围不完整。",
+      "agree_loose": true
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7748",
+      "blind_category": "F1",
+      "judge_category": "F1",
+      "agree": true,
+      "judge_secondary": [],
+      "blind_secondary": [],
+      "judge_passes": [
+        "F1",
+        "F1"
+      ],
+      "judge_rationale": "Agent 已正确定位并修改 sphinx/ext/autodoc/__init__.py 中 DocstringSignatureMixin 的 _find_signature 和 format_signature，自制重载示例也能输出多条签名；但实现仅收集 docstring 开头连续匹配的签名，未覆盖 Gold 的逐行扫描、反斜杠续签及 get_doc 配套处理，导致 init/both 两个目标测试失败，属于定位正确后的算法与边界处理错误。",
+      "agree_loose": true
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8056",
+      "blind_category": "L1",
+      "judge_category": "L1",
+      "agree": true,
+      "judge_secondary": [],
+      "blind_secondary": [
+        "F3"
+      ],
+      "judge_passes": [
+        "L1",
+        "L1"
+      ],
+      "judge_rationale": "Agent 将修复落在下游通用的 sphinx/util/docfields.py，而非 Napoleon 的参数解析流程。虽在第32、34步读到 docstring.py 的 _parse_parameters_section 和 _format_docutils_params，仍未识别应在 _consume_fields 拆分逗号参数，最终 test_multiple_parameters 未通过，属于修复位置选择错误。",
+      "agree_loose": true
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8638",
+      "blind_category": "F3",
+      "judge_category": "L1",
+      "agree": false,
+      "judge_secondary": [
+        "F3"
+      ],
+      "blind_secondary": [
+        "L1"
+      ],
+      "judge_passes": [
+        "L1",
+        "L1"
+      ],
+      "judge_rationale": "虽然编辑了目标文件，但补丁仅修改 PythonDomain.find_obj 的对象查找优先级，未触及 PyObject.doc_field_types 中 variable 字段；正确修复是删除其 rolename='obj'。Agent 长期围绕 find_obj 和 CHANGES 探索，且未读取 354 行附近，属于定位到错误函数，而非正确位置上的修复逻辑错误。",
+      "agree_loose": true
+    }
+  ],
+  "loose_agree_count": 8,
+  "loose_wilson_ci95": {
+    "k": 8,
+    "n": 8,
+    "rate": 1.0,
+    "ci95_low": 0.675592,
+    "ci95_high": 1.0
+  },
+  "cohen_kappa": 0.7778
+}

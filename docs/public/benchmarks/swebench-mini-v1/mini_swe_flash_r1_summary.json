@@ -1,0 +1,371 @@
+{
+  "schema_version": "hyn.swebench.report.v1",
+  "harness_version": "swe-mini-v1",
+  "run_tag": "mini_swe_flash_r1",
+  "created_at": "2026-11-09T15:34:29.334506+00:00",
+  "is_partial_subset": false,
+  "report_status_label": "OFFICIAL FULL (n=50)",
+  "tier": "full",
+  "scope_instance_ids": [
+    "django__django-11790",
+    "django__django-11815",
+    "django__django-11848",
+    "django__django-11880",
+    "django__django-11885",
+    "django__django-11951",
+    "django__django-11964",
+    "django__django-11999",
+    "django__django-12039",
+    "django__django-12050",
+    "django__django-12143",
+    "django__django-12155",
+    "django__django-12193",
+    "django__django-12209",
+    "django__django-12262",
+    "django__django-12273",
+    "django__django-12276",
+    "django__django-12304",
+    "django__django-12308",
+    "django__django-12325",
+    "django__django-12406",
+    "django__django-12708",
+    "django__django-12713",
+    "django__django-12774",
+    "django__django-9296",
+    "sphinx-doc__sphinx-10323",
+    "sphinx-doc__sphinx-10435",
+    "sphinx-doc__sphinx-10466",
+    "sphinx-doc__sphinx-10673",
+    "sphinx-doc__sphinx-11510",
+    "sphinx-doc__sphinx-7590",
+    "sphinx-doc__sphinx-7748",
+    "sphinx-doc__sphinx-7757",
+    "sphinx-doc__sphinx-7985",
+    "sphinx-doc__sphinx-8035",
+    "sphinx-doc__sphinx-8056",
+    "sphinx-doc__sphinx-8265",
+    "sphinx-doc__sphinx-8269",
+    "sphinx-doc__sphinx-8475",
+    "sphinx-doc__sphinx-8548",
+    "sphinx-doc__sphinx-8551",
+    "sphinx-doc__sphinx-8638",
+    "sphinx-doc__sphinx-8721",
+    "sphinx-doc__sphinx-9229",
+    "sphinx-doc__sphinx-9230",
+    "sphinx-doc__sphinx-9281",
+    "sphinx-doc__sphinx-9320",
+    "sphinx-doc__sphinx-9367",
+    "sphinx-doc__sphinx-9461",
+    "sphinx-doc__sphinx-9698"
+  ],
+  "dataset": {
+    "dataset_name": "MariusHobbhahn/swe-bench-verified-mini",
+    "split": "test",
+    "count": 50,
+    "dataset_sha256": "cafe0f03f7f6db133e98ad259f3a1cd0c6a59dce6965ddcb6e220df8b376ba5d",
+    "instance_ids_sha256": "4fe0948cceaedfedc06075975e42540641cae4854a3d043507afd4b93d2f1970",
+    "repo_counts": {
+      "django/django": 25,
+      "sphinx-doc/sphinx": 25
+    },
+    "instance_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11885",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12308",
+      "django__django-12325",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9461",
+      "sphinx-doc__sphinx-9698"
+    ]
+  },
+  "primary_metric": {
+    "resolved_instances": 41,
+    "total_instances": 50,
+    "resolved_rate": 0.82,
+    "wilson_ci95": {
+      "k": 41,
+      "n": 50,
+      "rate": 0.82,
+      "ci95_low": 0.692039,
+      "ci95_high": 0.902298
+    },
+    "resolved_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11880",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12325",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9698"
+    ],
+    "by_repo": {
+      "django/django": {
+        "resolved": 22,
+        "total": 25,
+        "rate": 0.88,
+        "wilson_ci95": {
+          "k": 22,
+          "n": 25,
+          "rate": 0.88,
+          "ci95_low": 0.700442,
+          "ci95_high": 0.958332
+        }
+      },
+      "sphinx-doc/sphinx": {
+        "resolved": 19,
+        "total": 25,
+        "rate": 0.76,
+        "wilson_ci95": {
+          "k": 19,
+          "n": 25,
+          "rate": 0.76,
+          "ci95_low": 0.565703,
+          "ci95_high": 0.885037
+        }
+      }
+    },
+    "known_anomalous_ids": [
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8269"
+    ],
+    "known_anomalous_details": [
+      {
+        "instance_id": "sphinx-doc__sphinx-7985",
+        "resolved": true,
+        "reason": "上游测试 tests/test_build_linkcheck.py::test_defaults 并发访问公网 https://www.w3.org 与 https://www.google.com，偶发 TLS EOF (SSLZeroReturnError) 导致行数断言波动（FAIL_TO_PASS 核心项 test_anchors_ignored 稳定通过）。"
+      },
+      {
+        "instance_id": "sphinx-doc__sphinx-8269",
+        "resolved": true,
+        "reason": "上游回归项 tests/test_build_linkcheck.py::test_defaults 并发访问公网 https://www.google.com/image.png，偶发 TLS EOF 使预期 HTTP 404 变为 SSLError （单并发重跑可通过，FAIL_TO_PASS 目标项 test_raises_for_invalid_status 稳定通过）。"
+      }
+    ],
+    "adjusted_excluding_anomalous": {
+      "k": 39,
+      "n": 48,
+      "rate": 0.8125,
+      "ci95_low": 0.680601,
+      "ci95_high": 0.898086,
+      "wilson_ci95": {
+        "k": 39,
+        "n": 48,
+        "rate": 0.8125,
+        "ci95_low": 0.680601,
+        "ci95_high": 0.898086
+      }
+    }
+  },
+  "cost_and_cache": {
+    "requested_models": [],
+    "response_models": [],
+    "total_cost_cny": 0.0,
+    "total_offpeak_cost_cny": 0.0,
+    "total_peak_cost_cny": 0.0,
+    "avg_cost_per_instance_cny": 0.0,
+    "avg_offpeak_cost_per_instance_cny": 0.0,
+    "avg_peak_cost_per_instance_cny": 0.0,
+    "cost_per_resolved_cny": 0.0,
+    "offpeak_cost_per_resolved_cny": 0.0,
+    "peak_cost_per_resolved_cny": 0.0,
+    "total_prompt_tokens": 0,
+    "total_prompt_cache_hit_tokens": 0,
+    "total_prompt_cache_miss_tokens": 0,
+    "total_completion_tokens": 0,
+    "prompt_cache_hit_rate": 0.0,
+    "warm_step2_plus_prompt_tokens": 0,
+    "warm_step2_plus_cache_hit_tokens": 0,
+    "warm_step2_plus_cache_hit_rate": 0.0,
+    "billing_tier_call_counts": {},
+    "compaction_events_total": 0
+  },
+  "latency_and_steps": {
+    "wall_clock_s": {
+      "count": 0,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "max": 0.0,
+      "sum": 0.0
+    },
+    "steps": {
+      "count": 0,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "max": 0.0,
+      "sum": 0.0
+    },
+    "tool_calls": {
+      "count": 0,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "max": 0.0,
+      "sum": 0.0
+    },
+    "shell_calls": {
+      "count": 0,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "max": 0.0,
+      "sum": 0.0
+    }
+  },
+  "patch_health": {
+    "empty_patch_count": 2,
+    "empty_patch_rate": 0.04,
+    "patch_apply_failed_count": 0,
+    "patch_apply_failed_rate": 0.0,
+    "patch_apply_failed_ids": [],
+    "budget_cut_count": 0,
+    "budget_cut_rate": 0.0,
+    "timeout_count": 0,
+    "timeout_rate": 0.0,
+    "api_error_count": 0,
+    "api_error_rate": 0.0,
+    "container_error_count": 0,
+    "container_error_rate": 0.0,
+    "changed_files_per_nonempty_patch": {
+      "count": 48,
+      "mean": 1.2292,
+      "p50": 1.0,
+      "p90": 2.0,
+      "max": 4.0,
+      "sum": 59.0
+    },
+    "unsynced_container_change_instances": []
+  },
+  "localization_metrics": {
+    "gold_file_seen_count": 0,
+    "gold_file_seen_rate": 0.0,
+    "gold_file_read_count": 0,
+    "gold_file_read_rate": 0.0,
+    "gold_lines_visible_count": 0,
+    "gold_lines_visible_rate": 0.0,
+    "gold_file_edited_count": 48,
+    "gold_file_edited_rate": 0.96,
+    "gold_function_edited_count": 43,
+    "gold_function_edited_rate": 0.86,
+    "localized_but_unresolved_count": 7,
+    "localized_but_unresolved_rate": 0.14
+  },
+  "tier_comparison": {
+    "tiers": {
+      "canary": {
+        "resolved": 3,
+        "total": 3,
+        "rate": 1.0,
+        "wilson_ci95": {
+          "k": 3,
+          "n": 3,
+          "rate": 1.0,
+          "ci95_low": 0.438503,
+          "ci95_high": 1.0
+        }
+      },
+      "probe": {
+        "resolved": 14,
+        "total": 15,
+        "rate": 0.933333,
+        "wilson_ci95": {
+          "k": 14,
+          "n": 15,
+          "rate": 0.933333,
+          "ci95_low": 0.701835,
+          "ci95_high": 0.988133
+        }
+      },
+      "full": {
+        "resolved": 41,
+        "total": 50,
+        "rate": 0.82,
+        "wilson_ci95": {
+          "k": 41,
+          "n": 50,
+          "rate": 0.82,
+          "ci95_low": 0.692039,
+          "ci95_high": 0.902298
+        }
+      }
+    },
+    "probe_vs_full_rate_diff": -0.113333
+  }
+}

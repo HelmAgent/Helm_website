@@ -9,6 +9,7 @@
 **機密コードを外部に送信しない。数時間の自律開発と文書制作の舵を取る**
 
 [![Official Website](https://img.shields.io/badge/🌐_Official_Website-www.helm--ai.website-0ea5e9?style=for-the-badge)](https://www.helm-ai.website/)
+[![SWE-bench Verified Mini](https://img.shields.io/badge/🏆_SWE--bench_Verified_Mini-84.0%25_Pass%401_(81.0%25_Mean)-10b981?style=for-the-badge)](https://www.helm-ai.website/#benchmarks)
 [![Live Interactive Sandbox](https://img.shields.io/badge/🎮_1:1_Web_Workbench-Live_Demo-2563eb?style=for-the-badge)](https://www.helm-ai.website/demo)
 [![Windows Installer](https://img.shields.io/badge/📥_Download_Windows_x64-v0.1.0_Beta-10b981?style=for-the-badge)](https://www.helm-ai.website/download)
 [![VirusTotal 0/57 Clean](https://img.shields.io/badge/🛡️_VirusTotal-0%2F57_Clean-059669?style=for-the-badge)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1)
@@ -56,14 +57,16 @@ Get-FileHash .\Helm.Setup.1.0.0.exe -Algorithm SHA256
 1. **全本地离线与企业内网（LAN）原生分级架构（Zero Data Egress）**
    - 原生支持 `127.0.0.1:11434` 本机 Ollama 物理断网直连，以及企业内网 GPU 集群（`vLLM / SGLang / OneAPI`）与 `RAGFlow` 知识库共享。
    - Electron 主进程内置写盘前正则密钥脱敏钩子（自动将 `sk-*` / `Bearer` 擦除为 `***`）与 `50 msg/s` IPC 限流保护。
-2. **无侵入影子 Git 检查点与 P0–P3 长程自省引擎（Shadow Git & Long-Horizon Engine）**
+2. **无侵入影子 Git 检查点、确定性代码导航与 P0–P3 长程自省引擎（84.0% SWE-bench Verified Mini）**
+   - 随包内置 `ripgrep 15.2.0`（全库搜索提速 **42.1 倍**，P50 `119.3 ms`）、`tree-sitter` 多语言 AST 骨架（`code_outline` 理论节省 **95.41%** 阅读 Token）、`read_file` 100% 翻页对齐（0 漏行）与写后 `37 ms` 进程内语法门禁。
+   - 在 **SWE-bench Verified Mini (`n = 50`, Docker `--network none`)** 实测中，仅用 `DeepSeek-V4.1-Flash` 即斩获 **84.0% (42/50) 单轮峰值 Pass@1**（两轮独立均值 **81.0% ± 4.2%**，`django/django` 稳定 **88.0% ± 0.0%**，Gold 文件修改命中率 **98.0%**，100% 有效非空补丁），公开证据包见 `/benchmarks/swebench-mini-v1/manifest.json`。
    - 摒弃直接 `git commit` 污染用户分支的做法，采用临时 `GIT_INDEX_FILE` 与 `git commit-tree` 将快照写入私有命名空间 `refs/hyn/checkpoints/<session_id>`，用户 `git status` 与分支历史 100% 零污染。
    - 配合 `TurnHub` 单调递增 `seq` 环形缓冲断线回放与 `StuckDetector` L1/L2 防死循环强制自省，支撑数小时无人值守开发。
 3. **Git Worktree 物理隔离的主从多智能体常驻团队（Multi-Agent Resident Team）**
    - Lead 主代理可统筹最多 4 名常驻队友（Teammates），基于 `ContextVar` 将每名队友的文件读写与终端命令严格锁定在各自的 `.hyn_wt/mate-*` 独立工作树中，并在重构计划获批准前从底层物理剥离一切写盘工具。
 4. **WPS 级高保真文档工作台与会话级冻结双层记忆（Surgical Office & Frozen Memory）**
    - 右侧分栏原生渲染并编辑 `docx / xlsx / pptx / pdf / md / html`，支持鼠标框选任意幻灯片形状、Word 段落或表格区间触发 `SelectionAnchor` 手术刀级局部热替换（SSE 无闪烁热刷新）与 5 版本文件快照回退。
-   - 独创四层只增前缀架构（固定工具签名 + 会话级冻结 System 快照 + `<system-reminder>` 队尾注入 + 缓存感知延迟去重），经 `DeepSeek-V4-Flash` 双轨实测守护 **89.58% 热态 Prefix Cache 命中率（20 步长程峰值 93.21%，等效计费输入节省 57.27%）**，公开防篡改证据包见 `/benchmarks/precache-v1/manifest.json`。
+   - 独创四层只增前缀架构（固定工具签名 + 会话级冻结 System 快照 + `<system-reminder>` 队尾注入 + 缓存感知延迟去重），在 SWE-bench 1.15 亿+ Token 实战中达成 **97.74% Prefix Cache 命中率（每修复一个真实 Bug 仅 ¥0.27–¥0.29）**，双轨受控实测热态命中率 **89.58%（计费输入省 57.27%）**，公开防篡改证据包见 `/benchmarks/swebench-mini-v1/manifest.json` 与 `/benchmarks/precache-v1/manifest.json`。
 
 ---
 

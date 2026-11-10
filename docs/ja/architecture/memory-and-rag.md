@@ -147,3 +147,10 @@ cd hyn_agent_backend
 # 2. アーカイブ済み全12ファイルのサイズ・SHA-256・サニタイズ状態を単体テストで検証
 .\.venv\Scripts\python.exe -m pytest tests/precache/test_phase3_bench_and_audit.py -q
 ```
+
+### 4.4.5 SWE-bench Verified Mini（累計 1.15億+ Token 実戦規模）でのキャッシュヒット率：97.74%
+
+上記の `B1`–`B5` ベンチマークに加え、**SWE-bench Verified Mini（50課題 × 独立2回評価、累計 1.15億+ 入力トークン）** における長時間自律バグ修正でも、4層追記型プレフィックスは圧倒的なスケール効果を実証しました：
+- **Run 1 Clean (`hyn_flash_r1_clean`, `42 / 50 = 84.00%`)**：総入力 `61,671,694` トークンのうちキャッシュヒット `60,278,464` トークン、**総合 Prefix Cache ヒット率 `97.74%`**（Step 2+ ウォームヒット率 **`97.81%`**）を記録し、50課題全体のAPI費用はわずか **¥12.16（1課題解決あたり ¥0.289）**。
+- **Run 2 Full Gate (`hyn_flash_r2`, `39 / 50 = 78.00%`)**：総入力 `53,332,377` トークンのうちキャッシュヒット `52,061,888` トークン、**総合 Prefix Cache ヒット率 `97.62%`**（Step 2+ ウォームヒット率 **`97.71%`**）、50課題全体のAPI費用は **¥10.39（1課題解決あたり ¥0.267）**。
+- **公開証跡の検証**：[`/benchmarks/swebench-mini-v1/manifest.json`](/benchmarks/swebench-mini-v1/manifest.json) および [`/benchmarks/swebench-mini-v1/REPORT.md`](/benchmarks/swebench-mini-v1/REPORT.md) を参照してください。

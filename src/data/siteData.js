@@ -53,18 +53,18 @@ export function getArchitectureChapters(lang) {
       link: `${p}/architecture/long-running`,
       title: tt(
         lang,
-        '长程自治引擎 (P0–P3) 与无侵入影子 Git 检查点',
-        '長時間自律実行エンジン (P0–P3) とシャドウGitチェックポイント',
-        'Long-Horizon Engine (P0–P3) & Shadow Git Checkpoints'
+        '长程自治引擎 (P0–P3)、代码导航与影子 Git 检查点',
+        '長時間自律実行エンジン (P0–P3)・高速コード探索とシャドウGit',
+        'Long-Horizon Engine (P0–P3), Code Navigation & Shadow Git'
       ),
       subtitle: tt(
         lang,
-        'TurnHub 单调递增 seq 断线回放、stream_reset 重试清场、StuckDetector L2 防死循环自省，以及零分支污染的 refs/hyn/checkpoints/ 快照。',
-        'TurnHub 単調増加 seq 再接続、stream_reset 自動破棄・再試行、StuckDetector L2 ループ防止、作業ツリーを汚さない専用 Git Ref スナップショット。',
-        'TurnHub monotonic seq replay, stream_reset retry cleanup, StuckDetector L2 anti-loop recovery, and zero-pollution Shadow Git refs.'
+        'SWE-bench Verified Mini 实测最高 84.0% Pass@1（两轮均值 81.0%，98% 黄金文件定位）：集成 ripgrep 42x 极速检索、tree-sitter 符号大纲、TurnHub 断线回放、StuckDetector L2 自省与零污染影子 Git 快照。',
+        'SWE-bench Verified Mini 実測最高 84.0% Pass@1（2回平均 81.0%、黄金ファイル特定 98%）：ripgrep 42倍高速検索、tree-sitter 構造アウトライン、TurnHub 再接続、L2 ループ防止、非侵襲シャドウGitを統合。',
+        '84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% 2-run avg, 98% Gold File hit): unites 42x ripgrep search, tree-sitter code_outline, TurnHub seq replay, StuckDetector L2 recovery, and Shadow Git refs.'
       ),
-      modules: ['app/services/turn_hub.py', 'app/services/agent_loop.py', 'app/services/git_checkpoints.py'],
-      metric: 'Zero HEAD Pollution · L1/L2 Anti-Loop'
+      modules: ['app/services/turn_hub.py', 'app/services/tools/ripgrep.py', 'app/services/tools/outline.py', 'app/services/git_checkpoints.py'],
+      metric: '84.0% SWE-bench · 98% Gold Hit'
     },
     {
       id: 'multi-agent-team',
@@ -101,12 +101,12 @@ export function getArchitectureChapters(lang) {
       ),
       subtitle: tt(
         lang,
-        '四层只增前缀与缓存感知延迟去重：DeepSeek-V4-Flash 实测热态 Prefix Cache 命中率 89.58%（长程峰值 93.21%），等效计费输入节省 57.27%（附 SHA-256 证据包），配合异步水位线记忆与内网 RAGFlow。',
-        '4層追記型プレフィックスとキャッシュ認識圧縮により DeepSeek-V4-Flash 実測ウォームヒット率 89.58%（ピーク 93.21%）・課金入力 -57.27%（SHA-256 証跡同梱）を達成し、非同期メモリ抽出と社内 RAGFlow を統合。',
-        '4-layer append-only prefix & cache-aware compaction deliver 89.58% measured warm Prefix Cache hit rate (93.21% peak) and -57.27% billable input on DeepSeek-V4-Flash (SHA-256 signed bundle), with async memory & RAGFlow.'
+        '四层只增前缀与缓存感知裁剪：SWE-bench 50 题 1.2 亿 Token 实战 Prefix Cache 命中率高达 97.74%（单题修复仅 ¥0.27），多场景双轨基准热态命中率 89.58%（计费省 57.27%，附 SHA-256 证据包），配合异步双层记忆与内网 RAGFlow。',
+        '4層追記型プレフィックス＋キャッシュ認識圧縮：SWE-bench 50問（1.2億Token）実戦で 97.74% キャッシュヒット率（1問解決あたり ¥0.27）、双軌道ベンチでウォームヒット 89.58%（課金 -57.27%、SHA-256 証跡同梱）を達成。',
+        '4-layer append-only prefix & cache-aware compaction achieve 97.74% Prefix Cache hit rate across 120M+ SWE-bench tokens (¥0.27 / solved issue) and 89.58% warm hit (-57.27% billable) on controlled suites.'
       ),
       modules: ['app/services/agent_loop.py', 'app/services/context_compact.py', 'app/services/memory_queue.py'],
-      metric: '89.58% Warm Hit · -57.27% Billable'
+      metric: '97.74% SWE Cache · ¥0.27 / Fix'
     },
     {
       id: 'workbench',

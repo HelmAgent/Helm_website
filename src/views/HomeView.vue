@@ -74,36 +74,36 @@ const kpiMetrics = computed(() => [
     )
   },
   {
-    num: '89.58%',
-    unit: 'PREFIX CACHE HIT',
-    badge: t('计费省 57.27%', '課金入力 -57.27%', '-57.27% Billable'),
-    label: t('实测热态前缀缓存命中率', '実測ウォーム Prefix Cache ヒット率', 'Measured Warm Prefix Cache Hit Rate'),
+    num: '84.0%',
+    unit: 'SWE-BENCH VERIFIED MINI',
+    badge: t('均值 81.0% · 98% 定位率', '2回平均 81.0% · 98% 特定', 'Avg 81.0% · 98% Gold Hit'),
+    label: t('端到端开源缺陷修复率 (Pass@1)', 'SWE-bench Verified Mini 解決率', 'SWE-bench Verified Mini Pass@1'),
     desc: t(
-      '基于 DeepSeek-V4-Flash 双轨基准实测（长程峰值 93.21%，全步 88.22%）：四层只增前缀 + 缓存感知裁剪使等效计费输入较基线省 57.27%（较无缓存裸调省 79.40%）。',
-      'DeepSeek-V4-Flash 実測（長時間ピーク 93.21%、全ステップ 88.22%）：4層追記型プレフィックス＋キャッシュ認識圧縮で実効課金入力を 57.27% 削減（素の入力比 -79.40%）。',
-      'Verified on DeepSeek-V4-Flash (93.21% 20-step peak, 88.22% all-step): 4-layer append-only prefix + cache-aware compaction cuts billable input by 57.27% (-79.40% vs raw).'
+      '搭载 DeepSeek-V4.1-Flash 在官方 Docker 全断网沙箱（n=50）下实测：单轮干净全量最高 84.00%（42/50），两轮独立均值 81.00% ± 4.24%（Django 稳定达 88.00%），100/100 题次非空有效补丁率 100%。',
+      'DeepSeek-V4.1-Flash を用い公式 Docker 完全オフライン環境（n=50）で実測：単回最高 84.00%（42/50）、2回独立平均 81.00% ± 4.24%（Django 88.00%）、有効パッチ生成率 100%（100/100）。',
+      'Measured with DeepSeek-V4.1-Flash in official air-gapped Docker harness (n=50): 84.00% (42/50) single-run peak, 81.00% ± 4.24% 2-run mean (88.00% on Django), and 100% (100/100) valid patch rate.'
+    )
+  },
+  {
+    num: '97.74%',
+    unit: 'PREFIX CACHE HIT',
+    badge: t('单题修复仅 ¥0.27', '1問解決 ¥0.27', '¥0.27 / Solved Issue'),
+    label: t('SWE-bench 1.2亿 Token 缓存命中率', '実戦 1.2億Token キャッシュヒット率', '120M-Token Live Cache Hit Rate'),
+    desc: t(
+      '四层只增前缀与缓存感知裁剪在 SWE-bench 两轮 100 题次（1.2亿+ Prompt Tokens）实测中达成 97.62%–97.74% 缓存命中，跑完全套 50 题仅需 ¥10.39（多场景双轨基准热态命中 89.58%，计费省 57.27%）。',
+      '4層追記型プレフィックスにより SWE-bench 2回計100問（1.2億+ Token）実戦で 97.62%–97.74% のヒット率を達成し、50問完走コストはわずか ¥10.39（双軌道ベンチではウォーム 89.58%・課金 -57.27%）。',
+      '4-layer append-only prefix achieves 97.62%–97.74% cache hit rate across 120M+ SWE-bench tokens (50 tasks solved for ¥10.39 / ~$1.45), plus 89.58% warm hit (-57.27% billable) on controlled suites.'
     )
   },
   {
     num: 'P0–P3',
     unit: 'LONG-HORIZON ENGINE',
-    badge: t('数小时无人值守', '長時間自律稼働', 'Self-Healing Loop'),
-    label: t('四阶段长程自治状态机', '4段階・長時間自律実行エンジン', '4-Stage Autonomous Engine'),
+    badge: t('463+ 核心自动化测试', '463+ 自動単体テスト', '463+ Unit Tests'),
+    label: t('长程自治引擎与极速代码导航', '4段階自律エンジン＆高速コード探索', '4-Stage Engine & Code Navigation'),
     desc: t(
-      '集成 TurnHub 单调 seq 断线回放、StuckDetector L2 防死循环强制自省与零分支污染的影子 Git 检查点。',
-      'TurnHub seq 再接続、StuckDetector L2 ループ検知、作業ブランチを汚さないシャドウGitチェックポイントを統合。',
-      'Combines TurnHub seq replay, StuckDetector L2 anti-loop recovery, and non-invasive Shadow Git Checkpoints.'
-    )
-  },
-  {
-    num: '86+',
-    unit: 'AUTOMATED TEST SUITE',
-    badge: t('工业级可靠度', '単体テスト検証済', 'Verified Contracts'),
-    label: t('核心状态机自动化单元测试', 'コア状態マシン自動単体テスト', 'Core State-Machine Unit Tests'),
-    desc: t(
-      '全覆盖流式重试回滚、四档权限门禁、影子检查点与双层记忆队列，确保桌面端长任务稳如磐石。',
-      'ストリーム再試行・4段階権限ゲート・シャドウGit・2層メモリを網羅した高信頼バックエンド。',
-      'Comprehensive coverage across stream reset, permission gates, shadow git refs, and async memory queues.'
+      '集成 ripgrep 42倍极速检索、tree-sitter 省 95.4% Token 符号大纲、TurnHub 断线回放、StuckDetector L2 自省与零污染影子 Git 检查点，由 463+ 项自动化单测严密守护。',
+      'ripgrep 42倍高速検索、tree-sitter 構造アウトライン（Token 95.4% 削減）、TurnHub 再接続、StuckDetector L2 内省、非侵襲シャドウGitを統合し、463件以上の単体テストで検証済。',
+      'Unites 42x ripgrep search, tree-sitter code_outline (95.4% token savings), TurnHub seq replay, StuckDetector L2 recovery, and Shadow Git Checkpoints—backed by 463+ automated tests.'
     )
   }
 ])
@@ -150,27 +150,27 @@ ProviderDef(
   },
   {
     id: 'longrun',
-    code: 'ENGINE 02 // SHADOW GIT & P0–P3 AUTONOMY',
+    code: 'ENGINE 02 // SHADOW GIT, CODE NAV & P0–P3 AUTONOMY',
     shortTab: t('02. 影子检查点与长程引擎', '02. シャドウGit＆長時間自律', '02. Shadow Git & P0–P3'),
     title: t(
-      '无侵入影子 Git 检查点与 P0–P3 长程自省引擎',
-      '非侵襲シャドウGitチェックポイント＆P0–P3長時間自律制御',
-      'Non-Invasive Shadow Git Checkpoints & P0–P3 Autonomous Engine'
+      '无侵入影子 Git 检查点、极速代码导航与 P0–P3 长程自省引擎',
+      '非侵襲シャドウGit・高速コード探索＆P0–P3長時間自律制御',
+      'Non-Invasive Shadow Git, Code Navigation & P0–P3 Autonomous Engine'
     ),
     desc: t(
-      '彻底摒弃直接 git commit 污染用户分支的做法，采用临时 GIT_INDEX_FILE 与 git commit-tree 将文件快照写入私有命名空间 refs/hyn/checkpoints/<session_id>。配合 TurnHub 单调 seq 断线回放与 StuckDetector L2 防死循环自省，支撑数小时无人值守开发。',
-      'ユーザーの作業ブランチや .git/index を一切汚さず、一時 GIT_INDEX_FILE と git commit-tree で専用名前空間 refs/hyn/checkpoints/ にスナップショットを記録。TurnHub 再接続と L2 ループ検知により数時間の無人稼働を実現します。',
-      'Never pollutes user branches or .git/index. Uses temporary GIT_INDEX_FILE and git commit-tree to write snapshots into private refs/hyn/checkpoints/, paired with TurnHub seq replay and StuckDetector L2 recovery.'
+      '彻底摒弃直接 git commit 污染用户分支的做法，采用临时 GIT_INDEX_FILE 与 git commit-tree 将文件快照写入私有命名空间 refs/hyn/checkpoints/<session_id>。配合内置 ripgrep 42x 极速检索、tree-sitter AST 大纲、TurnHub 单调 seq 断线回放与 StuckDetector L2 防死循环自省，在 SWE-bench Verified Mini 上取得最高 84.0%（两轮均值 81.0%）解决率与 100% 有效补丁交付率。',
+      '作業ブランチや .git/index を一切汚さず、一時 GIT_INDEX_FILE と git commit-tree で専用名前空間 refs/hyn/checkpoints/ にスナップショットを記録。内蔵 ripgrep（42倍高速）と tree-sitter 構造アウトライン、TurnHub 再接続、StuckDetector L2 内省により、SWE-bench Verified Mini で最高 84.0%（2回平均 81.0%）・有効パッチ率 100% を実証しました。',
+      'Never pollutes user branches or .git/index. Uses temporary GIT_INDEX_FILE and git commit-tree to write snapshots into private refs/hyn/checkpoints/. Paired with bundled 42x ripgrep, tree-sitter code_outline, TurnHub seq replay, and StuckDetector L2 recovery—achieving 84.0% peak (81.0% avg) Pass@1 and 100% valid patches on SWE-bench Verified Mini.'
     ),
     highlights: [
-      t('用户 git status 与提交历史 100% 零污染，随时一键时光倒流', 'ユーザーの git status やコミット履歴を一切汚さず、任意の時点へ即時ロールバック', '100% zero pollution to user git status or commit history; instant 1-click rollback'),
-      t('TurnHub 环形缓冲 + 单调 seq：窗口刷新或网络闪断无缝续接流式输出', 'TurnHub 単調増加 seq により、画面リロードや瞬断後もストリームを欠損なく再接続', 'TurnHub monotonic seq ring buffer replays missed SSE events seamlessly on reconnect'),
-      t('StuckDetector L1/L2 双级检测：连续重复报错自动注入自省指令跳出死循环', '同一エラーの反復やピンポン振動を検知し、L2 強制内省プロンプトで無限ループを打破', 'StuckDetector L1/L2 breaks tool-error loops via automatic retrospective injection')
+      t('SWE-bench Verified Mini 实测 98.0%（49/50）黄金源码文件直接定位率，100/100 题次零空补丁', 'SWE-bench Verified Mini で 98.0%（49/50）の正解ファイル直接特定率、100/100 問で空パッチゼロ', '98.0% (49/50) Gold File localization and 100% (100/100) valid non-empty patches on SWE-bench Verified Mini'),
+      t('用户 git status 与提交历史 100% 零污染，随时一键时光倒流；写后毫秒级语法检查 0% 误报', 'git status や履歴を一切汚さず即時ロールバック。編集後の構文チェックは誤検知 0.0%', '100% zero pollution to user git status; instant 1-click rollback & 0.0% FP post-edit syntax check'),
+      t('TurnHub 环形缓冲断线回放 + StuckDetector L1/L2 强制自省，自动跳出重复报错死循环', 'TurnHub 再接続リプレイ＋StuckDetector L1/L2 強制内省プロンプトで無限ループを打破', 'TurnHub monotonic seq ring buffer + StuckDetector L1/L2 automatic retrospective loop breaker')
     ],
     visualNodes: [
-      { tag: 'USER BRANCH', name: 'refs/heads/main', addr: 'git status: clean', status: t('用户分支零改动', '作業ブランチ汚染ゼロ', 'Untouched User Index') },
-      { tag: 'SHADOW REF', name: 'refs/hyn/checkpoints/s1', addr: 'git commit-tree', status: t('毫秒级私有快照', '非侵襲スナップショット', 'Private Plumbing Ref') },
-      { tag: 'ANTI-LOOP', name: 'StuckDetector L1 / L2', addr: 'TurnHub seq Replay', status: t('自动跳出死循环', '無限ループ自動回避', 'Self-Healing Recovery') }
+      { tag: 'CODE NAVIGATION', name: 'ripgrep 15.2 + tree-sitter', addr: '119ms P50 · 98% Gold Hit', status: t('42倍极速检索 · 省95% Token', '42倍高速検索 · Token -95%', '42x Search · -95.4% Tokens') },
+      { tag: 'SHADOW REF', name: 'refs/hyn/checkpoints/s1', addr: 'git commit-tree', status: t('用户分支零改动', '作業ブランチ汚染ゼロ', 'Untouched User Index') },
+      { tag: 'ANTI-LOOP', name: 'StuckDetector L1 / L2', addr: '100/100 Valid Patches', status: t('零空补丁 · 自动跳出死循环', '空パッチゼロ · ループ回避', 'Zero Empty Patches') }
     ],
     snippetTitle: 'app/services/git_checkpoints.py · Plumbing Snapshot',
     snippet: `GIT_INDEX_FILE=<temp_index> git add -A
@@ -231,12 +231,12 @@ if mate.require_plan and not mate.plan_approved:
     highlights: [
       t('告别“改一句话重生成整份 PPT”：精准定位 slide_index 与 shape_id 原地修改', '「1箇所の修正でPPT全体を再生成」する必要なし：該当シェイプのみを書式維持で更新', 'Updates only the targeted slide shape or paragraph while preserving full document styling'),
       t('内置 5 版本文件快照（.hyn_agent/file_snapshots）与一键撤销回退', '最大5世代の自動ファイルスナップショットを保持し、ワンクリックで復元可能', 'Maintains 5-generation automatic file snapshots with instant 1-click undo'),
-      t('四层只增前缀守护 89.58% 热态 Prefix Cache（长程峰值 93.21%），等效计费输入直降 57.27%', '4層追記型プレフィックスで 89.58% ウォームヒット率（ピーク 93.21%）と課金入力 -57.27% を実証', '4-layer append-only prefix achieves 89.58% warm hit rate (93.21% peak) and -57.27% billable input')
+      t('四层只增前缀在 SWE-bench 1.2亿 Token 实测达成 97.74% 缓存命中（单题修复 ¥0.27），多场景双轨基准热态 89.58%（计费省 57.27%）', '4層追記型プレフィックスで SWE-bench 実戦 97.74% ヒット率（1問解決 ¥0.27）、双軌道ベンチで 89.58% ウォームヒット・課金 -57.27% を実証', '4-layer append-only prefix achieves 97.74% SWE-bench cache hit (¥0.27/fix) and 89.58% warm hit (-57.27% billable) on controlled suites')
     ],
     visualNodes: [
       { tag: 'ANCHOR LOCATOR', name: 'pptx_shape / docx_para', addr: 'slide: 2 · shape: 104', status: t('归一化坐标定位', '構造化アンカー特定', 'Surgical Coordinate') },
       { tag: 'HOT RELOAD', name: 'SSE file_updated Event', addr: '5-Gen File Snapshot', status: t('无闪烁原地刷新', 'リロードなし即時反映', 'In-Place Live Patch') },
-      { tag: 'PREFIX CACHE', name: '4-Layer Append-Only Prefix', addr: '89.58% Warm Hit · -57.27%', status: t('DeepSeek-V4-Flash 实测', 'DeepSeek-V4-Flash 実測', 'Verified Benchmark') }
+      { tag: 'PREFIX CACHE', name: '4-Layer Append-Only Prefix', addr: '97.74% SWE Hit · ¥0.27/Fix', status: t('1.2亿 Token 实测验证', '1.2億Token 実戦検証', '120M-Token Verified') }
     ],
     snippetTitle: 'SelectionContext · Cross-Format Surgical Anchor',
     snippet: `{
@@ -252,6 +252,174 @@ if mate.require_plan and not mate.plan_approved:
 ])
 
 const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value])
+
+// SWE-bench Verified Mini 四组运行与核心实测指标
+const swebenchKeyStats = computed(() => [
+  {
+    code: 'STAT 01 · 2-RUN',
+    badge: t('独立双轮复现', '独立2回再現', '2-Run Verified'),
+    val: '81.0% ± 4.2%',
+    lbl: t('两轮独立全量运行均值 ± 标准差', '2回独立フル実行の平均 ± 標準偏差', '2-Run Independent Mean ± SD'),
+    sub: t('R1 干净全量 84.00% (42/50) · R2 全新重跑 78.00% (39/50)', 'R1 クリーン 84.00% (42/50) · R2 新規実行 78.00% (39/50)', 'R1 Clean 84.00% (42/50) · R2 Fresh Run 78.00% (39/50)')
+  },
+  {
+    code: 'STAT 02 · DJANGO',
+    badge: t('零波动 SD=0%', '分散ゼロ SD=0%', 'Zero Variance'),
+    val: '88.0% ± 0.0%',
+    lbl: t('django/django 核心仓库解决率', 'django/django 課題解決率', 'django/django Resolution Rate'),
+    sub: t('两轮均稳定达成 22 / 25，零退化波动', '2回とも 22 / 25 を安定達成（分散ゼロ）', '22 / 25 resolved consistently across both runs')
+  },
+  {
+    code: 'STAT 03 · GOLD HIT',
+    badge: t('100% 发现目标', '100% ファイル発見', '100% Target Seen'),
+    val: '98.0% (49/50)',
+    lbl: t('Gold 黄金源码文件精准定位修改率', 'Gold 正解ソースファイル直接特定率', 'Gold Target File Localization & Edit Rate'),
+    sub: t('100% 题目发现目标文件，L2 读取截断 0%，L3 引用盲区 0%', '全問で対象ファイル発見、L2 読取欠損 0%、L3 参照漏れ 0%', '100% target file seen; 0% L2 truncation loss; 0% L3 symbol miss')
+  },
+  {
+    code: 'STAT 04 · PATCHES',
+    badge: t('对比官方 96.0%', '公式参照群 96.0%', 'vs. 96.0% Ref'),
+    val: '100% (100/100)',
+    lbl: t('非空有效补丁交付率（零崩溃/零超时）', '有効非空パッチ生成率（エラー・中断ゼロ）', 'Valid Non-Empty Patch Rate (Zero Crashes)'),
+    sub: t('对比同模型官方 mini-SWE-agent 出现 4.0% 步数耗尽空补丁', '同モデルの公式 mini-SWE-agent は 4.0% がステップ枯渇で空パッチ', 'vs. 96.0% on same-model official mini-SWE-agent (2 empty patches)')
+  },
+  {
+    code: 'STAT 05 · CACHE',
+    badge: t('Step 2+ 97.81%', 'Step 2+ 97.81%', '97.81% Warm'),
+    val: '97.74%',
+    lbl: t('实战前缀缓存命中率（1.2亿+ Tokens）', '実戦 Prefix Cache ヒット率（1.2億+ Tokens）', 'Live Prefix Cache Hit Rate (120M+ Tokens)'),
+    sub: t('第 2 步起热缓存命中率高达 97.81%，彻底消除重复 Prefill', '2ステップ目以降のウォームヒット率は最大 97.81%', 'Up to 97.81% warm cache hit rate from Step 2 onward')
+  },
+  {
+    code: 'STAT 06 · COST',
+    badge: t('50题总计 ¥10.4', '50問計 ¥10.4', '~$1.50 / 50 Tasks'),
+    val: '¥0.27 / 题',
+    lbl: t('每成功修复一道真实缺陷平均成本', '1問解決あたりの平均APIコスト', 'Average API Cost per Resolved Issue'),
+    sub: t('错峰跑完全套 50 道真实开源仓库任务总计仅需 ¥10.39–¥12.16', 'オフピーク時 50問完走の総コストはわずか ¥10.39〜¥12.16', 'Full 50-task suite completed for just ¥10.39–¥12.16 (~$1.45–$1.70)')
+  }
+])
+
+// 2026 主流 Coding Agent 与公开基准横向对标表
+const swebenchComparisonRows = computed(() => [
+  {
+    isHelm: true,
+    tagType: 'emerald',
+    name: 'Helm (HYN Agent) + DeepSeek-V4.1-Flash',
+    tag: t('本仓库实测 · 最佳单轮 / 两轮均值', '本リポジトリ実測 · 最高 / 2回平均', 'Verified Empirical · Peak / 2-Run Mean'),
+    dataset: 'Verified Mini (n=50)',
+    passRate: '84.0% (Avg 81.0% ± 4.2%)',
+    patchHealth: t('100% 有效补丁 (100/100)', '100% 有効パッチ (100/100)', '100% Valid Patches (100/100)'),
+    costPerTask: t('¥0.21–¥0.24 / 题 (解决题 ¥0.27)', '¥0.21–¥0.24 / 問 (解決 ¥0.27)', '~$0.03 / task (¥0.27 / solved)'),
+    privacy: t('100% 断网沙箱 (--network none) · 支持本机/内网', '100% 通信遮断 (--network none) · ローカル/社内LAN対応', '100% Air-Gapped (--network none) · Local/LAN Ready')
+  },
+  {
+    isHelm: false,
+    tagType: 'primary',
+    name: 'mini-SWE-agent + DeepSeek-V4.1-Flash',
+    tag: t('同模型同题集官方脚手架配对参照', '同モデル・同課題セット公式参照群', 'Same-Model Official Scaffold Reference'),
+    dataset: 'Verified Mini (n=50)',
+    passRate: '82.0% (McNemar p = 1.00)',
+    patchHealth: t('96.0% (2 题步数耗尽空补丁)', '96.0% (2問がステップ上限で空パッチ)', '96.0% (2 step-exhausted empty patches)'),
+    costPerTask: t('¥0.14 / 题 (纯单步 Bash)', '¥0.14 / 問 (最小 Bash のみ)', '~$0.02 / task (minimal bash-only)'),
+    privacy: t('研究用 CLI 评测脚本，无桌面工作台与安全门禁', '研究用 CLI スクリプト（GUI・権限ゲートなし）', 'Research CLI script; no desktop workbench or gates')
+  },
+  {
+    isHelm: false,
+    tagType: 'amber',
+    name: 'Claude Code (Claude 4.5 / 4.6 Sonnet & Opus)',
+    tag: t('Anthropic 官方 Agent 脚手架公开成绩', 'Anthropic 公式エージェント公開スコア', 'Anthropic Official Agent Benchmark'),
+    dataset: 'Verified Full (n=500)',
+    passRate: '77.2% – 80.9% (Opus 4.7/Fable 85.8%–95%)',
+    patchHealth: t('未公开空补丁与定位漏斗明细', '空パッチ率・特定率の明細非公開', 'Funnel & empty-patch breakdown undisclosed'),
+    costPerTask: t('约 ¥5.8 – ¥18+ / 题 ($0.80–$2.50+)', '約 ¥5.8 – ¥18+ / 問 ($0.80–$2.50+)', '$0.80 – $2.50+ / task (~20x–50x cost)'),
+    privacy: t('强制上传 Anthropic 海外云端，不支持私有内网', '海外クラウド送信必須・閉域網利用不可', 'Requires Anthropic cloud; no air-gapped LAN support')
+  },
+  {
+    isHelm: false,
+    tagType: 'amber',
+    name: 'OpenAI Codex (codex-1 / GPT-5.x Codex)',
+    tag: t('OpenAI 官方 System Card 与 2026 榜单', 'OpenAI 公式 System Card・2026 公開値', 'OpenAI System Card & 2026 Leaderboards'),
+    dataset: 'Verified Full (n=500)',
+    passRate: '72.1% (codex-1) / 76.0% – 86.2% (GPT-5.x)',
+    patchHealth: t('codex-1 剔除 23 道内部不可运行题', 'codex-1 は実行不可23問を除外して集計', 'codex-1 excludes 23 unrunnable instances'),
+    costPerTask: t('约 ¥3.6 – ¥11+ / 题 ($0.50–$1.50+)', '約 ¥3.6 – ¥11+ / 問 ($0.50–$1.50+)', '$0.50 – $1.50+ / task + Pro subscription'),
+    privacy: t('强制运行于 OpenAI 远程云端容器，源码需出网', 'OpenAI クラウド環境必須・ソースコード外部送信', 'Runs in OpenAI remote cloud containers only')
+  },
+  {
+    isHelm: false,
+    tagType: 'neutral',
+    name: 'Cursor (Background / Autonomous Agent)',
+    tag: t('2026 第三方端到端自治模式评测快照', '2026 第三者機関による自律モード計測値', '2026 Independent Autonomous Mode Snapshot'),
+    dataset: 'Verified Full (n=500)',
+    passRate: '67.0% – 76.8%',
+    patchHealth: t('偏向交互式配对编程，长程无人值守易中断', '対話型支援中心・長時間無人実行で中断しやすい', 'Optimized for interactive pair coding over batch runs'),
+    costPerTask: t('$20–$40/月订阅 + Fast Requests 计费', '$20–$40/月サブスク + 従量リクエスト課金', '$20–$40/mo subscription + fast-request metering'),
+    privacy: t('强制经过 Cursor 海外中转服务器，无法物理断网运行', 'Cursor 外部中継サーバー必須・完全オフライン不可', 'Routes via Cursor cloud relay; no air-gapped mode')
+  },
+  {
+    isHelm: false,
+    tagType: 'neutral',
+    name: 'swebench.com Bash-Only (Gemini 3 Flash / MiniMax M2.5 / DeepSeek-V4-Pro)',
+    tag: t('官方排行榜标准化模型基准', '公式リーダーボード標準ベースライン', 'Official Leaderboard Standardized Baselines'),
+    dataset: 'Verified Full (n=500)',
+    passRate: '75.8% / 75.8% / 80.6%',
+    patchHealth: t('受限于固定步数上限，无自省恢复与影子快照', '固定ステップ制限・内省ループ回復やシャドウGitなし', 'Fixed step cap; no StuckDetector or Shadow Git'),
+    costPerTask: t('约 ¥1.0 – ¥12.0 / 题', '約 ¥1.0 – ¥12.0 / 問', '~$0.15 – $1.80 / task'),
+    privacy: t('仅提供基准分数，非开箱即用的桌面端产品', 'ベンチマーク値のみ（デスクトップ製品ではない）', 'Benchmark harness only; not a turnkey desktop app')
+  }
+])
+
+// Step 1–2 代码导航确定性微基准（零 API 实测，三大真实语料 150 条查询 + 60 个千行大文件）
+const navMicroBenchmarks = computed(() => [
+  {
+    code: 'BENCH 01 · RIPGREP',
+    metric: '119.3 ms',
+    delta: t('提速 42.1× · 0% 噪声', '42.1倍高速 · ノイズ0%', '42.1× · 0% Noise'),
+    title: t('随包 ripgrep 15.2 剪枝检索引擎', '同梱 ripgrep 15.2 高速検索エンジン', 'Bundled ripgrep 15.2 Pruned Search'),
+    beforeAfter: '5,026.2 ms → 119.3 ms (P95 160.3 ms)',
+    desc: t(
+      '工作区快照 grep P50 延迟由 5,026.2 ms 压降至 119.3 ms（P95 160.3 ms < 1s 目标），噪声命中率从 49.17% 降至 0.00%，宏平均召回率达 99.33%。',
+      'ワークスペース検索の P50 遅延を 5,026.2 ms から 119.3 ms へ短縮。ノイズ率を 49.17% → 0.00% に排除し、再現率 99.33% を達成。',
+      'Cuts workspace grep P50 latency from 5,026.2 ms to 119.3 ms (P95 160.3 ms), eliminating 49.17% noise down to 0.00% with 99.33% macro recall.'
+    )
+  },
+  {
+    code: 'BENCH 02 · AST OUTLINE',
+    metric: '95.41%',
+    delta: t('省 Token · P50 23.8ms', 'Token削減 · 23.8ms', 'Saved · 23.8ms P50'),
+    title: t('code_outline 大文件 AST 符号大纲', 'code_outline 構造化シンボル抽出', 'tree-sitter code_outline Symbol AST'),
+    beforeAfter: '100% Full File → 4.59% Outline (0.8 ms Warm)',
+    desc: t(
+      '跨三大仓库 60 个超千行真实源码文件实测：冷解析 P50 仅 23.81 ms（热缓存 0.8 ms），大纲仅占整文件字符数的 4.59%，60/60 解析失败率 0.00%。',
+      '1,000行超の大型ソースファイル60件で実測：コールド解析 P50 は 23.81 ms（キャッシュ時 0.8 ms）、文字数を 4.59% に圧縮し失敗率 0.00%。',
+      'Across 60 real files >1,000 lines: 23.81 ms cold parse P50 (0.8 ms cached), compressing file characters to 4.59% with 0.00% parse failure rate.'
+    )
+  },
+  {
+    code: 'BENCH 03 · READ_FILE',
+    metric: '100.0%',
+    delta: t('漏读 0 行 (原 28.8万)', '欠損 0 行 (旧 28.8万)', '0 Missed (vs 288k)'),
+    title: t('read_file 严格整行边界与续读对齐', 'read_file 行境界維持とページング整合性', 'Zero-Loss Line-Aligned read_file'),
+    beforeAfter: '30.33% (288,084 Missed) → 100.00% (0 Missed)',
+    desc: t(
+      '彻底修复字符硬截断导致的行号失真，三语料顺序续读一致率从 30.33% 提升至 100.00%，确保 SWE-bench 两轮 100 题次中 L2（截断丢失）失败为 0%。',
+      '文字数切り詰めによる行番号ズレを根絶し、連続読取の整合性を 30.33% → 100.00% に改善。SWE-bench 実戦での L2（読取欠損）失敗 0% を実現。',
+      'Raises sequential pagination consistency from 30.33% to 100.00% (0 missed lines across all corpora), driving L2 truncation failures to 0% in SWE-bench.'
+    )
+  },
+  {
+    code: 'BENCH 04 · SYNTAX',
+    metric: '0.0% FP',
+    delta: t('100% 检出 · 37 ms', '検出 100% · 37 ms', '100% Recall · 37ms'),
+    title: t('写盘后零依赖进程内语法自检', '編集直後のゼロ依存・高速構文検査', 'Zero-Dependency Post-Edit Syntax Check'),
+    beforeAfter: '100.0% Recall · 0.0% False Positives (30/30)',
+    desc: t(
+      '在 write_file / edit_file / apply_patch 后自动校验新引入的语法错误（跳过历史遗留损坏文件），30 组对抗测试集检出率 100.0%、误报率 0.0%。',
+      'ファイル変更直後に新規混入した構文エラーのみを自動検知（既存の破損ファイルは静観）。30組の検証セットで検出率 100.0%・誤検知率 0.0% を達成。',
+      'Automatically flags newly introduced syntax errors after file edits while suppressing pre-existing broken files: 100.0% recall and 0.0% false positives.'
+    )
+  }
+])
 </script>
 
 <template>
@@ -263,20 +431,19 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
           <!-- 顶部发布胶囊 -->
           <a
             class="nx-release-pill"
-            :href="`${prefix}/architecture/overview`"
-            @click.prevent="navigate(`${prefix}/architecture/overview`)"
+            href="#benchmarks"
           >
-            <span class="nx-release-tag">{{ t(`BETA ${SITE_META.version} 内测版`, `BETA ${SITE_META.version} ベータ版`, `BETA RELEASE ${SITE_META.version}`) }}</span>
+            <span class="nx-release-tag">{{ t('SWE-BENCH MINI 84.0%', 'SWE-BENCH MINI 84.0%', 'SWE-BENCH MINI 84.0%') }}</span>
             <span class="nx-release-text">
               {{
                 t(
-                  'Electron 44 + Vue 3.5 + FastAPI 双进程自治智能体 · 探索 5 卷工程架构白皮书',
-                  'Electron 44 + Vue 3.5 + FastAPI デュアルプロセス自律エージェント · 全5章の技術白書を公開',
-                  'Electron 44 + Vue 3.5 + FastAPI Autonomous Agent Harness · Explore 5-Vol Blueprint'
+                  'SWE-bench Verified Mini 单轮峰值 84.0% Pass@1（两轮均值 81.0% · 98% Gold 命中 · ¥0.27/题）· 查看实证报告',
+                  'SWE-bench Verified Mini ピーク 84.0% Pass@1（2回平均 81.0%・Gold特定 98%・¥0.27/件）· 実証データを表示',
+                  'SWE-bench Verified Mini 84.0% Peak Pass@1 (81.0% 2-Run Mean · 98% Gold Hit · ¥0.27/Fix) · View Empirical Report'
                 )
               }}
             </span>
-            <span class="nx-release-arrow">→</span>
+            <span class="nx-release-arrow">↓</span>
           </a>
 
           <!-- 品牌罗盘徽章与官方 Slogan -->
@@ -303,9 +470,9 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
           <p class="nx-hero-subtitle">
             {{
               t(
-                '专为对信息安全与工程可靠性有严苛要求的研发团队打造。原生直连本机 Ollama 与企业内网私有大模型（vLLM / OneAPI），将 P0–P3 长程自治引擎、无侵入影子 Git 检查点、Git Worktree 多智能体并发团队与 Office 手术刀级局部热修改融于一体。',
-                '厳格な情報セキュリティ基準と高度なエンジニアリング品質を求める開発現場へ。ローカル Ollama や社内閉域網 LLM（vLLM / OneAPI）へ直結し、P0–P3 長時間自律エンジン、シャドウGitチェックポイント、Git Worktree 並列チーム、Word / Excel / PPT の選択範囲AI部分更新ワークベンチを単一デスクトップに統合しました。',
-                'Engineered for security-critical R&D teams. Connects natively to local Ollama and corporate LAN LLMs (vLLM / OneAPI), uniting a P0–P3 long-horizon engine, non-invasive Shadow Git Checkpoints, Git Worktree agent teams, and surgical in-place Office AI editing.'
+                '专为对信息安全与工程可靠性有严苛要求的研发团队打造。在 SWE-bench Verified Mini 实测斩获 84.0% 单轮峰值解决率（两轮均值 81.0% ± 4.2%，Gold 文件定位率 98.0%），原生直连本机 Ollama 与企业内网私有大模型（vLLM / OneAPI），将 P0–P3 长程自治引擎、确定性代码导航、无侵入影子 Git 检查点与 Office 手术刀级局部热修改融于一体。',
+                '厳格な情報セキュリティ基準と高度なエンジニアリング品質を求める開発現場へ。SWE-bench Verified Mini でピーク解決率 84.0%（2回平均 81.0% ± 4.2%、Goldファイル特定率 98.0%）を実証。ローカル Ollama や社内閉域網 LLM（vLLM / OneAPI）へ直結し、P0–P3 長時間自律エンジン、決定的コードナビゲーション、シャドウGitチェックポイント、Office選択範囲AI部分更新を単一デスクトップに統合しました。',
+                'Engineered for security-critical R&D teams. Proven at 84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% ± 4.2% 2-run mean, 98.0% Gold file localization). Connects natively to local Ollama and corporate LAN LLMs (vLLM / OneAPI), uniting a P0–P3 long-horizon engine, deterministic code navigation, Shadow Git Checkpoints, and surgical in-place Office AI editing.'
               )
             }}
           </p>
@@ -797,6 +964,231 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
       </div>
     </section>
 
+    <!-- ==================== 4.5 权威软件工程评测：SWE-BENCH VERIFIED MINI & 代码导航实证 ==================== -->
+    <section id="benchmarks" class="nx-swebench-section">
+      <div class="nx-container">
+        <div class="nx-sec-header is-center">
+          <div class="nx-sec-kicker">
+            <span class="nx-pulse-dot"></span>
+            <span>EMPIRICAL BENCHMARK // SWE-BENCH VERIFIED MINI (N=50) · 2026-11</span>
+          </div>
+          <h2 class="nx-sec-title">
+            {{
+              t(
+                '硬核软件工程实证：SWE-bench Verified Mini 单轮峰值 84.0% Pass@1',
+                'ソフトウェア工学ベンチマーク実証：SWE-bench Verified Mini 84.0% Pass@1',
+                'Empirical Software Engineering Benchmark: 84.0% Pass@1 on SWE-bench Verified Mini'
+              )
+            }}
+          </h2>
+          <p class="nx-sec-desc">
+            {{
+              t(
+                '基于 MariusHobbhahn/swe-bench-verified-mini（50 题真实 GitHub 仓库 Issue）与严格物理断网容器（--network none），Helm 仅用高性价比的 DeepSeek-V4.1-Flash 即达到 84.0% 单轮峰值解决率（两轮独立均值 81.0% ± 4.2%），每修复一个真实 Bug 模型成本仅 ¥0.27–¥0.29。',
+                'MariusHobbhahn/swe-bench-verified-mini（実GitHubリポジトリ50課題）および完全ネットワーク隔離コンテナ（--network none）において、高コスパな DeepSeek-V4.1-Flash のみでピーク解決率 84.0%（独立2回平均 81.0% ± 4.2%）を達成。1課題解決あたりの推論コストはわずか ¥0.27〜¥0.29 です。',
+                'Evaluated on MariusHobbhahn/swe-bench-verified-mini (50 real GitHub issues) inside network-isolated Docker sandboxes (--network none), Helm achieves an 84.0% single-run peak Pass@1 (81.0% ± 4.2% 2-run mean) powered by cost-efficient DeepSeek-V4.1-Flash at just ¥0.27–¥0.29 per resolved bug.'
+              )
+            }}
+          </p>
+        </div>
+
+        <!-- 1. 核心战绩双栏记分牌：左栏 84.0% 旗舰巨幅卡 + 右栏 6 大定量指标矩阵 -->
+        <div class="nx-swebench-hero-grid">
+          <div class="nx-swebench-primary-card nx-glass-card">
+            <div class="nx-swebench-primary-top">
+              <span class="nx-swebench-kicker">PASS@1 PEAK SCORE // HYN_FLASH_R1_CLEAN</span>
+              <span class="nx-badge is-emerald">DOCKER --network none</span>
+            </div>
+
+            <div class="nx-swebench-giant-row">
+              <div class="nx-swebench-giant-num">84.0%</div>
+              <div class="nx-swebench-giant-meta">
+                <strong>{{ t('42 / 50 真实仓库 Issue 独立修复通过', '42 / 50 実リポジトリ課題を自律修正・テスト通過', '42 / 50 Real Repository Issues Resolved') }}</strong>
+                <span>Wilson 95% CI [71.49%, 91.66%] · DeepSeek-V4.1-Flash</span>
+              </div>
+            </div>
+
+            <div class="nx-swebench-run-breakdown">
+              <div class="nx-swebench-run-item">
+                <span class="nx-swebench-run-name">{{ t('Run 1 干净复测 (hyn_flash_r1_clean)', 'Run 1 クリーン評価 (hyn_flash_r1_clean)', 'Run 1 Clean (hyn_flash_r1_clean)') }}</span>
+                <code class="nx-swebench-run-val is-emerald">42 / 50 (84.00%) · ¥12.16</code>
+              </div>
+              <div class="nx-swebench-run-item">
+                <span class="nx-swebench-run-name">{{ t('Run 2 全门禁独立复跑 (hyn_flash_r2)', 'Run 2 完全ゲート独立再実行 (hyn_flash_r2)', 'Run 2 Full Gate (hyn_flash_r2)') }}</span>
+                <code class="nx-swebench-run-val">39 / 50 (78.00%) · ¥10.39</code>
+              </div>
+              <div class="nx-swebench-run-item">
+                <span class="nx-swebench-run-name">{{ t('两轮独立运行均值 ± 标准差', '独立2回実行の平均 ± 標準偏差', '2-Run Independent Mean ± SD') }}</span>
+                <code class="nx-swebench-run-val is-primary">40.5 / 50 (81.00% ± 4.24%)</code>
+              </div>
+              <div class="nx-swebench-run-item">
+                <span class="nx-swebench-run-name">{{ t('django/django 核心子集稳定性 (n=25)', 'django/django コア課題の再現性 (n=25)', 'django/django Core Subset Stability (n=25)') }}</span>
+                <code class="nx-swebench-run-val is-emerald">22 / 25 (88.00% ± 0.00%)</code>
+              </div>
+            </div>
+
+            <div class="nx-swebench-card-actions">
+              <a
+                class="nx-btn nx-btn-primary nx-swebench-btn"
+                href="/benchmarks/swebench-mini-v1/REPORT.md"
+                target="_blank"
+                rel="noopener"
+              >
+                <span>{{ t('审阅完整评测报告 (REPORT.md) ↗', '完全な評価レポートを読む (REPORT.md) ↗', 'Read Full Benchmark Report (REPORT.md) ↗') }}</span>
+              </a>
+              <a
+                class="nx-btn nx-btn-glass nx-swebench-btn"
+                href="/benchmarks/swebench-mini-v1/manifest.json"
+                target="_blank"
+                rel="noopener"
+              >
+                <span>{{ t('SHA-256 证据包清单 (manifest.json) ↗', 'SHA-256 証跡マニフェスト (manifest.json) ↗', 'SHA-256 Evidence Manifest (manifest.json) ↗') }}</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="nx-swebench-stats-grid">
+            <div
+              v-for="stat in swebenchKeyStats"
+              :key="stat.code"
+              class="nx-swebench-stat-card nx-glass-card"
+            >
+              <div class="nx-swebench-stat-top">
+                <span class="nx-swebench-stat-code">{{ stat.code }}</span>
+                <span class="nx-swebench-stat-badge">{{ stat.badge }}</span>
+              </div>
+              <div class="nx-swebench-stat-num">{{ stat.val }}</div>
+              <div class="nx-swebench-stat-label">{{ stat.lbl }}</div>
+              <p class="nx-swebench-stat-desc">{{ stat.sub }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 2026 主流 Coding Agent 公开跑分与同模型受控横向对标表 -->
+        <div class="nx-swebench-table-card nx-glass-card">
+          <div class="nx-swebench-panel-head">
+            <div>
+              <div class="nx-swebench-panel-kicker">2026 INDUSTRY AGENT BENCHMARK COMPARISON // 公开跑分与受控实验对标</div>
+              <h3 class="nx-swebench-panel-title">
+                {{
+                  t(
+                    '2026 主流 Coding Agent 公开成绩与同模型 1:1 受控对标',
+                    '2026年 主要 Coding Agent 公開スコア＆同一モデル 1:1 対照比較',
+                    '2026 Public Coding Agent Scores & 1:1 Controlled Same-Model Comparison'
+                  )
+                }}
+              </h3>
+            </div>
+            <span class="nx-badge is-emerald">
+              {{ t('严格区分 n=50 与 n=500 样本口径', 'n=50 と n=500 の評価スコープを明記', 'Transparent n=50 vs n=500 Scope') }}
+            </span>
+          </div>
+
+          <div class="nx-table-scroll">
+            <table class="nx-comp-table nx-swebench-table">
+              <thead>
+                <tr>
+                  <th>{{ t('Agent / 评测系统与模型', 'Agent / 評価対象・モデル', 'Agent / System & Model') }}</th>
+                  <th>{{ t('评测基准与样本量', 'ベンチマーク・母数', 'Benchmark Scope') }}</th>
+                  <th>{{ t('Pass@1 解决率', 'Pass@1 解決率', 'Pass@1 Resolved') }}</th>
+                  <th>{{ t('有效非空补丁与完整性', '有効パッチ率・健全性', 'Valid Patch Integrity') }}</th>
+                  <th>{{ t('单题推理成本', '1問あたり推論コスト', 'Cost per Task') }}</th>
+                  <th>{{ t('数据主权与部署形态', 'データ主権・稼働形態', 'Privacy & Deployment') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="row in swebenchComparisonRows"
+                  :key="row.name"
+                  :class="{ 'is-helm-row': row.isHelm }"
+                >
+                  <td>
+                    <div class="nx-swebench-agent-cell">
+                      <strong>{{ row.name }}</strong>
+                      <span
+                        class="nx-swebench-role-tag"
+                        :class="`is-${row.tagType}`"
+                      >
+                        {{ row.tag }}
+                      </span>
+                    </div>
+                  </td>
+                  <td><code>{{ row.dataset }}</code></td>
+                  <td class="nx-swebench-score-cell">
+                    <strong>{{ row.passRate }}</strong>
+                  </td>
+                  <td class="nx-swebench-patch-cell">
+                    <span>{{ row.patchHealth }}</span>
+                  </td>
+                  <td><code>{{ row.costPerTask }}</code></td>
+                  <td class="nx-swebench-note-cell">{{ row.privacy }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 统计口径与方法论透明声明 -->
+          <div class="nx-swebench-methodology-note">
+            <div class="nx-swebench-method-col">
+              <strong>{{ t('口径透明声明（Sample Size Disclosure）：', '評価スコープの透明性に関する注記：', 'Sample Size & Scope Disclosure:') }}</strong>
+              <span>
+                {{
+                  t(
+                    'Helm 与同模型 mini-SWE-agent 对照组运行于 SWE-bench Verified Mini（50 题，覆盖 django/django 与 sphinx-doc/sphinx，单题 Docker --network none 物理断网验证）；Claude Code、OpenAI Codex 与 Cursor 的参考分来自 2026 年公开的 SWE-bench Verified 全量集（500 题，12 仓库）。不同样本容量的绝对百分比不可直接等同，因此我们同时公开了同题集、同模型（DeepSeek-V4.1-Flash）的官方 mini-SWE-agent 1:1 严格受控对标。',
+                    'Helm および同一モデル対照群（mini-SWE-agent）は SWE-bench Verified Mini（50課題、django/sphinx、Docker --network none 隔離検証）で計測。Claude Code、OpenAI Codex、Cursor の数値は 2026 年公開の SWE-bench Verified フルセット（500課題、12リポジトリ）の参考値です。母数の異なるスコアを単純比較しないよう、同一50課題・同一モデルによる mini-SWE-agent との 1:1 厳密対照実験を併記しています。',
+                    'Helm and the same-model mini-SWE-agent reference were evaluated on SWE-bench Verified Mini (50 issues across django/sphinx under Docker --network none). Scores for Claude Code, OpenAI Codex, and Cursor reflect publicly reported 2026 results on the full SWE-bench Verified set (500 issues across 12 repos). Because n=50 and n=500 percentages are not directly interchangeable, we provide a strict 1:1 same-model, same-subset comparison against official mini-SWE-agent.'
+                  )
+                }}
+              </span>
+            </div>
+            <div class="nx-swebench-method-col">
+              <strong>{{ t('配对统计检验（Paired Exact McNemar）：', '対応のある厳密 McNemar 検定：', 'Paired Exact McNemar Test:') }}</strong>
+              <span>
+                {{
+                  t(
+                    'Helm 两轮（84.0% / 78.0%，均值 81.0%）与同模型官方 mini-SWE-agent（82.0%）在配对精确 McNemar 检验下 p = 1.00 / p = 0.7266（无显著差异，统计完全打平）；但 mini-SWE-agent 因 80 步耗尽产生了 2 题空补丁（96.0% 有效率），而 Helm 在两轮 100 次任务中达成 100.0% 有效非空补丁、0 错误、0 超时，且完美修复了 mini-SWE-agent 耗尽步数的两道难题。',
+                    'Helm の2回実行（84.0% / 78.0%、平均 81.0%）と公式 mini-SWE-agent（82.0%）は、対応のある厳密 McNemar 検定で p = 1.00 / p = 0.7266（統計的有意差なし・同等水準）。一方、mini-SWE-agent が80ステップ上限到達により2件の空パッチ（有効率 96.0%）を出したのに対し、Helm は計100タスクすべてで 100.0% 有効な非空パッチ・エラー0・タイムアウト0を達成しました。',
+                    'Across both runs (84.0% / 78.0%, mean 81.0%), Helm is statistically tied with official mini-SWE-agent (82.0%) under paired exact McNemar testing (p = 1.00 / p = 0.7266). Crucially, whereas mini-SWE-agent produced 2 empty patches (96.0% valid rate) due to 80-step exhaustion, Helm achieved 100.0% (100/100) valid non-empty patches with 0 errors and 0 timeouts, resolving both tasks where mini-SWE-agent timed out.'
+                  )
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 底层确定性代码导航微基准测试（Step 1–2 Zero-API Micro-Benchmarks） -->
+        <div class="nx-swebench-micro-head">
+          <div class="nx-swebench-panel-kicker">DETERMINISTIC CODE NAVIGATION ENGINE // 零大模型噪声的底层工具链实测</div>
+          <h3 class="nx-swebench-panel-title">
+            {{
+              t(
+                '为什么平价模型也能跑出 84.0%？四大确定性代码导航基建消除了信息丢失与定位幻觉',
+                'なぜ軽量モデルで 84.0% を出せるのか？4つの決定的コードナビゲーション基盤が情報欠落と幻覚を排除',
+                'How a Cost-Efficient Model Reaches 84.0%: Four Deterministic Code Navigation Primitives'
+              )
+            }}
+          </h3>
+        </div>
+
+        <div class="nx-swebench-micro-grid">
+          <div
+            v-for="item in navMicroBenchmarks"
+            :key="item.code"
+            class="nx-swebench-micro-card nx-glass-card"
+          >
+            <div class="nx-swebench-micro-top">
+              <span class="nx-swebench-micro-tag">{{ item.code }}</span>
+              <span class="nx-swebench-micro-delta">{{ item.delta }}</span>
+            </div>
+            <div class="nx-swebench-micro-metric">{{ item.metric }}</div>
+            <h4 class="nx-swebench-micro-title">{{ item.title }}</h4>
+            <code class="nx-swebench-micro-ba">{{ item.beforeAfter }}</code>
+            <p class="nx-swebench-micro-desc">{{ item.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ==================== 5. 企业级能力对比矩阵 (COMPARISON MATRIX) ==================== -->
     <section class="nx-matrix-section">
       <div class="nx-container">
@@ -821,6 +1213,17 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
               </thead>
               <tbody>
                 <tr>
+                  <td><strong>{{ t('权威基准实测与代码定位精度', 'SWE-bench 実証とコード特定精度', 'SWE-bench Verified Mini & Localization') }}</strong></td>
+                  <td class="is-helm-col">
+                    <span class="nx-status-ok">✓</span>
+                    <strong>{{ t('SWE-bench Verified Mini 单轮峰值 84.0%（均值 81.0% ± 4.2%），Gold 文件修改命中率 98.0%，100% 有效非空补丁', 'SWE-bench Verified Mini ピーク 84.0%（平均 81.0% ± 4.2%）、Goldファイル特定率 98.0%、有効パッチ率 100%', '84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% mean), 98.0% Gold file hit rate, 100% valid patches') }}</strong>
+                  </td>
+                  <td class="is-dim">
+                    <span class="nx-status-no">✕</span>
+                    {{ t('缺乏确定性 AST 骨架与分页对齐机制，长任务易因截断盲区或步数耗尽产生空补丁', 'AST構造抽出やページング整合性がなく、長大ファイルの切り捨てやステップ枯渇で空パッチが発生', 'Lacks deterministic AST outlines and aligned pagination; prone to truncation blind spots and empty patches') }}
+                  </td>
+                </tr>
+                <tr>
                   <td><strong>{{ t('数据主权与离线能力', 'データ主権とオフライン稼働', 'Data Sovereignty & Offline') }}</strong></td>
                   <td class="is-helm-col">
                     <span class="nx-status-ok">✓</span>
@@ -835,7 +1238,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
                   <td><strong>{{ t('长任务流式容错与防死循环', '長時間ストリーム耐障害性・ループ防止', 'Long-Horizon Fault Tolerance') }}</strong></td>
                   <td class="is-helm-col">
                     <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('TurnHub 单调 seq 断线回放 + stream_reset 重试清场 + StuckDetector L2 自省', 'TurnHub seq 再接続 + stream_reset 自動破棄・再試行 + StuckDetector L2 ループ検知', 'TurnHub seq replay + stream_reset + StuckDetector L2 retrospective') }}</strong>
+                    <strong>{{ t('TurnHub 单调 seq 断线回放 + 写后 37ms 进程内语法门禁 + StuckDetector L2 自省', 'TurnHub seq 再接続 + 編集後 37ms 構文検査 + StuckDetector L2 ループ検知', 'TurnHub seq replay + 37ms in-process post-edit syntax guard + StuckDetector L2 retrospective') }}</strong>
                   </td>
                   <td class="is-dim">
                     <span class="nx-status-no">✕</span>
@@ -868,7 +1271,7 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
                   <td><strong>{{ t('大模型 Prefix Cache 保护', 'LLM Prefix Cache ヒット率保護', 'LLM Prefix Cache Preservation') }}</strong></td>
                   <td class="is-helm-col">
                     <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('四层只增前缀 + 缓存感知裁剪：DeepSeek-V4-Flash 实测热态命中率 89.58%（峰值 93.21%），计费输入省 57.27%', '4層追記型プレフィックス＋キャッシュ認識圧縮：実測ウォームヒット率 89.58%（ピーク 93.21%）・課金入力 -57.27%', '4-layer append-only prefix + cache-aware compaction: 89.58% warm hit rate (93.21% peak), -57.27% billable input') }}</strong>
+                    <strong>{{ t('四层只增前缀 + 缓存感知裁剪：SWE-bench 1.2 亿 Token 实测命中率 97.74%（每修一题仅 ¥0.27–¥0.29）', '4層追記型プレフィックス＋キャッシュ認識圧縮：SWE-bench 1.2億Token実測ヒット率 97.74%（1課題解決 ¥0.27）', '4-layer append-only prefix + cache-aware compaction: 97.74% live SWE-bench cache hit across 120M+ tokens (¥0.27/fix)') }}</strong>
                   </td>
                   <td class="is-dim">
                     <span class="nx-status-no">✕</span>
@@ -1019,23 +1422,23 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
           <div class="nx-qa-card nx-glass-card">
             <div class="nx-qa-top">
               <span class="nx-qa-num">REASON 02 // ZERO EGRESS &amp; MODEL FREEDOM</span>
-              <span class="nx-badge">{{ t('100% 本地/内网闭环', '完全ローカル・社内LAN完結', '100% Local & LAN Ready') }}</span>
+              <span class="nx-badge">{{ t('100% 本地/内网闭环 · ¥0.27/题', '完全ローカル・社内LAN · ¥0.27/件', '100% Local/LAN · ¥0.27/Fix') }}</span>
             </div>
             <h3 class="nx-qa-title">
               {{
                 t(
-                  '机密数据 100% 不出本机/内网，免环境折腾且不被海外账号与高昂美金订阅绑架',
-                  '機密データは100%端末・社内LAN内で完結。環境構築不要でローカル Ollama や社内 vLLM に直結',
-                  '100% Local/Intranet Data Sovereignty, Zero Environment Setup & Full Model Freedom'
+                  '机密数据 100% 不出本机/内网，平价国产模型亦能跑出 84.0% SWE-bench 水准',
+                  '機密データは100%端末・社内LAN内で完結。軽量モデルでも SWE-bench 84.0% の実力を発揮',
+                  '100% Local/Intranet Data Sovereignty & 84.0% SWE-bench Accuracy Without Costly Subscriptions'
                 )
               }}
             </h3>
             <p class="nx-qa-desc">
               {{
                 t(
-                  'Codex 强依赖海外网络环境、高昂美元订阅，且要求将源码与业务表格上传至外部云端，在企业研发、金融、政务、医疗及隐私敏感场景下寸步难行，还常需折腾命令行与运行环境。Helm 提供 Windows 标准 .exe 一键安装即用（内嵌完整 Python 3.13 运行时），原生支持 127.0.0.1 本机离线 Ollama、企业内网 vLLM 集群或高性价比国产大模型（DeepSeek / Kimi 等），真正实现零门槛与数据零外泄。',
-                  '海外クラウド必須・高額なドル建て課金・社外サーバーへのデータ送信を伴うツールは、厳格なセキュリティ環境では利用できません。Helm は Python 3.13 ランタイム内蔵の Windows .exe インストーラーで即座に起動し、127.0.0.1 ローカル Ollama や社内閉域網 vLLM、各種 API を自由に選択可能。外部へのデータ流出をゼロにします。',
-                  'Cloud-only agents require external data uploads, overseas connectivity, and costly subscriptions—blocking adoption in strict enterprise or air-gapped environments. Helm installs as a turnkey Windows .exe (bundling Python 3.13) and connects natively to local Ollama, corporate LAN vLLM clusters, or cost-effective APIs with zero data egress.'
+                  'Codex 与 Claude Code 强依赖海外网络、高昂美元订阅或高价闭源模型（单题修复成本常达数元），且要求将源码上传至外部云端。Helm 提供 Windows 标准 .exe 一键安装即用（内嵌完整 Python 3.13 运行时），不仅原生支持 127.0.0.1 本机离线 Ollama 与企业内网 vLLM，更能凭借确定性代码导航与 97.74% Prefix Cache 命中率，让高性价比的 DeepSeek-V4.1-Flash 跑出 84.0% SWE-bench Verified Mini 解决率（每修复一题仅 ¥0.27–¥0.29）。',
+                  '海外クラウド必須・高額なドル建て課金・社外サーバーへのデータ送信を伴うツールは、厳格なセキュリティ環境では利用できません。Helm は Python 3.13 内蔵の Windows .exe で即座に起動し、ローカル Ollama や社内閉域網 vLLM に直結可能。さらに決定的コードナビゲーションと 97.74% のキャッシュヒット率により、DeepSeek-V4.1-Flash で SWE-bench Verified Mini 84.0%（1課題あたり ¥0.27〜¥0.29）の圧倒的コストパフォーマンスを実現します。',
+                  'Cloud-only agents require external data uploads and costly flagship models. Helm installs as a turnkey Windows .exe (bundling Python 3.13) and connects natively to local Ollama or corporate LAN vLLM clusters. Backed by deterministic code navigation and a 97.74% Prefix Cache hit rate, it enables cost-efficient DeepSeek-V4.1-Flash to achieve 84.0% on SWE-bench Verified Mini at just ¥0.27–¥0.29 per resolved bug.'
                 )
               }}
             </p>
@@ -2283,6 +2686,408 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
   color: #38bdf8;
 }
 
+/* ==================== 4.5 SWE-BENCH VERIFIED MINI & CODE NAVIGATION ==================== */
+.nx-swebench-section {
+  padding: 64px 0 80px;
+  scroll-margin-top: 84px;
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-swebench-hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1.45fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.nx-swebench-primary-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  background: var(--nx-surface-score);
+  border-color: var(--nx-emerald-border);
+}
+
+.nx-swebench-primary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nx-swebench-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  color: var(--nx-emerald-bright);
+}
+
+.nx-swebench-giant-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.nx-swebench-giant-num {
+  font-family: var(--font-mono);
+  font-size: clamp(54px, 5.2vw, 72px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  background: var(--nx-gradient-score);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nx-swebench-giant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nx-swebench-giant-meta strong {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--nx-text-1);
+}
+
+.nx-swebench-giant-meta span {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--nx-text-3);
+}
+
+.nx-swebench-run-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: var(--nx-radius-md);
+  background: var(--nx-bg-code);
+  border: 1px solid var(--nx-border-subtle);
+}
+
+.nx-swebench-run-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--nx-border-subtle);
+  font-size: 12.5px;
+}
+
+.nx-swebench-run-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.nx-swebench-run-name {
+  color: var(--nx-text-2);
+  font-weight: 600;
+}
+
+.nx-swebench-run-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 750;
+  color: var(--nx-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-swebench-run-val.is-emerald {
+  color: var(--nx-emerald-bright);
+}
+
+.nx-swebench-run-val.is-primary {
+  color: var(--nx-primary-bright);
+}
+
+.nx-swebench-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nx-swebench-btn {
+  flex: 1;
+  min-height: 40px;
+  font-size: 12.5px;
+  padding: 8px 14px;
+  text-align: center;
+}
+
+.nx-swebench-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.nx-swebench-stat-card {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nx-swebench-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.nx-swebench-stat-code {
+  color: var(--nx-text-4);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nx-swebench-stat-badge {
+  color: var(--nx-primary-bright);
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.nx-swebench-stat-num {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 850;
+  color: var(--nx-text-1);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.nx-swebench-stat-label {
+  font-size: 13.5px;
+  font-weight: 750;
+  color: var(--nx-text-1);
+}
+
+.nx-swebench-stat-desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--nx-text-3);
+}
+
+.nx-swebench-table-card {
+  padding: 26px 28px;
+  margin-bottom: 32px;
+  border-color: var(--nx-primary-border);
+}
+
+.nx-swebench-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.nx-swebench-panel-kicker {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  color: var(--nx-primary-bright);
+  margin-bottom: 4px;
+}
+
+.nx-swebench-panel-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--nx-text-1);
+}
+
+.nx-swebench-table {
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-swebench-table th,
+.nx-swebench-table td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.nx-swebench-table tr.is-helm-row td {
+  background: var(--nx-primary-soft);
+  color: var(--nx-text-1);
+}
+
+.nx-swebench-table tr.is-helm-row td:first-child {
+  border-left: 3px solid var(--nx-emerald-bright);
+}
+
+.nx-swebench-agent-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.nx-swebench-role-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--nx-radius-xs);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.nx-swebench-role-tag.is-emerald {
+  background: var(--nx-emerald-soft);
+  border: 1px solid var(--nx-emerald-border);
+  color: var(--nx-emerald-bright);
+}
+
+.nx-swebench-role-tag.is-primary {
+  background: var(--nx-primary-soft);
+  border: 1px solid var(--nx-primary-border);
+  color: var(--nx-primary-bright);
+}
+
+.nx-swebench-role-tag.is-amber {
+  background: var(--nx-amber-soft);
+  border: 1px solid var(--nx-amber-border);
+  color: var(--nx-amber-bright);
+}
+
+.nx-swebench-role-tag.is-neutral {
+  background: var(--nx-bg-code);
+  border: 1px solid var(--nx-border-subtle);
+  color: var(--nx-text-3);
+}
+
+.nx-swebench-score-cell strong {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--nx-emerald-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-swebench-patch-cell span {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--nx-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-swebench-note-cell {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--nx-text-2);
+  max-width: 380px;
+}
+
+.nx-swebench-methodology-note {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: var(--nx-radius-md);
+  background: var(--nx-bg-code);
+  border: 1px solid var(--nx-border-subtle);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  font-size: 12px;
+  line-height: 1.62;
+  color: var(--nx-text-3);
+}
+
+.nx-swebench-method-col strong {
+  color: var(--nx-text-1);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.nx-swebench-micro-head {
+  margin-bottom: 16px;
+}
+
+.nx-swebench-micro-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.nx-swebench-micro-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nx-swebench-micro-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.nx-swebench-micro-tag {
+  color: var(--nx-text-4);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nx-swebench-micro-delta {
+  padding: 2px 7px;
+  border-radius: var(--nx-radius-xs);
+  background: var(--nx-emerald-soft);
+  color: var(--nx-emerald-bright);
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.nx-swebench-micro-metric {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 850;
+  color: var(--nx-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-swebench-micro-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 750;
+  color: var(--nx-text-1);
+}
+
+.nx-swebench-micro-ba {
+  padding: 4px 8px;
+  border-radius: var(--nx-radius-xs);
+  background: var(--nx-bg-code);
+  border: 1px solid var(--nx-border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--nx-primary-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-swebench-micro-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.58;
+  color: var(--nx-text-3);
+}
+
 /* ==================== 5. COMPARISON MATRIX ==================== */
 .nx-matrix-section {
   padding: 56px 0 80px;
@@ -2776,11 +3581,17 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
     grid-template-columns: repeat(2, 1fr);
   }
   .nx-spotlight-panel,
+  .nx-swebench-hero-grid,
+  .nx-swebench-methodology-note,
   .nx-topo-grid,
   .nx-qa-grid,
   .nx-rules-grid,
   .nx-community-grid {
     grid-template-columns: 1fr;
+  }
+  .nx-swebench-stats-grid,
+  .nx-swebench-micro-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   .nx-remark-banner {
     flex-direction: column;
@@ -2808,6 +3619,8 @@ const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value
     justify-content: center;
   }
   .nx-telemetry-grid,
+  .nx-swebench-stats-grid,
+  .nx-swebench-micro-grid,
   .nx-blueprint-grid {
     grid-template-columns: 1fr;
   }

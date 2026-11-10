@@ -36,7 +36,7 @@ function jumpTo(url) {
         <div class="nx-modal-header">
           <div class="nx-modal-badge-row">
             <span class="nx-badge">ARCHITECTURE &amp; LOCAL SECURITY OVERVIEW</span>
-            <span class="nx-modal-code">ELECTRON 44 · VUE 3.5 · FASTAPI (86+ UNIT TESTS)</span>
+            <span class="nx-modal-code">ELECTRON 44 · VUE 3.5 · FASTAPI (463+ UNIT TESTS · 84.0% SWE-BENCH MINI)</span>
           </div>
           <button
             type="button"
@@ -73,8 +73,8 @@ function jumpTo(url) {
             <p>
               {{
                 t(
-                  'Helm 作为开箱即用的桌面端独立软件面向广大用户提供 Windows 安装包下载。为了让用户在下载前即可直观了解软件功能与底层可靠性，本站特别内建了「1:1 在线交互工作台」与「全 5 卷工程架构白皮书」，完整公开双进程拓扑、TurnHub 状态机、无侵入影子 Git 检查点与 Git Worktree 并发隔离的技术实现。',
-                  'Helm はすぐに使えるデスクトップ製品として Windows インストーラー版を配布しています。導入前に操作感や内部の信頼性を確認いただけるよう、本サイトでは「1:1 対話型ワークベンチ」と「全5章の技術アーキテクチャ白書」を公開し、デュアルプロセス構造やシャドウGitチェックポイント等の設計を詳しく解説しています。',
+                  'Helm 作为开箱即用的桌面端独立软件面向广大用户提供 Windows 安装包下载。为了让用户在下载前即可直观了解软件功能与底层可靠性，本站特别内建了「1:1 在线交互工作台」与「全 5 卷工程架构白皮书」，完整公开双进程拓扑、TurnHub 状态机、确定性代码导航、无侵入影子 Git 检查点与 Git Worktree 并发隔离的技术实现。',
+                  'Helm はすぐに使えるデスクトップ製品として Windows インストーラー版を配布しています。導入前に操作感や内部の信頼性を確認いただけるよう、本サイトでは「1:1 対話型ワークベンチ」と「全5章の技術アーキテクチャ白書」を公開し、デュアルプロセス構造や決定的コードナビゲーション等の設計を詳しく解説しています。',
                   'Helm is distributed as a standalone Windows desktop application. So users and developers can explore its capabilities and reliability prior to installation, this site provides a 1:1 Interactive Workbench and a 5-volume Architecture Whitepaper.'
                 )
               }}
@@ -95,9 +95,9 @@ function jumpTo(url) {
             <p>
               {{
                 t(
-                  'Helm 内置完整的 Python 3.13 FastAPI 异步运行时与 86+ 项自动化核心单测，支持连接本机 Ollama 或企业内网大模型在物理断网环境下独立闭环运行（含长周期代码开发、影子 Git 检查点与 Office 文档局部 AI 热修改），确保个人隐私文档与企业核心代码 100% 留存本地，绝不经过任何第三方中转服务器。',
-                  'Helm は Python 3.13 FastAPI 非同期ランタイムと 86件以上の自動単体テスト検証済みコアエンジンを内蔵しています。ローカルの Ollama や社内閉域網 LLM と連携し、完全オフライン環境でもコード開発・シャドウGitチェックポイント・Office文書の選択範囲AI更新が完結するため、個人ユーザーから企業現場まで安心してご利用いただけます。',
-                  'Bundling an embedded Python 3.13 FastAPI runtime backed by 86+ automated unit tests, Helm runs 100% locally with Ollama or corporate LAN models—delivering autonomous coding, Shadow Git Checkpoints, and surgical Office AI editing with zero cloud relay.'
+                  'Helm 内置完整的 Python 3.13 FastAPI 异步运行时与 463+ 项自动化核心单测（SWE-bench Verified Mini 实测峰值 84.0% Pass@1，两轮均值 81.0% ± 4.2%），支持连接本机 Ollama 或企业内网大模型在物理断网环境下独立闭环运行（含长周期代码开发、影子 Git 检查点与 Office 文档局部 AI 热修改），确保个人隐私文档与企业核心代码 100% 留存本地，绝不经过任何第三方中转服务器。',
+                  'Helm は Python 3.13 FastAPI 非同期ランタイムと 463件以上の自動単体テスト検証済みコアエンジン（SWE-bench Verified Mini ピーク 84.0% Pass@1、2回平均 81.0% ± 4.2%）を内蔵しています。ローカルの Ollama や社内閉域網 LLM と連携し、完全オフライン環境でもコード開発・シャドウGitチェックポイント・Office文書の選択範囲AI更新が完結します。',
+                  'Bundling an embedded Python 3.13 FastAPI runtime backed by 463+ automated unit tests and proven at 84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% 2-run mean), Helm runs 100% locally with Ollama or corporate LAN models with zero cloud relay.'
                 )
               }}
             </p>
@@ -109,12 +109,15 @@ function jumpTo(url) {
           <span>
             {{
               t(
-                '本站所有 Pre-Cache 性能指标（DeepSeek-V4-Flash 实测热态命中率 89.58%、计费输入省 57.27%）均附带含原始 response_id 与 SHA-256 签名的公开证据包：',
-                '本サイトの Pre-Cache 性能指標（DeepSeek-V4-Flash 実測ウォームヒット率 89.58%・課金入力 -57.27%）は、生の response_id と SHA-256 署名付き公開証跡で検証可能です：',
-                'All Pre-Cache metrics on this site (89.58% warm hit rate, -57.27% billable input on DeepSeek-V4-Flash) are backed by a public SHA-256 signed evidence bundle with raw response_ids:'
+                '本站所有 SWE-bench Verified Mini（峰值 84.0% / 均值 81.0%，缓存命中 97.74%）与 Pre-Cache 评测指标均附带 SHA-256 签名的公开可复核证据包：',
+                '本サイトの SWE-bench Verified Mini（ピーク 84.0% / 平均 81.0%、キャッシュヒット率 97.74%）および Pre-Cache 性能指標は、SHA-256 署名付き公開証跡で検証可能です：',
+                'All SWE-bench Verified Mini (84.0% peak / 81.0% mean, 97.74% cache hit) and Pre-Cache metrics on this site are backed by public SHA-256 signed evidence bundles:'
               )
             }}
           </span>
+          <a href="/benchmarks/swebench-mini-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
+            /benchmarks/swebench-mini-v1/manifest.json ↗
+          </a>
           <a href="/benchmarks/precache-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
             /benchmarks/precache-v1/manifest.json ↗
           </a>

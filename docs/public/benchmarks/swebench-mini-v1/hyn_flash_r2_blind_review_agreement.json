@@ -1,0 +1,252 @@
+{
+  "run_tag": "hyn_flash_r2",
+  "blind_review_labels_sha256": "F8419945A9D12887DA3DA8A949311D9FCB8698E26842A4CC4D47F374A1DDE24D",
+  "blind_review_locked_at": "2026-11-10T01:50:12+08:00",
+  "classifications_created_at": "2026-11-09T17:33:44.630964+00:00",
+  "n_reviewed": 11,
+  "taxonomy_note": "step4_tiered_eval_and_report.md Section 3.1 defines 7 categories (L1, L2, L3, F1, F2, E1, E2) where all non-regression fix/understanding errors fall under F1; swebench_classify.py splits non-regression fix errors into F1 (logic error) and F3 (misunderstood issue). Both raw 9-category and spec-normalized 7-category (F3->F1) agreement metrics are reported.",
+  "strict_primary_agreement_norm7": {
+    "k": 9,
+    "n": 11,
+    "rate": 0.818182,
+    "ci95_low": 0.523019,
+    "ci95_high": 0.948632
+  },
+  "loose_agreement_norm7": {
+    "k": 11,
+    "n": 11,
+    "rate": 1.0,
+    "ci95_low": 0.741167,
+    "ci95_high": 1.0
+  },
+  "cohens_kappa_norm7": 0.592593,
+  "strict_primary_agreement_raw9": {
+    "k": 7,
+    "n": 11,
+    "rate": 0.636364,
+    "ci95_low": 0.353801,
+    "ci95_high": 0.848335
+  },
+  "loose_agreement_raw9": {
+    "k": 9,
+    "n": 11,
+    "rate": 0.818182,
+    "ci95_low": 0.523019,
+    "ci95_high": 0.948632
+  },
+  "cohens_kappa_raw9": 0.371429,
+  "lsp_solvable_agreement": {
+    "k": 10,
+    "n": 11,
+    "rate": 0.909091,
+    "ci95_low": 0.622642,
+    "ci95_high": 0.983768
+  },
+  "meets_80pct_threshold_norm7": true,
+  "meets_80pct_threshold_loose_norm7": true,
+  "items": [
+    {
+      "instance_id": "django__django-11885",
+      "blind_primary": "F2",
+      "blind_secondary": [
+        "F1"
+      ],
+      "judge_primary": "F2",
+      "judge_primary_norm7": "F2",
+      "judge_secondary": [
+        "F1"
+      ],
+      "raw_primary_match": true,
+      "norm7_primary_match": true,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 准确定位并修改了 django/db/models/deletion.py 的 Collector.delete，使 FAIL_TO_PASS (test_fast_delete_combined_relationships) 通过，但在合并同 Model 的 fast_deletes QuerySet 时破坏了分批删除语义，导致 PASS_TO_PASS 中的 test_large_delete 与 test_large_delete_related 发生回归失败。",
+      "judge_rationale": "Agent 已在 deletion.py 的 fast delete 循环中实现按模型用 OR 合并查询，目标测试通过，但该实现破坏了大批量删除：步骤38明确出现 test_large_delete 和 test_large_delete_related 失败。随后步骤41仅修改测试中的查询数预期使套件变绿，未修复查询合并的边界与批处理逻辑，因此属于引入 PASS_TO_PASS 回归。"
+    },
+    {
+      "instance_id": "django__django-12273",
+      "blind_primary": "L1",
+      "blind_secondary": [
+        "F1"
+      ],
+      "judge_primary": "L1",
+      "judge_primary_norm7": "L1",
+      "judge_secondary": [],
+      "raw_primary_match": true,
+      "norm7_primary_match": true,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Gold 补丁修改的是 django/db/models/base.py 第 569–585 行的 Model._set_pk_val。Agent 仅阅读了该文件第 650–949 行（save_base 与 _save_parents），从未阅读 _set_pk_val（gold_lines_visible=false, gold_function_edited=false），而是修改了 _save_parents 的条件判断，导致两个 FAIL_TO_PASS 测试均失败。",
+      "judge_rationale": "Agent 仅读取 base.py 第650–949行，并在 _save_parents 中添加 _state.adding 条件，从未查看第569行附近的 _set_pk_val。该保存期绕过只覆盖部分复现场景，未在 pk 赋值时同步父链接字段，导致两个官方用例仍失败，属于未找到正确修改函数。"
+    },
+    {
+      "instance_id": "django__django-12325",
+      "blind_primary": "F1",
+      "blind_secondary": [
+        "L3"
+      ],
+      "judge_primary": "F1",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": true,
+      "norm7_primary_match": true,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 阅读了 django/db/models/base.py 与 django/db/models/options.py 并修改了 ModelBase.__new__，但采用了 `if related_key not in parent_links or field.remote_field.parent_link:` 的回退逻辑（未显式声明 parent_link=True 的首个 OneToOneField 仍被当作 parent_link），且未同步移除 options.py 中 Options._prepare 的旧校验，导致 FAIL_TO_PASS 失败。",
+      "judge_rationale": "Agent 已读取 options.py 并编辑正确的 ModelBase.__new__，但将修复实现为“优先显式 parent_link”，仍会把普通 OneToOneField 写入 parent_links，且保留 Options._prepare 的 ImproperlyConfigured；这与 Gold 的过滤条件及删除校验不符，导致两个 FAIL_TO_PASS 仍失败，属于修复逻辑错误而非定位失败。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-11510",
+      "blind_primary": "F1",
+      "blind_secondary": [],
+      "judge_primary": "F1",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": true,
+      "norm7_primary_match": true,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 定位并修改了 sphinx/directives/other.py 的 Include.run，通过自定义 _SourceReadFileInput 在读取被包含文件时触发 source-read 事件，但传入的文档名是主文档 self.env.docname 而非被包含文件的相对路径/docname，且拦截点与 Gold 在 StateMachine.insert_input 处处理的方式不同，导致 test_include_source_read_event 失败。",
+      "judge_rationale": "Agent 已读取并修改正确的 sphinx/directives/other.py 中 Include.run，定位无缺失；但其自行替换 docutils FileInput 并用 ContextVar 回调，事件文档名还固定取 self.env.docname，未按 include 路径处理，导致目标测试失败。嵌套测试通过且无 PASS_TO_PASS 回归，属于修复逻辑及边界处理错误。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7590",
+      "blind_primary": "F1",
+      "blind_secondary": [],
+      "judge_primary": "F1",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": true,
+      "norm7_primary_match": true,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 准确定位并修改了 sphinx/domains/cpp.py 的 DefinitionParser._parse_literal，新增了 ASTUserDefinedLiteral 节点，但在 ASTUserDefinedLiteral.get_id 中留下了未完成的缩放/修饰逻辑（注释 `# TODO: this is not correct`，直接拼接 literal 与 ident 的 id 而非 `li<ident>` 规则），导致 test_expressions 断言失败。",
+      "judge_rationale": "Agent 已正确定位并修改 cpp.py 的 _parse_literal 和 ASTUserDefinedLiteral，且能解析 issue 示例；但仅用通用后缀正则包装旧解析器，get_id 仍标注“TODO: this is not correct”，又未实现 Gold 的数字后缀拆分及 ASTIdentifier 的 udl 签名逻辑，导致新增 test_expressions 失败，属于修复逻辑不完整。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7748",
+      "blind_primary": "F1",
+      "blind_secondary": [],
+      "judge_primary": "F1",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": true,
+      "norm7_primary_match": true,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 准确定位并修改了 sphinx/ext/autodoc/__init__.py 的 DocstringSignatureMixin._find_signature 与 format_signature，支持从 docstring 开头连续提取多行重载签名，但未处理行尾反斜杠续行（multiline）以及 get_doc / FunctionDocumenter.format_args 的配套行为，导致两个 FAIL_TO_PASS 测试未通过。",
+      "judge_rationale": "已正确定位并修改 sphinx/ext/autodoc/__init__.py 中 DocstringSignatureMixin._find_signature，但自实现的连续签名行扫描、文档串裁剪及多签名返回逻辑不完整，未覆盖类与 __init__ 文档串组合场景，导致 init、both 两个目标测试仍失败；无 PASS_TO_PASS 回归，属于定位正确后的算法与边界处理错误。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7985",
+      "blind_primary": "F1",
+      "blind_secondary": [],
+      "judge_primary": "F1",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": true,
+      "norm7_primary_match": true,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "在断网隔离（--network none）生效后，Agent 独立定位并修改了 sphinx/builders/linkcheck.py 的 CheckExternalLinksBuilder.check_thread.check，编写了 is_local_link 辅助函数；但对有效本地链接仍返回状态 'local'（Gold 期望返回 'working'），对失效本地链接附加了说明文本 'local link not found'（Gold 期望空字符串 ''）且未先匹配 self.to_ignore，导致 test_defaults 与 test_anchors_ignored 失败。",
+      "judge_rationale": "已读取并修改 sphinx/builders/linkcheck.py 的目标检查链路，定位无误；但非 HTTP 分支在 to_ignore 匹配前直接判 broken，且存在的本地文件仍返回 local 而非 working，导致 test_anchors_ignored 与 test_defaults 失败，属于修复逻辑及状态处理错误。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8056",
+      "blind_primary": "F1",
+      "blind_secondary": [
+        "L1"
+      ],
+      "judge_primary": "L1",
+      "judge_primary_norm7": "L1",
+      "judge_secondary": [],
+      "raw_primary_match": false,
+      "norm7_primary_match": false,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 阅读了 sphinx/ext/napoleon/docstring.py 的 _parse_parameters_section 并复现了 NumpyDocstring 输出 `:param x1, x2:` 的过程，但选择在下游 sphinx/util/docfields.py 的 DocFieldTransformer.transform 中兼容逗号分隔形参名以保持单行展示，而非按 Gold 方案在 GoogleDocstring._consume_fields(multiple=True) 中将其拆分为多条独立参数，导致单元测试 test_multiple_parameters 失败。",
+      "judge_rationale": "Agent虽读取并复现了napoleon问题，却最终只修改sphinx/util/docfields.py的DocFieldTransformer，以逗号判断规避类型解析；未在gold指定的_consume_fields和_parse_parameters_section中实现多参数拆分，目标测试仍失败。属于修复位置偏离，并非同名符号或静态引用遗漏。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8638",
+      "blind_primary": "F1",
+      "blind_secondary": [
+        "L1"
+      ],
+      "judge_primary": "F3",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": false,
+      "norm7_primary_match": true,
+      "loose_match": false,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 阅读了 sphinx/domains/python.py 中的 PyObject（336–555 行）与 PythonDomain.find_obj（1090–1269 行），但未移除 PyObject.doc_field_types 中 variable 字段的 `rolename='obj'`，而是调整了 PythonDomain.find_obj 中 modname+classname 的匹配分支顺序，导致 test_info_field_list_var 失败。",
+      "judge_rationale": "Agent 已读取 PyObject 的变量字段定义，却将问题理解为 find_obj 的查找优先级错误，仅调整匹配顺序，使变量仍会主动链接；实际需求是取消变量描述的自动交叉引用，即删除 variable 字段的 rolename='obj'。因此属于误解预期行为，而非读取截断或环境故障。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9229",
+      "blind_primary": "F1",
+      "blind_secondary": [
+        "L1"
+      ],
+      "judge_primary": "F3",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": false,
+      "norm7_primary_match": true,
+      "loose_match": false,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": false,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": true,
+      "blind_rationale": "Agent 阅读了 sphinx/ext/autodoc/__init__.py 中 ClassDocumenter.get_doc 与 add_content（1670–1899 行）的 Gold 代码区间，但在 Python 3.9 容器环境下复现时因 typing 泛型对象的 __doc__ 表现差异，误判问题仅出现在 PEP 585 GenericAlias（如 list[int]）被识别为 type，进而修改了 can_document_member 而未在 ClassDocumenter.get_doc / add_content 中检查 get_variable_comment()，导致 test_class_alias_having_doccomment 失败。",
+      "judge_rationale": "Agent 将问题收窄为 list[int] 等 GenericAlias 被误识别为类，最终仅修改 can_document_member 和 AttributeDocumenter 的类型过滤。虽然已读取 ClassDocumenter.get_doc/add_content，却未实现 Gold 所需的变量注释读取及 doc_as_attr 分支，导致 test_class_alias_having_doccomment 失败，属于误解 issue 的修复目标。"
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9461",
+      "blind_primary": "L3",
+      "blind_secondary": [
+        "F1"
+      ],
+      "judge_primary": "F1",
+      "judge_primary_norm7": "F1",
+      "judge_secondary": [],
+      "raw_primary_match": false,
+      "norm7_primary_match": false,
+      "loose_match": true,
+      "norm7_loose_match": true,
+      "blind_lsp_solvable": true,
+      "judge_lsp_solvable": false,
+      "lsp_decision_match": false,
+      "blind_rationale": "Gold 补丁跨 3 个文件协同修改（sphinx/domains/python.py 为 PyProperty 增加 :classmethod: 选项与签名头、sphinx/ext/autodoc/__init__.py 在 PropertyDocumenter 中识别并输出 :classmethod:、sphinx/util/inspect.py 增强 isclassmethod/getdoc）。Agent 仅修改了 autodoc（__init__.py 与 importer.py）以提取被 classmethod 包装的 property，未阅读和修改 sphinx/domains/python.py 及 sphinx/util/inspect.py，导致 3 个 FAIL_TO_PASS 测试全部失败。",
+      "judge_rationale": "Agent 已定位并修改正确的 PropertyDocumenter.can_document_member，且复现显示属性能被输出，但修复仅覆盖成员收集与对象导入，未完整实现预期行为：遗漏 PyProperty 的 classmethod 选项及签名前缀、add_directive_header 的 :classmethod: 标记和继承文档处理，导致三个 FAIL_TO_PASS 测试仍失败。属于正确定位后的实现不完整，而非同名符号或跳转引用遗漏。"
+    }
+  ]
+}

@@ -29,11 +29,19 @@
   --nx-primary: #2563eb;
   --nx-primary-bright: #38bdf8;
   --nx-primary-deep: #0f4c81;
+  --nx-primary-soft: rgba(37, 99, 235, 0.14);
+  --nx-primary-border: rgba(56, 189, 248, 0.28);
   --nx-emerald: #10b981;
+  --nx-emerald-bright: #34d399;
   --nx-emerald-soft: rgba(16, 185, 129, 0.14);
+  --nx-emerald-border: rgba(52, 211, 153, 0.34);
   --nx-amber: #f59e0b;
+  --nx-amber-bright: #fbbf24;
   --nx-amber-soft: rgba(245, 158, 11, 0.14);
+  --nx-amber-border: rgba(251, 191, 36, 0.34);
   --nx-rose: #f43f5e;
+  --nx-surface-score: linear-gradient(155deg, rgba(16, 185, 129, 0.11) 0%, rgba(13, 20, 36, 0.94) 48%, rgba(37, 99, 235, 0.14) 100%);
+  --nx-gradient-score: linear-gradient(180deg, #ffffff 0%, #6ee7b7 55%, #38bdf8 100%);
 
   --nx-radius-xs: 6px;
   --nx-radius-sm: 8px;

@@ -95,6 +95,14 @@ const isArchActive = computed(
         </a>
 
         <a
+          class="nx-nav-item"
+          :href="`${prefix}/#benchmarks`"
+          @click.prevent="go(`${prefix}/#benchmarks`)"
+        >
+          {{ t('权威评测', 'ベンチマーク', 'Benchmarks') }}
+        </a>
+
+        <a
           class="nx-nav-item is-sandbox-link"
           :class="{ 'is-active': strippedPath === '/demo' }"
           :href="`${prefix}/demo`"
@@ -305,6 +313,9 @@ const isArchActive = computed(
         <a :href="`${prefix}/`" @click.prevent="go(`${prefix}/`)">
           {{ t('产品首页', '製品ホーム', 'Product Home') }}
         </a>
+        <a :href="`${prefix}/#benchmarks`" @click.prevent="go(`${prefix}/#benchmarks`)">
+          {{ t('SWE-bench 权威评测 (84.0%)', 'SWE-bench ベンチマーク実証 (84.0%)', 'SWE-bench Benchmarks (84.0%)') }}
+        </a>
         <a :href="`${prefix}/demo`" @click.prevent="go(`${prefix}/demo`)">
           {{ t('在线交互工作台', 'Web対話型ワークベンチ', 'Interactive Web Workbench') }}
         </a>
@@ -349,6 +360,8 @@ const isArchActive = computed(
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nx-brand-link {
@@ -411,22 +424,25 @@ const isArchActive = computed(
 .nx-nav-links {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+  white-space: nowrap;
 }
 
 .nx-nav-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   height: 36px;
-  padding: 0 14px;
+  padding: 0 10px;
   border-radius: 8px;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: #cbd5e1;
   background: transparent;
   border: none;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 160ms ease;
 }
 
@@ -631,6 +647,8 @@ const isArchActive = computed(
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nx-lang-switcher {
@@ -640,6 +658,8 @@ const isArchActive = computed(
   background: rgba(15, 23, 42, 0.85);
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nx-lang-btn {
@@ -652,6 +672,7 @@ const isArchActive = computed(
   font-size: 11.5px;
   font-weight: 650;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 150ms ease;
 }
 

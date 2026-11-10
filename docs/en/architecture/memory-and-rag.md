@@ -147,3 +147,10 @@ cd hyn_agent_backend
 # 2. Verify SHA-256 checksums, formulas, and secret-scrubbing invariants offline
 .\.venv\Scripts\python.exe -m pytest tests/precache/test_phase3_bench_and_audit.py -q
 ```
+
+### 4.4.5 Production-Scale Validation on SWE-bench Verified Mini (115M+ Input Tokens): 97.74% Cache Hit Rate
+
+Beyond the `B1`–`B5` suite, the 4-layer append-only prefix architecture was stress-tested across **100 full SWE-bench Verified Mini trajectories (`50 issues × 2 independent runs`, totaling over `115M` input tokens)**:
+- **Run 1 Clean (`hyn_flash_r1_clean`, `42 / 50 = 84.00%`)**: Out of `61,671,694` input tokens, `60,278,464` hit the prefix cache—an overall **Prefix Cache hit rate of `97.74%`** (`97.81%` warm on Step 2+), bringing the total 50-task inference bill to just **¥12.16 (¥0.289 per resolved issue)**.
+- **Run 2 Full Gate (`hyn_flash_r2`, `39 / 50 = 78.00%`)**: Out of `53,332,377` input tokens, `52,061,888` hit the prefix cache—an overall **Prefix Cache hit rate of `97.62%`** (`97.71%` warm on Step 2+), totaling **¥10.39 (¥0.267 per resolved issue)**.
+- **Verifiable Evidence Bundle**: See [`/benchmarks/swebench-mini-v1/manifest.json`](/benchmarks/swebench-mini-v1/manifest.json) and [`/benchmarks/swebench-mini-v1/REPORT.md`](/benchmarks/swebench-mini-v1/REPORT.md).

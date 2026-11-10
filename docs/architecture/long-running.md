@@ -91,3 +91,24 @@ git update-ref refs/hyn/checkpoints/<session_id> $commit
 ### 3. 运行中实时生效的 4 档权限模式（`permission_mode.py`）
 - 通过 `bind_mode_getter` 动态读取活动会话字典中的实时值，用户在 UI 上按 `Shift+Tab` 或点击 `PermissionModeButton.js` 切换档位（`ask_all` / `auto_edit` / `default` / `full_auto`）时，**无需中断当前任务，下一次工具调用即刻按新档位执行**。
 - 即使在 `full_auto`（完全放行）档位下，`permission.py` 中的 `command_hard_deny_reason` 与路径越界检查（`paths.py`）始终拥有最高否决权，从物理边界上杜绝删库、格式化或越出工作区读写。
+
+---
+
+## 2.5 确定性代码导航引擎与 SWE-bench Verified Mini 84.0% 实证
+
+**对应源码**：`app/services/ripgrep.py`、`app/services/code_outline.py`、`app/services/syntax_check.py`、`app/api/tools.py`
+
+在大型真实仓库中，长程 Agent 的瓶颈往往不是大模型推理本身，而是**代码检索过慢、长文件截断漏行、以及写后低级语法错误污染测试轮次**。Helm 内置了四项确定性代码导航原语，并在 **SWE-bench Verified Mini（50 题，Docker `--network none` 物理断网容器）** 上完成了端到端实证：
+
+| 模块与能力 | 改造前基线 | Helm 确定性引擎实测 | 工程收益 |
+| --- | --- | --- | --- |
+| **随包 `ripgrep 15.2.0` 全库搜索 (`search_in_files`)** | Python `os.walk` 中位延迟 `5,026.2 ms`，噪音率 `49.17%` | P50 **`119.3 ms`**（P95 `160.3 ms`），噪音率 **`0.00%`** | **42.1 倍加速**，支持 `path` 下钻与完整正则 |
+| **`tree-sitter` 多语言 AST 骨架 (`code_outline`)** | 盲读数千行大文件消耗巨量上下文 | 冷启动 P50 **`23.81 ms`**（热缓存 `0.8 ms`），体积比 `4.59%` | **理论节省 95.41% 阅读 Token**，精确返回签名与行号区间 |
+| **`read_file` 翻页与截断对齐** | 2000 行字符硬截断，顺序翻页一致性仅 `30.33%`（漏读 `288,084` 行） | 行/字节双预算同步推进，顺序翻页一致性 **`100.00%`** | **0 漏行 (`L2 = 0%`)**，彻底消除长文件截断盲区 |
+| **写后进程内语法门禁 (`syntax_check.py`)** | 改坏括号/缩进需等跑 pytest 才暴露 | 中位 **`37 ms`** 进程内 `ast.parse` + `tree-sitter` 校验 | **100% 召回率 / 0.0% 误报率**，当场拦截语法破坏 |
+
+### SWE-bench Verified Mini (`n = 50`) 权威实证结论
+- **单轮峰值与两轮独立均值**：使用高性价比的 `DeepSeek-V4.1-Flash`（`deepseek-flash`），Helm 在 `hyn_flash_r1_clean` 中斩获 **`42 / 50 = 84.00%` Pass@1**（Wilson 95% CI `[71.49%, 91.66%]`），在独立复跑 `hyn_flash_r2` 中取得 `39 / 50 = 78.00%`，**两轮独立均值 `81.00% ± 4.24%`**（其中 `django/django` 25 题两轮稳定 **`88.00% ± 0.00%`**）。
+- **同模型 `mini-SWE-agent` 1:1 严格受控对标**：在完全相同的 50 题与 `DeepSeek-V4.1-Flash` 模型下，SWE-bench 官方 `mini-SWE-agent` 解决率为 `82.00%`（配对精确 McNemar 检验 $p = 1.00$，统计完全打平）；但 `mini-SWE-agent` 因 80 步耗尽产生了 **2 题空补丁（96.0% 有效率）**，而 Helm 在两轮 100 次任务中达成 **100.0%（100/100）有效非空补丁、0 错误、0 超时**。
+- **98.0% Gold 文件定位率与极致成本**：Helm 在 **100%（50/50）** 的任务中定位并阅读了真实答案文件（Gold File），在 **98.0%（49/50）** 的任务中直接对 Gold 文件实施了修改；凭借 **97.74%** 的 Prefix Cache 命中率，跑完 50 题总计约 6,000 万输入 Token 的整轮成本仅 **¥10.39–¥12.16（每修复一题仅 ¥0.27–¥0.29）**。
+- **公开可复核证据包**：详见 [`/benchmarks/swebench-mini-v1/REPORT.md`](/benchmarks/swebench-mini-v1/REPORT.md) 与 SHA-256 签名清单 [`/benchmarks/swebench-mini-v1/manifest.json`](/benchmarks/swebench-mini-v1/manifest.json)。

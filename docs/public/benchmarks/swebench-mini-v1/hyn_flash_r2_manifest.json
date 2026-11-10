@@ -1,0 +1,142 @@
+{
+  "schema_version": "hyn.swebench.manifest.v1",
+  "harness_version": "swe-mini-v1",
+  "run_tag": "hyn_flash_r2",
+  "created_at": "2026-11-09T17:34:53.335132+00:00",
+  "dataset": {
+    "dataset_name": "MariusHobbhahn/swe-bench-verified-mini",
+    "split": "test",
+    "count": 50,
+    "dataset_sha256": "cafe0f03f7f6db133e98ad259f3a1cd0c6a59dce6965ddcb6e220df8b376ba5d",
+    "instance_ids_sha256": "4fe0948cceaedfedc06075975e42540641cae4854a3d043507afd4b93d2f1970",
+    "repo_counts": {
+      "django/django": 25,
+      "sphinx-doc/sphinx": 25
+    },
+    "instance_ids": [
+      "django__django-11790",
+      "django__django-11815",
+      "django__django-11848",
+      "django__django-11880",
+      "django__django-11885",
+      "django__django-11951",
+      "django__django-11964",
+      "django__django-11999",
+      "django__django-12039",
+      "django__django-12050",
+      "django__django-12143",
+      "django__django-12155",
+      "django__django-12193",
+      "django__django-12209",
+      "django__django-12262",
+      "django__django-12273",
+      "django__django-12276",
+      "django__django-12304",
+      "django__django-12308",
+      "django__django-12325",
+      "django__django-12406",
+      "django__django-12708",
+      "django__django-12713",
+      "django__django-12774",
+      "django__django-9296",
+      "sphinx-doc__sphinx-10323",
+      "sphinx-doc__sphinx-10435",
+      "sphinx-doc__sphinx-10466",
+      "sphinx-doc__sphinx-10673",
+      "sphinx-doc__sphinx-11510",
+      "sphinx-doc__sphinx-7590",
+      "sphinx-doc__sphinx-7748",
+      "sphinx-doc__sphinx-7757",
+      "sphinx-doc__sphinx-7985",
+      "sphinx-doc__sphinx-8035",
+      "sphinx-doc__sphinx-8056",
+      "sphinx-doc__sphinx-8265",
+      "sphinx-doc__sphinx-8269",
+      "sphinx-doc__sphinx-8475",
+      "sphinx-doc__sphinx-8548",
+      "sphinx-doc__sphinx-8551",
+      "sphinx-doc__sphinx-8638",
+      "sphinx-doc__sphinx-8721",
+      "sphinx-doc__sphinx-9229",
+      "sphinx-doc__sphinx-9230",
+      "sphinx-doc__sphinx-9281",
+      "sphinx-doc__sphinx-9320",
+      "sphinx-doc__sphinx-9367",
+      "sphinx-doc__sphinx-9461",
+      "sphinx-doc__sphinx-9698"
+    ]
+  },
+  "patch_exclusion_rules": [
+    {
+      "id": "internal_dirs",
+      "description": "始终排除 .git / .hyn / .hyn_agent / .worktrees / .tasks / .claude / .cursor / __pycache__ / .pytest_cache / .mypy_cache / .ruff_cache / .tox 目录下的文件"
+    },
+    {
+      "id": "compiled_or_backup_artifacts",
+      "description": "始终排除 *.pyc / *.pyo / *.orig / *.rej / *.bak / .coverage 等编译或冲突备份产物"
+    },
+    {
+      "id": "hyn_temp_scripts_untracked",
+      "description": "对相对 base_commit 新增的未跟踪文件，排除 HYN `is_temp_generator_dir_part` 与 `is_temp_script_path` 命中的临时生成脚本"
+    },
+    {
+      "id": "reproduction_scripts_untracked",
+      "description": "对相对 base_commit 新增的未跟踪文件，排除明显的复现/调试/补丁草稿文件：`reproduce*.*`、`repro_*.*`、`*_repro.py`、`*_reproduce.py`、`test_repro*.py`、`verify_*.py`、`debug_*.py`、`scratch*.*`、`tmp_*.*`、`_tmp*.*`、`patch.txt`、`*.patch`、`*.diff`"
+    }
+  ],
+  "artifacts": {
+    "predictions.jsonl": {
+      "size_bytes": 80589,
+      "sha256": "2c07a24c8f6267fe85744dd539402ca856e9e35ce77d08502d32eb55ed96f8ac"
+    },
+    "results.jsonl": {
+      "size_bytes": 124701,
+      "sha256": "f119a7447a64ae26c0462ffb3ba25647598e8d5f5b6d2ae744cb53a5838d4dcc"
+    },
+    "run_state.json": {
+      "size_bytes": 544,
+      "sha256": "c818776db4e918d1c9beb76d83d3d4526d6852e918863b9e5fa1b3eebe8c2cd0"
+    },
+    "frozen_config.json": {
+      "size_bytes": 2739,
+      "sha256": "eb7a5a2bd94d0bf848f91d92189149f003687287831075b6da7d6572368594cd"
+    },
+    "gate_canary.json": {
+      "size_bytes": 7204,
+      "sha256": "6fb2d9617369d4babeff1e161a47fdff0541d92b5dab66a314bf5fb1c9308bc3"
+    },
+    "gate_full.json": {
+      "size_bytes": 4991,
+      "sha256": "c8f9d00f9145e6d5d4c2f0dcc1e8bf14319dccbff2e84940c11a124d5b188396"
+    },
+    "eval/evaluation_summary.json": {
+      "size_bytes": 173713,
+      "sha256": "77c0322aeece02188d4e8914578ad7a7167882fb822533a9501c4caf09d33f33"
+    },
+    "classifications.json": {
+      "size_bytes": 72034,
+      "sha256": "f240195b691a985ea887cbff6810c5648e71502f19d969056f30dd3cef660085"
+    },
+    "blind_review_packets.json": {
+      "size_bytes": 362859,
+      "sha256": "da32d74638db890cf900d46ae4bfaf70515847e9bb9dab9348d571e8a72eba17"
+    },
+    "review_sheet.csv": {
+      "size_bytes": 6258,
+      "sha256": "4bee3f8af92958f2fa8ba05f0096246643f6ac61c8a16e02d9a4f26b3d51ef2c"
+    },
+    "summary.json": {
+      "size_bytes": 88879,
+      "sha256": "c100c299e1e817abe7374841c1b1d9eeec2f5c5011e52194bff6962dd540825a"
+    },
+    "REPORT.md": {
+      "size_bytes": 4729,
+      "sha256": "22de135cf932d9c5c214cc087f7114c4c09ec3616d8144a17b10fb82c4913fa0"
+    }
+  },
+  "traces_bundle": {
+    "trace_file_count": 50,
+    "total_bytes": 3406086,
+    "combined_sha256": "3e3dbba25c2dd119c434902e7d4e4bd38d9fa4b395a83b68e210ddc2f2028ca5"
+  }
+}

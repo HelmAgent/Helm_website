@@ -1,0 +1,86 @@
+{
+  "schema_version": "hyn.swebench.public_bundle.v1",
+  "benchmark_suite": "swebench-verified-mini-v1",
+  "dataset": "MariusHobbhahn/swe-bench-verified-mini (split=test, n=50)",
+  "dataset_sha256": "cafe0f03f7f6db133e98ad259f3a1cd0c6a59dce6965ddcb6e220df8b376ba5d",
+  "evaluated_model": "deepseek-flash (DeepSeek-V4.1-Flash)",
+  "judge_model": "kimi-k3.1-pro",
+  "completed_at_utc": "2026-11-09T18:26:49Z",
+  "headline_metrics": {
+    "hyn_r1_clean_pass_at_1": 0.84,
+    "hyn_r1_clean_resolved": "42/50",
+    "hyn_r1_clean_wilson_95_ci": [
+      0.7149,
+      0.9166
+    ],
+    "hyn_r2_pass_at_1": 0.78,
+    "hyn_r2_resolved": "39/50",
+    "hyn_r2_wilson_95_ci": [
+      0.6476,
+      0.8725
+    ],
+    "hyn_two_run_mean_pass_at_1": 0.81,
+    "hyn_two_run_sd": 0.0424,
+    "django_two_run_mean_pass_at_1": 0.88,
+    "mini_swe_reference_pass_at_1": 0.82,
+    "mini_swe_reference_resolved": "41/50",
+    "mcnemar_p_value_r1_clean_vs_mini": 1.0,
+    "mcnemar_p_value_r2_vs_mini": 0.726562,
+    "valid_non_empty_patch_rate_hyn": 1.0,
+    "valid_non_empty_patch_rate_mini_swe": 0.96,
+    "gold_file_edited_rate_hyn": 0.98,
+    "prefix_cache_hit_rate_r1_clean": 0.9774,
+    "prefix_cache_hit_rate_r2": 0.9762,
+    "offpeak_total_cost_cny_r1_clean": 12.1585,
+    "offpeak_total_cost_cny_r2": 10.3944,
+    "offpeak_cost_per_resolved_cny_r2": 0.2665
+  },
+  "file_count": 9,
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 38042,
+      "sha256": "c0311572346e47e833ab5d5cc87a15cd5259644798a5754b14dfae6965c55119"
+    },
+    {
+      "path": "hyn_flash_r1_blind_review_agreement.json",
+      "bytes": 6092,
+      "sha256": "d0b2e21727a8480cd89b7af8c5265f2b059f54d09d297bcdd64e7318a8cf8367"
+    },
+    {
+      "path": "hyn_flash_r1_clean_manifest.json",
+      "bytes": 4388,
+      "sha256": "ed778c81585790009edfe380fc5d46083f0c2574514b417e0356b242a05b72a4"
+    },
+    {
+      "path": "hyn_flash_r1_clean_summary.json",
+      "bytes": 15144,
+      "sha256": "fcc1a95582487dc11a954c0e98d427ad2507a7fddfe7e1ec91f300c6e6d1b7df"
+    },
+    {
+      "path": "hyn_flash_r2_blind_review_agreement.json",
+      "bytes": 15436,
+      "sha256": "ffd9e9a4311dda47fc58e1f1687289cb80be8161dd9e29199daa2f6f369d53a0"
+    },
+    {
+      "path": "hyn_flash_r2_manifest.json",
+      "bytes": 5106,
+      "sha256": "239debaf476c6a8920f26bb1baf14f2c34b0a0c3f5b8814013f29840a266844a"
+    },
+    {
+      "path": "hyn_flash_r2_summary.json",
+      "bytes": 86880,
+      "sha256": "fdd8145ce908265a200ed6720f4d0bd7ff71c7e6a21d99d913f0d9ff98685dd8"
+    },
+    {
+      "path": "mini_swe_flash_r1_summary.json",
+      "bytes": 10358,
+      "sha256": "976fee1f562fe23a9144d00b450a68e7c69b2600e4a1becd317bdf1ba0633743"
+    },
+    {
+      "path": "step4b_multirun_analysis.json",
+      "bytes": 36164,
+      "sha256": "46748b0b8dae928708f157bb74b9cee864388c254190d435b670efefe11cf900"
+    }
+  ]
+}

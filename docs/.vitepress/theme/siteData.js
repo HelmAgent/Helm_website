@@ -10,7 +10,7 @@ export const SITE_META = {
   brandName: 'Helm',
   sloganEn: 'Take the Helm of Long-Running Code & Docs.',
   version: 'v0.1.0',
-  releaseDate: '2026-10',
+  releaseDate: '2026-11',
   websiteUrl: 'https://www.helm-ai.website/',
   githubRepo: 'https://github.com/HelmAgent/Helm_website',
   installerFileName: 'Helm Setup 1.0.0.exe',
