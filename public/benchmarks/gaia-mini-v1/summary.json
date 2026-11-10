@@ -1,0 +1,141 @@
+{
+  "suite": "gaia_mini_v1",
+  "timestamp_utc": "2026-11-10T03:34:52.725349+00:00",
+  "track_a_office_microbenchmark": {
+    "track": "Track_A_Deterministic_Office_And_GAIA_Normalizer",
+    "api_cost_cny": 0.0,
+    "elapsed_ms": 1260.69,
+    "cases_total": 20,
+    "cases_passed": 20,
+    "pass_rate": 1.0,
+    "cases": [
+      {
+        "id": "OFFICE_01_WRITE_DOCX",
+        "passed": true,
+        "detail": "Wrote Word document contract_sla.docx"
+      },
+      {
+        "id": "OFFICE_02_READ_DOCX",
+        "passed": true,
+        "detail": "Extracted title + 3 contract clauses accurately"
+      },
+      {
+        "id": "OFFICE_03_EDIT_DOCX",
+        "passed": true,
+        "detail": "Edited Word document contract_sla.docx"
+      },
+      {
+        "id": "OFFICE_04_PATCH_SELECTION_DOCX",
+        "passed": true,
+        "detail": "OK: 已对 contract_sla.docx 执行局部修改（已更新 Word 文档 contract_sla.docx（第 2 段「9」），快照 1794281692450_5c960e）。前端预览框已实时热更新渲染该处变更。"
+      },
+      {
+        "id": "OFFICE_05_READ_XLSX",
+        "passed": true,
+        "detail": "Parsed worksheet Q3_Financials with sharedStrings + numeric cells"
+      },
+      {
+        "id": "OFFICE_06_READ_PPTX_AND_NOTES",
+        "passed": true,
+        "detail": "Extracted both slide text and speaker notes from .pptx"
+      },
+      {
+        "id": "OFFICE_07_READ_PDF_FULL",
+        "passed": true,
+        "detail": "Full PDF text extraction passed"
+      },
+      {
+        "id": "OFFICE_08_READ_PDF_PAGE_RANGE",
+        "passed": true,
+        "detail": "Page-segmented PDF extraction (pages='2-2') isolated Page 2 cleanly"
+      },
+      {
+        "id": "OFFICE_09_BINARY_GUARD_DOCX",
+        "passed": true,
+        "detail": "Error: 这是 Office 文件（.docx），请改用 read_document / write_docx / edit_document。"
+      },
+      {
+        "id": "OFFICE_10_BINARY_GUARD_PDF",
+        "passed": true,
+        "detail": "Error: 这是 PDF，读取请改用 read_document（只读，可用 pages 分段）。"
+      },
+      {
+        "id": "NORM_11_CURRENCY",
+        "passed": true,
+        "detail": "'$1,250,000.00' == '1250000' -> True"
+      },
+      {
+        "id": "NORM_12_PERCENT",
+        "passed": true,
+        "detail": "'84.0%' == '84' -> True"
+      },
+      {
+        "id": "NORM_13_ARTICLES",
+        "passed": true,
+        "detail": "'The Paris Agreement' == 'paris agreement' -> True"
+      },
+      {
+        "id": "NORM_14_LIST_SPACES",
+        "passed": true,
+        "detail": "'alpha, beta, gamma' == 'alpha,beta,gamma' -> True"
+      },
+      {
+        "id": "NORM_15_FINAL_ANS_PREFIX",
+        "passed": true,
+        "detail": "'Final Answer: 9443' == '9443' -> True"
+      },
+      {
+        "id": "NORM_16_CN_ANS_PREFIX",
+        "passed": true,
+        "detail": "'答案：GAIA-PPTX-9942' == 'gaia-pptx-9942' -> True"
+      },
+      {
+        "id": "NORM_17_FLOAT_TRAILING_ZERO",
+        "passed": true,
+        "detail": "'3.1400' == '3.14' -> True"
+      },
+      {
+        "id": "NORM_18_PUNCTUATION",
+        "passed": true,
+        "detail": "'Dr. John von Neumann!' == 'dr john von neumann' -> True"
+      },
+      {
+        "id": "NORM_19_SEMICOLON_LIST",
+        "passed": true,
+        "detail": "'Python; TypeScript; Rust' == 'python, typescript, rust' -> True"
+      },
+      {
+        "id": "NORM_20_NEGATIVE_INT",
+        "passed": true,
+        "detail": "'-42.0' == '-42' -> True"
+      }
+    ]
+  },
+  "track_b_gaia_validation": {
+    "track": "Track_B_GAIA_Validation_30_Stratified",
+    "mode": "llm-mock",
+    "tier": "full",
+    "tasks_total": 30,
+    "tasks_solved": 30,
+    "exact_match_rate": 1.0,
+    "by_level": {
+      "Level_1": {
+        "total": 10,
+        "solved": 10,
+        "accuracy": 1.0
+      },
+      "Level_2": {
+        "total": 12,
+        "solved": 12,
+        "accuracy": 1.0
+      },
+      "Level_3": {
+        "total": 8,
+        "solved": 8,
+        "accuracy": 1.0
+      }
+    },
+    "api_cost_cny": 0.0,
+    "elapsed_ms": 60.0
+  }
+}

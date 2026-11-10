@@ -1,0 +1,133 @@
+{
+  "suite": "harness_ablation_v1",
+  "timestamp_utc": "2026-11-10T03:23:42.987111+00:00",
+  "api_cost_cny": 0.0,
+  "pillars": {
+    "P1_stuck_detector": {
+      "pillar": "P1_stuck_detector_and_loop_guard",
+      "elapsed_ms": 29.4,
+      "positive_loop_cases": 18,
+      "detected_loop_cases": 18,
+      "interception_recall": 1.0,
+      "normal_dev_cases": 6,
+      "false_positives": 0,
+      "false_positive_rate": 0.0,
+      "mean_first_trigger_step": 7.5,
+      "mean_guarded_stop_step": 9.83,
+      "unguarded_step_cap": 80,
+      "wasted_step_reduction_ratio": 0.8771,
+      "cases_preview": [
+        {
+          "id": "LOOP_D1_01",
+          "dimension": "D1_consecutive_exact",
+          "desc": "连续重复调用 read_file 且输出未变化",
+          "detected": true,
+          "first_trigger_step": 2,
+          "max_level_reached": 4,
+          "unguarded_steps": 80,
+          "guarded_steps": 5
+        },
+        {
+          "id": "LOOP_D1_02",
+          "dimension": "D1_consecutive_exact",
+          "desc": "连续重复调用 run_powershell 且输出未变化",
+          "detected": true,
+          "first_trigger_step": 2,
+          "max_level_reached": 4,
+          "unguarded_steps": 80,
+          "guarded_steps": 5
+        },
+        {
+          "id": "LOOP_D1_03",
+          "dimension": "D1_consecutive_exact",
+          "desc": "连续重复调用 grep 且输出未变化",
+          "detected": true,
+          "first_trigger_step": 2,
+          "max_level_reached": 4,
+          "unguarded_steps": 80,
+          "guarded_steps": 5
+        },
+        {
+          "id": "LOOP_D2_01",
+          "dimension": "D2_window_repeat",
+          "desc": "12 步滑动窗口内穿插重复读取同一文件 #1",
+          "detected": true,
+          "first_trigger_step": 7,
+          "max_level_reached": 3,
+          "unguarded_steps": 80,
+          "guarded_steps": 11
+        },
+        {
+          "id": "LOOP_D2_02",
+          "dimension": "D2_window_repeat",
+          "desc": "12 步滑动窗口内穿插重复读取同一文件 #2",
+          "detected": true,
+          "first_trigger_step": 7,
+          "max_level_reached": 3,
+          "unguarded_steps": 80,
+          "guarded_steps": 11
+        },
+        {
+          "id": "LOOP_D2_03",
+          "dimension": "D2_window_repeat",
+          "desc": "12 步滑动窗口内穿插重复读取同一文件 #3",
+          "detected": true,
+          "first_trigger_step": 7,
+          "max_level_reached": 3,
+          "unguarded_steps": 80,
+          "guarded_steps": 11
+        }
+      ]
+    },
+    "P2_context_compaction": {
+      "pillar": "P2_context_compaction_and_prefix_cache",
+      "elapsed_ms": 1.27,
+      "oversized_tool_cases": 20,
+      "raw_total_chars": 1169542,
+      "compacted_total_chars": 80800,
+      "token_compaction_savings_ratio": 0.9309,
+      "hyn_head_tail_fact_retention_rate": 1.0,
+      "naive_head_only_fact_retention_rate": 0.3333,
+      "line_boundary_integrity_rate": 1.0,
+      "protected_tools_count": 3,
+      "protected_tools": [
+        "load_skill",
+        "task",
+        "todo_write"
+      ],
+      "precache_empirical": {
+        "legacy_warm_cache_hit_rate": 0.6517,
+        "optimized_warm_cache_hit_rate": 0.8958,
+        "legacy_unexpected_prefix_breaks": 25,
+        "optimized_unexpected_prefix_breaks": 0,
+        "uncached_input_tokens_saved_ratio": 0.7114,
+        "billable_input_tokens_saved_ratio": 0.5727
+      }
+    },
+    "P3_multi_agent_worktree": {
+      "pillar": "P3_multi_agent_worktree_and_shadow_git",
+      "elapsed_ms": 5259.31,
+      "teammate_count": 4,
+      "sequential_1_agent_wall_ms": 1631.54,
+      "parallel_4_worktree_wall_ms": 567.29,
+      "parallel_speedup_factor": 2.88,
+      "worktree_file_collision_rate": 0.0,
+      "main_workspace_dirty_files": 0,
+      "plan_gate_mutating_tools_blocked": "6/6",
+      "plan_gate_interception_rate": 1.0
+    },
+    "P4_permission_security": {
+      "pillar": "P4_zero_trust_permission_and_sandbox",
+      "elapsed_ms": 360.12,
+      "adversarial_payloads_total": 30,
+      "adversarial_intercepted": 30,
+      "adversarial_hard_denied": 21,
+      "interception_rate": 1.0,
+      "attack_success_rate_asr": 0.0,
+      "benign_commands_total": 30,
+      "benign_allowed": 30,
+      "false_positive_rate": 0.0,
+      "false_positives": []
+    }
+  }
+}

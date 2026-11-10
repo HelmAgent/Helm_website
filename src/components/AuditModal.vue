@@ -121,6 +121,12 @@ function jumpTo(url) {
           <a href="/benchmarks/precache-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
             /benchmarks/precache-v1/manifest.json ↗
           </a>
+          <a href="/benchmarks/rag-eval-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
+            /benchmarks/rag-eval-v1/manifest.json ↗
+          </a>
+          <a href="/benchmarks/harness-ablation-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
+            /benchmarks/harness-ablation-v1/manifest.json ↗
+          </a>
         </div>
 
         <div class="nx-modal-footer">

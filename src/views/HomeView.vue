@@ -420,6 +420,62 @@ const navMicroBenchmarks = computed(() => [
     )
   }
 ])
+
+// 四维全栈消融实测矩阵（RAG 4阶段消融 · 架构护栏消融 · 多智能体 Worktree · 多语言 & Office 多模态）
+const fullStackAblationBenchmarks = computed(() => [
+  {
+    code: 'ABLATION 01 · RAG v0→v3',
+    metric: '100.0%',
+    delta: t('MRR 1.000 · 0% 污染', 'MRR 1.000 · 汚染 0%', 'MRR 1.000 · 0% Noise'),
+    title: t('企业异构知识库 4 阶段递进消融', '異種混合文書の4段階RAGアブレーション', '4-Stage Enterprise Multimodal RAG Ablation'),
+    beforeAfter: 'Fact Recall@K: 59.4% (v0) → 100.0% (v3)',
+    desc: t(
+      '跨双栏 PDF 财报、Word 合同与修订备忘录 36 道黄金 QA 实测：经版面还原 (v1)、章节面包屑分块 (v2) 与混合检索+时间权重重排 (v3)，完整命中率由 36.7% 跃升至 100.0%，干扰污染降至 0.0%。',
+      '2段組PDF・Word・改訂メモの36問QAで実測：レイアウト解析(v1)、階層チャンク(v2)、ハイブリッド検索+時系列リランク(v3)により完全正解率が 36.7% → 100.0% に向上、ノイズ混入率 0.0%。',
+      'Across 36 golden QAs over 2-col PDFs, DOCX, and revision memos: layout parsing (v1), breadcrumb chunking (v2), and hybrid temporal reranking (v3) lift strict recall from 36.7% to 100.0% with 0.0% distractor pollution.'
+    ),
+    reportUrl: '/benchmarks/rag-eval-v1/REPORT.md'
+  },
+  {
+    code: 'ABLATION 02 · LOOP & COMPACT',
+    metric: '-87.7%',
+    delta: t('100% 拦死循环 · 0% 误报', 'ループ阻止 100% · 誤報 0%', '100% Loop Recall · 0% FP'),
+    title: t('StuckDetector v2 与 60/40 保真裁剪', 'StuckDetector v2 と 60/40 コンテキスト圧縮', 'StuckDetector v2 & 60/40 Fidelity Compaction'),
+    beforeAfter: 'Fact Retention: 33.3% (Naive) → 100.0% (HYN)',
+    desc: t(
+      '覆盖 D1–D6 六维死循环轨迹 100.0% (18/18) 精准介入，平均第 7.5 步收敛，节省 87.7% 无效步数；60/40 头尾裁剪在压缩 93.1% 超长输出的同时 100.0% 保留末尾异常堆栈。',
+      'D1〜D6の6次元ループを 100.0% (18/18) 検知し、平均7.5ステップで収束（無駄なステップを 87.7% 削減）。60/40 先頭・末尾保持圧縮により 93.1% 圧縮しつつ末尾の例外トレースを 100.0% 保持。',
+      'Detects 100.0% (18/18) of D1–D6 loop patterns (mean intervention at step 7.5, saving 87.7% wasted steps). 60/40 head-tail compaction shrinks oversized outputs by 93.1% while retaining 100.0% of tail tracebacks.'
+    ),
+    reportUrl: '/benchmarks/harness-ablation-v1/REPORT.md'
+  },
+  {
+    code: 'ABLATION 03 · WORKTREE & GATE',
+    metric: '2.88×–3.04×',
+    delta: t('0% 写冲突 · 100% 拦越权', '競合 0% · 脅威阻止 100%', '0% Collision · 0% ASR'),
+    title: t('4 队友 Worktree 并行与零信任权限门', '4メイト Worktree 並列＆ゼロトラスト権限ゲート', '4-Mate Worktree Speedup & Zero-Trust Gate'),
+    beforeAfter: 'Collision: 100% → 0.0% · Attack ASR: 0.0% (30/30)',
+    desc: t(
+      '4 名常驻队友绑定独立 Git Worktree 并发实测取得 2.88×–3.04× 墙钟加速比，同名文件并发写冲突率 0.0%，主分支污染 0 字节；PermissionGate 对 30 组高危/越界/注入载荷实现 100.0% 拦截。',
+      '4名の常駐メイトが独立 Git Worktree で並列稼働し 2.88×〜3.04× の実測高速化と競合率 0.0% を達成。PermissionGate は30種の破壊的コマンド・パストラバーサルを 100.0% 遮断（誤検知 0.0%）。',
+      '4 concurrent teammates on isolated Git Worktrees achieve a 2.88×–3.04× wall-clock speedup with 0.0% file collision and 0 dirty main-repo bytes; PermissionGate blocks 100.0% (30/30) of adversarial payloads with 0.0% benign FP.'
+    ),
+    reportUrl: '/benchmarks/harness-ablation-v1/REPORT.md'
+  },
+  {
+    code: 'ABLATION 04 · POLYGLOT & GAIA',
+    metric: '56 / 56',
+    delta: t('6 语言 100% · Office 100%', '6言語 100% · Office 100%', '100% Polyglot & Office'),
+    title: t('6 语言代码工具链与 Office 多模态微基准', '6言語コード編集＆Officeマルチモーダル検証', '6-Language Polyglot & Office Multimodal Suite'),
+    beforeAfter: 'Polyglot 36/36 (100%) + Office/GAIA 20/20 (100%)',
+    desc: t(
+      '横跨 Python / TS / Go / Rust / C++ / Java 六大语言的符号大纲、多处补丁与 CRLF/CJK 保真测试 36/36 全通；docx / xlsx / pptx / pdf 选区热更新与 GAIA 判分器 20/20 全通。',
+      'Python / TS / Go / Rust / C++ / Java の6言語でシンボル抽出・パッチ適用・CRLF保持が 36/36 合格。docx / xlsx / pptx / pdf の部分熱更新および GAIA 正規化器も 20/20 完全通過。',
+      'Passes 36/36 multi-language editing & AST checks across Python, TS, Go, Rust, C++, and Java, plus 20/20 deterministic Office (docx/xlsx/pptx/pdf) surgical hot-patch and GAIA normalizer checks.'
+    ),
+    reportUrl: '/benchmarks/polyglot-mini-v1/REPORT.md'
+  }
+])
 </script>
 
 <template>
@@ -1184,6 +1240,47 @@ const navMicroBenchmarks = computed(() => [
             <h4 class="nx-swebench-micro-title">{{ item.title }}</h4>
             <code class="nx-swebench-micro-ba">{{ item.beforeAfter }}</code>
             <p class="nx-swebench-micro-desc">{{ item.desc }}</p>
+          </div>
+        </div>
+
+        <!-- 4. 四维全栈消融实测矩阵（RAG 4阶段 · 架构护栏 · Worktree 并行 · Polyglot & Office 多模态） -->
+        <div class="nx-swebench-micro-head" style="margin-top: 36px;">
+          <div class="nx-swebench-panel-kicker">FULL-STACK ARCHITECTURE &amp; MULTIMODAL ABLATION // 四维架构壁垒与多模态消融实证</div>
+          <h3 class="nx-swebench-panel-title">
+            {{
+              t(
+                '不止于单点 Coding：RAG 知识库 4 阶段消融、防死循环护栏、Worktree 并行与多模态办公实测',
+                'Codingだけではない：4段階RAGアブレーション、ループ防止、Worktree並列、Officeマルチモーダル実証',
+                'Beyond Coding: 4-Stage RAG Ablation, Loop Guard, Worktree Parallelism & Multimodal Office Benchmarks'
+              )
+            }}
+          </h3>
+        </div>
+
+        <div class="nx-swebench-micro-grid">
+          <div
+            v-for="item in fullStackAblationBenchmarks"
+            :key="item.code"
+            class="nx-swebench-micro-card nx-glass-card"
+          >
+            <div class="nx-swebench-micro-top">
+              <span class="nx-swebench-micro-tag">{{ item.code }}</span>
+              <span class="nx-swebench-micro-delta">{{ item.delta }}</span>
+            </div>
+            <div class="nx-swebench-micro-metric">{{ item.metric }}</div>
+            <h4 class="nx-swebench-micro-title">{{ item.title }}</h4>
+            <code class="nx-swebench-micro-ba">{{ item.beforeAfter }}</code>
+            <p class="nx-swebench-micro-desc">{{ item.desc }}</p>
+            <a
+              v-if="item.reportUrl"
+              :href="item.reportUrl"
+              target="_blank"
+              rel="noopener"
+              class="nx-modal-bench-link"
+              style="display: inline-block; margin-top: 8px; font-size: 12px;"
+            >
+              {{ t('查看实测报告 (REPORT.md) ↗', '評価レポートを見る (REPORT.md) ↗', 'View Empirical Report (REPORT.md) ↗') }}
+            </a>
           </div>
         </div>
       </div>

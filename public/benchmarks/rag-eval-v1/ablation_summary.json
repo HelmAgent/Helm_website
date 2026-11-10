@@ -1,0 +1,360 @@
+{
+  "runs": [
+    {
+      "run_tag": "v0_baseline",
+      "timestamp": "2026-11-10T03:04:43.842882+00:00",
+      "config": {
+        "dataset_ids": [
+          "4fc6834d77cd4b8f8c8f29a53536fe03"
+        ],
+        "top_k": 4,
+        "score_threshold": 0.1,
+        "vector_similarity_weight": 0.95,
+        "keyword_enhance": false,
+        "rerank_id": ""
+      },
+      "overall": {
+        "answerable_count": 30,
+        "unanswerable_count": 6,
+        "doc_hit_rate": 1.0,
+        "fact_hit_rate": 0.7333,
+        "fact_recall": 0.5939,
+        "strict_complete_rate": 0.3667,
+        "mrr": 0.5806,
+        "distractor_pollution_rate": 0.2,
+        "negative_rejection_rate": 0.0,
+        "negative_max_fp_score": 0.5751,
+        "negative_mean_fp_score": 0.3928,
+        "latency_p50_ms": 37.0,
+        "latency_p95_ms": 52.75,
+        "mean_tokens": 367.5
+      },
+      "by_category": {
+        "single_fact": {
+          "category_zh": "1_简单事实检索",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 0.8333,
+          "strict_complete_rate": 0.5,
+          "mrr": 0.75,
+          "distractor_rate": 0.3333
+        },
+        "exact_symbol": {
+          "category_zh": "2_精确符号与错误码",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 0.6667,
+          "fact_recall": 0.5695,
+          "strict_complete_rate": 0.3333,
+          "mrr": 0.5555,
+          "distractor_rate": 0.0
+        },
+        "table_layout": {
+          "category_zh": "3_复杂表格与公式",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 0.8333,
+          "fact_recall": 0.6778,
+          "strict_complete_rate": 0.5,
+          "mrr": 0.8333,
+          "distractor_rate": 0.1667
+        },
+        "contextual_hierarchy": {
+          "category_zh": "4_深层目录与跨段指代",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 0.5,
+          "fact_recall": 0.4445,
+          "strict_complete_rate": 0.3333,
+          "mrr": 0.2917,
+          "distractor_rate": 0.0
+        },
+        "multi_hop_temporal": {
+          "category_zh": "5_跨文档多跳与版本演进",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 0.6667,
+          "fact_recall": 0.4445,
+          "strict_complete_rate": 0.1667,
+          "mrr": 0.4722,
+          "distractor_rate": 0.5
+        },
+        "unanswerable_negative": {
+          "category_zh": "6_超纲无答案防幻觉",
+          "count": 6,
+          "rejection_rate": 0.0,
+          "max_fp_score": 0.5751,
+          "mean_fp_score": 0.3928
+        }
+      }
+    },
+    {
+      "run_tag": "v1_mineru",
+      "timestamp": "2026-11-10T03:04:45.385253+00:00",
+      "config": {
+        "dataset_ids": [
+          "4fc6834d77cd4b8f8c8f29a53536fe03"
+        ],
+        "top_k": 4,
+        "score_threshold": 0.1,
+        "vector_similarity_weight": 0.95,
+        "keyword_enhance": false,
+        "rerank_id": ""
+      },
+      "overall": {
+        "answerable_count": 30,
+        "unanswerable_count": 6,
+        "doc_hit_rate": 0.9667,
+        "fact_hit_rate": 0.8333,
+        "fact_recall": 0.7917,
+        "strict_complete_rate": 0.7,
+        "mrr": 0.7333,
+        "distractor_pollution_rate": 0.3,
+        "negative_rejection_rate": 0.0,
+        "negative_max_fp_score": 0.5364,
+        "negative_mean_fp_score": 0.3416,
+        "latency_p50_ms": 36.5,
+        "latency_p95_ms": 54.5,
+        "mean_tokens": 643.1
+      },
+      "by_category": {
+        "single_fact": {
+          "category_zh": "1_简单事实检索",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.6667
+        },
+        "exact_symbol": {
+          "category_zh": "2_精确符号与错误码",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 0.8333,
+          "fact_recall": 0.7361,
+          "strict_complete_rate": 0.5,
+          "mrr": 0.7222,
+          "distractor_rate": 0.0
+        },
+        "table_layout": {
+          "category_zh": "3_复杂表格与公式",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.1667
+        },
+        "contextual_hierarchy": {
+          "category_zh": "4_深层目录与跨段指代",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 0.5,
+          "fact_recall": 0.4445,
+          "strict_complete_rate": 0.3333,
+          "mrr": 0.3055,
+          "distractor_rate": 0.1667
+        },
+        "multi_hop_temporal": {
+          "category_zh": "5_跨文档多跳与版本演进",
+          "count": 6,
+          "doc_hit_rate": 0.8333,
+          "fact_hit_rate": 0.8333,
+          "fact_recall": 0.7778,
+          "strict_complete_rate": 0.6667,
+          "mrr": 0.6389,
+          "distractor_rate": 0.5
+        },
+        "unanswerable_negative": {
+          "category_zh": "6_超纲无答案防幻觉",
+          "count": 6,
+          "rejection_rate": 0.0,
+          "max_fp_score": 0.5364,
+          "mean_fp_score": 0.3416
+        }
+      }
+    },
+    {
+      "run_tag": "v2_chunking",
+      "timestamp": "2026-11-10T03:04:47.248767+00:00",
+      "config": {
+        "dataset_ids": [
+          "4fc6834d77cd4b8f8c8f29a53536fe03"
+        ],
+        "top_k": 4,
+        "score_threshold": 0.1,
+        "vector_similarity_weight": 0.95,
+        "keyword_enhance": false,
+        "rerank_id": ""
+      },
+      "overall": {
+        "answerable_count": 30,
+        "unanswerable_count": 6,
+        "doc_hit_rate": 0.9667,
+        "fact_hit_rate": 0.9333,
+        "fact_recall": 0.9333,
+        "strict_complete_rate": 0.9333,
+        "mrr": 0.9,
+        "distractor_pollution_rate": 0.2667,
+        "negative_rejection_rate": 0.0,
+        "negative_max_fp_score": 0.5494,
+        "negative_mean_fp_score": 0.3623,
+        "latency_p50_ms": 48.0,
+        "latency_p95_ms": 79.5,
+        "mean_tokens": 961.9
+      },
+      "by_category": {
+        "single_fact": {
+          "category_zh": "1_简单事实检索",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.5
+        },
+        "exact_symbol": {
+          "category_zh": "2_精确符号与错误码",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 0.8333,
+          "fact_recall": 0.8333,
+          "strict_complete_rate": 0.8333,
+          "mrr": 0.8333,
+          "distractor_rate": 0.0
+        },
+        "table_layout": {
+          "category_zh": "3_复杂表格与公式",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.1667
+        },
+        "contextual_hierarchy": {
+          "category_zh": "4_深层目录与跨段指代",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.1667
+        },
+        "multi_hop_temporal": {
+          "category_zh": "5_跨文档多跳与版本演进",
+          "count": 6,
+          "doc_hit_rate": 0.8333,
+          "fact_hit_rate": 0.8333,
+          "fact_recall": 0.8333,
+          "strict_complete_rate": 0.8333,
+          "mrr": 0.6667,
+          "distractor_rate": 0.5
+        },
+        "unanswerable_negative": {
+          "category_zh": "6_超纲无答案防幻觉",
+          "count": 6,
+          "rejection_rate": 0.0,
+          "max_fp_score": 0.5494,
+          "mean_fp_score": 0.3623
+        }
+      }
+    },
+    {
+      "run_tag": "v3_hybrid_rerank",
+      "timestamp": "2026-11-10T03:04:49.184693+00:00",
+      "config": {
+        "dataset_ids": [
+          "4fc6834d77cd4b8f8c8f29a53536fe03"
+        ],
+        "top_k": 4,
+        "score_threshold": 0.3,
+        "vector_similarity_weight": 0.45,
+        "keyword_enhance": true,
+        "rerank_id": "bge-reranker-v2-m3"
+      },
+      "overall": {
+        "answerable_count": 30,
+        "unanswerable_count": 6,
+        "doc_hit_rate": 1.0,
+        "fact_hit_rate": 1.0,
+        "fact_recall": 1.0,
+        "strict_complete_rate": 1.0,
+        "mrr": 1.0,
+        "distractor_pollution_rate": 0.0,
+        "negative_rejection_rate": 1.0,
+        "negative_max_fp_score": 0.0,
+        "negative_mean_fp_score": 0.0,
+        "latency_p50_ms": 48.0,
+        "latency_p95_ms": 81.5,
+        "mean_tokens": 397.1
+      },
+      "by_category": {
+        "single_fact": {
+          "category_zh": "1_简单事实检索",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.0
+        },
+        "exact_symbol": {
+          "category_zh": "2_精确符号与错误码",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.0
+        },
+        "table_layout": {
+          "category_zh": "3_复杂表格与公式",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.0
+        },
+        "contextual_hierarchy": {
+          "category_zh": "4_深层目录与跨段指代",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.0
+        },
+        "multi_hop_temporal": {
+          "category_zh": "5_跨文档多跳与版本演进",
+          "count": 6,
+          "doc_hit_rate": 1.0,
+          "fact_hit_rate": 1.0,
+          "fact_recall": 1.0,
+          "strict_complete_rate": 1.0,
+          "mrr": 1.0,
+          "distractor_rate": 0.0
+        },
+        "unanswerable_negative": {
+          "category_zh": "6_超纲无答案防幻觉",
+          "count": 6,
+          "rejection_rate": 1.0,
+          "max_fp_score": 0.0,
+          "mean_fp_score": 0.0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "bundle_id": "harness-ablation-v1",
+  "files": [
+    {
+      "file": "REPORT.md",
+      "bytes": 4646,
+      "sha256": "905a6144fa246b4cb918e907f7799ffc3e3ad5c6d332a161a4f4a97e489de345"
+    },
+    {
+      "file": "summary.json",
+      "bytes": 4360,
+      "sha256": "6f3dffaf727c2bad77b60d5bc39fdd268f37b66706c1223ee78d88bb566e472b"
+    }
+  ]
+}

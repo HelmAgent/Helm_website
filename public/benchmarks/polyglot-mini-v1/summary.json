@@ -1,0 +1,461 @@
+{
+  "suite": "polyglot_mini_v1",
+  "timestamp_utc": "2026-11-10T03:29:00.106583+00:00",
+  "track_a_deterministic": {
+    "track": "Track_A_Deterministic_Polyglot_Tool_Microbenchmark",
+    "api_cost_cny": 0.0,
+    "elapsed_ms": 1745.6,
+    "languages_count": 6,
+    "cases_total": 36,
+    "cases_passed": 36,
+    "pass_rate": 1.0,
+    "by_language": {
+      "python": {
+        "cases_total": 6,
+        "cases_passed": 6,
+        "pass_rate": 1.0,
+        "symbols_recalled": "5/5"
+      },
+      "typescript": {
+        "cases_total": 6,
+        "cases_passed": 6,
+        "pass_rate": 1.0,
+        "symbols_recalled": "4/4"
+      },
+      "go": {
+        "cases_total": 6,
+        "cases_passed": 6,
+        "pass_rate": 1.0,
+        "symbols_recalled": "4/4"
+      },
+      "rust": {
+        "cases_total": 6,
+        "cases_passed": 6,
+        "pass_rate": 1.0,
+        "symbols_recalled": "4/4"
+      },
+      "cpp": {
+        "cases_total": 6,
+        "cases_passed": 6,
+        "pass_rate": 1.0,
+        "symbols_recalled": "4/4"
+      },
+      "java": {
+        "cases_total": 6,
+        "cases_passed": 6,
+        "pass_rate": 1.0,
+        "symbols_recalled": "4/4"
+      }
+    },
+    "cases": [
+      {
+        "id": "PYTHON_D1_OUTLINE",
+        "language": "python",
+        "dimension": "code_outline_symbol_recall",
+        "passed": true,
+        "detail": "5/5 symbols recalled"
+      },
+      {
+        "id": "PYTHON_D2_EDIT_FILE",
+        "language": "python",
+        "dimension": "edit_file_exact_replacement",
+        "passed": true,
+        "detail": "Edited lru_cache_engine.py"
+      },
+      {
+        "id": "PYTHON_D3_APPLY_PATCH",
+        "language": "python",
+        "dimension": "apply_patch_multi_hunk",
+        "passed": true,
+        "detail": "已应用差异清单：lru_cache_engine.py（2 处）"
+      },
+      {
+        "id": "PYTHON_D4_CRLF_UTF8_FIDELITY",
+        "language": "python",
+        "dimension": "crlf_and_cjk_fidelity",
+        "passed": true,
+        "detail": "crlf=True, pure_crlf=True, cjk=True"
+      },
+      {
+        "id": "PYTHON_D5_AMBIGUOUS_GUARD",
+        "language": "python",
+        "dimension": "ambiguous_match_safety_guard",
+        "passed": true,
+        "detail": "Error: old_text 在 dup_lru_cache_engine.py 中出现了 2 次（位于第 1, 3 行），请提供更多上下文使其唯一，或设置 replace_all=true"
+      },
+      {
+        "id": "PYTHON_D6_SYNTAX_VERIFY",
+        "language": "python",
+        "dimension": "post_edit_syntax_verification",
+        "passed": true,
+        "detail": "AST/Structural syntax verification passed"
+      },
+      {
+        "id": "TYPESCRIPT_D1_OUTLINE",
+        "language": "typescript",
+        "dimension": "code_outline_symbol_recall",
+        "passed": true,
+        "detail": "4/4 symbols recalled"
+      },
+      {
+        "id": "TYPESCRIPT_D2_EDIT_FILE",
+        "language": "typescript",
+        "dimension": "edit_file_exact_replacement",
+        "passed": true,
+        "detail": "Edited token_bucket.ts"
+      },
+      {
+        "id": "TYPESCRIPT_D3_APPLY_PATCH",
+        "language": "typescript",
+        "dimension": "apply_patch_multi_hunk",
+        "passed": true,
+        "detail": "已应用差异清单：token_bucket.ts（2 处）"
+      },
+      {
+        "id": "TYPESCRIPT_D4_CRLF_UTF8_FIDELITY",
+        "language": "typescript",
+        "dimension": "crlf_and_cjk_fidelity",
+        "passed": true,
+        "detail": "crlf=True, pure_crlf=True, cjk=True"
+      },
+      {
+        "id": "TYPESCRIPT_D5_AMBIGUOUS_GUARD",
+        "language": "typescript",
+        "dimension": "ambiguous_match_safety_guard",
+        "passed": true,
+        "detail": "Error: old_text 在 dup_token_bucket.ts 中出现了 2 次（位于第 1, 3 行），请提供更多上下文使其唯一，或设置 replace_all=true"
+      },
+      {
+        "id": "TYPESCRIPT_D6_SYNTAX_VERIFY",
+        "language": "typescript",
+        "dimension": "post_edit_syntax_verification",
+        "passed": true,
+        "detail": "AST/Structural syntax verification passed"
+      },
+      {
+        "id": "GO_D1_OUTLINE",
+        "language": "go",
+        "dimension": "code_outline_symbol_recall",
+        "passed": true,
+        "detail": "4/4 symbols recalled"
+      },
+      {
+        "id": "GO_D2_EDIT_FILE",
+        "language": "go",
+        "dimension": "edit_file_exact_replacement",
+        "passed": true,
+        "detail": "Edited consistent_hash.go"
+      },
+      {
+        "id": "GO_D3_APPLY_PATCH",
+        "language": "go",
+        "dimension": "apply_patch_multi_hunk",
+        "passed": true,
+        "detail": "已应用差异清单：consistent_hash.go（2 处）"
+      },
+      {
+        "id": "GO_D4_CRLF_UTF8_FIDELITY",
+        "language": "go",
+        "dimension": "crlf_and_cjk_fidelity",
+        "passed": true,
+        "detail": "crlf=True, pure_crlf=True, cjk=True"
+      },
+      {
+        "id": "GO_D5_AMBIGUOUS_GUARD",
+        "language": "go",
+        "dimension": "ambiguous_match_safety_guard",
+        "passed": true,
+        "detail": "Error: old_text 在 dup_consistent_hash.go 中出现了 2 次（位于第 1, 3 行），请提供更多上下文使其唯一，或设置 replace_all=true"
+      },
+      {
+        "id": "GO_D6_SYNTAX_VERIFY",
+        "language": "go",
+        "dimension": "post_edit_syntax_verification",
+        "passed": true,
+        "detail": "AST/Structural syntax verification passed"
+      },
+      {
+        "id": "RUST_D1_OUTLINE",
+        "language": "rust",
+        "dimension": "code_outline_symbol_recall",
+        "passed": true,
+        "detail": "4/4 symbols recalled"
+      },
+      {
+        "id": "RUST_D2_EDIT_FILE",
+        "language": "rust",
+        "dimension": "edit_file_exact_replacement",
+        "passed": true,
+        "detail": "Edited ring_buffer.rs"
+      },
+      {
+        "id": "RUST_D3_APPLY_PATCH",
+        "language": "rust",
+        "dimension": "apply_patch_multi_hunk",
+        "passed": true,
+        "detail": "已应用差异清单：ring_buffer.rs（2 处）"
+      },
+      {
+        "id": "RUST_D4_CRLF_UTF8_FIDELITY",
+        "language": "rust",
+        "dimension": "crlf_and_cjk_fidelity",
+        "passed": true,
+        "detail": "crlf=True, pure_crlf=True, cjk=True"
+      },
+      {
+        "id": "RUST_D5_AMBIGUOUS_GUARD",
+        "language": "rust",
+        "dimension": "ambiguous_match_safety_guard",
+        "passed": true,
+        "detail": "Error: old_text 在 dup_ring_buffer.rs 中出现了 2 次（位于第 1, 3 行），请提供更多上下文使其唯一，或设置 replace_all=true"
+      },
+      {
+        "id": "RUST_D6_SYNTAX_VERIFY",
+        "language": "rust",
+        "dimension": "post_edit_syntax_verification",
+        "passed": true,
+        "detail": "AST/Structural syntax verification passed"
+      },
+      {
+        "id": "CPP_D1_OUTLINE",
+        "language": "cpp",
+        "dimension": "code_outline_symbol_recall",
+        "passed": true,
+        "detail": "4/4 symbols recalled"
+      },
+      {
+        "id": "CPP_D2_EDIT_FILE",
+        "language": "cpp",
+        "dimension": "edit_file_exact_replacement",
+        "passed": true,
+        "detail": "Edited disjoint_set.cpp"
+      },
+      {
+        "id": "CPP_D3_APPLY_PATCH",
+        "language": "cpp",
+        "dimension": "apply_patch_multi_hunk",
+        "passed": true,
+        "detail": "已应用差异清单：disjoint_set.cpp（2 处）"
+      },
+      {
+        "id": "CPP_D4_CRLF_UTF8_FIDELITY",
+        "language": "cpp",
+        "dimension": "crlf_and_cjk_fidelity",
+        "passed": true,
+        "detail": "crlf=True, pure_crlf=True, cjk=True"
+      },
+      {
+        "id": "CPP_D5_AMBIGUOUS_GUARD",
+        "language": "cpp",
+        "dimension": "ambiguous_match_safety_guard",
+        "passed": true,
+        "detail": "Error: old_text 在 dup_disjoint_set.cpp 中出现了 2 次（位于第 1, 3 行），请提供更多上下文使其唯一，或设置 replace_all=true"
+      },
+      {
+        "id": "CPP_D6_SYNTAX_VERIFY",
+        "language": "cpp",
+        "dimension": "post_edit_syntax_verification",
+        "passed": true,
+        "detail": "AST/Structural syntax verification passed"
+      },
+      {
+        "id": "JAVA_D1_OUTLINE",
+        "language": "java",
+        "dimension": "code_outline_symbol_recall",
+        "passed": true,
+        "detail": "4/4 symbols recalled"
+      },
+      {
+        "id": "JAVA_D2_EDIT_FILE",
+        "language": "java",
+        "dimension": "edit_file_exact_replacement",
+        "passed": true,
+        "detail": "Edited CircuitBreaker.java"
+      },
+      {
+        "id": "JAVA_D3_APPLY_PATCH",
+        "language": "java",
+        "dimension": "apply_patch_multi_hunk",
+        "passed": true,
+        "detail": "已应用差异清单：CircuitBreaker.java（2 处）"
+      },
+      {
+        "id": "JAVA_D4_CRLF_UTF8_FIDELITY",
+        "language": "java",
+        "dimension": "crlf_and_cjk_fidelity",
+        "passed": true,
+        "detail": "crlf=True, pure_crlf=True, cjk=True"
+      },
+      {
+        "id": "JAVA_D5_AMBIGUOUS_GUARD",
+        "language": "java",
+        "dimension": "ambiguous_match_safety_guard",
+        "passed": true,
+        "detail": "Error: old_text 在 dup_CircuitBreaker.java 中出现了 2 次（位于第 1, 3 行），请提供更多上下文使其唯一，或设置 replace_all=true"
+      },
+      {
+        "id": "JAVA_D6_SYNTAX_VERIFY",
+        "language": "java",
+        "dimension": "post_edit_syntax_verification",
+        "passed": true,
+        "detail": "AST/Structural syntax verification passed"
+      }
+    ]
+  },
+  "track_b_polyglot": {
+    "track": "Track_B_Aider_Polyglot_24_Coding_Benchmark",
+    "mode": "llm-mock",
+    "tier": "full",
+    "tasks_total": 24,
+    "tasks_solved": 24,
+    "pass_rate": 1.0,
+    "api_cost_cny": 0.0,
+    "elapsed_ms": 1807.53,
+    "records": [
+      {
+        "task_id": "polyglot_python_p01_levenshtein",
+        "language": "python",
+        "tier": "canary",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_python_p02_topological_cycle",
+        "language": "python",
+        "tier": "probe",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_python_p03_sliding_window_median",
+        "language": "python",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_python_p04_rate_limiter_gcra",
+        "language": "python",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_typescript_p01_levenshtein",
+        "language": "typescript",
+        "tier": "canary",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_typescript_p02_topological_cycle",
+        "language": "typescript",
+        "tier": "probe",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_typescript_p03_sliding_window_median",
+        "language": "typescript",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_typescript_p04_rate_limiter_gcra",
+        "language": "typescript",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_go_p01_levenshtein",
+        "language": "go",
+        "tier": "canary",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_go_p02_topological_cycle",
+        "language": "go",
+        "tier": "probe",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_go_p03_sliding_window_median",
+        "language": "go",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_go_p04_rate_limiter_gcra",
+        "language": "go",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_rust_p01_levenshtein",
+        "language": "rust",
+        "tier": "canary",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_rust_p02_topological_cycle",
+        "language": "rust",
+        "tier": "probe",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_rust_p03_sliding_window_median",
+        "language": "rust",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_rust_p04_rate_limiter_gcra",
+        "language": "rust",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_cpp_p01_levenshtein",
+        "language": "cpp",
+        "tier": "canary",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_cpp_p02_topological_cycle",
+        "language": "cpp",
+        "tier": "probe",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_cpp_p03_sliding_window_median",
+        "language": "cpp",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_cpp_p04_rate_limiter_gcra",
+        "language": "cpp",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_java_p01_levenshtein",
+        "language": "java",
+        "tier": "canary",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_java_p02_topological_cycle",
+        "language": "java",
+        "tier": "probe",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_java_p03_sliding_window_median",
+        "language": "java",
+        "tier": "full",
+        "solved": true
+      },
+      {
+        "task_id": "polyglot_java_p04_rate_limiter_gcra",
+        "language": "java",
+        "tier": "full",
+        "solved": true
+      }
+    ]
+  }
+}

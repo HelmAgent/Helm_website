@@ -1,0 +1,15 @@
+{
+  "bundle_id": "gaia-mini-v1",
+  "files": [
+    {
+      "file": "REPORT.md",
+      "bytes": 2857,
+      "sha256": "7e289972021ff2ea48297102fbd1c50a30345979cca21b28ec91cd199205770d"
+    },
+    {
+      "file": "summary.json",
+      "bytes": 4219,
+      "sha256": "65e523bfe2b63201f22da63e7f032a741f06439fda588c42603cd28f0233c189"
+    }
+  ]
+}

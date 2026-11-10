@@ -1,0 +1,15 @@
+{
+  "bundle_id": "polyglot-mini-v1",
+  "files": [
+    {
+      "file": "REPORT.md",
+      "bytes": 1954,
+      "sha256": "3b91d3f89b51d377c7efea8471c4035e78f357d2d4a97320f24448f219b2331b"
+    },
+    {
+      "file": "summary.json",
+      "bytes": 14029,
+      "sha256": "1f121244d0a9271b48753cf9d31a62c181ccadcc1ba4424f4532bc99c1602557"
+    }
+  ]
+}
