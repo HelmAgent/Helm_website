@@ -1,10 +1,10 @@
 {
   "suite": "gaia_mini_v1",
-  "timestamp_utc": "2026-11-10T03:34:52.725349+00:00",
+  "timestamp_utc": "2026-11-10T12:19:13.857501+00:00",
   "track_a_office_microbenchmark": {
     "track": "Track_A_Deterministic_Office_And_GAIA_Normalizer",
     "api_cost_cny": 0.0,
-    "elapsed_ms": 1260.69,
+    "elapsed_ms": 915.95,
     "cases_total": 20,
     "cases_passed": 20,
     "pass_rate": 1.0,
@@ -27,7 +27,7 @@
       {
         "id": "OFFICE_04_PATCH_SELECTION_DOCX",
         "passed": true,
-        "detail": "OK: 已对 contract_sla.docx 执行局部修改（已更新 Word 文档 contract_sla.docx（第 2 段「9」），快照 1794281692450_5c960e）。前端预览框已实时热更新渲染该处变更。"
+        "detail": "OK: 已对 contract_sla.docx 执行局部修改（已更新 Word 文档 contract_sla.docx（第 2 段「9」），快照 1794313039658_94f2fc）。前端预览框已实时热更新渲染该处变更。"
       },
       {
         "id": "OFFICE_05_READ_XLSX",
@@ -77,7 +77,7 @@
       {
         "id": "NORM_14_LIST_SPACES",
         "passed": true,
-        "detail": "'alpha, beta, gamma' == 'alpha,beta,gamma' -> True"
+        "detail": "'9843,2700,168250' == '9843, 2700, 168250' -> True"
       },
       {
         "id": "NORM_15_FINAL_ANS_PREFIX",
@@ -90,9 +90,9 @@
         "detail": "'答案：GAIA-PPTX-9942' == 'gaia-pptx-9942' -> True"
       },
       {
-        "id": "NORM_17_FLOAT_TRAILING_ZERO",
+        "id": "NORM_17_FLOAT_PRECISION",
         "passed": true,
-        "detail": "'3.1400' == '3.14' -> True"
+        "detail": "'360583.3300' == '360583.33' -> True"
       },
       {
         "id": "NORM_18_PUNCTUATION",
@@ -113,16 +113,17 @@
   },
   "track_b_gaia_validation": {
     "track": "Track_B_GAIA_Validation_30_Stratified",
-    "mode": "llm-mock",
+    "mode": "llm-live",
     "tier": "full",
+    "model_id": "deepseek-flash",
     "tasks_total": 30,
-    "tasks_solved": 30,
-    "exact_match_rate": 1.0,
+    "tasks_solved": 27,
+    "exact_match_rate": 0.9,
     "by_level": {
       "Level_1": {
         "total": 10,
-        "solved": 10,
-        "accuracy": 1.0
+        "solved": 9,
+        "accuracy": 0.9
       },
       "Level_2": {
         "total": 12,
@@ -131,11 +132,401 @@
       },
       "Level_3": {
         "total": 8,
-        "solved": 8,
-        "accuracy": 1.0
+        "solved": 6,
+        "accuracy": 0.75
       }
     },
-    "api_cost_cny": 0.0,
-    "elapsed_ms": 60.0
+    "api_cost_cny": 0.067,
+    "elapsed_ms": 113207.87,
+    "records": [
+      {
+        "task_id": "gaia_l1_01",
+        "level": 1,
+        "tier": "canary",
+        "ground_truth": "3600",
+        "normalized_pred": "3600",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(security_spec.pdf)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_02",
+        "level": 1,
+        "tier": "canary",
+        "ground_truth": "9443",
+        "normalized_pred": "9443",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(security_spec.pdf)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_03",
+        "level": 1,
+        "tier": "probe",
+        "ground_truth": "GAIA-PPTX-9942",
+        "normalized_pred": "gaiapptx9942",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(arch_deck.pptx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_04",
+        "level": 1,
+        "tier": "probe",
+        "ground_truth": "425000",
+        "normalized_pred": "425000",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_05",
+        "level": 1,
+        "tier": "probe",
+        "ground_truth": "515000",
+        "normalized_pred": "515000",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_06",
+        "level": 1,
+        "tier": "full",
+        "ground_truth": "99.95",
+        "normalized_pred": "99.95",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(contract_sla.docx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_07",
+        "level": 1,
+        "tier": "full",
+        "ground_truth": "5",
+        "normalized_pred": "5",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(security_spec.pdf)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_08",
+        "level": 1,
+        "tier": "full",
+        "ground_truth": "60",
+        "normalized_pred": "60 minutes",
+        "exact_match": false,
+        "steps": 2,
+        "tools_used": [
+          "read_document(security_spec.pdf)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_09",
+        "level": 1,
+        "tier": "full",
+        "ground_truth": "NA_Cluster",
+        "normalized_pred": "nacluster",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l1_10",
+        "level": 1,
+        "tier": "full",
+        "ground_truth": "84",
+        "normalized_pred": "84",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(arch_deck.pptx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_01",
+        "level": 2,
+        "tier": "canary",
+        "ground_truth": "1250000",
+        "normalized_pred": "1250000",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_02",
+        "level": 2,
+        "tier": "canary",
+        "ground_truth": "106250",
+        "normalized_pred": "106250",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)",
+          "read_document(contract_sla.docx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_03",
+        "level": 2,
+        "tier": "probe",
+        "ground_truth": "31000",
+        "normalized_pred": "31000",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_04",
+        "level": 2,
+        "tier": "probe",
+        "ground_truth": "137250",
+        "normalized_pred": "137250",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_05",
+        "level": 2,
+        "tier": "probe",
+        "ground_truth": "1112750",
+        "normalized_pred": "1112750",
+        "exact_match": true,
+        "steps": 3,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)",
+          "read_file(incident_log.csv)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_06",
+        "level": 2,
+        "tier": "probe",
+        "ground_truth": "205000",
+        "normalized_pred": "205000",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_07",
+        "level": 2,
+        "tier": "full",
+        "ground_truth": "5",
+        "normalized_pred": "5",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(security_spec.pdf)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_08",
+        "level": 2,
+        "tier": "full",
+        "ground_truth": "34",
+        "normalized_pred": "34",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_09",
+        "level": 2,
+        "tier": "full",
+        "ground_truth": "24.8",
+        "normalized_pred": "24.8",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_10",
+        "level": 2,
+        "tier": "full",
+        "ground_truth": "250000",
+        "normalized_pred": "250000",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)",
+          "read_document(arch_deck.pptx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_11",
+        "level": 2,
+        "tier": "full",
+        "ground_truth": "NA_Cluster, APAC_Cluster, EMEA_Cluster",
+        "normalized_pred": "nacluster, apaccluster, emeacluster",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l2_12",
+        "level": 2,
+        "tier": "full",
+        "ground_truth": "90",
+        "normalized_pred": "90",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(contract_sla.docx)",
+          "read_document(security_spec.pdf)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_01",
+        "level": 3,
+        "tier": "canary",
+        "ground_truth": "168250",
+        "normalized_pred": "168250",
+        "exact_match": true,
+        "steps": 3,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)",
+          "read_document(contract_sla.docx)",
+          "read_file(override_memo.md)",
+          "read_file(incident_log.csv)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_02",
+        "level": 3,
+        "tier": "canary",
+        "ground_truth": "9848",
+        "normalized_pred": "9848",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_file(override_memo.md)",
+          "read_document(security_spec.pdf)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_03",
+        "level": 3,
+        "tier": "probe",
+        "ground_truth": "831750",
+        "normalized_pred": "831750",
+        "exact_match": true,
+        "steps": 3,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)",
+          "read_document(arch_deck.pptx)",
+          "read_file(override_memo.md)",
+          "read_document(contract_sla.docx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_04",
+        "level": 3,
+        "tier": "probe",
+        "ground_truth": "172500",
+        "normalized_pred": "172500",
+        "exact_match": true,
+        "steps": 3,
+        "tools_used": [
+          "read_document(arch_deck.pptx)",
+          "read_document(security_spec.pdf)",
+          "read_file(incident_log.csv)",
+          "read_file(override_memo.md)",
+          "read_document(q3_financials.xlsx)",
+          "read_document(contract_sla.docx)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_05",
+        "level": 3,
+        "tier": "full",
+        "ground_truth": "2430",
+        "normalized_pred": "2430",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_file(override_memo.md)",
+          "read_document(security_spec.pdf)",
+          "read_file(incident_log.csv)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_06",
+        "level": 3,
+        "tier": "full",
+        "ground_truth": "274750",
+        "normalized_pred": "274750",
+        "exact_match": true,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)",
+          "read_document(arch_deck.pptx)",
+          "read_document(security_spec.pdf)",
+          "read_file(override_memo.md)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_07",
+        "level": 3,
+        "tier": "full",
+        "ground_truth": "1.5032",
+        "normalized_pred": "1.4752",
+        "exact_match": false,
+        "steps": 2,
+        "tools_used": [
+          "read_document(q3_financials.xlsx)",
+          "read_file(incident_log.csv)",
+          "read_file(override_memo.md)"
+        ]
+      },
+      {
+        "task_id": "gaia_l3_08",
+        "level": 3,
+        "tier": "full",
+        "ground_truth": "9843, 2700, 168250",
+        "normalized_pred": "9843, 2700, 189850",
+        "exact_match": false,
+        "steps": 2,
+        "tools_used": [
+          "read_file(override_memo.md)",
+          "read_document(security_spec.pdf)",
+          "read_document(q3_financials.xlsx)",
+          "read_document(contract_sla.docx)",
+          "read_document(arch_deck.pptx)",
+          "read_file(incident_log.csv)"
+        ]
+      }
+    ]
   }
 }

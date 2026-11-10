@@ -1,15 +1,16 @@
 {
-  "bundle_id": "gaia-mini-v1",
+  "bundle": "gaia-mini-v1",
+  "generated_at_utc": "2026-11-10T12:33:57.440622+00:00",
   "files": [
     {
       "file": "REPORT.md",
-      "bytes": 2857,
-      "sha256": "7e289972021ff2ea48297102fbd1c50a30345979cca21b28ec91cd199205770d"
+      "bytes": 2938,
+      "sha256": "f948fdd0707298abedf5243271c0709133ee5415f52eb9707a702b23d7a4ce9f"
     },
     {
       "file": "summary.json",
-      "bytes": 4219,
-      "sha256": "65e523bfe2b63201f22da63e7f032a741f06439fda588c42603cd28f0233c189"
+      "bytes": 14751,
+      "sha256": "a1bbd53caaab93fc5f8608daaaf96b745cd7955f1b10143178c47e7979082ffb"
     }
   ]
 }

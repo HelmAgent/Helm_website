@@ -1,15 +1,16 @@
 {
-  "bundle_id": "polyglot-mini-v1",
+  "bundle": "polyglot-mini-v1",
+  "generated_at_utc": "2026-11-10T12:33:57.421763+00:00",
   "files": [
     {
       "file": "REPORT.md",
-      "bytes": 1954,
-      "sha256": "3b91d3f89b51d377c7efea8471c4035e78f357d2d4a97320f24448f219b2331b"
+      "bytes": 1992,
+      "sha256": "fcad3b0c73b8e152c77b13fb40c7f3d829371033c22ba113d8efb0bb04103347"
     },
     {
       "file": "summary.json",
-      "bytes": 14029,
-      "sha256": "1f121244d0a9271b48753cf9d31a62c181ccadcc1ba4424f4532bc99c1602557"
+      "bytes": 14836,
+      "sha256": "1016ae4d463f4bba7f54f3079c7d83d87809838cbfa28de031f81a715c2d63b1"
     }
   ]
 }

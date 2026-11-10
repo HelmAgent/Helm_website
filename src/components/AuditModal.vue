@@ -127,6 +127,12 @@ function jumpTo(url) {
           <a href="/benchmarks/harness-ablation-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
             /benchmarks/harness-ablation-v1/manifest.json ↗
           </a>
+          <a href="/benchmarks/polyglot-mini-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
+            /benchmarks/polyglot-mini-v1/manifest.json ↗
+          </a>
+          <a href="/benchmarks/gaia-mini-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
+            /benchmarks/gaia-mini-v1/manifest.json ↗
+          </a>
         </div>
 
         <div class="nx-modal-footer">

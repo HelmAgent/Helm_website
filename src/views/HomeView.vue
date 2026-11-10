@@ -464,16 +464,17 @@ const fullStackAblationBenchmarks = computed(() => [
   },
   {
     code: 'ABLATION 04 · POLYGLOT & GAIA',
-    metric: '56 / 56',
-    delta: t('6 语言 100% · Office 100%', '6言語 100% · Office 100%', '100% Polyglot & Office'),
-    title: t('6 语言代码工具链与 Office 多模态微基准', '6言語コード編集＆Officeマルチモーダル検証', '6-Language Polyglot & Office Multimodal Suite'),
-    beforeAfter: 'Polyglot 36/36 (100%) + Office/GAIA 20/20 (100%)',
+    metric: '100% / 90%',
+    delta: t('Polyglot 24/24 · GAIA 27/30', 'Polyglot 24/24 · GAIA 27/30', 'Polyglot 24/24 · GAIA 27/30'),
+    title: t('6 语言 Polyglot 盲测与 GAIA 多步办公实测', '6言語 Polyglot 盲検＆GAIA 多段階Office実証', '6-Lang Polyglot Blind & GAIA Multi-Step Live'),
+    beforeAfter: 'Polyglot 24/24 (100%) · GAIA L1-L3 27/30 (90.0%)',
     desc: t(
-      '横跨 Python / TS / Go / Rust / C++ / Java 六大语言的符号大纲、多处补丁与 CRLF/CJK 保真测试 36/36 全通；docx / xlsx / pptx / pdf 选区热更新与 GAIA 判分器 20/20 全通。',
-      'Python / TS / Go / Rust / C++ / Java の6言語でシンボル抽出・パッチ適用・CRLF保持が 36/36 合格。docx / xlsx / pptx / pdf の部分熱更新および GAIA 正規化器も 20/20 完全通過。',
-      'Passes 36/36 multi-language editing & AST checks across Python, TS, Go, Rust, C++, and Java, plus 20/20 deterministic Office (docx/xlsx/pptx/pdf) surgical hot-patch and GAIA normalizer checks.'
+      'Aider-Polyglot 6 语言 24 题无提示盲测 100.0% (24/24) 通过（工具链微基准 36/36）；GAIA Validation 30 题多步工具调用实测 90.0% (27/30，L1 90% / L2 100% / L3 75%)，Office 热补丁微基准 20/20 全通。',
+      'Aider-Polyglot 6言語24問ブラインド実装で 100.0% (24/24) 合格（基盤検証 36/36）；GAIA Validation 30問多段階ツール呼び出しで 90.0% (27/30、L1 90% / L2 100% / L3 75%)、Office検証 20/20 通過。',
+      '100.0% (24/24) on 6-language Aider-Polyglot blind tasks (36/36 tool microbench); 90.0% (27/30: L1 90%, L2 100%, L3 75%) on GAIA Validation 30-task multi-step agent loop (20/20 Office microbench).'
     ),
-    reportUrl: '/benchmarks/polyglot-mini-v1/REPORT.md'
+    reportUrl: '/benchmarks/polyglot-mini-v1/REPORT.md',
+    secondaryReportUrl: '/benchmarks/gaia-mini-v1/REPORT.md'
   }
 ])
 </script>
@@ -1271,16 +1272,28 @@ const fullStackAblationBenchmarks = computed(() => [
             <h4 class="nx-swebench-micro-title">{{ item.title }}</h4>
             <code class="nx-swebench-micro-ba">{{ item.beforeAfter }}</code>
             <p class="nx-swebench-micro-desc">{{ item.desc }}</p>
-            <a
-              v-if="item.reportUrl"
-              :href="item.reportUrl"
-              target="_blank"
-              rel="noopener"
-              class="nx-modal-bench-link"
-              style="display: inline-block; margin-top: 8px; font-size: 12px;"
-            >
-              {{ t('查看实测报告 (REPORT.md) ↗', '評価レポートを見る (REPORT.md) ↗', 'View Empirical Report (REPORT.md) ↗') }}
-            </a>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+              <a
+                v-if="item.reportUrl"
+                :href="item.reportUrl"
+                target="_blank"
+                rel="noopener"
+                class="nx-modal-bench-link"
+                style="font-size: 12px;"
+              >
+                {{ item.secondaryReportUrl ? t('Polyglot 报告 ↗', 'Polyglot レポート ↗', 'Polyglot Report ↗') : t('查看实测报告 (REPORT.md) ↗', '評価レポートを見る (REPORT.md) ↗', 'View Empirical Report (REPORT.md) ↗') }}
+              </a>
+              <a
+                v-if="item.secondaryReportUrl"
+                :href="item.secondaryReportUrl"
+                target="_blank"
+                rel="noopener"
+                class="nx-modal-bench-link"
+                style="font-size: 12px;"
+              >
+                {{ t('GAIA 30题报告 ↗', 'GAIA 30問レポート ↗', 'GAIA 30-Task Report ↗') }}
+              </a>
+            </div>
           </div>
         </div>
       </div>

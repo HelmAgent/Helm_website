@@ -1,6 +1,12 @@
 {
-  "bundle_id": "harness-ablation-v1",
+  "bundle": "harness-ablation-v1",
+  "generated_at_utc": "2026-11-10T12:33:57.394452+00:00",
   "files": [
+    {
+      "file": "manifest.json",
+      "bytes": 385,
+      "sha256": "c66a9e8f51484f0b38773e981f70decc8028f7b4575d6473451f29719ceb8434"
+    },
     {
       "file": "REPORT.md",
       "bytes": 4646,

@@ -1,5 +1,6 @@
 {
-  "bundle_id": "rag-eval-v1",
+  "bundle": "rag-eval-v1",
+  "generated_at_utc": "2026-11-10T12:33:57.357746+00:00",
   "files": [
     {
       "file": "ablation_summary.json",
