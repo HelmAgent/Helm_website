@@ -106,6 +106,11 @@ async function copyFooterText(key, text) {
               </a>
             </li>
             <li>
+              <a :href="`${prefix}/benchmarks/swebench-mini-v1`" @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)">
+                {{ t('6 大权威实测报告与下载中心', '6大実証レポート＆ダウンロード', '6 Empirical Reports & Downloads') }}
+              </a>
+            </li>
+            <li>
               <a :href="`${prefix}/download`" @click.prevent="navigate(`${prefix}/download`)">
                 {{ t(`Windows 客户端下载 (${SITE_META.version} 内测版)`, `Windows版ダウンロード (${SITE_META.version} ベータ版)`, `Download for Windows (${SITE_META.version} Beta)`) }}
               </a>
@@ -123,10 +128,10 @@ async function copyFooterText(key, text) {
           </ul>
         </div>
 
-        <!-- 第三栏：工程架构白皮书（全 5 卷） -->
+        <!-- 第三栏：工程架构白皮书（全 6 卷） -->
         <div class="nx-footer-col">
           <h4 class="nx-footer-col-title">
-            {{ t('Architecture Whitepaper (全 5 卷)', '技術アーキテクチャ白書 (全5章)', 'Architecture Whitepaper (5 Vols)') }}
+            {{ t('Architecture Whitepaper (全 6 卷)', '技術アーキテクチャ白書 (全6章)', 'Architecture Whitepaper (6 Vols)') }}
           </h4>
           <ul class="nx-footer-list">
             <li v-for="ch in archChapters" :key="ch.id">

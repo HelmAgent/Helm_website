@@ -36,7 +36,7 @@ function jumpTo(url) {
         <div class="nx-modal-header">
           <div class="nx-modal-badge-row">
             <span class="nx-badge">ARCHITECTURE &amp; LOCAL SECURITY OVERVIEW</span>
-            <span class="nx-modal-code">ELECTRON 44 · VUE 3.5 · FASTAPI (463+ UNIT TESTS · 84.0% SWE-BENCH MINI)</span>
+            <span class="nx-modal-code">ELECTRON 44 · VUE 3.5 · FASTAPI (502 UNIT TESTS · 52 TOOLS · 84.0% SWE-BENCH MINI)</span>
           </div>
           <button
             type="button"
@@ -64,18 +64,18 @@ function jumpTo(url) {
             <h4>
               {{
                 t(
-                  '独立桌面软件分发与全透明架构白皮书',
-                  '独立デスクトップ製品の配布と全5章の技術設計白書',
-                  'Standalone Desktop Release & 5-Volume Blueprint'
+                  '独立桌面软件分发与全透明 6 卷架构白皮书',
+                  '独立デスクトップ製品の配布と全6章の技術設計白書',
+                  'Standalone Desktop Release & 6-Volume Blueprint'
                 )
               }}
             </h4>
             <p>
               {{
                 t(
-                  'Helm 作为开箱即用的桌面端独立软件面向广大用户提供 Windows 安装包下载。为了让用户在下载前即可直观了解软件功能与底层可靠性，本站特别内建了「1:1 在线交互工作台」与「全 5 卷工程架构白皮书」，完整公开双进程拓扑、TurnHub 状态机、确定性代码导航、无侵入影子 Git 检查点与 Git Worktree 并发隔离的技术实现。',
-                  'Helm はすぐに使えるデスクトップ製品として Windows インストーラー版を配布しています。導入前に操作感や内部の信頼性を確認いただけるよう、本サイトでは「1:1 対話型ワークベンチ」と「全5章の技術アーキテクチャ白書」を公開し、デュアルプロセス構造や決定的コードナビゲーション等の設計を詳しく解説しています。',
-                  'Helm is distributed as a standalone Windows desktop application. So users and developers can explore its capabilities and reliability prior to installation, this site provides a 1:1 Interactive Workbench and a 5-volume Architecture Whitepaper.'
+                  'Helm 作为开箱即用的桌面端独立软件面向广大个人与企业用户提供 Windows 安装包下载。为了让用户与技术审阅者在下载前即可直观了解软件含金量与底层可靠性，本站内建了「1:1 在线交互工作台」、「6 卷工程架构白皮书」与「6 大权威实测报告与下载中心」，完整公开双进程拓扑、Windows DPAPI 凭据金库、三路并发状态机、无侵入影子 Git 检查点、Worktree 并发团队及 MCP OAuth / Plan Mode 的核心实现。',
+                  'Helm はすぐに使えるデスクトップ製品として Windows インストーラー版を配布しています。導入前に操作感や内部の信頼性を確認いただけるよう、本サイトでは「1:1 対話型ワークベンチ」「全6章の技術アーキテクチャ白書」「6大ベンチマーク実証レポートセンター」を公開しています。',
+                  'Helm is distributed as a standalone Windows desktop application. So users and technical reviewers can inspect its engineering depth prior to installation, this site provides a 1:1 Interactive Workbench, a 6-volume Architecture Whitepaper, and a 6-Suite Empirical Benchmark Center.'
                 )
               }}
             </p>
@@ -95,9 +95,9 @@ function jumpTo(url) {
             <p>
               {{
                 t(
-                  'Helm 内置完整的 Python 3.13 FastAPI 异步运行时与 463+ 项自动化核心单测（SWE-bench Verified Mini 实测峰值 84.0% Pass@1，两轮均值 81.0% ± 4.2%），支持连接本机 Ollama 或企业内网大模型在物理断网环境下独立闭环运行（含长周期代码开发、影子 Git 检查点与 Office 文档局部 AI 热修改），确保个人隐私文档与企业核心代码 100% 留存本地，绝不经过任何第三方中转服务器。',
-                  'Helm は Python 3.13 FastAPI 非同期ランタイムと 463件以上の自動単体テスト検証済みコアエンジン（SWE-bench Verified Mini ピーク 84.0% Pass@1、2回平均 81.0% ± 4.2%）を内蔵しています。ローカルの Ollama や社内閉域網 LLM と連携し、完全オフライン環境でもコード開発・シャドウGitチェックポイント・Office文書の選択範囲AI更新が完結します。',
-                  'Bundling an embedded Python 3.13 FastAPI runtime backed by 463+ automated unit tests and proven at 84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% 2-run mean), Helm runs 100% locally with Ollama or corporate LAN models with zero cloud relay.'
+                  'Helm 内置完整的 Python 3.13 FastAPI 异步运行时与 502 项自动化核心单测（SWE-bench Verified Mini 实测峰值 84.0% Pass@1，两轮均值 81.0% ± 4.2%），支持连接本机 Ollama 或企业内网大模型在物理断网环境下独立闭环运行（含长周期代码开发、System Doctor 免管理员工具链自愈、影子 Git 检查点与 Office 文档局部 AI 热修改），确保核心代码与机密文档 100% 留存本地。',
+                  'Helm は Python 3.13 FastAPI 非同期ランタイムと 502件の自動単体テスト検証済みコアエンジン（SWE-bench Verified Mini ピーク 84.0% Pass@1、2回平均 81.0% ± 4.2%）を内蔵しています。ローカルの Ollama や社内閉域網 LLM と連携し、完全オフライン環境でも自律開発と Office 文書更新が完結します。',
+                  'Bundling an embedded Python 3.13 FastAPI runtime backed by 502 automated unit tests and proven at 84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% 2-run mean), Helm runs 100% locally with Ollama or corporate LAN models with zero cloud relay.'
                 )
               }}
             </p>
@@ -109,29 +109,29 @@ function jumpTo(url) {
           <span>
             {{
               t(
-                '本站所有 SWE-bench Verified Mini（峰值 84.0% / 均值 81.0%，缓存命中 97.74%）与 Pre-Cache 评测指标均附带 SHA-256 签名的公开可复核证据包：',
-                '本サイトの SWE-bench Verified Mini（ピーク 84.0% / 平均 81.0%、キャッシュヒット率 97.74%）および Pre-Cache 性能指標は、SHA-256 署名付き公開証跡で検証可能です：',
-                'All SWE-bench Verified Mini (84.0% peak / 81.0% mean, 97.74% cache hit) and Pre-Cache metrics on this site are backed by public SHA-256 signed evidence bundles:'
+                '本站全部 6 套权威评测（SWE-bench 84.0%、Pre-Cache 89.58%、RAG 100%、Harness 消融、Polyglot 24/24、GAIA 27/30）均提供在线阅读、浏览器端 SHA-256 实时校验与完整 ZIP 证据包下载：',
+                '本サイトの全6種のベンチマーク実証データは、オンライン閲覧・SHA-256 リアルタイム検証・ZIP証跡一括ダウンロードに対応しています：',
+                'All 6 empirical benchmark suites feature online formatted reports, live browser SHA-256 verification, and full ZIP bundle downloads:'
               )
             }}
           </span>
-          <a href="/benchmarks/swebench-mini-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
-            /benchmarks/swebench-mini-v1/manifest.json ↗
+          <a :href="`${prefix}/benchmarks/swebench-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/swebench-mini-v1`)" class="nx-modal-bench-link">
+            SWE-bench Mini (84.0%) →
           </a>
-          <a href="/benchmarks/precache-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
-            /benchmarks/precache-v1/manifest.json ↗
+          <a :href="`${prefix}/benchmarks/precache-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/precache-v1`)" class="nx-modal-bench-link">
+            Pre-Cache (89.58%) →
           </a>
-          <a href="/benchmarks/rag-eval-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
-            /benchmarks/rag-eval-v1/manifest.json ↗
+          <a :href="`${prefix}/benchmarks/rag-eval-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/rag-eval-v1`)" class="nx-modal-bench-link">
+            RAG v0→v3 (100%) →
           </a>
-          <a href="/benchmarks/harness-ablation-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
-            /benchmarks/harness-ablation-v1/manifest.json ↗
+          <a :href="`${prefix}/benchmarks/harness-ablation-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/harness-ablation-v1`)" class="nx-modal-bench-link">
+            Harness Ablation (-87.7%) →
           </a>
-          <a href="/benchmarks/polyglot-mini-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
-            /benchmarks/polyglot-mini-v1/manifest.json ↗
+          <a :href="`${prefix}/benchmarks/polyglot-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/polyglot-mini-v1`)" class="nx-modal-bench-link">
+            Polyglot (24/24) →
           </a>
-          <a href="/benchmarks/gaia-mini-v1/manifest.json" target="_blank" rel="noopener" class="nx-modal-bench-link">
-            /benchmarks/gaia-mini-v1/manifest.json ↗
+          <a :href="`${prefix}/benchmarks/gaia-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/gaia-mini-v1`)" class="nx-modal-bench-link">
+            GAIA &amp; Office (90%) →
           </a>
         </div>
 
@@ -141,14 +141,14 @@ function jumpTo(url) {
             class="nx-btn nx-btn-primary"
             @click="jumpTo(`${prefix}/architecture/overview`)"
           >
-            {{ t('审阅全 5 卷工程架构白皮书 →', '技術アーキテクチャ白書 (全5章) を読む →', 'Read 5-Vol Architecture Blueprint →') }}
+            {{ t('审阅全 6 卷工程架构白皮书 →', '技術アーキテクチャ白書 (全6章) を読む →', 'Read 6-Vol Architecture Blueprint →') }}
           </button>
           <button
             type="button"
             class="nx-btn nx-btn-glass"
-            @click="jumpTo(`${prefix}/demo`)"
+            @click="jumpTo(`${prefix}/benchmarks/swebench-mini-v1`)"
           >
-            {{ t('打开在线交互工作台 (/demo)', '全画面ワークベンチを開く (/demo)', 'Open Interactive Workbench (/demo)') }}
+            {{ t('打开权威实测报告与下载中心', '6大ベンチマーク証跡センターを開く', 'Open Benchmark Evidence Center') }}
           </button>
           <button
             type="button"

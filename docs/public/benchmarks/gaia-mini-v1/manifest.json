@@ -1,0 +1,28 @@
+{
+  "schema_version": "hyn.gaia.manifest.v1",
+  "benchmark_suite": "gaia-mini-v1",
+  "dataset": "GAIA Validation Stratified Subset (L1/L2/L3 Multi-Step Tool & Multimodal, n=30) + Office Hot-Patch (n=20)",
+  "evaluated_model": "deepseek-flash (DeepSeek-V4.1-Flash)",
+  "completed_at_utc": "2026-11-10T12:33:57Z",
+  "headline_metrics": {
+    "gaia_overall_accuracy": 0.9,
+    "gaia_resolved": "27/30",
+    "gaia_level1_accuracy": 0.9,
+    "gaia_level2_accuracy": 1.0,
+    "gaia_level3_accuracy": 0.75,
+    "office_hotpatch_microbench": "20/20"
+  },
+  "file_count": 2,
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 2938,
+      "sha256": "f948fdd0707298abedf5243271c0709133ee5415f52eb9707a702b23d7a4ce9f"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 14751,
+      "sha256": "a1bbd53caaab93fc5f8608daaaf96b745cd7955f1b10143178c47e7979082ffb"
+    }
+  ]
+}

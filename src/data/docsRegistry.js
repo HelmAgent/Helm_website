@@ -6,11 +6,14 @@
  * - 根据当前路由路径（如 `/architecture/overview` 或 `/ja/architecture/overview`）精确匹配对应语言的文档内容。
  */
 
-const rawMarkdownFiles = import.meta.glob('../../docs/**/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true
-})
+const rawMarkdownFiles = import.meta.glob(
+  ['../../docs/**/*.md', '!../../docs/public/**'],
+  {
+    query: '?raw',
+    import: 'default',
+    eager: true
+  }
+)
 
 // 规范化键值：如 '/architecture/overview' 或 '/ja/architecture/overview'
 const normalizedMap = {}

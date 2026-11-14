@@ -41,11 +41,17 @@ function parseInline(text) {
 
   // 链接 [text](url)
   working = working.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
-    const isDirectTarget = /^(https?:\/\/|\/benchmarks\/)/i.test(href)
-    const attrs = isDirectTarget
-      ? `href="${href}" target="_blank" rel="noopener"`
-      : `href="${href}" data-internal-link="true"`
-    return `<a class="nx-doc-link" ${attrs}>${label}</a>`
+    const isExternal = /^https?:\/\//i.test(href)
+    const isRawAsset = /^\/benchmarks\/.+\.(json|jsonl|zip|txt|csv)(\?.*)?$/i.test(href)
+    if (isExternal || isRawAsset) {
+      return `<a class="nx-doc-link" href="${href}" target="_blank" rel="noopener">${label}</a>`
+    }
+    // 将旧版直指 /benchmarks/<slug>/REPORT.md 的链接平滑归一至精美阅读器路由 /benchmarks/<slug>
+    const normalizedBenchHref = href.replace(
+      /^(\/(?:ja|en))?\/benchmarks\/([a-z0-9-]+)\/REPORT\.md$/i,
+      '$1/benchmarks/$2'
+    )
+    return `<a class="nx-doc-link" href="${normalizedBenchHref}" data-internal-link="true">${label}</a>`
   })
 
   // 粗体 **text**

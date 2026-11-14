@@ -62,18 +62,20 @@ async function renderMermaidDiagrams() {
   try {
     const mermaidModule = await import('mermaid')
     const mermaid = mermaidModule.default || mermaidModule
+    const rootStyle = getComputedStyle(document.documentElement)
+    const token = (name) => rootStyle.getPropertyValue(name).trim()
     mermaid.initialize({
       startOnLoad: false,
       theme: 'dark',
       themeVariables: {
         darkMode: true,
-        background: '#070b14',
-        primaryColor: '#172554',
-        primaryTextColor: '#f8fafc',
-        primaryBorderColor: '#38bdf8',
-        lineColor: '#60a5fa',
-        secondaryColor: '#0f172a',
-        tertiaryColor: '#1e293b',
+        background: token('--nx-bg-code'),
+        primaryColor: token('--nx-primary-deep'),
+        primaryTextColor: token('--nx-text-1'),
+        primaryBorderColor: token('--nx-primary-bright'),
+        lineColor: token('--nx-primary-bright'),
+        secondaryColor: token('--nx-bg-deep'),
+        tertiaryColor: token('--nx-bg-surface'),
         fontFamily: '"Inter", "Segoe UI", "Yu Gothic UI", "Microsoft YaHei UI", sans-serif',
         fontSize: '13px'
       }
@@ -85,9 +87,13 @@ async function renderMermaidDiagrams() {
       const rawCode = decodeURIComponent(el.dataset.mermaid || '')
       if (!rawCode) continue
       const id = `nx-mermaid-${Date.now()}-${i}`
-      const { svg } = await mermaid.render(id, rawCode)
-      el.innerHTML = svg
-      el.dataset.rendered = '1'
+      try {
+        const { svg } = await mermaid.render(id, rawCode)
+        el.innerHTML = svg
+        el.dataset.rendered = '1'
+      } catch (stageErr) {
+        console.warn(`[Helm Blueprint Reader] Mermaid stage ${i} skipped:`, stageErr)
+      }
     }
   } catch (err) {
     console.warn('[Helm Blueprint Reader] Mermaid render skipped:', err)
@@ -180,9 +186,22 @@ watch(
 
             <div class="nx-sb-divider"></div>
 
+            <!-- 权威实测报告与下载中心直达入口 -->
+            <a
+              class="nx-sb-audit-btn"
+              style="margin-bottom: 10px;"
+              :href="`${prefix}/benchmarks/swebench-mini-v1`"
+              @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
+            >
+              <span class="nx-sb-audit-tag">EMPIRICAL EVIDENCE // 6 SUITES</span>
+              <strong>
+                {{ t('6 大权威实测报告与证据包下载 →', '6大ベンチマーク実証＆証跡DL →', '6 Empirical Reports & ZIP Bundles →') }}
+              </strong>
+            </a>
+
             <!-- 架构透明性与本地安全运行说明卡片 -->
             <button type="button" class="nx-sb-audit-btn" @click="openAuditModal">
-              <span class="nx-sb-audit-tag">⌘ ARCHITECTURE &amp; SECURITY</span>
+              <span class="nx-sb-audit-tag">ARCHITECTURE &amp; SECURITY</span>
               <strong>
                 {{ t('架构透明性与本地安全运行说明 →', '設計の透明性とローカル安全稼働について →', 'Architecture & Local Security Info →') }}
               </strong>
@@ -213,7 +232,7 @@ watch(
             </header>
 
             <!-- 编译后的白皮书 HTML 正文 -->
-            <div class="nx-article-body" v-html="renderedDoc.html"></div>
+            <div :key="currentPath" class="nx-article-body" v-html="renderedDoc.html"></div>
 
             <!-- 底部上下卷切换卡片 -->
             <footer class="nx-article-pager">

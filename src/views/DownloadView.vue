@@ -54,12 +54,12 @@ const auditSteps = computed(() => [
     cmd: 'netstat -ano | findstr :8001   # Verify strict 127.0.0.1 loopback binding'
   },
   {
-    step: 'AUDIT 03 // LOCAL DATA & LOG SANITIZATION',
-    title: t('第三步：审计本地落盘目录与正则脱敏日志', 'Step 3：ローカル保存ディレクトリと自動マスキングログの監査', 'Step 3: Audit Local Storage & Pre-Write Sanitized Logs'),
+    step: 'AUDIT 03 // DPAPI VAULT & LOG SANITIZATION',
+    title: t('第三步：审计 DPAPI 系统级凭据金库与正则脱敏日志', 'Step 3：Windows DPAPI 暗号化金庫と自動マスキングログの監査', 'Step 3: Audit Windows DPAPI Vault & Pre-Write Sanitized Logs'),
     desc: t(
-      '所有会话历史、双层记忆（USER.md / MEMORY.md）与 5 版本文件快照均以明文存储在本地 .hyn_agent/ 目录中；同时可检查日志目录，验证所有 API 凭证在写盘前均已被强制替换为 ***。',
-      'すべての会話履歴、2層メモリ（USER.md / MEMORY.md）、ファイルスナップショットはローカルの .hyn_agent/ フォルダ内に平文で保存されます。また、ログファイル内の API キー等が書込前に *** へ自動消去されていることを確認できます。',
-      'All sessions, 2-tier Markdown memory, and file snapshots reside in your local .hyn_agent/ folder. Inspect the log files to verify that API tokens are scrubbed to *** before disk write.'
+      '所有 API 密钥与 MCP OAuth 令牌均通过 Windows DPAPI (CryptProtectData) 绑定当前操作系统账户硬件级加密存储于 secrets_vault.json；会话历史、双层记忆与文件快照透明存放于本地 .hyn_agent/ 目录，且写盘前自动将敏感凭证脱敏为 ***。',
+      'APIキーやMCP OAuthトークンは Windows DPAPI によりOSユーザー単位で暗号化保存されます。会話履歴や2層メモリは .hyn_agent/ に保存され、ログ内の認証情報は書込前に *** へ自動消去されます。',
+      'API keys and MCP OAuth tokens are encrypted via OS-level Windows DPAPI (CryptProtectData). Sessions and 2-tier Markdown memory reside in .hyn_agent/, with all tokens scrubbed to *** before disk write.'
     ),
     cmd: 'Get-ChildItem .\\.hyn_agent\\ -Recurse | Select-Object FullName, Length'
   }
@@ -135,13 +135,23 @@ const auditSteps = computed(() => [
             target="_blank"
             rel="noopener"
           >
-            <span>{{ t(`📥 立即下载 Windows 版 (.exe) · ${SITE_META.version} 内测版`, `📥 無料ダウンロード Windows版 (.exe) · ${SITE_META.version} ベータ版`, `📥 Download for Windows (.exe) · ${SITE_META.version} Beta`) }}</span>
-            <span>↓</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>{{ t(`立即下载 Windows 版 (.exe) · ${SITE_META.version} 内测版`, `無料ダウンロード Windows版 (.exe) · ${SITE_META.version} ベータ版`, `Download for Windows (.exe) · ${SITE_META.version} Beta`) }}</span>
           </a>
 
           <!-- 下载按钮正下方：精致安全验证提示行 -->
           <div class="nx-dl-verify-subline">
-            <span class="nx-dl-v-safe">🔒 <strong>100% Local &amp; Safe</strong></span>
+            <span class="nx-dl-v-safe">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <strong>100% Local &amp; Safe</strong>
+            </span>
             <span class="nx-dl-v-sep">·</span>
             <a
               class="nx-dl-v-link"
@@ -149,11 +159,15 @@ const auditSteps = computed(() => [
               target="_blank"
               rel="noopener"
             >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 3px;" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
               {{
                 t(
-                  `✅ VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore})`,
-                  `✅ VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore})`,
-                  `✅ VirusTotal Scan Report (${SITE_META.virusTotalScore})`
+                  `VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore})`,
+                  `VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore})`,
+                  `VirusTotal Scan Report (${SITE_META.virusTotalScore})`
                 )
               }} ↗
             </a>
@@ -171,7 +185,7 @@ const auditSteps = computed(() => [
                   target="_blank"
                   rel="noopener"
                 >
-                  ✅ VirusTotal {{ SITE_META.virusTotalScore }} ↗
+                  VirusTotal {{ SITE_META.virusTotalScore }} ↗
                 </a>
                 <button
                   type="button"
@@ -219,8 +233,12 @@ const auditSteps = computed(() => [
               <span>{{ t('本机 Ollama 离线 / 企业内网 vLLM / 主流云端 API', 'ローカル Ollama / 社内LAN vLLM / 各種クラウドAPI', 'Local Ollama / Corporate LAN vLLM / Cloud APIs') }}</span>
             </li>
             <li>
-              <strong>{{ t('数据存储隔离：', 'データ保存領域：', 'Isolated Storage:') }}</strong>
-              <span>{{ t('默认存放于独立 .hyn_agent/ 目录，零 C 盘空间侵占', '独立した .hyn_agent/ フォルダに保存（Cドライブ非圧迫）', 'Stored in isolated .hyn_agent/ directory') }}</span>
+              <strong>{{ t('免管理员自愈诊断：', '自動ツールチェーン修復：', 'System Doctor Auto-Repair:') }}</strong>
+              <span>{{ t('缺失 Git / Node / uvx 时免管理员一键拉取沙箱便携环境', 'Git / Node / uvx 不足時に管理者権限不要でポータブル環境を自動構築', 'Zero-admin 1-click portable MinGit / Node v22 / uvx sandbox setup') }}</span>
+            </li>
+            <li>
+              <strong>{{ t('数据与凭据隔离：', 'データ・認証情報分離：', 'Vault & Storage Isolation:') }}</strong>
+              <span>{{ t('Windows DPAPI 加密密钥库 + 独立 .hyn_agent/ 目录（零 C 盘侵占）', 'Windows DPAPI 暗号化金庫 + 独立 .hyn_agent/ 保存（Cドライブ非圧迫）', 'Windows DPAPI encrypted vault + isolated .hyn_agent/ folder') }}</span>
             </li>
           </ul>
 
@@ -237,7 +255,7 @@ const auditSteps = computed(() => [
               :href="`${prefix}/architecture/overview`"
               @click.prevent="navigate(`${prefix}/architecture/overview`)"
             >
-              {{ t('阅读 5 卷架构白皮书', '技術白書 (全5章) を読む', 'Read Whitepaper') }}
+              {{ t('阅读 6 卷架构白皮书', '技術白書 (全6章) を読む', 'Read 6-Vol Whitepaper') }}
             </a>
           </div>
         </div>
@@ -345,7 +363,11 @@ const auditSteps = computed(() => [
                 class="nx-btn nx-btn-primary nx-dl-comm-btn"
                 :href="`mailto:${SITE_META.contactEmail}`"
               >
-                {{ t('发送邮件联系 ✉', 'メール送信 ✉', 'Send Email ✉') }}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                <span>{{ t('发送邮件联系', 'メール送信', 'Send Email') }}</span>
               </a>
               <button
                 type="button"

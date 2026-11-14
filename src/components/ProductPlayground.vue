@@ -119,6 +119,12 @@ const sampleFontName = computed(() =>
 
 const permOptions = computed(() => [
   {
+    id: 'plan',
+    code: 'PLAN_MODE',
+    label: tt('只读规划', '読取専用計画', 'Plan Mode'),
+    desc: tt('零缓存失效只读探索，提交结构化方案获批后执行', 'キャッシュを維持したまま調査し、計画承認後に実装へ移行', 'Prefix-safe read-only exploration; submit structured plan before edits')
+  },
+  {
     id: 'ask_all',
     code: 'ASK_ALL',
     label: tt('全部询问', '毎回確認', 'Ask All'),

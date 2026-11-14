@@ -25,7 +25,7 @@ const scenarios = computed(() => [
     items: [
       t('点击对话区工具卡片（apply_patch / run_powershell）展开检视自动化单测输出', 'ツールカード（apply_patch / run_powershell）をクリックして単体テスト出力を展開', 'Click tool cards (apply_patch / run_powershell) to inspect automated test outputs'),
       t('在右侧工作台切换 CP-01 / CP-02，对比私有命名空间 refs/hyn/checkpoints/ 的 Git Diff', '右ペインで CP-01 / CP-02 を切り替え、専用ref（refs/hyn/checkpoints/）の差分を確認', 'Switch CP-01 / CP-02 in the right pane to compare private Git ref diffs'),
-      t('点击底部书写栏的「FULL_AUTO」切换 4 档实时权限，或点击「24% · 31k/128k」查看 Prefix Cache 监控', '下部の権限ボタンで4段階モードをリアルタイム切替、またはキャッシュヒット率を確認', 'Toggle 4-tier live permissions or inspect Prefix Cache metrics at the bottom bar')
+      t('点击底部书写栏的「FULL_AUTO」切换 5 档实时权限（含 Plan Mode），或点击「24% · 31k/128k」查看 Prefix Cache 监控', '下部の権限ボタンで5段階モード（Plan Mode含む）を切替、またはキャッシュヒット率を確認', 'Toggle 5-tier live permissions (including Plan Mode) or inspect Prefix Cache metrics at the bottom bar')
     ]
   },
   {
@@ -41,7 +41,7 @@ const scenarios = computed(() => [
     code: 'SCENARIO 03 // GIT WORKTREE AGENT TEAM',
     title: t('主从多智能体常驻团队与 Git Worktree 物理隔离', '常駐マルチエージェントチームと Git Worktree 物理分離', 'Multi-Agent Resident Team & Git Worktree Isolation'),
     items: [
-      t('Lead 主代理统筹 3 名常驻队友，各自绑定独立 .hyn_wt/* 工作树并行开发', 'リードエージェントが3名の常駐チームメイトを統括し、独立した .hyn_wt/* 上で並列実装', 'Lead coordinates 3 resident teammates in isolated .hyn_wt/* worktrees'),
+      t('Lead 主代理统筹最多 8 名常驻队友，各自绑定独立 .worktrees/* 工作树并行开发', 'リードエージェントが最大8名の常駐チームメイトを統括し、独立した .worktrees/* 上で並列実装', 'Lead coordinates up to 8 resident teammates in isolated .worktrees/* worktrees'),
       t('点击 mate-frontend 卡片上的「批准队友重构计划」，体验只读安全门禁解锁过程', 'mate-frontend の「実装計画を承認」をクリックし、読取専用ゲートの解除を確認', 'Click "Approve Teammate Plan" on mate-frontend to unlock workspace writes'),
       t('零轮询异步内存收件箱（Zero-Polling Inbox）汇总结果，杜绝主对话上下文膨胀', '非同期インボックスで完了報告を集約し、メイン会話のコンテキスト肥大化を防止', 'Zero-polling async inbox aggregates results without polluting main context')
     ]
@@ -92,7 +92,7 @@ const scenarios = computed(() => [
             :href="`${prefix}/architecture/overview`"
             @click.prevent="navigate(`${prefix}/architecture/overview`)"
           >
-            {{ t('工程架构白皮书 (全 5 卷)', '技術アーキテクチャ白書 (全5章)', 'Architecture Blueprint') }}
+            {{ t('工程架构白皮书 (全 6 卷)', '技術アーキテクチャ白書 (全6章)', 'Architecture Blueprint (6 Vols)') }}
           </a>
         </div>
       </div>

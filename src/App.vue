@@ -16,6 +16,7 @@ import HomeView from './views/HomeView.vue'
 import DemoView from './views/DemoView.vue'
 import DownloadView from './views/DownloadView.vue'
 import WhitepaperView from './views/WhitepaperView.vue'
+import BenchmarkReportView from './views/BenchmarkReportView.vue'
 
 const { currentLang, currentView } = useAppRouter()
 
@@ -47,6 +48,7 @@ watchEffect(() => {
     <HomeView v-if="currentView === 'home'" />
     <DemoView v-else-if="currentView === 'demo'" />
     <DownloadView v-else-if="currentView === 'download'" />
+    <BenchmarkReportView v-else-if="currentView === 'benchmarks'" />
     <WhitepaperView v-else />
 
     <!-- 企业级多栏大页脚 -->

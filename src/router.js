@@ -51,6 +51,7 @@ export const currentView = computed(() => {
   if (sp === '/' || sp === '') return 'home'
   if (sp === '/demo') return 'demo'
   if (sp === '/download') return 'download'
+  if (sp === '/benchmarks' || sp.startsWith('/benchmarks/')) return 'benchmarks'
   if (sp.startsWith('/architecture/') || sp.startsWith('/guide/')) return 'whitepaper'
   return 'home'
 })

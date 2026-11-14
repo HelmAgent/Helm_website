@@ -1,74 +1,91 @@
 ---
-title: 3. マルチエージェントと Git Worktree 物理分離
-description: リード＆常駐チームメイト構造（team_runtime.py）、非同期メールボックス通信、Git Worktree による並列分離（team_worktree.py）、および計画承認ゲート。
+title: 3. 常駐マルチエージェントチーム・タスクDAGと Git Worktree 並列比較
+description: 軽量サブエージェントと最大8名の常駐チームメイトの2層協調、分類別イベント起動、ユーザー権限上限保護、タスクDAGリースと Windows Junction ゼロコピー Worktree を詳説。
 ---
 
-# 3. マルチエージェントと Git Worktree 物理分離
+# 3. 常駐マルチエージェントチーム・タスクDAGと Git Worktree 並列比較
 
-> [!NOTE] 対応ソースコード
-> - バックエンド：`app/services/team_runtime.py`、`app/services/team_wake.py`、`app/services/team_worktree.py`、`app/services/team_store.py`、`app/services/subagent.py`
-> - フロントエンド：`src/views/LiveFloor.js`、`src/views/TeamSettingsPanel.js`、`src/App.js`
+> [!NOTE] 対象モジュールと署名済み実測レポート
+> - 対象ソース：`app/tools/subagent.py`、`subagent_registry.py`、`team_runtime.py`（`4,585` 行）、`team_wake.py`、`task_store.py`、`worktree_core.py`
+> - 実測レポート：[Harness ガードレール消融実験 (4名並列 3.04倍高速化 · 書込衝突 0.0% · 特権昇格阻止 100%)](/ja/benchmarks/harness-ablation-v1)
 
-## 3.1 使い捨てサブエージェントの限界と常駐チームの設計
+## 3.1 一時サブエージェントと常駐チームメイトの2層協調トポロジ
 
-大規模なフルスタック改修では、単一エージェントの逐次実行では時間がかかりすぎます。一方で、複数エージェントを同じディレクトリで並列実行すると、**ファイルの相互上書きや `.git/index.lock` の競合**が発生します。
-
-Helm は、1セッションにつき **常駐チームメイト（Resident Teammates、人数上限は設定可能：デフォルト 4 名、最大 8 名）** を編成し、個別の永続化トランスクリプト（`sessions/<sid>/team/teammates/<name>.jsonl`）と独立した **Git Worktree** を割り当てるアーキテクチャを採用しています。
+単一エージェントのコンテキスト枯渇と、従来型グループチャット方式のトークン爆発・ファイル上書き衝突を同時に解決するため、Helm は**一時サブエージェント（Subagents）**と**常駐チーム（Resident Teams：Lead + 1〜8名）**を明確に分離しています。
 
 ```mermaid
-sequenceDiagram
-  autonumber
-  actor User as ユーザー / ライブフロア
-  participant Lead as Lead エージェント (メイン領域)
-  participant Wake as バックエンド起動スケジューラ (team_wake.py)
-  participant Inbox as 永続化チーム受信箱 (team.json)
-  participant MateA as メイト A (Worktree: .worktrees/mate-a)
-  participant MateB as メイト B (Worktree: .worktrees/mate-b)
+flowchart TD
+  User["人間エンジニア (グローバル権限上限と高リスク承認を独占)"] --> Lead["Team Lead 統括エージェント (DAG分解 · 計画審査 · 3-Way統合)"]
 
-  User->>Lead: フルスタック機能実装を指示
-  Lead->>MateA: バックエンド改修を委譲 (計画承認必須モード)
-  Lead->>MateB: フロントエンド＆単体テストを委譲
-  Note over MateA,MateB: 計画承認前は読取専用 (_WORKSPACE - _MUTATING) に強制制限
-  MateA-->>Inbox: ウェイク対象の計画承認要求 (plan_approval_request) を投函
-  Inbox-->>Wake: デバウンス後に Lead またはユーザーの審査を起動
-  Lead->>MateA: 理由を添えて計画を承認 (ファイル書込・コマンド実行を解禁)
-  par 物理分離された Worktree で並列実行
-    MateA->>MateA: .worktrees/mate-a で実装＆ pytest 実行
-  and
-    MateB->>MateB: .worktrees/mate-b でUI実装＆ vite build 検証
+  subgraph Ephemeral["軌道 A: 一時サブエージェント (subagent.py)"]
+    Explore["explore 調査エージェント (数学的に保証された読取専用ツール群)"]
+    Verify["verify 検証エージェント (独立テスト・ビルド検証)"]
+    CustomSub["宣言型カスタムエージェント (.hyn_agent/agents/*.md · resume_id)"]
   end
-  MateA-->>Inbox: ウェイク対象の完了結果 (result) を投函
-  MateB-->>Inbox: ウェイク対象の完了結果 (result) を投函
-  Inbox-->>Wake: ガード条件を満たすと Lead を自動ウェイクし [Team events] を消化
+
+  subgraph Resident["軌道 B: 常駐自律チーム (team_runtime.py · 1-8名 Teammates)"]
+    Mailbox["JSONL 分類別メールボックス (Wake 即時起動 vs Piggyback 同乗配信)"]
+    TaskDAG["プロジェクト Task DAG (task_store.py · Kahn閉路検査 · リース心拍)"]
+    Mates["Teammates 1..8 (計画承認前は書込ツールを物理剥離)"]
+    Mailbox <--> Mates
+    TaskDAG <--> Mates
+  end
+
+  subgraph Isolation["物理ファイル分離層 (worktree_core.py)"]
+    WT["独立 .worktrees/<name> + Windows Junction ゼロコピー依存共有"]
+  end
+
+  Lead -->|"局所委譲・要約のみ返却"| Explore & Verify & CustomSub
+  Lead <-->|"assign_task / review_plan / broadcast"| Mailbox
+  Mates --> WT
+  WT -->|"compare_group 複数案並列比較 -> git apply --3way 統合"| Lead
 ```
 
 ---
 
-## 3.2 コアエンジニアリング機構
+## 3.2 分類別起動メールボックス・在席検知・権限収束ガード
 
-1. **メッセージ分類とデバウンス付き非同期メールボックス（Classified Inbox & Debounced Wake）**：
-   - 各メイトのツール呼び出し履歴はメイン会話の `messages` とは分離され、`teammates/<name>.jsonl` に保存されます（ライブフロアの「履歴」タブからいつでも閲覧でき、特定のメイトへ直接メッセージを送ることも可能です）。
-   - Lead 宛てのメールは**ウェイク対象**（`result`、`error`、`plan_approval_request`、直接の `message`）と**付随通知**（`idle_notification`、`shutdown_response`、`stopped`）に分類されます。ウェイク対象のみがデバウンス時間（`wake_debounce_s`、デフォルト 3 秒）後に次ターンを起動し、付随通知はその際にまとめて引き渡されます。
-   - モデル呼び出しで一時的なエラー（レート制限やタイムアウト等）が発生した場合、メイトはコンテキストを保持したまま `error_paused` に遷移し、指示を受け次第そのまま再開できます。
-2. **永続化・アイドル自動一時停止と再開（Persistence & Suspend/Resume）**：
-   - チーム状態（`team.json`）と各メイトの会話履歴（`teammates/<name>.jsonl`）はディスクへ永続化されます。アイドル状態が `idle_suspend_minutes`（デフォルト 30 分）を超えるかアプリ終了時には、バックグラウンドコルーチンを終了して `suspended`（一時停止）状態に移行します。
-   - 一時停止中のメイトが担当しているタスクは保持期間（`suspended_lease_grace_hours`、デフォルト 24 時間）の間保護され、再起動後にライブフロアからワンクリックで**再開（Resume）**するか、**解散（Dismiss）**してタスクを解放できます。
-3. **ユーザー直結の権限確認とセッション内許可ルール（User-Only Permission Gate）**：
-   - チームメイトの実効権限は `min(セッション権限モード, チームメイト権限オーバーライド)`（`inherit` / `auto_edit` / `readonly`）で決定され、セッションより緩和されることは決してありません。
-   - 確認が必要な操作を実行しようとすると、メイトは `waiting_permission` となり、ライブフロアおよびデスクトップ通知を通じて**ユーザー本人に直接確認**を求めます（「このセッションでは同種の操作を常に許可」の記憶にも対応）。**Lead エージェントが権限を代理承認することは絶対にありません。** 3 回連続で拒否またはタイムアウトすると、タスクは `blocked` になります。
-4. **計画承認ゲートと承認者の選択（Plan Approval Gate）**：
-   - `team_runtime.py` では変更系ツール群 `_MUTATING = {"write_file", "edit_file", "apply_patch", "write_docx", "edit_document", "run_powershell"}` を分離し、計画承認前は読取専用ツールのみを許可します（`require_plan` または全員強制の `force_plan`）。
-   - 計画の承認者（`plan_approver`）は `auto`（権限モードに従う：`ask_all` の時はユーザー、それ以外は Lead）、`lead`（カスタム基準 `plan_criteria` を参照し、承認時は 10 文字以上の理由記載が必須）、`user`（ユーザーのみ）から選択でき、履歴は `recent_plans` に記録されます。
-5. **バックエンド起動スケジューラ（`team_wake.py`）と離席時ガードレール**：
-   - **バックエンド主導の調整と `/team/stream` SSE**：`team_wake.py` は FastAPI のイベントループ内で動作し、バックグラウンド調整モード（`background_wake`: `on` 常時 / `active_only` セッション表示中のみ / `off` 手動のみ）をサポートします。別セッションを表示中やウィンドウ最小化時でもバックエンドが Lead を自動起動でき、ストリームイベント・デスクトップ通知（`team_notice`）・サイドバーバッジ集計（`team_summary`）を `/api/v1/team/stream` で配信します。
-   - **在席検知と離席時の保留（`TEAM_DEFERRED` / `needs_user`）**：フロントエンドがセッションを表示中は `watch=1` により 10 秒間の在席ハートビート（`is_attended`）を更新します。離席中の自動ウェイクでは `_team_unattended` がバインドされ、ユーザー確認を要する操作（`spawn_teammate` 等）はモーダル表示も実行もせず `Deferred:` を返し、Lead が返信内で提案を説明した上で `needs_user` を記録してユーザーの帰還を待ちます。
-   - **多重ガードレール**：連続自動ウェイク上限（`max_auto_wakes`、デフォルト 8 回）、離席中トークン予算（`unattended_token_budget`、デフォルト 200,000 tokens、超過時は自動ウェイクと実行中メイトを停止）、チームメイト 1 タスクあたりのトークン予算（`teammate_token_budget`）、およびユーザー手動停止セッション（`run_status == "stopped"`）の自動起動抑止と `turn_hub` による単一ターン排他制御を備えています。
-6. **`worktree_core.py`・`team_worktree.py`・`worktree_records.py` による Git Worktree ライフサイクル管理**：
-   - **スナップショット起点と Detached チェックアウト**：`.worktrees/<name>` は未コミット変更を含む現在のワークスペースのスナップショット（`baseSha`）から `--detach` モードで作成され、ローカルブランチを汚さず `.git/info/exclude` にも自動登録されます。
-   - **`.hyn/worktree.json` 初期化と Windows ジャンクション保護**：設定ファイルのコピーや `node_modules` / `.venv` のジャンクション作成を自動化し、削除時にはジャンクションを先に解除してメイン領域の依存破壊を防ぎます。
-   - **自動コミットと隠し参照（`refs/hyn/worktrees/<key>/{base,head,pre_apply}`）**：完了時に変更を自動コミットし、3-way パッチ適用（`git apply --3way`）、適用取り消し（Undo）、`wt/<name>` ブランチ保存、破棄、および孤立参照の一括管理を提供します。
-   - **サブエージェント分離（`isolation="worktree"`）と複数プラン比較（`compare_group`）**：書き込み可能なサブエージェントも `.worktrees/sub-<run_id>` で隔離実行でき、チャットカードから直接比較・採用が可能です。また同一 `compare_group` のチームタスクは完了後に並列比較画面からワンクリックで採用できます。
-   - **ワークツリー越境コマンド保護**：`bind_tool_root` に加え、`run_powershell` でメイン領域の絶対パス、`cd ..`、`git -C`、`git checkout/switch/reset/merge` 等が検出された場合、ユーザーの権限確認へルーティングします。
-7. **プロジェクトタスクシステム（`task_store.py`）**：
-   - **ステータス管理と連鎖キャンセル**：`pending`、`in_progress`、`blocked`（ブロック理由）、`completed`（完了サマリー `result`）、`cancelled`（後続タスクの連鎖キャンセル対応）をサポートします。
-   - **リース期限・一時停止保持期間・一括作成・アーカイブ**：`leaseExpiresAt` によるハートビート、一時停止中メイトのタスク保持期間（`suspended_lease_grace_hours`）、期限切れタスクの引き継ぎ、`create_tasks` による一時 `ref` を用いた DAG 一括構築、アクティビティ履歴、`(mtime_ns, size)` メモリキャッシュ、および完了タスクの自動アーカイブを備えています。
+```mermaid
+sequenceDiagram
+  autonumber
+  participant UI as フロント画面 (10秒 watch=1 在席心拍)
+  participant Wake as TeamWake ルータ (team_wake.py)
+  participant Lead as Lead タスク
+  participant Mate as Teammate タスク
+  participant Guard as 計画＆権限ゲート
+
+  Mate->>Guard: submit_plan で改修計画を提出
+  Note over Mate,Guard: 計画承認前は _MUTATING 書込ツールを物理剥離
+  Guard->>Wake: plan_approval_request を投函 (Wake クラス)
+  Wake->>Wake: 3.0秒デバウンス窓 (wake_debounce_s=3.0) で同時通知を集約
+  Wake->>Lead: Lead を起動して計画を審査
+  Lead->>Guard: review_plan(approve=True, reason>=10文字)
+  Guard-->>Mate: 専用 Worktree 内で書込ツールを解禁
+  Mate->>Wake: idle_notification 心拍を送出 (Piggyback クラス -> 追加LLM課金ゼロ)
+  UI-.->Wake: 離席検知 -> is_attended = False
+  Mate->>Guard: 高リスクコマンド承認を要求
+  Guard-->>Wake: 離席中のため TEAM_DEFERRED へ保留＆OSデスクトップ通知
+```
+
+> [!TIP] アーキテクチャ上のトレードオフ：トークン暴走と特権昇格をどう防ぐか？
+> - **技術的課題**：並列エージェントの心拍通信による無限課金と、プロンプト注入による親エージェント経由の権限昇格が大きな脅威となります。
+> - **従来手法の限界**：全員同報チャット方式ではメッセージごとに全エージェントが起動し、テキスト指示ベースの権限管理は容易に突破されます。
+> - **Helm の解決策**：① メールを **Wake**（`3秒` 集約起動）と **Piggyback**（次回ターン同乗・単独課金ゼロ）に分離。② 実効権限を `min(ユーザー現在のモード, メンバー設定権限)` にハード固定。③ 無人実行上限 `200,000` トークン・連続自動起動 `8回`・`30分` 自動休眠（`24時間` リース保護）を強制します。
+> - **定量的成果**：[Harness 消融実験](/ja/benchmarks/harness-ablation-v1) にて権限昇格・注入攻撃を **`100.0%`（30/30）阻止**し、待機中トークン消費 **0** を実現しました。
+
+---
+
+## 3.3 原子的タスク DAG と Windows Junction ゼロコピー Git Worktree
+
+```mermaid
+flowchart LR
+  Create["create_tasks 原子生成 (最大30ノード · Kahn閉路検出)"] --> Ready["in-degree=0 タスクを自動解禁"]
+  Ready --> Lease["Teammate がリース取得＆心拍維持 (失敗時は下流を連鎖キャンセル)"]
+  Lease --> Sandbox[".worktrees/<mate> 独立チェックアウト生成"]
+  Sandbox --> Junction["Windows _winapi.CreateJunction で node_modules / .venv を瞬時共有"]
+  Junction --> Code["並列実装＆独立テスト (ファイル書込衝突 0.0%)"]
+  Code --> Compare["compare_group 並列 Diff レビュー"]
+  Compare --> Apply["git apply --3way 安全統合 + pre_apply 1クリック復元"]
+```
+
+- **安全な Junction 解除（`worktree_core.py`）**：管理者権限不要の `_winapi.CreateJunction` で数GBの依存環境をゼロコピー共有し、破棄時は必ず先に再解析ポイントを解除してから削除するため、本体の `node_modules` を誤削除する事故は起こりません。4名並列実行により **`2.88倍〜3.04倍` の実時間高速化**と **衝突率 `0.0%`** を実証しています。

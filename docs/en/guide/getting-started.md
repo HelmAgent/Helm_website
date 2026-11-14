@@ -1,48 +1,49 @@
 ---
 title: Quick Start & Installation
-description: "Get started with Helm in 3 minutes: zero-config startup, workspace binding, and 4-tier live permissions."
+description: "Get started with Helm in 3 minutes: admin-free System Doctor auto-repair, Windows DPAPI secret vault, workspace binding, and 5-tier live permissions."
 ---
 
 # Quick Start & Installation
 
-Helm combines an **Electron + Vue 3 frontend** with an **embedded Python 3.13 FastAPI local backend**. It runs out of the box after installation—no external Python setup or server deployment required.
+Helm pairs an **Electron 44 + Vue 3.5 frontend** with an **embedded Python 3.13 FastAPI local runtime**. No external Python or database setup is needed—and if `git`, `node`, or `uvx` are missing on a locked-down corporate laptop, built-in **System Doctor** provisions portable toolchains without UAC admin rights.
 
 ## 1. Launch the Desktop Client
 
 Download the Windows installer from [Download & Security](/en/download):
-- **[📥 Download for Windows (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.1.0.0.exe)**: Creates desktop shortcuts and sets up an isolated data directory.
-- 🔒 **100% Local & Safe** · [✅ VirusTotal Security Scan Report (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) · `SHA-256: c93002b2...536ccf0f`
+- **[Download for Windows (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.1.0.0.exe)**: Supports custom non-system drive installation and isolated `.hyn_agent` storage.
+- **100% Local & DPAPI Encrypted** · [VirusTotal Security Scan Report (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) · `SHA-256: c93002b2...536ccf0f`
 
 | File | SHA-256 Checksum | VirusTotal Scan Report |
 | :--- | :--- | :--- |
-| `Helm Setup 1.0.0.exe` | `c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f` | [✅ View Report on VirusTotal (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) |
+| `Helm Setup 1.0.0.exe` | `c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f` | [View Report on VirusTotal (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) |
 
 ## 2. Three Steps to Your First Autonomous Task
 
 ```mermaid
 flowchart LR
-  S1["1. Configure Model<br/>Local Ollama / Enterprise LAN / Cloud API"] --> S2["2. Bind Workspace<br/>Local Git Repo or Office Folder"]
-  S2 --> S3["3. Choose Permission Mode & Run<br/>Unattended Execution & Live Preview"]
+  S1["1. Configure Model (Local Ollama / Enterprise LAN / Direct Cloud)"] --> S2["2. Bind Workspace (Local Git Repo or Office Folder)"]
+  S2 --> S3["3. Choose 5-Tier Permission Mode & Run (Dual-Mode Live Workbench)"]
 ```
 
 ### Step 1: Select a Model Provider (100% Offline Supported)
 Open **Settings → Models** in the bottom-left sidebar:
-- **For air-gapped / strict privacy environments**: Enable built-in **Ollama (Local Offline)** or **Enterprise LAN Server (`lan_server`)**—no API key required.
-- **For frontier cloud models**: Supports DeepSeek, Kimi, Anthropic Claude, Google Gemini, and any OpenAI-compatible endpoint. API keys are stored strictly on local disk and automatically scrubbed from logs.
+- **Air-gapped / strict privacy environments**: Enable built-in **Ollama (Local Offline)** or **Enterprise LAN Server (`lan_server`)**—no API key required.
+- **Frontier & high-efficiency cloud models**: Built-in support for DeepSeek, Qwen, GLM, Kimi, Anthropic Claude, Google Gemini, and OpenAI-compatible gateways. All keys are encrypted via **Windows DPAPI (`CryptProtectData`)** and automatically scrubbed from logs.
 
 ### Step 2: Bind a Local Workspace
 Click the workspace path beneath the top-left **Helm** mark to select your Git repository or document directory.
-- When bound to a Git repo, **Shadow Git Checkpoints** are enabled automatically, creating non-invasive snapshots under `refs/hyn/checkpoints/<session_id>` without touching your `HEAD` or staging area.
+- In Git repositories, **Shadow Git Checkpoints** snapshot every edit under `refs/hyn/checkpoints/<session_id>` without touching `HEAD` or `git status`.
 
-### Step 3: Pick a Live Permission Mode
-Switch between 4 permission tiers at any time (even mid-run, taking effect on the very next tool call):
+### Step 3: Pick from 5 Live Permission Modes
+Switch seamlessly across **5 permission modes** at any time (prefix-cache safe, taking effect on the very next tool call):
 
 | Mode | Best For | Behavior |
 | :--- | :--- | :--- |
-| **🔒 Ask All (`ask_all`)** | Auditing unfamiliar repos | Read-only tools pass; every file write, patch, or shell command requires approval |
-| **✏️ Auto Edit (`auto_edit`)** | Interactive coding & writing | Workspace file edits and whitelisted read-only commands pass automatically |
-| **🛡️ Smart Default (`default`)** | Everyday engineering | Normal edits and test runs pass; destructive commands require confirmation |
-| **⚡ Full Auto (`full_auto`)** | **Multi-hour unattended runs** | Auto-approves workspace tools, MCP, and teammates; **out-of-workspace & system-destructive commands remain 100% hard-denied** |
+| **`plan` (Plan Mode)** | Unfamiliar repos & up-front architecture review | Allows read-only exploration, blocks all writes/shell calls, and presents an interactive `PlanCard` |
+| **`ask_all` (Ask All)** | High-sensitivity audits & prod configs | Read-only tools pass; every file write, patch, or shell command requires explicit approval |
+| **`default` (Smart Default)** | Everyday engineering & office workflows | Safe reads and diff-reviewed edits pass; potentially destructive commands prompt for approval |
+| **`auto_edit` (Auto Edit)** | Fast interactive coding & document authoring | Workspace edits (backed by 5-gen snapshots) and read-only commands pass automatically |
+| **`full_auto` (Full Auto)** | **Multi-hour refactors & multi-agent teams** | Auto-approves workspace tools, MCP, and teammates; **protected paths (`.git/hooks`, `.env*`) still mandate human approval** |
 
 ## 3. Community, Issue Feedback & Custom Development
 

@@ -52,6 +52,8 @@ const isArchActive = computed(
     strippedPath.value.startsWith('/architecture/') ||
     strippedPath.value.startsWith('/guide/')
 )
+
+const isBenchActive = computed(() => strippedPath.value.startsWith('/benchmarks'))
 </script>
 
 <template>
@@ -96,8 +98,9 @@ const isArchActive = computed(
 
         <a
           class="nx-nav-item"
-          :href="`${prefix}/#benchmarks`"
-          @click.prevent="go(`${prefix}/#benchmarks`)"
+          :class="{ 'is-active': isBenchActive }"
+          :href="`${prefix}/benchmarks/swebench-mini-v1`"
+          @click.prevent="go(`${prefix}/benchmarks/swebench-mini-v1`)"
         >
           {{ t('权威评测', 'ベンチマーク', 'Benchmarks') }}
         </a>
@@ -144,11 +147,11 @@ const isArchActive = computed(
               @mouseleave="closeMegaDelayed"
             >
               <div class="nx-mega-grid">
-                <!-- 左栏：5 卷工程架构白皮书 -->
+                <!-- 左栏：6 卷工程架构白皮书 -->
                 <div class="nx-mega-col is-main">
                   <div class="nx-mega-col-head">
                     <span class="nx-mega-kicker">
-                      {{ t('ENGINEERING BLUEPRINT // 全 5 卷深度架构白皮书', 'ENGINEERING BLUEPRINT // 技術設計白書（全5章）', 'ENGINEERING BLUEPRINT // 5-VOLUME WHITEPAPER') }}
+                      {{ t('ENGINEERING BLUEPRINT // 全 6 卷深度架构白皮书', 'ENGINEERING BLUEPRINT // 技術設計白書（全6章）', 'ENGINEERING BLUEPRINT // 6-VOLUME WHITEPAPER') }}
                     </span>
                   </div>
                   <div class="nx-mega-list">
@@ -313,14 +316,14 @@ const isArchActive = computed(
         <a :href="`${prefix}/`" @click.prevent="go(`${prefix}/`)">
           {{ t('产品首页', '製品ホーム', 'Product Home') }}
         </a>
-        <a :href="`${prefix}/#benchmarks`" @click.prevent="go(`${prefix}/#benchmarks`)">
-          {{ t('SWE-bench 权威评测 (84.0%)', 'SWE-bench ベンチマーク実証 (84.0%)', 'SWE-bench Benchmarks (84.0%)') }}
+        <a :href="`${prefix}/benchmarks/swebench-mini-v1`" @click.prevent="go(`${prefix}/benchmarks/swebench-mini-v1`)">
+          {{ t('6 大权威实测报告与下载中心 (SWE-bench 84.0%)', '6大ベンチマーク実証レポート＆DL (SWE-bench 84.0%)', '6 Empirical Reports & Downloads (SWE-bench 84.0%)') }}
         </a>
         <a :href="`${prefix}/demo`" @click.prevent="go(`${prefix}/demo`)">
           {{ t('在线交互工作台', 'Web対話型ワークベンチ', 'Interactive Web Workbench') }}
         </a>
         <a :href="`${prefix}/architecture/overview`" @click.prevent="go(`${prefix}/architecture/overview`)">
-          {{ t('工程架构白皮书 (全 5 卷)', '技術アーキテクチャ白書 (全5章)', 'Architecture Whitepaper (5 Vols)') }}
+          {{ t('工程架构白皮书 (全 6 卷)', '技術アーキテクチャ白書 (全6章)', 'Architecture Whitepaper (6 Vols)') }}
         </a>
         <a :href="`${prefix}/guide/getting-started`" @click.prevent="go(`${prefix}/guide/getting-started`)">
           {{ t('快速开始与私有化配置', 'クイックスタート・導入手順', 'Quick Start & LAN Setup') }}
@@ -483,14 +486,14 @@ const isArchActive = computed(
   top: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  width: 820px;
-  background: rgba(10, 15, 29, 0.96);
-  border: 1px solid rgba(96, 165, 250, 0.28);
-  border-radius: 16px;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
-    0 28px 70px -12px rgba(0, 0, 0, 0.85),
-    0 0 40px rgba(37, 99, 235, 0.16);
+  width: 920px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+  background: var(--nx-bg-surface);
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow-stage);
   backdrop-filter: blur(24px);
   padding: 20px;
   z-index: 150;
@@ -498,14 +501,14 @@ const isArchActive = computed(
 
 .nx-mega-grid {
   display: grid;
-  grid-template-columns: 1.45fr 1fr;
+  grid-template-columns: 1.75fr 1fr;
   gap: 20px;
 }
 
 .nx-mega-col-head {
   padding-bottom: 10px;
   margin-bottom: 10px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid var(--nx-border-subtle);
 }
 
 .nx-mega-kicker {
@@ -513,13 +516,13 @@ const isArchActive = computed(
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #38bdf8;
+  color: var(--nx-primary-bright);
 }
 
 .nx-mega-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .nx-mega-card {

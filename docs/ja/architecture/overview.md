@@ -1,83 +1,105 @@
 ---
-title: 1. 全体設計とデュアルプロセス構造
-description: Helm の Electron 44 + Vue 3 + FastAPI (Python 3.13) 構成、フルスタック観測性（X-Request-ID）、グレースフルシャットダウン、および認証情報の自動サニタイズ設計。
+title: 1. 全体設計・ゼロトラスト認証＆自己修復型デュアルプロセス基盤
+description: Helm の Electron 44 + Vue 3.5 + Python 3.13 FastAPI 3層分離アーキテクチャ、純粋 ASGI 認証、Windows DPAPI 暗号化保管庫、3プロトコル適応 Schema コンパイラと System Doctor を詳説。
 ---
 
-# 1. 全体設計とデュアルプロセス構造
+# 1. 全体設計・ゼロトラスト認証＆自己修復型デュアルプロセス基盤
 
-> [!NOTE] 技術アーキテクチャ白書ガイド
-> 本シリーズ（全5章）では、**Helm** の内部モジュール構成、状態マシン、およびエッジケースに対するエンジニアリング判断をソースコードレベルで詳述します。本章はフロントエンド `hyn_agent_frontend/main.js`、`src/i18n.js` およびバックエンド `hyn_agent_backend/app/main.py`、`app/core/*` に対応しています。
+> [!NOTE] エンジニアリングアーキテクチャ白書（全 6 巻）
+> 本シリーズ（全6巻）では、**Helm**（バックエンド `167` モジュール / `70,223` 行 / 自動テスト `502` 件、フロントエンド `69` モジュール / `42,326` 行）の状態機械・境界設計・実測データを完全公開します。第1巻は `hyn_agent_frontend/main.js`、`app/main.py`、`app/core/*`、`tool_schema.py`、`system_doctor.py` を解説します。
 
-## 1.1 プロセス分離トポロジー（3層アーキテクチャ）
+## 1.1 3層分離デスクトップトポロジと責務境界
 
-Helm は **「Electron メインプロセス（OSブリッジ） + Vue 3 レンダラープロセス（石瀾ワークベンチ） + ローカル FastAPI 非同期プロセス（Agent ランタイム）」** の3層分離構造を採用しています。
+Helm は重い I/O 処理を Electron メインプロセスに詰め込んだり外部クラウドコンテナへ依存したりせず、**「Electron 44 ホスト（システム境界） + Vue 3.5 レンダラ（デュアルモード画面） + ローカル Python 3.13 FastAPI 非同期エンジン（ゼロフレームワーク Agent ランタイム）」** に厳密分離しています。
 
 ```mermaid
-flowchart TB
-  subgraph Electron["Electron 44 デスクトップホスト"]
-    MainProc["Electron Main (main.js)<br/>ウィンドウ管理 · スリープ抑止 · ログレート制限＆トークン消去"]
-    Renderer["Vue 3 レンダラー (src/)<br/>石瀾 UI · SSE seq 状態マシン · 右ペイン PreviewWorkbench"]
-    MainProc <-- "IPC (preload.js)<br/>ロケール同期 / 50件/秒ログ制限" --> Renderer
+flowchart TD
+  subgraph Host["Electron 44 デスクトップホスト (Windows x64)"]
+    Main["Electron Main (main.js · トップフレーム限定トークン注入 · スリープ抑止 · IPC制限)"]
+    Renderer["Vue 3.5 レンダラ (src/ · デュアルモードWorkbench · 単調増加 seq 状態機械)"]
+    PreviewFrame["サンドボックス subFrame (X-HYN-Token を物理剥離)"]
+    Main <-->|"preload.js 保護ブリッジ (50 msg/s · 4KB上限)"| Renderer
+    Renderer -->|"分離プレビュー"| PreviewFrame
   end
 
-  subgraph Backend["FastAPI ローカル非同期ランタイム (127.0.0.1:8001 · Python 3.13)"]
-    Middleware["RequestLogMiddleware<br/>X-Request-ID 追跡 · LoopWatchdog イベントループ監視"]
-    TurnHub["TurnHub ストリームハブ (turn_hub.py)<br/>単調増加 seq リングバッファ · 再接続リプレイ"]
-    AgentLoop["AgentLoop & 権限ゲート (agent_loop.py)<br/>P0-P3 長時間制御 · StuckDetector · シャドウチェックポイント"]
-    Subsystems["3大コアサブシステム<br/>Team Worktrees · 非同期2層メモリ · Office Workbench"]
-    Middleware --> TurnHub --> AgentLoop --> Subsystems
+  subgraph Engine["Python 3.13 FastAPI 非同期ランタイム (127.0.0.1:8001)"]
+    AuthMW["LocalAuthMiddleware (純粋ASGI · Host検証 · compare_digest)"]
+    ReqMW["RequestLogMiddleware + LoopWatchdog (X-Request-ID · 遅延監視)"]
+    CoreLoop["ゼロフレームワーク AgentLoop (5,227行 · TurnHub · 52内蔵ツール + MCP)"]
+    Vault["Windows DPAPI 金庫 (secret_box.py · CryptProtectData)"]
+    Doctor["System Doctor 自己修復 (ポータブル MinGit · Node v22 · uvx)"]
+    AuthMW --> ReqMW --> CoreLoop
+    CoreLoop --> Vault
+    CoreLoop --> Doctor
   end
 
-  subgraph LocalInfra["100% ローカル＆社内LANインフラ"]
-    Ollama["ローカル Ollama / 社内LAN vLLM"]
-    RAGFlow["ローカル RAGFlow 知識ベース"]
-    Disk["ローカル隔離ストレージ (.hyn_agent/)<br/>sessions / memory / file_snapshots / git refs"]
+  subgraph Infra["100% ローカル＆社内イントラネット基盤"]
+    LocalLLM["3階層モデルルーティング (Local Ollama / 社内 vLLM / Cloud API)"]
+    LocalDisk["隔離データ領域 (.hyn_agent/ · セッション · 2層メモリ · シャドウGit)"]
   end
 
-  Renderer <-- "HTTP REST + SSE ストリーム (X-Request-ID 付与)" --> Middleware
-  AgentLoop --> Ollama
-  AgentLoop --> RAGFlow
-  Subsystems --> Disk
+  Renderer <-->|"REST + SSE ストリーム (X-HYN-Token & X-Request-ID)"| AuthMW
+  PreviewFrame -.->|"トークン無し通信 -> 403 遮断"| AuthMW
+  CoreLoop --> LocalLLM
+  CoreLoop --> LocalDisk
 ```
 
-### なぜエージェントロジックを Electron メインプロセスから分離したのか？
-1. **UIスレッドの非ブロッキング化**：Electron メインプロセス（`main.js`）はネイティブウィンドウ制御、長時間実行時のOSスリープ抑止（`powerSaveBlocker`）、OS通知、およびセキュアログ出力のみに専念します。SSE ストリーム通信はレンダラーから `127.0.0.1:8001` へ直接接続し、IPC シリアライズによるメインプロセス詰まりを排除しています。
-2. **Python エコシステムとコンテナ展開への適合**：`python-docx`、`openpyxl`、`python-pptx`、`pypdfium2`、公式 `mcp` SDK などの成熟した Python ライブラリをフル活用でき、同時にバックエンド + Vue 3 フロントエンドをそのまま**社内LANサーバー向け Docker コンテナ**として展開することも可能な設計です。
+> [!TIP] アーキテクチャ上のトレードオフ：なぜ純粋 Node.js ではなく Electron + 独立 Python サブプロセスなのか？
+> - **技術的課題**：60FPS のマルチタブ文書 UI を維持しながら、AST 解析・OpenXML（`docx/xlsx/pptx`）の局所バイナリ編集・並列 Worktree 制御を同時に回す必要があります。
+> - **従来手法の限界**：Node.js 単一プロセスでは大容量文書解析で画面がフリーズし、LangChain 等の厚い抽象化はプロンプトのバイト配列をブラックボックス化して KV キャッシュ効率を損ないます。
+> - **Helm の解決策**：Electron Main を最小限に保ち、同梱された公式 Python 3.13 上の純粋 `asyncio + httpx` エンジンへローカル直結します。
+> - **定量的成果**：**`502` 件の `pytest` 自動テスト**に守護され、**外部への意図せぬデータ送信 0 バイト**と社内 Docker への無改修展開を両立しています。
 
 ---
 
-## 1.2 フルスタック観測性とセキュリティ・バイ・デザイン
+## 1.2 ゼロトラスト認証と Windows DPAPI ハードウェア連携金庫
 
-### 1. `X-Request-ID` によるプロセス横断トレーサビリティ（`app/core/request_log.py`）
-- FastAPI の `RequestLogMiddleware` を `CORSMiddleware` の外側に配置し、`expose_headers=["X-Request-ID"]` によって Electron レンダラー側からもリクエストIDを参照可能にしています。
-- 未捕捉の例外が発生した場合でも、グローバルハンドラ（`_unhandled_exception_handler`）が `request_id` 付きでトレースバックを構造化ログへ記録し、日・英・中3言語対応のエラーレスポンスを返します。
+```mermaid
+sequenceDiagram
+  autonumber
+  participant Boot as Electron Main (main.js)
+  participant TopUI as メイン画面フレーム (mainFrame)
+  participant SubUI as HTMLプレビュー子フレーム (subFrame)
+  participant ASGI as LocalAuthMiddleware (local_auth.py)
+  participant DPAPI as Windows DPAPI (secret_box.py)
 
-### 2. 非同期イベントループ・ウォッチドッグ（`app/core/loop_watchdog.py`）
-- ローカルファイル処理などで `asyncio` イベントループがブロックされるのを検知するため、`start_watchdog(loop)` と `loop.set_exception_handler` を導入し、バックグラウンドタスクのサイレント失敗を防止しています。
+  Boot->>Boot: 256-bit ランダムトークンを生成し FastAPI 子プロセスへ注入
+  Boot->>TopUI: onBeforeSendHeaders でトップフレームのみ X-HYN-Token を付与
+  SubUI->>ASGI: 悪意あるスクリプトが 127.0.0.1:8001/api/v1/tools を呼び出し
+  Note over Boot,ASGI: details.frame !== mainFrame のためトークンを剥離
+  ASGI-->>SubUI: 403 Forbidden (子フレーム特権昇格と DNS Rebinding を完全遮断)
+  TopUI->>ASGI: 正規トークン付きで API キー / MCP OAuth トークンを保存
+  ASGI->>DPAPI: Win32 CryptProtectData で OS ログインユーザーに紐付け暗号化
+  DPAPI-->>TopUI: secrets_vault.json へ暗号化保存＆ログ自動マスク登録
+```
 
-### 3. 書込前の認証情報サニタイズと IPC レート制限（`hyn_agent_frontend/main.js`）
-- **`sanitizeLogMessage` フック**：ログファイル（`main.log` / `renderer.log`）への書込前に、`sk-*`、`AIza*`、`Bearer *`、`api_key`、`authorization`、`secret` 等の文字列を正規表現で検出し、強制的に `***` へ置換します。
-- **ログフラッド防止**：レンダラーからの IPC ログに対し、**1フィールド最大 4KB 切り詰め（`truncate4KB`）** と **毎秒最大50件のレート制限** を設けています。
+1. **純粋 ASGI ストリーミング認証（`local_auth.py`）**：SSE をバッファリングしない純粋 ASGI 実装により、ループバック `Host` 検証と `secrets.compare_digest` 定数時間比較を実行します。
+2. **Windows DPAPI 資格情報金庫（`secret_box.py`）**：API キーや OAuth トークンを平文保存せず、Windows ネイティブ `CryptProtectData` で暗号化。ログ出力前には秘密文字列を強制的に `***` へ置換します。
 
 ---
 
-## 1.3 決定論的グレースフルシャットダウン（Graceful Shutdown Sequence）
+## 1.3 3階層計算ルーティングと適応型 Schema コンパイラ
 
-ウィンドウ終了時にプロセスを強制終了すると、実行中のターンや非同期メモリ抽出が破損する恐れがあります。`app/main.py` の `_lifespan` では、以下の **6段階のシャットダウン順序** を厳格に保証しています：
-
-```python
-# hyn_agent_backend/app/main.py (_lifespan finally ブロックより抜粋)
-# 1. 実行中のセッションターンを最終チェックポイントへフラッシュし interrupted として記録
-await turn_hub.shutdown()
-# 2. バックグラウンドの非同期メモリ抽出キューをドレイン（最大10秒待機）
-await memory_queue.shutdown(timeout=10)
-# 3. 常駐チームメイトを停止し Git Worktree リースを解放
-await shutdown_teams()
-# 4. Cron スケジューラを停止
-await stop_cron_runtime()
-# 5. バックグラウンドコマンドのサブプロセスを終了
-shutdown_background_tasks()
-# 6. 起動済みの MCP クライアント接続とウォッチドッグを終了
-await shutdown_mcp()
-stop_watchdog()
+```mermaid
+flowchart LR
+  Raw["52内蔵ツール + 動的 MCP JSON Schema"] --> Compiler["adapt_schema コンパイラ (tool_schema.py)"]
+  Compiler --> Step1["1. $defs / $ref の再帰インライン展開"]
+  Step1 --> Step2["2. anyOf / oneOf 複合型のフラット化"]
+  Step2 --> Step3["3. プロトコル別の非対応属性除去と辞書順ソート固定"]
+  Step3 --> P1["OpenAI Chat Completions (Ollama / 社内 vLLM / DeepSeek)"]
+  Step3 --> P2["Anthropic Messages ネイティブ (Claude + 4点キャッシュ)"]
+  Step3 --> P3["Google Gemini ネイティブ (厳格型サブセット)"]
 ```
+
+| 配備階層 | 対応ゲートウェイ（`8` プロバイダ / `18` 厳選モデル） | 通信境界 | 主な特徴 |
+| :--- | :--- | :--- | :--- |
+| **`local`（完全オフライン）** | ローカル `Ollama` (`127.0.0.1:11434/v1`) | **外部通信 0 バイト** | APIキー不要の自動検出・VRAM再確保リトライ |
+| **`lan`（社内イントラ）** | 社内 `vLLM` / `SGLang` / `OneAPI` | **社内ファイアウォール内完結** | 社内GPUクラスタ＆社内RAGFlow直結 |
+| **`cloud`（公式API直結）** | `DeepSeek` / `Qwen` / `GLM` / `Claude` / `Gemini` / `OpenAI` | 公式エンドポイントへ TLS 直結 | 中継サーバ無し・プレフィックスキャッシュ最適化 |
+
+---
+
+## 1.4 管理者権限不要の `System Doctor` と 8段階グレースフルシャットダウン
+
+- **ポータブル環境自己修復（`system_doctor.py`）**：管理者権限（UAC）のない企業貸与 PC でも、`git`・`node`/`npx`・`uv`/`uvx` の欠損を検知すると公式ポータブル版 **MinGit**・**Node.js v22**・**`uv`** を `DATA_DIR/toolchains/` へ自動展開し、システム環境変数を汚さずに修復します。
+- **6段階起動復旧＆8段階シャットダウン（`app/main.py`）**：終了時は実行中ターンを `interrupted` としてチェックポイント保存し、非同期メモリキューの書き出し（最大 `10秒`）、常駐チームの `24時間` リース保護スリープ、Cron・子プロセス・MCP 切断を順序通りに完了させます。

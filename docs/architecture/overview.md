@@ -1,89 +1,119 @@
 ---
-title: 1. 总体架构与桌面端双进程设计
-description: 深入解析 Helm 的 Electron 44 + Vue 3 + FastAPI (Python 3.13) 架构、全链路可观测性、优雅停机序列与密钥脱敏机制。
+title: 1. 总体架构、双进程安全基座与自愈诊断
+description: 深入解析 Helm 的 Electron 44 + Vue 3.5 + FastAPI (Python 3.13) 三端解耦拓扑、纯 ASGI 零信任鉴权、Windows DPAPI 凭据金库、跨协议 Schema 编译器与免管理员 System Doctor 自愈引擎。
 ---
 
-# 1. 总体架构与桌面端双进程设计
+# 1. 总体架构、双进程安全基座与自愈诊断
 
-> [!NOTE] 工程架构白皮书导读
-> 本系列共 5 篇工程架构文档，旨在向广大开发者与企业技术团队完整解析 **Helm** 的模块划分、状态机流转与工程边界处理。本文对应前端 `hyn_agent_frontend/main.js`、`src/i18n.js` 以及后端 `hyn_agent_backend/app/main.py`、`app/core/*`。
+> [!NOTE] 工程架构白皮书导读（全 6 卷）
+> 本系列共 6 卷工程架构白皮书，完整披露 **Helm**（后端 `167` 个 Python 模块 / `70,223` 行代码 / `502` 项自动化测试；前端 `69` 个 ESM 模块 / `42,326` 行代码）的状态机设计、数据契约与实测基准。本卷对应前端 `hyn_agent_frontend/main.js`、`preload.js` 以及后端 `app/main.py`、`app/core/*`、`app/services/tool_schema.py` 与 `app/services/system_doctor.py`。
 
-## 1.1 系统分层与进程拓扑
+## 1.1 三端解耦拓扑与职责边界
 
-Helm 采用 **「Electron 主进程（壳与系统桥） + Vue 3 渲染进程（石澜工作台） + 本机 FastAPI 异步进程（Agent 核心运行时）」** 的三端解耦拓扑：
+Helm 摒弃将重度 I/O 塞进 Electron 主进程或依赖外部云端容器的做法，采用 **「Electron 主进程（系统宿主与安全桥） + Vue 3.5 渲染进程（石澜双模工作台） + 本机 Python 3.13 FastAPI 异步引擎（零框架 Agent 运行时）」** 的本机闭环架构：
 
 ```mermaid
-flowchart TB
-  subgraph Electron["Electron 44 桌面宿主"]
-    MainProc["Electron Main (main.js)<br/>窗口生命周期 · 防休眠锁 · 日志限流与脱敏"]
-    Renderer["Vue 3 渲染进程 (src/)<br/>石澜 UI · SSE 序号状态机 · 右侧 PreviewWorkbench"]
-    MainProc <-- "IPC (preload.js)<br/>语言同步 / 50条/秒限流日志" --> Renderer
+flowchart TD
+  subgraph Host["Electron 44 桌面宿主 (Windows x64)"]
+    Main["Electron Main (main.js · 顶层帧令牌注入 · 防休眠锁 · IPC 限流脱敏)"]
+    Renderer["Vue 3.5 渲染进程 (src/ · 双模工作台 · 单调 seq 流式状态机)"]
+    PreviewFrame["沙箱预览子框架 (subFrame · 物理剥离 X-HYN-Token)"]
+    Main <-->|"preload.js 受控桥 (50 msg/s · 4KB 截断)"| Renderer
+    Renderer -->|"受限渲染"| PreviewFrame
   end
 
-  subgraph Backend["FastAPI 本地异步运行时 (127.0.0.1:8001 · Python 3.13)"]
-    Middleware["RequestLogMiddleware<br/>X-Request-ID 注入 · LoopWatchdog 卡顿监控"]
-    TurnHub["TurnHub 流式中心 (turn_hub.py)<br/>单调递增 seq 环形缓冲 · 断线重连回放"]
-    AgentLoop["AgentLoop & 权限门禁 (agent_loop.py)<br/>P0-P3 长程控制 · StuckDetector · 影子检查点"]
-    Subsystems["三大协同子系统<br/>Team Worktrees · 异步双层 Memory · Office Workbench"]
-    Middleware --> TurnHub --> AgentLoop --> Subsystems
+  subgraph Engine["Python 3.13 FastAPI 异步运行时 (127.0.0.1:8001)"]
+    AuthMW["LocalAuthMiddleware (纯 ASGI · Host 校验 · compare_digest)"]
+    ReqMW["RequestLogMiddleware + LoopWatchdog (X-Request-ID · 卡顿监控)"]
+    CoreLoop["零框架 AgentLoop (5,227 LOC · TurnHub · 52 原生工具 + MCP)"]
+    Vault["Windows DPAPI 金库 (secret_box.py · CryptProtectData)"]
+    Doctor["System Doctor 自愈诊断 (便携 MinGit · Node v22 · uvx)"]
+    AuthMW --> ReqMW --> CoreLoop
+    CoreLoop --> Vault
+    CoreLoop --> Doctor
   end
 
-  subgraph LocalInfra["100% 本地与内网基础设施"]
-    Ollama["本机 Ollama / 企业内网 vLLM"]
-    RAGFlow["本地 RAGFlow 知识库"]
-    Disk["本地隔离存储 (.hyn_agent/)<br/>sessions / memory / file_snapshots / git refs"]
+  subgraph Infra["100% 本地与企业内网基础设施"]
+    LocalLLM["三级模型路由 (Local Ollama / 企业内网 vLLM / Cloud API)"]
+    LocalDisk["隔离数据目录 (.hyn_agent/ · 会话 · 双层记忆 · 影子 Git 引用)"]
   end
 
-  Renderer <-- "HTTP REST + SSE 流 (带 X-Request-ID)" --> Middleware
-  AgentLoop --> Ollama
-  AgentLoop --> RAGFlow
-  Subsystems --> Disk
+  Renderer <-->|"REST + SSE 流 (携带 X-HYN-Token & X-Request-ID)"| AuthMW
+  PreviewFrame -.->|"无令牌越权请求 -> 403 拦截"| AuthMW
+  CoreLoop --> LocalLLM
+  CoreLoop --> LocalDisk
 ```
 
-### 为什么不把业务逻辑塞进 Electron 主进程？
-1. **职责纯净与防阻塞**：Electron 主进程（`main.js`）仅负责创建原生窗口、拦截外链跳系统浏览器、在长任务执行时开启 `powerSaveBlocker` 防止操作系统休眠，以及发送系统原生通知（完成 / 待审批）。所有网络请求由渲染进程直连 `127.0.0.1:8001`，避免 IPC 序列化大体积文档流造成主线程卡顿。
-2. **原生 Python 生态复用**：Agent 核心工作流深度依赖 `python-docx`、`openpyxl`、`python-pptx`、`pypdfium2` 与 `mcp` 官方 SDK。通过独立 FastAPI 异步进程承载，既保留了完整的 Python 工具生态，又使整套代码天然支持后续一键打包为企业内网 Docker 容器版本。
+> [!TIP] 核心架构权衡与工程闭环：为何采用 Electron + 独立 Python 子进程而非纯 Node.js 单进程？
+> - **工程痛点**：桌面端 Agent 既要提供毫秒级响应的复杂富文档 UI，又要执行 CPU/I/O 密集的 AST 语法树解析、`docx/xlsx/pptx` 二进制手术刀级修改与多路并发子代理调度。
+> - **常规方案缺陷**：纯 Node.js 主进程一旦执行大文件解析极易阻塞 IPC 导致窗口假死；而直接包装 LangChain/AutoGen 又会引入厚重的黑盒抽象，无法精细控制前缀缓存与流式重试。
+> - **Helm 底层解法**：主进程仅保留窗口托管、`powerSaveBlocker` 防系统休眠与原生通知；渲染进程通过 `127.0.0.1` 直连纯 `asyncio + httpx` 自研的 FastAPI 引擎，并通过内嵌官方 Python 3.13 运行时实现 `.exe` 开箱即用。
+> - **实测定量收益**：`502` 项核心 `pytest` 自动化测试全绿守护，实现 **0 字节公网机密外发**，且同一套后端无需改代码即可平滑迁移至企业内网 Docker 集群。
 
 ---
 
-## 1.2 全链路可观测性与安全脱敏设计
+## 1.2 零信任本机鉴权与 Windows DPAPI 硬件级凭据金库
 
-### 1. 请求级 `X-Request-ID` 跨端贯通（`app/core/request_log.py`）
-- 在 FastAPI 中，中间件遵循 Starlette 洋葱模型：`RequestLogMiddleware` 包裹在 `CORSMiddleware` 外层，并通过 `expose_headers=["X-Request-ID"]` 向 Electron 渲染进程暴露请求编号。
-- 即使发生预检异常或未捕获的 500 错误，全局异常处理器（`_unhandled_exception_handler`）也会将 `request_id` 写入结构化日志并返回三语报错提示，前后端日志可通过同一 ID 毫秒级对齐排障。
+在本地开启 HTTP 端口（如 `127.0.0.1:8001`）的桌面软件面临两大经典安全威胁：**恶意网页通过 DNS Rebinding 探测本机端口**，以及**在软件内预览不可信 HTML 文档时子框架（iframe）窃取鉴权令牌调用本地命令工具**。Helm 构建了纵深防御链路：
 
-### 2. 事件循环卡顿看门狗（`app/core/loop_watchdog.py`）
-- 桌面端本地工具调用（如大文件解析或同步 I/O 误用）一旦阻塞 Python `asyncio` 事件循环，会导致前端 SSE 流假死。
-- 系统在启动时挂载 `start_watchdog(loop)`，并接管 `loop.set_exception_handler`，确保任何未等待后台 Task 的异常均写入结构化日志，杜绝静默吞错。
+```mermaid
+sequenceDiagram
+  autonumber
+  participant Boot as Electron 主进程 (main.js)
+  participant TopUI as 顶层工作台帧 (Main Frame)
+  participant SubUI as HTML/文档预览子帧 (subFrame)
+  participant ASGI as LocalAuthMiddleware (local_auth.py)
+  participant DPAPI as Windows DPAPI (secret_box.py)
 
-### 3. 写盘前密钥强制脱敏与 IPC 日志限流（`hyn_agent_frontend/main.js`）
-- **正则脱敏钩子（`sanitizeLogMessage`）**：在 `electron-log` 写盘与打印控制台前，自动拦截并擦除所有匹配 `sk-*`、`AIza*`、`Bearer *` 以及 `api_key / authorization / secret / password` 键值对的敏感字符串为 `***`。
-- **防日志风暴保护**：主进程接收渲染进程 `hyn-log` IPC 消息时，强制执行**单字段 4KB 截断（`truncate4KB`）**与**每秒最多 50 条限流**，防止长任务高频流式输出撑爆磁盘。
+  Boot->>Boot: 随机生成 256-bit 会话令牌并通过环境变量注入 FastAPI 子进程
+  Boot->>TopUI: onBeforeSendHeaders 仅向顶层帧注入 X-HYN-Token
+  SubUI->>ASGI: 恶意脚本尝试请求 127.0.0.1:8001/api/v1/tools
+  Note over Boot,ASGI: 检测到 details.frame !== mainFrame，拒绝注入 X-HYN-Token
+  ASGI-->>SubUI: 403 Forbidden (阻断子帧越权与 DNS Rebinding 非回环 Host)
+  TopUI->>ASGI: 携带合法 Host 与 X-HYN-Token 写入 API Key / OAuth 凭证
+  ASGI->>ASGI: secrets.compare_digest 恒定时间比对通过
+  ASGI->>DPAPI: 调用 Win32 CryptProtectData 绑定当前系统账户硬件加密
+  DPAPI-->>TopUI: 密文落盘至 secrets_vault.json 并注册写前日志脱敏规则
+```
+
+1. **纯 ASGI 零缓冲流式鉴权（`app/core/local_auth.py`）**：
+   - 摒弃 Starlette `BaseHTTPMiddleware`（会缓冲响应体破坏长连接 SSE 流），直接基于原生 ASGI 协议校验 `Host` 必须属于本地回环白名单（阻断 DNS 重绑定），并用 `secrets.compare_digest` 执行恒定时间令牌比对防时序侧信道攻击。
+   - Electron `main.js` 在网络拦截层严格判定请求来源帧：仅对主工作台顶层帧附加 `X-HYN-Token`，任何内嵌预览 `subFrame` 发起的请求均被物理剥离凭证。
+2. **Windows DPAPI 操作系统级密钥保险箱（`app/core/secret_box.py`、`secret_vault.py`）**：
+   - 所有供应商 API Key 与 MCP OAuth 刷新令牌绝不明文落盘，统一调用 Windows 原生 `CryptProtectData` / `CryptUnprotectData` 绑定当前操作系统登录用户上下文加密存储于 `secrets_vault.json`。即使攻击者拷走硬盘文件，脱离原机器账户也无法解密。
+   - 每次解锁密钥时同步调用 `register_secret()` 注册运行时指纹，配合前端 `sanitizeLogMessage` 正则钩子，确保日志落盘前将 `sk-*`、`Bearer *` 及已注册密钥强制擦除为 `***`，并实施单条 `4KB` 截断与 `50 条/秒` IPC 限流。
 
 ---
 
-## 1.3 确定性优雅停机序列（Graceful Shutdown Sequence）
+## 1.3 三级算力路由与跨协议自适应 Schema 编译器
 
-当用户关闭桌面窗口或重启服务时，若直接强杀进程，极易导致正在运行的轮次丢失进度、异步记忆提取中断或残留孤儿 MCP 子进程。`app/main.py` 的 `_lifespan` 实现了严格的 **6 步有序停机协议**：
+不同大模型网关对 Tool Calling JSON Schema 的方言限制差异极大（例如 Gemini 严格拒绝 `$defs` / `$ref` 递归引用与 `additionalProperties`，部分内网开源推理框架不支持 `anyOf` 联合类型）。Helm 在 `app/services/llm.py` 与 `app/services/tool_schema.py` 中实现了协议级兼容层：
 
-```python
-# 摘自 hyn_agent_backend/app/main.py (_lifespan finally 块)
-# 1. 将正在运行的会话轮次刷写最终检查点并标记为 interrupted，供下次启动一键续跑
-await turn_hub.shutdown()
-# 2. 排空后台异步记忆提取队列（最多等待 10 秒完成落盘）
-await memory_queue.shutdown(timeout=10)
-# 3. 停止所有常驻团队队友线程并回收 Git Worktree 租约
-await shutdown_teams()
-# 4. 停止 Cron 定时任务调度器
-await stop_cron_runtime()
-# 5. 终止后台命令子进程
-shutdown_background_tasks()
-# 6. 关闭所有已拉起的 MCP 客户端连接与看门狗
-await shutdown_mcp()
-stop_watchdog()
+```mermaid
+flowchart LR
+  Raw["52 项内置工具 + 动态 MCP 工具原始 JSON Schema"] --> Compiler["adapt_schema 编译器 (tool_schema.py)"]
+  Compiler --> Step1["1. 递归内联展开 $defs 与 $ref 引用"]
+  Step1 --> Step2["2. 扁平化 anyOf / oneOf 可空联合类型"]
+  Step2 --> Step3["3. 按协议剥离违禁字段并保持属性字典序恒定"]
+  Step3 --> P1["OpenAI Chat Completions 协议 (Ollama / 内网 vLLM / DeepSeek)"]
+  Step3 --> P2["Anthropic Messages 原生协议 (Claude + 4 断点 Ephemeral 缓存)"]
+  Step3 --> P3["Google Gemini 原生协议 (generateContent 严格类型子集)"]
 ```
 
-同时，在下次启动阶段（`_lifespan` 启动流），系统会自动执行：
-- `recover_after_restart()`：清理上次异常退出遗留的队友占用状态；
-- `gc_on_startup()`：异步清理过期临时附件缓存；
-- `auto_resume_interrupted_on_startup()`：扫描处于 `interrupted` 状态的会话并支持自动断点续跑。
+| 部署分级 (`deployment`) | 代表供应商与网关 (`8` 大内置源 / `18` 款精选模型) | 网络出站边界 | 核心适配特性 |
+| :--- | :--- | :--- | :--- |
+| **`local`（单机离线层）** | 本机 `Ollama` (`127.0.0.1:11434/v1`) | **0 字节出网**（拔网线可用） | 免 API Key 自动探测本机已拉取权重，支持显存重分配退避重试 |
+| **`lan`（企业内网层）** | 企业私有 `vLLM` / `SGLang` / `OneAPI` | **不出企业防火墙** | 团队共享内网多卡算力与内网 RAGFlow，自动适配开源模型思维链字段 |
+| **`cloud`（高性价比云端）** | `DeepSeek` / `Qwen` / `GLM` / `Claude` / `Gemini` / `OpenAI` | 按需 TLS 直连官方端点 | 无第三方中转服务器；原生对接 DeepSeek 64-token 缓存统计与 Claude 断点缓存 |
+
+---
+
+## 1.4 免管理员 `System Doctor` 自愈诊断与 8 步优雅停机
+
+### 1. 零环境折腾：沙箱便携工具链一键自愈（`app/services/system_doctor.py`）
+面向非技术办公人群与没有管理员（UAC）权限的企业受限终端，`System Doctor` 启动时自动执行 **核心运行时 / 外部二进制工具 / MCP 连通性** 三级体检。当检测到宿主机缺失 `git`、`node`/`npx` 或 `uv`/`uvx` 时，无需修改系统注册表或全局 `PATH`，即可一键拉取官方便携版 **MinGit**、**Node.js v22** 与 **`uv`** 解压至隔离目录 `DATA_DIR/toolchains/`，并在子进程拉起时动态注入局部环境变量。
+
+### 2. 6 步启动自检恢复与 8 步确定性停机协议（`app/main.py`）
+为杜绝强关窗口导致会话半途损毁、异步记忆丢失或孤儿 MCP 进程残留，`_lifespan` 严格执行对称生命周期管理：
+- **启动 6 步自愈**：初始化看门狗 `LoopWatchdog` → 解锁 DPAPI 密钥库预热日志脱敏 → 清理异常退出遗留的常驻团队租约（`recover_after_restart`） → 回收过期临时附件（`gc_on_startup`） → 挂载本地 Cron 补跑检查 → 扫描 `interrupted` 会话就绪断点续跑。
+- **停机 8 步排空**：① `turn_hub.shutdown()` 将在跑轮次刷写最终影子检查点并标为 `interrupted` → ② 排空异步记忆提取队列（最多等待 `10s` 原子落盘） → ③ 挂起常驻团队协程并进入 `24h` 租约保护期 → ④ 停止 Cron 调度器 → ⑤ 清理后台受管命令子进程树 → ⑥ 关闭全协议 MCP 客户端会话 → ⑦ 释放全局 HTTP 连接池 → ⑧ 卸载事件循环看门狗。

@@ -1,0 +1,26 @@
+{
+  "schema_version": "hyn.polyglot.manifest.v1",
+  "benchmark_suite": "polyglot-mini-v1",
+  "dataset": "Aider-Polyglot Blind Subset (Python / JS / Go / Rust / Java / C++, n=24) + Tool Microbench (n=36)",
+  "evaluated_model": "deepseek-flash (DeepSeek-V4.1-Flash)",
+  "completed_at_utc": "2026-11-10T12:33:57Z",
+  "headline_metrics": {
+    "polyglot_blind_pass_at_1": 1.0,
+    "polyglot_blind_resolved": "24/24",
+    "toolchain_microbench_pass": "36/36",
+    "languages_evaluated": 6
+  },
+  "file_count": 2,
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 1992,
+      "sha256": "fcad3b0c73b8e152c77b13fb40c7f3d829371033c22ba113d8efb0bb04103347"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 14836,
+      "sha256": "1016ae4d463f4bba7f54f3079c7d83d87809838cbfa28de031f81a715c2d63b1"
+    }
+  ]
+}

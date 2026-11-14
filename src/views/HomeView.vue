@@ -96,81 +96,76 @@ const kpiMetrics = computed(() => [
     )
   },
   {
-    num: 'P0–P3',
-    unit: 'LONG-HORIZON ENGINE',
-    badge: t('463+ 核心自动化测试', '463+ 自動単体テスト', '463+ Unit Tests'),
-    label: t('长程自治引擎与极速代码导航', '4段階自律エンジン＆高速コード探索', '4-Stage Engine & Code Navigation'),
+    num: '502',
+    unit: 'AUTOMATED PYTEST SUITE',
+    badge: t('52 项原生工具 + MCP 生态', '52 標準ツール + MCP 統合', '52 Built-In Tools + MCP'),
+    label: t('零框架自研长程引擎核心单测数', 'ゼロフレームワーク自律エンジン単体テスト数', 'Zero-Framework Engine Automated Tests'),
     desc: t(
-      '集成 ripgrep 42倍极速检索、tree-sitter 省 95.4% Token 符号大纲、TurnHub 断线回放、StuckDetector L2 自省与零污染影子 Git 检查点，由 463+ 项自动化单测严密守护。',
-      'ripgrep 42倍高速検索、tree-sitter 構造アウトライン（Token 95.4% 削減）、TurnHub 再接続、StuckDetector L2 内省、非侵襲シャドウGitを統合し、463件以上の単体テストで検証済。',
-      'Unites 42x ripgrep search, tree-sitter code_outline (95.4% token savings), TurnHub seq replay, StuckDetector L2 recovery, and Shadow Git Checkpoints—backed by 463+ automated tests.'
+      '摒弃 LangChain 等黑盒封装，纯自研 5,227 行异步状态机，集成三路只读并发、ripgrep 42倍检索、tree-sitter 大纲、D1–D7 防死循环与影子 Git 检查点，由 502 项自动化测试严密守护。',
+      '外部フレームワークに依存しない 5,227行の独自非同期状態マシン。3経路並列読取、ripgrep 42倍検索、tree-sitter 構造抽出、D1–D7 ループ防止、シャドウGitを統合し、502件の単体テストで検証済。',
+      'Zero LangChain wrappers: a custom 5,227-LOC async state machine uniting 3-path read concurrency, 42x ripgrep, tree-sitter AST, D1–D7 loop guards, and Shadow Git—verified by 502 pytest tests.'
     )
   }
 ])
 
-// 四大旗舰工程引擎交互画廊
+// 五大旗舰工程引擎交互画廊（覆盖全 6 卷核心架构）
 const featurePillars = computed(() => [
   {
     id: 'privacy',
-    code: 'ENGINE 01 // PRIVACY & LAN TOPOLOGY',
-    shortTab: t('01. 离线与内网架构', '01. 完全オフライン＆社内LAN', '01. Air-Gapped & LAN'),
+    code: 'ENGINE 01 // ZERO-TRUST, DPAPI VAULT & SYSTEM DOCTOR',
+    shortTab: t('01. 离线安全与自愈诊断', '01. 完全オフライン＆自動修復', '01. Zero-Trust & Doctor'),
     title: t(
-      '全本地离线与企业内网（LAN）原生分级架构',
-      '完全オフライン＆社内閉域網（LAN）ネイティブ3層構造',
-      'Air-Gapped Local & Corporate LAN Native Architecture'
+      '全本地/内网三级架构、Windows DPAPI 金库与免管理员环境自愈',
+      '完全オフライン＆社内LAN 3層構造・DPAPI暗号化金庫＆環境自動修復',
+      'Air-Gapped Local/LAN Topology, Windows DPAPI Vault & System Doctor'
     ),
     desc: t(
-      '在模型目录层将供应商严格划分为 local（本机 Ollama）、lan（企业内网 vLLM / SGLang / OneAPI）与 cloud 三级。免 API Key 即可一键探测本机与内网算力；Electron 主进程内置写盘前正则密钥脱敏钩子与每秒 50 条 IPC 限流保护。',
-      'モデルカタログ層でプロバイダを local（端末内 Ollama）・lan（社内LAN vLLM / SGLang / OneAPI）・cloud の3階層に分離。APIキー不要で社内GPUクラスタへ直結し、ログ保存前には認証トークンを正規表現で自動マスキングします。',
-      'Categorizes providers into local (Ollama), lan (corporate vLLM/SGLang/OneAPI), and cloud tiers. Connects to local/intranet GPUs without API keys, backed by pre-write regex log scrubbing and 50 msg/s IPC rate limiting.'
+      '将模型供应商严格划分为 local（Ollama）、lan（企业内网 vLLM/SGLang/OneAPI）与 cloud 三级。内置纯 ASGI 反 DNS 重绑定令牌鉴权（子框架严格剥离）、Windows DPAPI 操作系统级密钥加密存储，以及免管理员一键拉取沙箱便携版 MinGit / Node v22 / uvx 的 System Doctor 引擎。',
+      'プロバイダを local・lan・cloud の3階層に分離。純粋ASGIによるDNSリバインディング防御、Windows DPAPI OSレベル暗号化金庫、管理者権限不要でポータブル Git/Node/uvx を自動構築する System Doctor を統合しています。',
+      'Separates local, corporate LAN, and cloud tiers. Combines pure-ASGI anti-DNS-rebinding auth (subFrame token isolation), OS-level Windows DPAPI credential encryption, and zero-admin System Doctor portable toolchain auto-repair.'
     ),
     highlights: [
-      t('拔除网线即可在 127.0.0.1 完整运行代码重构与文档生成', 'LANケーブルを抜いた完全オフライン環境でもコード改修・文書生成が完結', 'Full coding & Office generation on 127.0.0.1 with physical network unplugged'),
-      t('企业内网多终端共享 vLLM / OneAPI 算力与 RAGFlow 知识库', '社内イントラネット内の複数PCから社内GPUクラスタとRAGFlowを安全に共有', 'Share internal GPU clusters and RAGFlow knowledge bases across corporate LAN'),
-      t('日志落盘前自动擦除 sk-* / Bearer 等敏感凭证', 'ディスク書込前に sk-* や Bearer トークンを強制的に *** へサニタイズ', 'Automatic regex scrubbing of sk-* and Bearer tokens before disk logging')
+      t('拔除网线即可在 127.0.0.1 闭环运行；纯 ASGI 鉴权防止预览子框架窃取令牌', 'LAN抜線の完全オフライン稼働に対応；プレビュー子フレームへのトークン注入を物理遮断', 'Full offline loopback execution; excludes subFrames from X-HYN-Token injection'),
+      t('Windows DPAPI 硬件账户级加密 API Key 与 MCP OAuth 令牌，日志写盘前自动脱敏', 'Windows DPAPI で API キーと OAuth トークンを暗号化し、ログ書込前に自動マスキング', 'Windows DPAPI CryptProtectData vault for API & OAuth keys + pre-write log scrubbing'),
+      t('System Doctor 免管理员一键修复缺失工具链，跨 3 大协议编译自适应 Schema', '管理者権限不要で不足ツールを自動修復し、3大LLMプロトコル向けにSchemaを自動変換', 'Zero-admin 1-click portable MinGit/Node/uvx repair + 3-protocol adapt_schema compiler')
     ],
     visualNodes: [
-      { tag: 'TIER 1 · LOCAL', name: 'Local Ollama', addr: '127.0.0.1:11434/v1', status: t('物理断网免密直连', '完全オフライン直結', 'Air-Gapped Loopback') },
-      { tag: 'TIER 2 · LAN', name: 'Corporate vLLM / OneAPI', addr: '192.168.1.100:8000/v1', status: t('数据不出企业防火墙', '社内閉域網内完結', 'Zero Internet Egress') },
-      { tag: 'IPC GUARD', name: 'Sanitize & Rate Limit', addr: '50 msg/s · 4KB Cap', status: t('正则脱敏落盘', '認証情報自動消去', 'Pre-Write Token Scrub') }
+      { tag: 'TIER 1 & 2 · LAN', name: 'Ollama & Corporate vLLM', addr: '127.0.0.1 / 192.168.x.x', status: t('机密零出网', '社内閉域網完結', 'Zero Internet Egress') },
+      { tag: 'OS CRYPTO VAULT', name: 'Windows DPAPI SecretBox', addr: 'CryptProtectData · SubFrame Guard', status: t('硬件账户级加密', 'OS暗号化保護', 'OS-Bound Encryption') },
+      { tag: 'SELF-HEALING', name: 'System Doctor Sandboxed', addr: 'MinGit · Node v22 · uvx', status: t('免管理员一键自愈', '管理者不要修復', 'Zero-Admin Repair') }
     ],
-    snippetTitle: 'app/catalog/models.py · Provider Deployment Tiers',
-    snippet: `ProviderDef(
-  id="ollama", deployment="local",
-  default_base_url="http://127.0.0.1:11434/v1",
-  requires_key=False  # Air-gapped local loopback
-),
-ProviderDef(
-  id="lan_server", deployment="lan",
-  default_base_url="http://192.168.1.100:8000/v1",
-  requires_key=False  # Corporate intranet GPU cluster
-)`,
+    snippetTitle: 'app/core/local_auth.py & secret_box.py · Zero-Trust Guard',
+    snippet: `# Pure-ASGI anti-DNS-rebinding + constant-time token verify
+if host not in _LOOPBACK_HOSTS or not secrets.compare_digest(token, expected):
+    return await send_403(send)
+# OS-level Windows DPAPI encryption for API keys & MCP OAuth tokens
+cipher_blob = win32_crypt_protect_data(plaintext_secret.encode("utf-8"))`,
     docLink: `${prefix.value}/architecture/overview`,
-    docLabel: t('阅读第 1 卷：总体架构与双进程设计 →', '第1章：全体設計とデュアルプロセス構造を読む →', 'Read Vol. 01: System Overview & Dual-Process →')
+    docLabel: t('阅读第 1 卷：双进程、DPAPI 金库与自愈诊断 →', '第1章：デュアルプロセス・DPAPI金庫を読む →', 'Read Vol. 01: Dual-Process, DPAPI & Doctor →')
   },
   {
     id: 'longrun',
-    code: 'ENGINE 02 // SHADOW GIT, CODE NAV & P0–P3 AUTONOMY',
-    shortTab: t('02. 影子检查点与长程引擎', '02. シャドウGit＆長時間自律', '02. Shadow Git & P0–P3'),
+    code: 'ENGINE 02 // 3-PATH PARALLELISM, SHADOW GIT & D1–D7 GUARD',
+    shortTab: t('02. 三路并发与长程引擎', '02. 3経路並列＆自律制御', '02. 3-Path & Long-Horizon'),
     title: t(
-      '无侵入影子 Git 检查点、极速代码导航与 P0–P3 长程自省引擎',
-      '非侵襲シャドウGit・高速コード探索＆P0–P3長時間自律制御',
-      'Non-Invasive Shadow Git, Code Navigation & P0–P3 Autonomous Engine'
+      '零框架三路保序并发、确定性代码导航与无侵入影子 Git 检查点',
+      'ゼロフレームワーク3経路並列・高速コード探索＆非侵襲シャドウGit',
+      'Zero-Framework 3-Path Read Concurrency, Code Navigation & Shadow Git'
     ),
     desc: t(
-      '彻底摒弃直接 git commit 污染用户分支的做法，采用临时 GIT_INDEX_FILE 与 git commit-tree 将文件快照写入私有命名空间 refs/hyn/checkpoints/<session_id>。配合内置 ripgrep 42x 极速检索、tree-sitter AST 大纲、TurnHub 单调 seq 断线回放与 StuckDetector L2 防死循环自省，在 SWE-bench Verified Mini 上取得最高 84.0%（两轮均值 81.0%）解决率与 100% 有效补丁交付率。',
-      '作業ブランチや .git/index を一切汚さず、一時 GIT_INDEX_FILE と git commit-tree で専用名前空間 refs/hyn/checkpoints/ にスナップショットを記録。内蔵 ripgrep（42倍高速）と tree-sitter 構造アウトライン、TurnHub 再接続、StuckDetector L2 内省により、SWE-bench Verified Mini で最高 84.0%（2回平均 81.0%）・有効パッチ率 100% を実証しました。',
-      'Never pollutes user branches or .git/index. Uses temporary GIT_INDEX_FILE and git commit-tree to write snapshots into private refs/hyn/checkpoints/. Paired with bundled 42x ripgrep, tree-sitter code_outline, TurnHub seq replay, and StuckDetector L2 recovery—achieving 84.0% peak (81.0% avg) Pass@1 and 100% valid patches on SWE-bench Verified Mini.'
+      '纯自研 5,227 行异步状态机自动将连续只读工具、allow 级 MCP 与 explore 子代理合并为 asyncio.gather 保序并发。配合随包 ripgrep（42.1× 提速）、tree-sitter 符号大纲、StuckDetector v2（D1–D7 七维防死循环）与私有命名空间影子检查点，在 SWE-bench Verified Mini 斩获 84.0% 峰值解决率与 100% 有效补丁率。',
+      '独自実装 5,227行の非同期ループが読取系ツール・MCP・探索サブエージェントを順序維持のまま並列実行。同梱 ripgrep（42.1倍高速）、tree-sitter、D1–D7 ループ防止、専用シャドウGitにより SWE-bench Verified Mini 最高 84.0%・有効パッチ率 100% を実証。',
+      'Custom 5,227-LOC async loop batches consecutive read tools, allow-MCP calls, and explore subagents via order-preserving asyncio.gather. Paired with 42.1x ripgrep, tree-sitter AST, D1–D7 StuckDetector, and Shadow Git—reaching 84.0% peak Pass@1 on SWE-bench Mini.'
     ),
     highlights: [
-      t('SWE-bench Verified Mini 实测 98.0%（49/50）黄金源码文件直接定位率，100/100 题次零空补丁', 'SWE-bench Verified Mini で 98.0%（49/50）の正解ファイル直接特定率、100/100 問で空パッチゼロ', '98.0% (49/50) Gold File localization and 100% (100/100) valid non-empty patches on SWE-bench Verified Mini'),
-      t('用户 git status 与提交历史 100% 零污染，随时一键时光倒流；写后毫秒级语法检查 0% 误报', 'git status や履歴を一切汚さず即時ロールバック。編集後の構文チェックは誤検知 0.0%', '100% zero pollution to user git status; instant 1-click rollback & 0.0% FP post-edit syntax check'),
-      t('TurnHub 环形缓冲断线回放 + StuckDetector L1/L2 强制自省，自动跳出重复报错死循环', 'TurnHub 再接続リプレイ＋StuckDetector L1/L2 強制内省プロンプトで無限ループを打破', 'TurnHub monotonic seq ring buffer + StuckDetector L1/L2 automatic retrospective loop breaker')
+      t('SWE-bench Verified Mini 实测 98.0%（49/50）Gold 文件定位率，100/100 题次零空补丁', 'SWE-bench Verified Mini で 98.0%（49/50）の正解ファイル特定率、100/100 問で空パッチゼロ', '98.0% (49/50) Gold File localization and 100% (100/100) valid patches on SWE-bench Mini'),
+      t('D1–D7 七维检测 -> L1–L4 渐进介入（拦截率 100%，省 87.7% 无效步数）+ G1–G4 完工门禁', 'D1–D7 ループ検知（阻止率 100%・無駄ステップ -87.7%）＋ G1–G4 完了定義ゲート', 'D1–D7 loop guard (100% recall, -87.7% wasted steps) + G1–G4 CompletionGate DoD'),
+      t('临时 GIT_INDEX_FILE 写入 refs/hyn/checkpoints/，用户分支零污染；写后 37ms 语法自检 0% 误报', '一時インデックスで専用refへ保存し作業ブランチ汚染ゼロ；編集後37ms構文検査は誤報 0.0%', 'Zero-pollution Shadow Git refs + 37ms in-process post-edit syntax check (0.0% FP)')
     ],
     visualNodes: [
-      { tag: 'CODE NAVIGATION', name: 'ripgrep 15.2 + tree-sitter', addr: '119ms P50 · 98% Gold Hit', status: t('42倍极速检索 · 省95% Token', '42倍高速検索 · Token -95%', '42x Search · -95.4% Tokens') },
-      { tag: 'SHADOW REF', name: 'refs/hyn/checkpoints/s1', addr: 'git commit-tree', status: t('用户分支零改动', '作業ブランチ汚染ゼロ', 'Untouched User Index') },
-      { tag: 'ANTI-LOOP', name: 'StuckDetector L1 / L2', addr: '100/100 Valid Patches', status: t('零空补丁 · 自动跳出死循环', '空パッチゼロ · ループ回避', 'Zero Empty Patches') }
+      { tag: '3-PATH PARALLEL', name: 'Read Tools + MCP + Explore', addr: 'Order-Preserving gather()', status: t('多路并发保序归并', '順序維持並列実行', 'Concurrent Read Batch') },
+      { tag: 'CODE NAVIGATION', name: 'ripgrep 15.2 + tree-sitter', addr: '119ms P50 · -95.4% Tokens', status: t('42倍检索 · 98%定位', '42倍高速 · 98%特定', '42x Search · 98% Hit') },
+      { tag: 'SHADOW & GUARD', name: 'refs/hyn/checkpoints + D1–D7', addr: '100/100 Valid Patches', status: t('零污染 · 零死循环', '汚染ゼロ · ループ阻止', 'Zero Dirty Index') }
     ],
     snippetTitle: 'app/services/git_checkpoints.py · Plumbing Snapshot',
     snippet: `GIT_INDEX_FILE=<temp_index> git add -A
@@ -179,75 +174,106 @@ commit=$(git commit-tree $tree -p $parent -m "hyn checkpoint")
 # Write to private namespace; user HEAD & index remain 100% untouched
 git update-ref refs/hyn/checkpoints/<session_id> $commit`,
     docLink: `${prefix.value}/architecture/long-running`,
-    docLabel: t('阅读第 2 卷：长程自治引擎 (P0–P3) →', '第2章：長時間自律実行エンジン (P0–P3) を読む →', 'Read Vol. 02: Long-Horizon Engine (P0–P3) →')
+    docLabel: t('阅读第 2 卷：三路并发与长程自治引擎 →', '第2章：3経路並列と長時間自律エンジンを読む →', 'Read Vol. 02: 3-Path Concurrency & Engine →')
   },
   {
     id: 'team',
-    code: 'ENGINE 03 // GIT WORKTREE MULTI-AGENT TEAM',
-    shortTab: t('03. Worktree 多智能体团队', '03. Worktree マルチエージェント', '03. Worktree Agent Team'),
+    code: 'ENGINE 03 // DAG WORKTREE TEAM & MULTI-AGENT COMPARE',
+    shortTab: t('03. Worktree 团队与赛马对比', '03. Worktree 並列＆比較統合', '03. Worktree Team & Compare'),
     title: t(
-      'Git Worktree 物理隔离的主从多智能体常驻团队',
-      'Git Worktree 物理分離による常駐マルチエージェントチーム',
-      'Multi-Agent Resident Team with Git Worktree Isolation'
+      '最多 8 队友 DAG 协同、零拷贝 Worktree 隔离与多方案并行赛马',
+      '最大8メイトDAG協働・ゼロコピー Worktree 分離＆並列比較マージ',
+      '8-Teammate Task DAG, Zero-Copy Worktrees & Multi-Agent Compare'
     ),
     desc: t(
-      '主代理（Lead）可招募最多 4 名常驻队友（Teammates）协同攻坚。通过 ContextVar 将每名队友的文件读写与终端命令严格锁定在各自的 .hyn_wt/mate-* 独立工作树中，并强制实施「计划未获批准前从底层剥离一切写权限」的安全门禁。',
-      'リードエージェントが最大4名の常駐メイトを編成。各メイトは独立した Git Worktree（.hyn_wt/mate-*）にバインドされ、ファイル競合を物理的に排除。「計画承認前は読取専用に制限する」安全ゲートと非同期受信箱を備えています。',
-      'Lead coordinates up to 4 resident teammates bound to isolated .hyn_wt/mate-* Git Worktrees via ContextVar, enforced by a strict read-only gate prior to plan approval.'
+      '主代理（Lead）通过项目级 Task DAG 统筹 1–8 名常驻队友（默认 4 名）。每名队友锁定在独立 .worktrees/<name> 工作树并通过 Windows 目录联接（Junction）零拷贝秒级共享 node_modules/.venv；支持 compare_group 多代理同题赛马与 git apply --3way 三方合并，实测 4 队友并发加速 2.88×–3.04×、写冲突率 0.0%。',
+      'リードが Task DAG で最大8名の常駐メイトを統括。独立した .worktrees/<name> と Windows Junction により node_modules/.venv をゼロコピー共有し、compare_group 並列比較と 3-way マージに対応。4並列で 2.88×〜3.04× 高速化・競合 0.0% を実証。',
+      'Lead orchestrates 1–8 resident teammates via a persistent Task DAG. Bound to isolated .worktrees/<name> with zero-copy Windows Junctions for node_modules/.venv, supporting compare_group parallel evaluation and git apply --3way merge (2.88x–3.04x speedup, 0.0% collision).'
     ),
     highlights: [
-      t('4 名队友并行修改前端、后端与单测，物理级隔离杜绝文件互相覆盖', '最大4名のメイトが独立した Worktree 上で並列実装し、ファイル競合破損を完全排除', 'Up to 4 teammates code in parallel across isolated worktrees without file collisions'),
-      t('安全门禁：队友提交重构计划获批准前，底层物理剥离 6 类写盘与命令工具', '計画が承認されるまで write_file や run_powershell 等の変更系ツールを物理的に除外', 'Strips all 6 mutating & shell tools until Lead or user approves the implementation plan'),
-      t('零轮询异步收件箱（Zero-Polling Inbox）：仅在回合边界注入摘要，保护主上下文', 'ポーリング不要の非同期インボックスで完了報告を集約し、コンテキスト肥大化を防止', 'Zero-polling async inbox injects teammate results at turn boundaries without context bloat')
+      t('Windows _winapi.CreateJunction 零磁盘拷贝共享巨型依赖，毫秒级拉起独立工作树', 'Windows Junction により依存ディレクトリをコピーせず共有し、瞬時に独立Worktreeを起動', 'Zero-copy Windows Directory Junctions share node_modules/.venv instantaneously'),
+      t('分级唤醒 JSONL 邮箱（3s 防抖 + 200K 无人值守预算熔断）+ 计划获批前物理剥离写工具', '優先度別 JSONL 受信箱（200K 無人トークン上限）＋ 計画承認前の変更系ツール物理除外', 'Classified wake/piggyback JSONL inbox (200K unattended cap) + physical _MUTATING plan gate'),
+      t('内置 compare_group 多智能体并行方案对比与 pre_apply 快照一键无损撤销', '複数エージェントの実装案を並列比較し、pre_apply スナップショットでいつでも復元可能', 'Multi-agent compare_group diff review + 1-click undo via pre_apply Git refs')
     ],
     visualNodes: [
-      { tag: 'LEAD AGENT', name: 'Orchestrator & Plan Gate', addr: 'Async Inbox Drain', status: t('统筹审批与汇总', '計画審査・全体統括', 'Plan Gate & Merge') },
-      { tag: 'WORKTREE #1', name: '.hyn_wt/mate-backend', addr: 'Branch: wt/backend', status: t('独立工作树并发', '物理分離ワークツリー', 'Isolated Worktree') },
-      { tag: 'WORKTREE #2', name: '.hyn_wt/mate-frontend', addr: '_WORKSPACE - _MUTATING', status: t('只读门禁保护中', '計画承認ゲート有効', 'Read-Only Until Approved') }
+      { tag: 'TASK DAG & LEAD', name: 'Atomic create_tasks + Plan Gate', addr: '1–8 Resident Mates', status: t('拓扑依赖自动解锁', 'DAG依存自動解決', 'Topological Unblock') },
+      { tag: 'ZERO-COPY WT', name: '.worktrees/mate-* + Junction', addr: '2.88×–3.04× Speedup', status: t('0% 并发写冲突', 'ファイル競合 0.0%', '0.0% Write Collision') },
+      { tag: 'COMPARE & MERGE', name: 'compare_group + 3-Way Apply', addr: 'refs/hyn/worktrees/*', status: t('多方案赛马优选', '並列比較・3-way統合', 'Parallel Diff Pick') }
     ],
-    snippetTitle: 'app/services/team_runtime.py · Plan Approval Gate',
+    snippetTitle: 'app/services/team_runtime.py · Physical Plan Gate',
     snippet: `_MUTATING = {"write_file", "edit_file", "apply_patch",
              "write_docx", "edit_document", "run_powershell"}
 # Physically strip all mutating tools until implementation plan is approved
 if mate.require_plan and not mate.plan_approved:
     allowed_tools = _WORKSPACE - _MUTATING`,
     docLink: `${prefix.value}/architecture/multi-agent-team`,
-    docLabel: t('阅读第 3 卷：多智能体团队与 Worktree 隔离 →', '第3章：マルチエージェントと Worktree 分離を読む →', 'Read Vol. 03: Multi-Agent Team & Worktrees →')
+    docLabel: t('阅读第 3 卷：DAG 团队、Worktree 与赛马对比 →', '第3章：DAGチーム・Worktree並列を読む →', 'Read Vol. 03: DAG Team & Worktree Compare →')
+  },
+  {
+    id: 'memory',
+    code: 'ENGINE 04 // 4-LAYER CACHE, 7-STAGE COMPACT & RAGFLOW',
+    shortTab: t('04. 四层缓存与异构 RAG', '04. 4層キャッシュ＆高精度RAG', '04. 4-Layer Cache & RAG'),
+    title: t(
+      '四层只增前缀缓存、7 级保真裁剪、BM25 记忆召回与 4 阶段异构 RAG',
+      '4層追記型キャッシュ・7段階圧縮・BM25記憶想起＆4段階異種RAG',
+      '4-Layer Prefix Cache, 7-Stage Compactor, BM25 Memory & 4-Stage RAG'
+    ),
+    desc: t(
+      '严格将上下文切分为 L1–L4 四层只增前缀并用 SHA-256 逐层监控失效点，在 SWE-bench 1.2 亿+ Token 实测达成 97.74% 缓存命中（单题 ¥0.27）。配合 7 级缓存感知裁剪（60/40 头尾保留 100% 异常堆栈 + 缓存经济学延迟去重）、<2ms 会话中增量记忆召回，以及 100% 完整命中的企业异构 RAG 管线。',
+      'L1–L4 追記型プレフィックスと SHA-256 診断により SWE-bench 1.2億+ Token 実戦で 97.74% ヒット率を達成。7段階キャッシュ認識圧縮（60/40 先頭末尾保持で例外トレース 100% 維持）、<2ms セッション中記憶想起、完全正解率 100% の4段階RAGを統合。',
+      'Enforces L1–L4 append-only prefixes with SHA-256 layer diagnostics—hitting 97.74% cache rate across 120M+ SWE-bench tokens (¥0.27/fix). Pairs a 7-stage cache-aware compactor (100% traceback retention), <2ms mid-session BM25 memory recall, and 100% recall 4-stage RAG.'
+    ),
+    highlights: [
+      t('precache-v1 双轨 160 次真实 API 实测：热态缓存命中率 89.58%，意外断层 25 -> 0，计费省 57.27%', 'precache-v1 実API 160回検証：ウォームヒット 89.58%、予期せぬキャッシュ破壊 25→0、課金 -57.27%', 'precache-v1 (160 live calls): 89.58% warm hit, unexpected breaks 25 -> 0, -57.27% billable cost'),
+      t('7 级渐进裁剪：仅当未来 6 轮省下费用大于重建成本时才触发去重，60/40 裁剪 100% 保住末尾报错', 'キャッシュ経済性式に基づき重複排除を遅延実行；60/40 圧縮で末尾スタックトレースを 100% 保持', 'KV-economics delayed dedup + 60/40 head-tail preview retaining 100% of tail tracebacks'),
+      t('企业异构知识库 v0→v3 四阶段消融：双栏财报与修订合同完整命中率 36.7% → 100.0%，MRR 1.000', '2段組PDF・改訂契約書の4段階RAG検証：完全正解率 36.7% → 100.0%、MRR 1.000、汚染 0.0%', '4-stage RAG ablation (v0->v3): lifts strict recall from 36.7% to 100.0% (MRR 1.000, 0% noise)')
+    ],
+    visualNodes: [
+      { tag: 'PREFIX POLICY', name: 'L1–L4 SHA-256 Guard', addr: '97.74% Live · 0 Breaks', status: t('单题修复仅 ¥0.27', '1問解決 ¥0.27', '¥0.27 / Solved Bug') },
+      { tag: '7-STAGE COMPACT', name: '60/40 Preview + Econ Dedup', addr: '-93.1% Size · 100% Trace', status: t('堆栈零丢失', 'トレース保持100%', 'Zero Traceback Loss') },
+      { tag: 'HYBRID RAG v3', name: 'Layout + Breadcrumb + Rerank', addr: 'Recall 100% · MRR 1.000', status: t('拒答率 100% · 零污染', '境界外拒否 100%', '100% OOD Refusal') }
+    ],
+    snippetTitle: 'app/services/context_compact.py · Cache-Economics Gate',
+    snippet: `# Only deduplicate repeated file reads when 6-turn cache savings beat rebuild cost
+future_savings = delta_tokens_saved * 6 * CACHE_READ_RATE   # 0.10x
+rebuild_penalty = invalidated_suffix_tokens * REBUILD_COST  # 0.90x
+if future_savings > rebuild_penalty:
+    apply_stale_read_dedup(messages)`,
+    docLink: `${prefix.value}/architecture/memory-and-rag`,
+    docLabel: t('阅读第 4 卷：四层前缀缓存、7 级裁剪与异构 RAG →', '第4章：4層キャッシュ・7段階圧縮・RAGを読む →', 'Read Vol. 04: Prefix Cache, Compaction & RAG →')
   },
   {
     id: 'workbench',
-    code: 'ENGINE 04 // SURGICAL OFFICE & MEMORY ENGINE',
-    shortTab: t('04. 高保真文档工作台与双层记忆', '04. Office部分AI更新＆2層メモリ', '04. Office Workbench & Memory'),
+    code: 'ENGINE 05 // DUAL WORKBENCH, PLAN MODE & MCP OAUTH',
+    shortTab: t('05. 双模工作台与 MCP 生态', '05. Office編集＆MCP拡張', '05. Workbench, Plan & MCP'),
     title: t(
-      'WPS 级高保真文档工作台与 SelectionAnchor 手术刀级热补丁',
-      '高精細 Office ワークベンチ＆選択範囲のインプレース AI 部分更新',
-      'WPS-Grade Document Workbench & Selection AI Hot-Patching'
+      '双模高保真文档工作台、零缓存抖动 Plan Mode 与 MCP OAuth 开放生态',
+      'デュアルモード Office ワークベンチ・Plan Mode ＆ MCP OAuth エコシステム',
+      'Dual-Mode Office Workbench, Prefix-Safe Plan Mode & MCP OAuth Ecosystem'
     ),
     desc: t(
-      '右侧分栏原生渲染并编辑 docx / xlsx / pptx / pdf / md / html。用户在画布上用鼠标划取任意段落、单元格区间或幻灯片形状，即可生成结构化 SelectionAnchor 触发局部精准写回，并通过 SSE 原地无闪烁热刷新。',
-      '右ペインで Office 文書（docx/xlsx/pptx/pdf）を高精細描画・直接編集。マウスで選択した段落・セル範囲・PPT図形だけを構造化アンカーで特定し、SSE で画面リロードなしのインプレース部分更新を実行します。',
-      'In-app preview and surgical AI patching for docx, xlsx, pptx, pdf, md, and html via normalized SelectionAnchor coordinates and zero-reload SSE hot-patching.'
+      '右侧统一工作台无缝切换「实时运行观测舱（拓扑图/预算/后台终端）」与「7 格式原生预览编辑舱（docx/xlsx/pptx/pdf/md/html/Shiki Diff）」，支持鼠标划词 SelectionAnchor 手术刀级热补丁。同时内置 5 档权限（含零前缀失效 Plan Mode）、<1ms 三语 BM25 零 RTT 技能预载、RFC 8252 MCP OAuth 2.0、6 阶段 Hooks 与 Cron 定时引擎。',
+      '右ペインは「リアルタイム稼働監視」と「7形式ネイティブ編集（SelectionAnchor 部分更新）」をシームレスに切替。さらにキャッシュを壊さない Plan Mode、<1ms 3言語 BM25 スキル事前読込、RFC 8252 MCP OAuth 2.0、6段階 Hooks、ローカル Cron を統合しています。',
+      'Unites a dual-mode RightWorkbench (4-tab Live Telemetry + 7 native editors with SelectionAnchor SSE hot-patching) with 5-tier permissions (prefix-safe Plan Mode), <1ms trilingual BM25 Zero-RTT skill preloading, RFC 8252 MCP OAuth 2.0, 6-stage Hooks, and Cron scheduling.'
     ),
     highlights: [
-      t('告别“改一句话重生成整份 PPT”：精准定位 slide_index 与 shape_id 原地修改', '「1箇所の修正でPPT全体を再生成」する必要なし：該当シェイプのみを書式維持で更新', 'Updates only the targeted slide shape or paragraph while preserving full document styling'),
-      t('内置 5 版本文件快照（.hyn_agent/file_snapshots）与一键撤销回退', '最大5世代の自動ファイルスナップショットを保持し、ワンクリックで復元可能', 'Maintains 5-generation automatic file snapshots with instant 1-click undo'),
-      t('四层只增前缀在 SWE-bench 1.2亿 Token 实测达成 97.74% 缓存命中（单题修复 ¥0.27），多场景双轨基准热态 89.58%（计费省 57.27%）', '4層追記型プレフィックスで SWE-bench 実戦 97.74% ヒット率（1問解決 ¥0.27）、双軌道ベンチで 89.58% ウォームヒット・課金 -57.27% を実証', '4-layer append-only prefix achieves 97.74% SWE-bench cache hit (¥0.27/fix) and 89.58% warm hit (-57.27% billable) on controlled suites')
+      t('Office 微基准 20/20 全通，GAIA Validation 30 题多步实测 90.0%（27/30，L2 达 100%）', 'Office 微小ベンチ 20/20 合格、GAIA Validation 30問実測 90.0%（27/30、L2 100%）', '20/20 Office surgical patch benchmark & 90.0% (27/30) on GAIA Validation multi-step tasks'),
+      t('5 档权限 + 受保护路径硬门禁（30/30 越权攻击 100% 拦截）；Plan Mode 切换零 L1/L2 缓存失效', '5段階権限＋保護パス強制確認（攻撃阻止 30/30）；Plan Mode 切替時のキャッシュ無効化ゼロ', '5 permission modes + Protected Path Guard (0.0% ASR across 30 attacks); zero-churn Plan Mode'),
+      t('<1ms 三语 BM25 意图富化器省去 1 次 LLM 往返，全协议 MCP OAuth 2.0 + 30 工具上限防膨胀', '<1ms 3言語 BM25 で 1 RTT を削減し、MCP OAuth 2.0 と最大30ツール制限でコンテキストを保護', '<1ms trilingual BM25 saves 1 LLM RTT; full MCP OAuth 2.0 + 30-tool cap prevents prompt bloat')
     ],
     visualNodes: [
-      { tag: 'ANCHOR LOCATOR', name: 'pptx_shape / docx_para', addr: 'slide: 2 · shape: 104', status: t('归一化坐标定位', '構造化アンカー特定', 'Surgical Coordinate') },
-      { tag: 'HOT RELOAD', name: 'SSE file_updated Event', addr: '5-Gen File Snapshot', status: t('无闪烁原地刷新', 'リロードなし即時反映', 'In-Place Live Patch') },
-      { tag: 'PREFIX CACHE', name: '4-Layer Append-Only Prefix', addr: '97.74% SWE Hit · ¥0.27/Fix', status: t('1.2亿 Token 实测验证', '1.2億Token 実戦検証', '120M-Token Verified') }
+      { tag: 'SURGICAL OFFICE', name: '7 Native Editors + Diff Bar', addr: '20/20 Office · 90% GAIA', status: t('划词原地热更新', '選択範囲即時反映', 'SSE Live Hot-Patch') },
+      { tag: 'INTENT & PLAN', name: 'Plan Mode + <1ms BM25 Enrich', addr: '0.67ms P50 · Zero-RTT', status: t('零缓存抖动对齐', 'キャッシュ維持計画', 'Prefix-Safe Plan') },
+      { tag: 'ECOSYSTEM', name: 'MCP OAuth 2.0 + Hooks + Cron', addr: 'stdio / SSE / Streamable HTTP', status: t('SHA-256 信任门禁', 'SHA-256 署名検証', 'SHA-256 Trust Gate') }
     ],
-    snippetTitle: 'SelectionContext · Cross-Format Surgical Anchor',
+    snippetTitle: 'SelectionAnchor & TurnEnricher · Surgical & Zero-RTT',
     snippet: `{
-  "file": { "path": "Architecture_Review.pptx", "ext": ".pptx" },
-  "locator": {
-    "type": "pptx_shape",
-    "slide_index": 2, "shape_id": 104, "paragraph_indices": [0]
-  }
-} // -> python-pptx updates only the target shape, preserving layout`,
-    docLink: `${prefix.value}/architecture/workbench`,
-    docLabel: t('阅读第 4 & 5 卷：双层记忆与高保真工作台 →', '第4・5章：非同期2層メモリと高精細ワークベンチを読む →', 'Read Vol. 04 & 05: Memory & Office Workbench →')
+  "locator": { "type": "pptx_shape", "slide_index": 2, "shape_id": 104 },
+  "intent_enricher": { "slash_skill": "Zero-RTT L4 Preload", "bm25_p50": "0.67ms" },
+  "mcp_runtime": { "auth": "RFC8252 Loopback OAuth2 + DPAPI", "cap": 30 }
+}`,
+    docLink: `${prefix.value}/architecture/intent-and-ecosystem`,
+    docLabel: t('阅读第 5 & 6 卷：双模工作台、Plan Mode 与 MCP 生态 →', '第5・6章：Officeワークベンチ・Plan Mode・MCPを読む →', 'Read Vol. 05 & 06: Workbench, Plan Mode & MCP →')
   }
 ])
 
@@ -434,7 +460,7 @@ const fullStackAblationBenchmarks = computed(() => [
       '2段組PDF・Word・改訂メモの36問QAで実測：レイアウト解析(v1)、階層チャンク(v2)、ハイブリッド検索+時系列リランク(v3)により完全正解率が 36.7% → 100.0% に向上、ノイズ混入率 0.0%。',
       'Across 36 golden QAs over 2-col PDFs, DOCX, and revision memos: layout parsing (v1), breadcrumb chunking (v2), and hybrid temporal reranking (v3) lift strict recall from 36.7% to 100.0% with 0.0% distractor pollution.'
     ),
-    reportUrl: '/benchmarks/rag-eval-v1/REPORT.md'
+    reportSlug: 'rag-eval-v1'
   },
   {
     code: 'ABLATION 02 · LOOP & COMPACT',
@@ -447,7 +473,9 @@ const fullStackAblationBenchmarks = computed(() => [
       'D1〜D6の6次元ループを 100.0% (18/18) 検知し、平均7.5ステップで収束（無駄なステップを 87.7% 削減）。60/40 先頭・末尾保持圧縮により 93.1% 圧縮しつつ末尾の例外トレースを 100.0% 保持。',
       'Detects 100.0% (18/18) of D1–D6 loop patterns (mean intervention at step 7.5, saving 87.7% wasted steps). 60/40 head-tail compaction shrinks oversized outputs by 93.1% while retaining 100.0% of tail tracebacks.'
     ),
-    reportUrl: '/benchmarks/harness-ablation-v1/REPORT.md'
+    reportSlug: 'harness-ablation-v1',
+    secondaryReportSlug: 'precache-v1',
+    secondaryLabel: t('Pre-Cache 报告 (89.58%)', 'Pre-Cache レポート', 'Pre-Cache Report')
   },
   {
     code: 'ABLATION 03 · WORKTREE & GATE',
@@ -460,7 +488,7 @@ const fullStackAblationBenchmarks = computed(() => [
       '4名の常駐メイトが独立 Git Worktree で並列稼働し 2.88×〜3.04× の実測高速化と競合率 0.0% を達成。PermissionGate は30種の破壊的コマンド・パストラバーサルを 100.0% 遮断（誤検知 0.0%）。',
       '4 concurrent teammates on isolated Git Worktrees achieve a 2.88×–3.04× wall-clock speedup with 0.0% file collision and 0 dirty main-repo bytes; PermissionGate blocks 100.0% (30/30) of adversarial payloads with 0.0% benign FP.'
     ),
-    reportUrl: '/benchmarks/harness-ablation-v1/REPORT.md'
+    reportSlug: 'harness-ablation-v1'
   },
   {
     code: 'ABLATION 04 · POLYGLOT & GAIA',
@@ -473,8 +501,10 @@ const fullStackAblationBenchmarks = computed(() => [
       'Aider-Polyglot 6言語24問ブラインド実装で 100.0% (24/24) 合格（基盤検証 36/36）；GAIA Validation 30問多段階ツール呼び出しで 90.0% (27/30、L1 90% / L2 100% / L3 75%)、Office検証 20/20 通過。',
       '100.0% (24/24) on 6-language Aider-Polyglot blind tasks (36/36 tool microbench); 90.0% (27/30: L1 90%, L2 100%, L3 75%) on GAIA Validation 30-task multi-step agent loop (20/20 Office microbench).'
     ),
-    reportUrl: '/benchmarks/polyglot-mini-v1/REPORT.md',
-    secondaryReportUrl: '/benchmarks/gaia-mini-v1/REPORT.md'
+    reportSlug: 'polyglot-mini-v1',
+    primaryLabel: t('Polyglot 实测报告', 'Polyglot レポート', 'Polyglot Report'),
+    secondaryReportSlug: 'gaia-mini-v1',
+    secondaryLabel: t('GAIA 30题实测报告', 'GAIA 30問レポート', 'GAIA 30-Task Report')
   }
 ])
 </script>
@@ -550,14 +580,20 @@ const fullStackAblationBenchmarks = computed(() => [
               :href="`${prefix}/architecture/overview`"
               @click.prevent="navigate(`${prefix}/architecture/overview`)"
             >
-              <span>{{ t('审阅工程架构白皮书 (全 5 卷)', '技術アーキテクチャ白書 (全5章)', 'Architecture Whitepaper (5 Vols)') }}</span>
+              <span>{{ t('审阅工程架构白皮书 (全 6 卷)', '技術アーキテクチャ白書 (全6章)', 'Architecture Whitepaper (6 Vols)') }}</span>
               <span>→</span>
             </a>
           </div>
 
           <!-- 下载按钮正下方：VirusTotal 0/57 安全扫描报告与 SHA-256 精致验证条 -->
           <div class="nx-hero-verify-bar">
-            <span class="nx-verify-safe">🔒 <strong>100% Local &amp; Safe</strong></span>
+            <span class="nx-verify-safe">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <strong>100% Local &amp; Safe</strong>
+            </span>
             <span class="nx-verify-sep">·</span>
             <a
               class="nx-verify-vt-link"
@@ -565,11 +601,15 @@ const fullStackAblationBenchmarks = computed(() => [
               target="_blank"
               rel="noopener"
             >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 3px;" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
               {{
                 t(
-                  `✅ VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore} 零报毒)`,
-                  `✅ VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore} 検出ゼロ)`,
-                  `✅ VirusTotal Security Scan Report (${SITE_META.virusTotalScore} Clean)`
+                  `VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore} 零报毒)`,
+                  `VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore} 検出ゼロ)`,
+                  `VirusTotal Security Scan Report (${SITE_META.virusTotalScore} Clean)`
                 )
               }} ↗
             </a>
@@ -592,7 +632,12 @@ const fullStackAblationBenchmarks = computed(() => [
               target="_blank"
               rel="noopener"
             >
-              {{ t('📥 直接下载 .exe', '📥 .exe 直リンク', '📥 Direct .exe') }}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 3px;" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              {{ t('直接下载 .exe', '.exe 直リンク', 'Direct .exe') }}
             </a>
           </div>
 
@@ -605,7 +650,7 @@ const fullStackAblationBenchmarks = computed(() => [
               @click="showcaseTab = 'video'"
             >
               <span class="nx-pulse-dot"></span>
-              <span>▶ {{ t('实机演示视频：一句话 7分35秒 从零开发记账软件', '実機デモ動画：1文の指示で 7分35秒 ゼロから家計簿ソフトを完遂', 'Live Demo Video: 1-Prompt Bookkeeping App Built in 7m 35s') }}</span>
+              <span>{{ t('实机演示视频：一句话 7分35秒 从零开发记账软件', '実機デモ動画：1文の指示で 7分35秒 ゼロから家計簿ソフトを完遂', 'Live Demo Video: 1-Prompt Bookkeeping App Built in 7m 35s') }}</span>
             </button>
             <button
               type="button"
@@ -816,28 +861,28 @@ const fullStackAblationBenchmarks = computed(() => [
       </div>
     </section>
 
-    <!-- ==================== 3. 四大核心工程引擎交互画廊 (INTERACTIVE ENGINE SPOTLIGHT) ==================== -->
+    <!-- ==================== 3. 五大核心工程引擎交互画廊 (INTERACTIVE ENGINE SPOTLIGHT) ==================== -->
     <section id="capabilities" class="nx-spotlight-section">
       <div class="nx-container">
         <div class="nx-sec-header is-center">
           <div class="nx-sec-kicker">
-            <span>CORE ENGINEERING ARCHITECTURE</span>
+            <span>CORE ENGINEERING ARCHITECTURE // 6-VOLUME HARNESS STACK</span>
           </div>
           <h2 class="nx-sec-title">
             {{
               t(
-                '超越薄封装 API 套壳：深入底层状态机与数据契约的四大核心引擎',
-                '単なるAPIラッパーではない：状態マシンとデータ契約に基づく4大コアエンジン',
-                'Beyond Thin API Wrappers: Four Core State-Machine & Data-Contract Engines'
+                '超越薄封装 API 套壳：深入底层状态机与数据契约的五大核心引擎',
+                '単なるAPIラッパーではない：状態マシンとデータ契約に基づく5大コアエンジン',
+                'Beyond Thin API Wrappers: Five Core State-Machine & Data-Contract Engines'
               )
             }}
           </h2>
           <p class="nx-sec-desc">
             {{
               t(
-                '点击下方四大引擎模块，直观检视 Helm 如何解决「机密代码外泄、长任务中断死循环、多代理并发冲突、Office 文档全量重写」四大工业痛点。',
-                '以下の4つのエンジンタブを切り替えて、「機密コード漏洩・長時間タスクのループ・並列編集競合・Office文書の全体再生成」を解決する内部機構をご確認ください。',
-                'Explore how Helm solves the four hardest enterprise agent bottlenecks: data leakage, long-run loops, multi-agent collisions, and destructive document rewrites.'
+                '点击下方五大引擎模块，直观检视 Helm 如何解决「机密代码外泄、长任务死循环、多代理并发写冲突、前缀缓存频繁失效、Office 全量盲改」五大工业痛点。',
+                '以下の5つのエンジンタブを切り替えて、「機密コード漏洩・長時間ループ・並列編集競合・キャッシュ無効化・Office文書の全体再生成」を解決する内部機構をご確認ください。',
+                'Explore how Helm solves the five hardest enterprise agent bottlenecks: data leakage, long-run loops, multi-agent collisions, KV-cache churn, and destructive document rewrites.'
               )
             }}
           </p>
@@ -1087,19 +1132,27 @@ const fullStackAblationBenchmarks = computed(() => [
             <div class="nx-swebench-card-actions">
               <a
                 class="nx-btn nx-btn-primary nx-swebench-btn"
-                href="/benchmarks/swebench-mini-v1/REPORT.md"
-                target="_blank"
-                rel="noopener"
+                :href="`${prefix}/benchmarks/swebench-mini-v1`"
+                @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
               >
-                <span>{{ t('审阅完整评测报告 (REPORT.md) ↗', '完全な評価レポートを読む (REPORT.md) ↗', 'Read Full Benchmark Report (REPORT.md) ↗') }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                <span>{{ t('查看完整实测报告与下载', '完全な評価レポート・DL', 'Read Full Report & Download') }}</span>
               </a>
               <a
                 class="nx-btn nx-btn-glass nx-swebench-btn"
-                href="/benchmarks/swebench-mini-v1/manifest.json"
-                target="_blank"
-                rel="noopener"
+                :href="`${prefix}/benchmarks/swebench-mini-v1#evidence-bundle`"
+                @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1#evidence-bundle`)"
               >
-                <span>{{ t('SHA-256 证据包清单 (manifest.json) ↗', 'SHA-256 証跡マニフェスト (manifest.json) ↗', 'SHA-256 Evidence Manifest (manifest.json) ↗') }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+                <span>{{ t('SHA-256 证据包校验与打包下载', 'SHA-256 証跡検証・ZIP一括DL', 'SHA-256 Evidence & ZIP Bundle') }}</span>
               </a>
             </div>
           </div>
@@ -1272,29 +1325,49 @@ const fullStackAblationBenchmarks = computed(() => [
             <h4 class="nx-swebench-micro-title">{{ item.title }}</h4>
             <code class="nx-swebench-micro-ba">{{ item.beforeAfter }}</code>
             <p class="nx-swebench-micro-desc">{{ item.desc }}</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+            <div class="nx-bench-card-actions">
               <a
-                v-if="item.reportUrl"
-                :href="item.reportUrl"
-                target="_blank"
-                rel="noopener"
-                class="nx-modal-bench-link"
-                style="font-size: 12px;"
+                v-if="item.reportSlug"
+                :href="`${prefix}/benchmarks/${item.reportSlug}`"
+                class="nx-bench-card-btn is-primary"
+                @click.prevent="navigate(`${prefix}/benchmarks/${item.reportSlug}`)"
               >
-                {{ item.secondaryReportUrl ? t('Polyglot 报告 ↗', 'Polyglot レポート ↗', 'Polyglot Report ↗') : t('查看实测报告 (REPORT.md) ↗', '評価レポートを見る (REPORT.md) ↗', 'View Empirical Report (REPORT.md) ↗') }}
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <span>{{ item.primaryLabel || t('查看实测报告与下载', '評価レポート・DL', 'View Report & Download') }}</span>
+                <span>→</span>
               </a>
               <a
-                v-if="item.secondaryReportUrl"
-                :href="item.secondaryReportUrl"
-                target="_blank"
-                rel="noopener"
-                class="nx-modal-bench-link"
-                style="font-size: 12px;"
+                v-if="item.secondaryReportSlug"
+                :href="`${prefix}/benchmarks/${item.secondaryReportSlug}`"
+                class="nx-bench-card-btn"
+                @click.prevent="navigate(`${prefix}/benchmarks/${item.secondaryReportSlug}`)"
               >
-                {{ t('GAIA 30题报告 ↗', 'GAIA 30問レポート ↗', 'GAIA 30-Task Report ↗') }}
+                <span>{{ item.secondaryLabel }}</span>
+                <span>→</span>
               </a>
             </div>
           </div>
+        </div>
+
+        <!-- 6 大权威实测报告与证据包下载中心总入口 -->
+        <div class="nx-bench-hub-banner nx-glass-card">
+          <div class="nx-bench-hub-info">
+            <span class="nx-badge is-emerald">SHA-256 SIGNED EVIDENCE HUB // 6 SUITES</span>
+            <div>
+              <strong>{{ t('6 大权威实测报告全文阅读与原始证据包下载中心', '全6種ベンチマーク実証レポート閲覧＆SHA-256証跡ダウンロードセンター', '6-Suite Empirical Benchmark Reader & Cryptographic Evidence Center') }}</strong>
+              <p>{{ t('支持在线审阅 SWE-bench Mini、Pre-Cache、RAG 4阶段消融、Harness 护栏消融、Polyglot 与 GAIA 完整报告，并提供一键下载 .md / .zip 证据包与浏览器端 SHA-256 实时验签。', 'SWE-bench・Pre-Cache・RAG・Harness・Polyglot・GAIA の全レポート閲覧、Markdown/ZIP一括ダウンロード、ブラウザ上での SHA-256 即時検証に対応しています。', 'Read all 6 formatted empirical reports online, verify SHA-256 checksums live via WebCrypto, and download Markdown or complete ZIP evidence bundles in one click.') }}</p>
+            </div>
+          </div>
+          <a
+            class="nx-btn nx-btn-primary"
+            :href="`${prefix}/benchmarks/swebench-mini-v1`"
+            @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
+          >
+            <span>{{ t('进入实测报告与下载中心 →', '実証レポート＆DLセンターへ →', 'Open Benchmark & Download Hub →') }}</span>
+          </a>
         </div>
       </div>
     </section>
@@ -1367,36 +1440,36 @@ const fullStackAblationBenchmarks = computed(() => [
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>{{ t('多智能体并发与权限安全', 'マルチエージェント並列性と権限ゲート', 'Multi-Agent Concurrency & Safety') }}</strong></td>
+                  <td><strong>{{ t('多智能体并发与零信任权限', 'マルチエージェント並列性と権限ゲート', 'Multi-Agent Concurrency & Safety') }}</strong></td>
                   <td class="is-helm-col">
                     <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('Git Worktree 物理隔离并发 + 计划批准前强制只读门禁 + 4 档实时权限', 'Git Worktree 物理分離 + 計画承認前の読取専用ゲート + 4段階リアルタイム権限', 'Physical Git Worktree isolation + read-only plan gate + 4-tier live permissions') }}</strong>
+                    <strong>{{ t('最多 8 队友独立 .worktrees/（Windows Junction 零拷贝共享依赖 + 多方案并行对比）+ 5 档权限（含零缓存失效 Plan Mode，30/30 攻击 100% 拦截）', '最大8メイト独立 .worktrees/（Junctionゼロコピー共有＋並列比較）＋ 5段階権限（Plan Mode含む、攻撃阻止 30/30）', 'Up to 8 isolated .worktrees/ (Windows Junction zero-copy + compare_group) + 5-tier permissions (prefix-safe Plan Mode, 30/30 attack block)') }}</strong>
                   </td>
                   <td class="is-dim">
                     <span class="nx-status-no">✕</span>
-                    {{ t('多代理共享同一目录互相覆盖，缺乏细粒度写盘门禁', '同一ディレクトリを同時編集して競合破損。細粒度な書込ゲートがない', 'Subagents overwrite each other in shared directories') }}
+                    {{ t('多代理共享同一目录互相覆盖，缺乏细粒度写盘与受保护路径硬门禁', '同一ディレクトリを同時編集して競合破損。細粒度な書込・保護パスゲートがない', 'Subagents overwrite each other in shared directories without protected-path gates') }}
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>{{ t('大模型 Prefix Cache 保护', 'LLM Prefix Cache ヒット率保護', 'LLM Prefix Cache Preservation') }}</strong></td>
+                  <td><strong>{{ t('大模型 Prefix Cache 与保真裁剪', 'LLM Prefix Cache 保護と7段階圧縮', 'Prefix Cache & 7-Stage Compaction') }}</strong></td>
                   <td class="is-helm-col">
                     <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('四层只增前缀 + 缓存感知裁剪：SWE-bench 1.2 亿 Token 实测命中率 97.74%（每修一题仅 ¥0.27–¥0.29）', '4層追記型プレフィックス＋キャッシュ認識圧縮：SWE-bench 1.2億Token実測ヒット率 97.74%（1課題解決 ¥0.27）', '4-layer append-only prefix + cache-aware compaction: 97.74% live SWE-bench cache hit across 120M+ tokens (¥0.27/fix)') }}</strong>
+                    <strong>{{ t('四层只增前缀 + 7 级缓存经济学裁剪：SWE-bench 1.2 亿 Token 命中率 97.74%（单题 ¥0.27），60/40 头尾 100% 保住异常堆栈', '4層追記型プレフィックス＋7段階圧縮：SWE-bench 1.2億Tokenヒット率 97.74%（1問 ¥0.27）、末尾トレース 100% 保持', '4-layer append-only prefix + 7-stage cache-aware compactor: 97.74% SWE-bench cache hit (¥0.27/fix) & 100% traceback retention') }}</strong>
                   </td>
                   <td class="is-dim">
                     <span class="nx-status-no">✕</span>
-                    {{ t('每轮动态改写 System Prompt 记忆区，导致 KV Cache 每轮失效、首字极慢', '毎ターン System Prompt を書き換えるため KV キャッシュが毎回無効化', 'Mutates system prompt every turn, invalidating KV prefix cache') }}
+                    {{ t('每轮动态改写 System Prompt 记忆区或暴力截断工具结果，导致缓存失效与末尾报错丢失', '毎ターン System Prompt を書き換えるか末尾を切り捨てるため、キャッシュ無効化とエラー欠損が発生', 'Mutates system prompt every turn and truncates tail stack traces') }}
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>{{ t('Office 富文档协同交付', 'Office文書の直接プレビュー・部分編集', 'Office Document Workbench') }}</strong></td>
+                  <td><strong>{{ t('双模文档工作台与 MCP 开放生态', 'Officeワークベンチ＆MCP拡張エコシステム', 'Office Workbench & MCP Ecosystem') }}</strong></td>
                   <td class="is-helm-col">
                     <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('右侧内建 docx/xlsx/pptx/pdf 工作台 + 鼠标划取 SelectionAnchor 原地热更新', 'docx/xlsx/pptx/pdf ワークベンチ内蔵＋選択範囲のピンポイントSSE更新', 'Built-in docx/xlsx/pptx/pdf workbench + mouse-selection SSE hot-patching') }}</strong>
+                    <strong>{{ t('7 格式原生预览编辑 + SelectionAnchor 热补丁（GAIA 90%）+ 全协议 MCP OAuth 2.0 + <1ms 零 RTT 技能预载 + 6 阶段 Hooks', '7形式ネイティブ編集＋SelectionAnchor（GAIA 90%）＋ MCP OAuth 2.0 ＋ <1ms スキル事前読込 ＋ 6段階 Hooks', '7 native editors + SelectionAnchor hot-patch (90% GAIA) + RFC 8252 MCP OAuth 2.0 + <1ms Zero-RTT skills + 6-stage Hooks') }}</strong>
                   </td>
                   <td class="is-dim">
                     <span class="nx-status-no">✕</span>
-                    {{ t('仅能输出代码文本，改一行 PPT 文字也必须重新生成整个文件', 'テキスト出力のみで、PPTやWordの1箇所を直すにも全体再生成が必要', 'Text-only; requires regenerating the entire file for minor edits') }}
+                    {{ t('仅输出纯文本代码，改一句话也需重写整份 PPT；缺乏 OAuth 加密存储与 MCP 工具上限防膨胀机制', 'テキスト出力のみでPPTの1箇所修正にも全体再生成が必要。OAuth暗号化やMCPツール肥大化防止がない', 'Text-only output requiring full file rewrites; lacks DPAPI OAuth vault and MCP tool caps') }}
                   </td>
                 </tr>
               </tbody>
@@ -1406,27 +1479,27 @@ const fullStackAblationBenchmarks = computed(() => [
       </div>
     </section>
 
-    <!-- ==================== 6. 尊贵得体的「Architecture Whitepaper（工程架构白皮书 · 全 5 卷）」导览区 ==================== -->
+    <!-- ==================== 6. 尊贵得体的「Architecture Whitepaper（工程架构白皮书 · 全 6 卷）」导览区 ==================== -->
     <section class="nx-blueprint-section">
       <div class="nx-container">
         <div class="nx-blueprint-top">
           <div>
-            <div class="nx-sec-kicker">ARCHITECTURE WHITEPAPER // 5-VOLUME ENGINEERING BLUEPRINT</div>
+            <div class="nx-sec-kicker">ARCHITECTURE WHITEPAPER // 6-VOLUME ENGINEERING BLUEPRINT</div>
             <h2 class="nx-sec-title">
               {{
                 t(
-                  '深入源码级设计：Helm 工程架构白皮书（全 5 卷）',
-                  'ソースコードレベルの設計開示：Helm 技術アーキテクチャ白書（全5章）',
-                  'Source-Level Design Disclosure: Helm Architecture Whitepaper (5 Volumes)'
+                  '深入源码级设计：Helm 工程架构白皮书（全 6 卷）',
+                  'ソースコードレベルの設計開示：Helm 技術アーキテクチャ白書（全6章）',
+                  'Source-Level Design Disclosure: Helm Architecture Whitepaper (6 Volumes)'
                 )
               }}
             </h2>
             <p class="nx-sec-desc">
               {{
                 t(
-                  '完整公开双进程解耦拓扑、TurnHub 流式状态机、无侵入影子 Git 检查点、Git Worktree 并发团队与异步双层记忆的核心源码契约与架构图解。',
-                  'デュアルプロセス構造、TurnHub 状態マシン、非侵襲シャドウGitチェックポイント、Git Worktree 並列チーム、非同期2層メモリの内部設計とデータ契約を全5章で詳述しています。',
-                  'Complete architectural specifications detailing dual-process IPC, TurnHub state machines, Shadow Git Checkpoints, Git Worktree teams, and two-tier memory contracts.'
+                  '完整公开双进程 DPAPI 安全基座、三路并发长程状态机、Worktree 多智能体赛马对比、四层前缀缓存与 7 级裁剪、双模文档工作台以及 Plan Mode / MCP OAuth 生态的核心源码契约与矢量架构图。',
+                  'デュアルプロセス DPAPI 安全基盤、3経路並列状態マシン、Worktree マルチエージェント並列比較、4層キャッシュ＆7段階圧縮、Officeワークベンチ、Plan Mode / MCP OAuth の内部設計と架構図を全6章で詳述。',
+                  'Complete source-level specifications and architecture diagrams covering dual-process DPAPI security, 3-path state machines, Worktree compare teams, 4-layer prefix cache, dual-mode workbench, and Plan Mode / MCP OAuth.'
                 )
               }}
             </p>
@@ -1441,7 +1514,6 @@ const fullStackAblationBenchmarks = computed(() => [
               {{ t('进入白皮书阅读中心 →', '白書リーダーで第1章から読む →', 'Open Architecture Reader →') }}
             </a>
             <button type="button" class="nx-btn nx-btn-glass" @click="openAuditModal">
-              <span>⌘</span>
               <span>{{ t('架构透明性与离线安全说明', '設計の透明性とオフライン安全仕様', 'Architecture & Offline Security Info') }}</span>
             </button>
           </div>
@@ -1635,9 +1707,9 @@ const fullStackAblationBenchmarks = computed(() => [
             <p class="is-highlight-line">
               {{
                 t(
-                  '💡 私人订制通道：要是大家有紧急交付、不便公开或高度定制化的私人订制功能，也请通过下方合作邮箱（785430621@qq.com）单独与我联系。',
-                  '💡 個別カスタム開発窓口：緊急の納期対応や社外秘・個別仕様のプライベートカスタム機能開発をご希望の場合は、下記のメールアドレス（785430621@qq.com）まで個別にご連絡ください。',
-                  '💡 Private Custom Development: If you have urgent, confidential, or highly tailored private custom feature requirements, please contact me directly via email (785430621@qq.com).'
+                  '私人订制通道：要是大家有紧急交付、不便公开或高度定制化的私人订制功能，也请通过下方合作邮箱（785430621@qq.com）单独与我联系。',
+                  '個別カスタム開発窓口：緊急の納期対応や社外秘・個別仕様のプライベートカスタム機能開発をご希望の場合は、下記のメールアドレス（785430621@qq.com）まで個別にご連絡ください。',
+                  'Private Custom Development: If you have urgent, confidential, or highly tailored private custom feature requirements, please contact me directly via email (785430621@qq.com).'
                 )
               }}
             </p>
@@ -1828,7 +1900,11 @@ const fullStackAblationBenchmarks = computed(() => [
                 class="nx-btn nx-btn-primary nx-comm-btn-main"
                 :href="`mailto:${SITE_META.contactEmail}`"
               >
-                <span>{{ t('发送邮件联系 ✉', 'メールを送信する ✉', 'Send Email ✉') }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                <span>{{ t('发送邮件联系', 'メールを送信する', 'Send Email') }}</span>
               </a>
               <button
                 type="button"
@@ -3195,6 +3271,90 @@ const fullStackAblationBenchmarks = computed(() => [
   margin: 0;
   font-size: 12.5px;
   line-height: 1.58;
+  color: var(--nx-text-3);
+  flex: 1;
+}
+
+.nx-bench-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--nx-border-subtle);
+}
+
+.nx-bench-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--nx-radius-sm);
+  background: var(--nx-bg-row);
+  border: 1px solid var(--nx-border-mid);
+  color: var(--nx-text-2);
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  transition:
+    background var(--nx-transition-fast),
+    border-color var(--nx-transition-fast),
+    color var(--nx-transition-fast),
+    transform var(--nx-transition-fast);
+}
+
+.nx-bench-card-btn:hover {
+  background: var(--nx-bg-row-hover);
+  border-color: var(--nx-border-strong);
+  color: var(--nx-text-1);
+  transform: translateY(-1px);
+}
+
+.nx-bench-card-btn.is-primary {
+  background: var(--nx-primary-soft);
+  border-color: var(--nx-primary-border);
+  color: var(--nx-primary-bright);
+}
+
+.nx-bench-card-btn.is-primary:hover {
+  background: var(--nx-bg-active-soft);
+  border-color: var(--nx-primary-bright);
+  color: var(--nx-text-1);
+}
+
+.nx-bench-hub-banner {
+  margin-top: 24px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  border-color: var(--nx-primary-border);
+  background: var(--nx-bg-panel);
+}
+
+.nx-bench-hub-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 820px;
+  min-width: 0;
+}
+
+.nx-bench-hub-info strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--nx-text-1);
+  margin-bottom: 4px;
+}
+
+.nx-bench-hub-info p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--nx-text-3);
 }
 

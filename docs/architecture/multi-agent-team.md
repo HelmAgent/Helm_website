@@ -1,96 +1,112 @@
 ---
-title: 3. 多智能体团队与 Git Worktree 物理隔离
-description: 解析 Helm 的主从常驻队友架构（team_runtime.py）、异步内存邮箱通信、Git Worktree 并发隔离（team_worktree.py）与计划审批安全门禁。
+title: 3. 多智能体编排、常驻团队与 Worktree 隔离
+description: 深入解析 Helm 瞬态子代理与常驻自治团队双轨协同模型、JSONL 分级唤醒信箱、用户独占权限收敛、DAG 租约任务图与零拷贝 Git Worktree 并行沙箱。
 ---
 
-# 3. 多智能体团队与 Git Worktree 物理隔离
+# 3. 多智能体编排、常驻团队与 Worktree 隔离
 
-> [!NOTE] 对应源码模块
-> - 后端：`app/services/team_runtime.py`、`app/services/team_wake.py`、`app/services/team_worktree.py`、`app/services/team_store.py`、`app/services/subagent.py`
-> - 前端：`src/views/LiveFloor.js`、`src/views/TeamSettingsPanel.js`、`src/App.js`
+> [!NOTE] 关联核心源码与公开实测证据
+> - 核心源码：`app/tools/subagent.py`、`app/services/subagent_registry.py`、`app/services/team_runtime.py`（`4,585` 行常驻团队状态机）、`app/services/team_wake.py`、`app/services/task_store.py`、`app/services/worktree_core.py`
+> - 权威实测报告：[Harness 架构护栏消融报告 (4-Mate 3.04× 加速 · 0% 写冲突 · 100% 越权拦截)](/benchmarks/harness-ablation-v1)
 
-## 3.1 为什么“一次性 Subagent”不够用？
+## 3.1 瞬态子代理（Subagents）与常驻团队（Resident Teams）双轨协同拓扑
 
-在大型全栈工程任务中，单一主代理顺序执行往往耗时过长；而传统一次性子代理（One-shot Subagent）存在两大缺陷：
-1. **无常驻上下文**：每次调用都要重新扫描代码库，无法在多轮迭代中保持模块专精记忆；
-2. **并发写文件冲突**：当多个子代理在同一工作目录下同时修改代码或运行构建脚本时，极易发生文件互相覆盖与 Git 索引锁冲突（`.git/index.lock`）。
+单一智能体面对大型全栈工程时，不可避免陷入「上下文被调研细节撑爆」与「单线程串行修改耗时过长」的双重瓶颈；而市面上常见的多智能体框架往往把所有角色塞进同一个群聊循环，导致 **Token 广播指数爆炸** 与 **并行写同一文件互相覆盖**。
 
-为此，Helm 提供了 **「一次性轻量 Subagent」 + 「常驻多智能体团队（Resident Team）」** 双轨架构。
+Helm 在底层设计了职责泾渭分明的**双轨多智能体架构**：轻量级无副作用探查交由用完即焚的**瞬态子代理（Ephemeral Subagents）**，跨模块并行开发交由具备独立信箱、计划审批与物理沙箱的**常驻自治团队（Resident Teams）**。
+
+```mermaid
+flowchart TD
+  User["人类工程师 / 面试演示者 (独占高危审批与全局权限上限)"] --> Lead["Team Lead 主控协调智能体 (任务拆解 · 计划审批 · 3-Way 归并)"]
+
+  subgraph Ephemeral["轨道 A: 瞬态子代理池 (subagent.py · 独立纯净上下文)"]
+    Explore["explore 探查代理 (数学级证明只读工具集 · 零副作用并发)"]
+    Verify["verify 验收代理 (独立测试与静态检查 · 杜绝自改自夸)"]
+    CustomSub["自定义声明式代理 (.hyn_agent/agents/*.md · resume_id 续跑)"]
+  end
+
+  subgraph Resident["轨道 B: 常驻自治团队 (team_runtime.py · 1-8 名 Teammates)"]
+    Mailbox["JSONL 持久化分级信箱 (wake 立即唤醒 vs piggyback 捎带投递)"]
+    TaskDAG["项目级 DAG 任务图 (task_store.py · 原子建图 · 租约心跳)"]
+    Mates["Teammates 1..8 (各自绑定独立协程 · 计划未批前物理剥离写工具)"]
+    Mailbox <--> Mates
+    TaskDAG <--> Mates
+  end
+
+  subgraph Isolation["物理文件隔离层 (worktree_core.py)"]
+    WT["独立 .worktrees/<name> 沙箱 + Windows Junction 零拷贝共享依赖"]
+  end
+
+  Lead -->|"毫米级派发 · 仅回传精炼结论"| Explore & Verify & CustomSub
+  Lead <-->|"assign_task / review_plan / broadcast"| Mailbox
+  Mates --> WT
+  WT -->|"compare_group 多方案对比 -> git apply --3way 原子合入"| Lead
+```
+
+1. **瞬态子代理（`subagent.py` + `subagent_registry.py`）**：
+   - 内置 `explore`（代码库高速检索，工具白名单经静态副作用分类器验证，**数学级保证无法修改任何磁盘字节**）、`verify`（独立运行测试与构建校验，根除主模型“自己写代码自己说通过”的幻觉偏见）与 `general` 通用代理。
+   - 原生兼容 `.hyn_agent/agents/*.md` 与 `.claude/agents/*.md` 声明式角色文件，支持 `isolation="worktree"` 隔离执行及 `resume_id` 跨轮次恢复上下文。
+2. **常驻自治团队（`team_runtime.py`，`4,585` 行核心引擎）**：
+   - 支持 **1 名 Lead + 1～8 名常驻 Teammate**（默认 4 名并行开发），每个成员拥有独立会话持久化、专属系统提示词与独立生命周期（`spawning` → `working` → `waiting_plan` → `idle` → `suspended` → `stopped`）。
 
 ---
 
-## 3.2 主从常驻队友架构、持久化挂起与分级唤醒邮箱
+## 3.2 分级唤醒信箱、在场感知（Presence）与防失控预算治理
 
-一个会话可由主代理（**Lead**）招募常驻队友（**Teammates**，人数上限可配置，**默认 4 名，最多 8 名**）。队友在「工作（`working`）」、「等待审批/确认（`waiting_approval` / `waiting_permission`）」、「错误暂停（`error_paused`）」、「空闲待命（`idle`）」与「挂起（`suspended`）」状态间切换，拥有独立的对话上下文、专属 `StuckDetector`、`ContextCompactor` 以及持久化在 `sessions/<sid>/team/teammates/<name>.jsonl` 的完整对话记录：
+多智能体系统落地生产环境最怕两件事：**后台空转唤醒烧穿账单**，以及**人类离开屏幕后子代理卡在弹窗或无限互发消息**。Helm 在 `team_wake.py` 与 `team_runtime.py` 中建立了严密的事件驱动背压机制：
 
 ```mermaid
 sequenceDiagram
   autonumber
-  actor User as 用户 / 现场面板
-  participant Lead as Lead 主代理 (主工作区)
-  participant Wake as 后端唤醒调度器 (team_wake.py)
-  participant Inbox as 持久化团队邮箱 (team.json)
-  participant MateA as 队友 A (Worktree: .worktrees/mate-a)
-  participant MateB as 队友 B (Worktree: .worktrees/mate-b)
+  participant UI as 前端工作台 (10s watch=1 心跳)
+  participant Wake as TeamWake 分级路由器
+  participant Lead as Lead 主控协程
+  participant Mate as Teammate 独立工作协程
+  participant Guard as 权限与计划门禁
 
-  User->>Lead: 下达全栈改造任务
-  Lead->>MateA: 分配后端任务 (要求先提交重构计划)
-  Lead->>MateB: 分配前端组件与单测任务
-  Note over MateA,MateB: 计划未获批前，强制处于只读探测态 (_WORKSPACE - _MUTATING)
-  MateA-->>Inbox: 投递唤醒级计划审批请求 (plan_approval_request)
-  Inbox-->>Wake: 防抖合并后触发 Lead 或用户审批
-  Lead->>MateA: 批准计划并附带审批理由 (解锁写文件与执行命令权限)
-  par 物理隔离并发执行
-    MateA->>MateA: 在独立 Worktree 修改后端并跑 pytest
-  and
-    MateB->>MateB: 在独立 Worktree 编写前端组件并跑 vite build
-  end
-  MateA-->>Inbox: 投递唤醒级完成结果 (result)
-  MateB-->>Inbox: 投递唤醒级完成结果 (result)
-  Inbox-->>Wake: 满足唤醒门控后自动驱动 Lead 下一轮消化 [Team events]
+  Mate->>Guard: 提交架构修改方案 submit_plan
+  Note over Mate,Guard: 计划获批前，底层物理剥离全部 _MUTATING 写盘工具
+  Guard->>Wake: 投递 plan_approval_request (Wake 级高优信件)
+  Wake->>Wake: 3s 防抖合并窗口 (wake_debounce_s=3.0) 聚合多路并发汇报
+  Wake->>Lead: 唤醒 Lead 审阅方案
+  Lead->>Guard: 调用 review_plan(approve=True, reason>=10字符)
+  Guard-->>Mate: 动态挂载写权限工具，在专属 Worktree 内开始编码
+  Mate->>Wake: 投递 idle_notification 心跳 (Piggyback 捎带级信件)
+  Note over Wake,Lead: Piggyback 信件绝不单独触发 LLM 计费，仅在下次正常轮次顺带注入
+  UI-.->Wake: 用户切走窗口超过阈值 -> is_attended = False
+  Mate->>Guard: 请求越界高危命令审批
+  Guard-->>Wake: 判定无人值守 -> 写入 TEAM_DEFERRED 挂起队列并推送桌面通知
 ```
 
-### 核心工程设计亮点：
-1. **邮件分级与零轮询异步收件箱（Classified Inbox & Debounced Wake）**：
-   - 队友的中间工具调用绝不混入主对话的 `messages` 列表（防止主代理上下文瞬间爆炸），而是独立保存在 `teammates/<name>.jsonl`，随时可在前端「现场 → 记录」页签检视，并支持用户直接向指定队友发消息。
-   - 队友发往 Lead 的邮件分为**唤醒级**（`result`、`error`、`plan_approval_request` 及直接发给 Lead 的 `message`）与**附带级**（`idle_notification`、`shutdown_response`、`stopped`）。仅唤醒级邮件会登记 `lead_pending_since`，经防抖窗口（`wake_debounce_s`，默认 3 秒）合并后触发 Lead 下一轮对话，附带级邮件在消化时一并带出，**禁止模型编写低效的 sleep 轮询循环**。
-   - 模型调用遇到网络抖动、限流或超时等可恢复错误时，队友不会直接崩溃丢任务，而是进入 `error_paused` 保留完整上下文并向 Lead 发送唤醒级 `error`，收到新指示后即可原地恢复。
-2. **持久化常驻与挂起恢复（Persistence & Suspend/Resume）**：
-   - 团队状态（`team.json`）与队友对话记录（`teammates/<name>.jsonl`）实时落盘。当队友空闲超过 `idle_suspend_minutes`（默认 30 分钟）或应用退出时，后台协程干净退出并将队友状态置为 `suspended`（无需常驻占用内存协程）。
-   - 挂起期间，队友已认领的项目任务在保留期（`suspended_lease_grace_hours`，默认 24 小时）内继续受保护，不会被其他会话抢占；应用重启或用户返回后，可在现场面板一键**恢复（Resume）**继续工作，或选择**解散（Dismiss）**释放任务。
-3. **队友权限直达用户与会话级允许规则（User-Only Permission Gate）**：
-   - 队友的实际有效权限严格取 `min(当前会话权限档位, 队友权限覆盖 teammate_permission)`，只允许收紧（如收紧为 `auto_edit` 或 `readonly`），绝不放宽。
-   - 当队友触发需要确认的敏感操作（写文件、执行命令、越出工作树等）时，状态转为 `waiting_permission`，直接通过现场面板与桌面通知请求**用户本人**确认（支持「允许」、「拒绝」及「本会话内始终允许此类操作」规则记忆），**主代理 Lead 绝不能代批权限**。连续 3 次被拒绝或确认超时后，队友自动暂停并将任务标为 `blocked`。
-4. **计划批准前强制只读门禁与可配置审批人（Plan Approval Gate）**：
-   - 在 `team_runtime.py` 中，工具集被严格划分为只读探测集与写盘变更集（`_MUTATING = {"write_file", "edit_file", "apply_patch", "write_docx", "edit_document", "run_powershell"}`）。当队友开启 `require_plan`（或团队设置开启 `force_plan` 强制所有写入型队友先交计划）且计划尚未获批时，运行时从底层物理剥离 `_MUTATING` 权限。
-   - 计划审批人（`plan_approver`）支持 `auto`（跟随权限档位：`ask_all` 时由用户审批，其余档位由 Lead 审批）、`lead`（主代理审批，可附加 `plan_criteria` 自定义审批准则，且批准时必须填写不少于 10 字的理由）和 `user`（仅用户审批）。审批记录保留在 `recent_plans` 供随时回溯。
-5. **后端唤醒调度器与离场护栏（`team_wake.py` & Guardrails）**：
-   - **后端统一驱动与 `/team/stream` 事件流**：`team_wake.py` 运行在 FastAPI 事件循环中，支持三种后台协调模式（`background_wake`: `on` 总是开启 / `active_only` 仅在用户查看该会话时 / `off` 仅手动触发）。即使切到其他会话或最小化窗口，后端也能自动唤醒 Lead 处理队友汇报，并通过 `/api/v1/team/stream`（SSE）实时向前端推送轮次流式事件、统一桌面通知（`team_notice`）与侧栏会话角标摘要（`team_summary`）。
-   - **在场检测与离场延后（`TEAM_DEFERRED` & `needs_user`）**：前端查看会话时通过 `watch=1` 维持 10 秒在场心跳（`is_attended`）。当用户离场时，后台唤醒轮次绑定 `_team_unattended` 上下文：若 Lead 尝试调用需要用户确认的操作（如 `spawn_teammate` 或敏感工具），系统不会弹窗阻塞也不会越权执行，而是立即返回 `Deferred:` 提示让 Lead 在回复中写明提议并登记 `needs_user`，在侧栏亮起待处理角标并发送通知，等用户回来拍板。
-   - **多重防失控护栏**：
-     - **连续自动唤醒上限（`max_auto_wakes`，默认 8 次）**：用户未发言期间达到上限后自动暂停唤醒（`wake_paused_reason = "max_auto_wakes"`）；
-     - **离场 Token 预算（`unattended_token_budget`，默认 200,000 tokens）**：累加用户离场期间 Lead 唤醒轮次与队友运行的 token 消耗，超出后立即暂停后台唤醒并通知在跑队友在当前轮结束后停止（`wake_paused_reason = "budget"`，`exit_reason = "team_budget"`）；
-     - **队友单任务 Token 预算（`teammate_token_budget`）**：单个任务认领周期内超出预算时自动结束本轮并将任务标为 `blocked`（`exit_reason = "token_budget"`）；
-     - **手动停止尊重与单轮互斥**：用户手动点击停止（`run_status == "stopped"`）的会话绝不自动唤醒；同一会话同一时刻通过 `turn_hub` 严格保证只跑一轮。
+> [!TIP] 核心架构权衡与工程闭环：如何根治多智能体“群聊风暴”与“越权提权”？
+> - **工程痛点**：4～8 个 Agent 并行协作时，频繁的状态心跳与互相提问极易引发 `O(N^2)` 级唤醒风暴；同时若允许 Lead 替人类自动批准子代理的危险命令，将彻底击穿桌面安全沙箱。
+> - **常规方案缺陷**：开源多 Agent 框架普遍采用全员广播轮询，且子代理权限由父代理口头传递，存在严重的提示词注入提权漏洞。
+> - **Helm 底层解法**：① 将信箱严格拆分为 **Wake 唤醒级**（`result` / `error` / `plan_approval_request` / `message`，经 `3s` 防抖窗口合并唤醒）与 **Piggyback 捎带级**（`idle_notification` / `shutdown_response` 零成本静默排队）；② 实施**用户独占权限收敛定理**——Teammate 实际有效权限恒等于 `min(用户当前会话权限, 成员声明权限)`，Lead 绝无权越过人类放大权限；③ 注入 `200,000` 无人值守 Token 预算上限、`max_auto_wakes=8` 连续自动唤醒熔断与 `30 分钟` 空闲自动休眠（保留 `24 小时` 任务租约宽限期）。
+> - **实测定量收益**：在 [Harness 消融基准](/benchmarks/harness-ablation-v1) 中，多智能体越权与注入攻击拦截率达 **`100.0%`（30/30，`0.0%` 攻击成功率）**，后台静默期 **0 Token 空转消耗**。
 
 ---
 
-## 3.3 基于 `worktree_core.py` 与 `team_worktree.py` 的 Git Worktree 物理隔离
+## 3.3 项目级 DAG 任务图与零拷贝 Git Worktree 并行沙箱
 
-为了实现真正的无冲突并行编码与方案对比，Helm 通过 `app/services/worktree_core.py`、`app/services/team_worktree.py` 与 `app/services/worktree_records.py` 提供完整的 Git Worktree 生命周期管理：
+为了让多名 Teammate 在同一代码仓库并行修改而不产生任何文件踩踏，Helm 将 **DAG 依赖任务调度（`task_store.py`）** 与 **Windows 原生优化的 Git Worktree 隔离引擎（`worktree_core.py`）** 深度咬合：
 
-- **工作区快照起点与 Detached 检出**：创建工作树（`.worktrees/<name>`）时，以当前主工作区完整快照（包含未提交改动与未跟踪文件）作为基准 `baseSha`，并以 `--detach` 模式检出，不污染用户的本地分支列表，同时自动在 `.git/info/exclude` 中忽略 `.worktrees/`。
-- **`.hyn/worktree.json` 环境初始化与 Windows Junction 防护**：支持在新工作树中自动 `copy` 配置文件、为 `node_modules` / `.venv` 创建目录联接（Junction），并在移除工作树前先安全卸载联接点，防止误删主工作区依赖。
-- **自动提交与隐藏引用（`refs/hyn/worktrees/<key>/{base,head,pre_apply}`）**：队友完成任务或隔离型子代理结束时，自动在工作树内提交改动并写入隐藏 Git 引用，无需用户手动 `git commit`。
-- **采纳 / 撤销 / 另存为分支 / 丢弃**：通过 3-way `git apply --3way` 将选定工作树改动一键采纳回主工作区（应用前保存 `pre_apply` 快照支持一键撤销），也可另存为 `wt/<name>` 分支或彻底丢弃，并提供统一的工作树与孤儿引用管理面板。
-- **子代理工作树隔离（`isolation: "worktree"`）**：一次性写入型子代理（`general` / `verifier`）支持 `isolation="worktree"`，在 `.worktrees/sub-<run_id>` 中独立运行，记录保存在 `worktree_records.py`，完成后在聊天卡片上直接提供对比、采纳、另存与丢弃操作。
-- **多方案对比（`compare_group`）**：同一问题的多种实现方案可共享 `compare_group` 并在各自工作树中并行实现，全部完成后可在任务页打开并排对比视图，查看各方案小结与 Diff 并一键采纳最佳方案。
-- **路径与命令越界防护（`bind_tool_root` + W7 门禁）**：运行期间通过 `ContextVar` 将 `active_root` 绑定到工作树目录；若 `run_powershell` 命令试图通过绝对路径、`cd ..`、`git -C` 或 `git checkout/switch/reset/merge` 越出工作树，会触发用户权限确认（队友转为 `waiting_permission` 请用户裁决）。
+```mermaid
+flowchart LR
+  Create["Lead 原子创建任务图 (create_tasks 最多 30 节点 · Kahn 环检测)"] --> Ready["自动解锁 in-degree=0 就绪节点"]
+  Ready --> Lease["Teammate 抢占租约并维持心跳 (超时自动回收重排)"]
+  Lease --> Sandbox["分配 .worktrees/<mate> 独立检出目录 (Detached HEAD)"]
+  Sandbox --> Junction["Windows _winapi.CreateJunction 零拷贝映射 node_modules 与 .venv"]
+  Junction --> Code["多代理并行编码与独立跑测 (0% 磁盘写冲突)"]
+  Code --> Compare["compare_group 同题多方案并排 Diff 审阅"]
+  Compare --> Apply["git apply --3way 三方原子合入主工作区 (备份 pre_apply 一键撤销)"]
+```
 
----
-
-## 3.4 项目任务系统（`task_store.py`）
-
-- **状态流转与级联取消**：支持 `pending`、`in_progress`、`blocked`（记录 `blockedReason`）、`completed`（记录 `result` 小结）与 `cancelled`（支持级联取消未开始的下游依赖任务）。
-- **租约心跳、挂起保留期与超时接管（Lease & Grace Period）**：认领任务后维护 `leaseExpiresAt` 租约，队友运行期间每轮自动续租；队友挂起（`suspended`）时在 `suspended_lease_grace_hours` 保护期内保留任务所有权，仅对无挂起记录或超过保留期的失效租约自动释放回 `pending`。
-- **批量建图（`create_tasks`）与归档**：支持使用临时 `ref` 一次性创建整张 DAG 依赖图；支持活动审计日志（`activity`）、按 `(mtime_ns, size)` 失效的内存索引缓存，以及已完成任务的自动归档与恢复。
+### 核心工程细节与实测表现
+1. **原子级 DAG 依赖图与级联取消（`task_store.py`）**：
+   - 支持单次原子写入最多 `30` 个带前置依赖（`depends_on`）的子任务，入库前强制运行 Kahn 拓扑排序阻断循环依赖；前序节点一旦失败或取消，下游阻塞子树自动级联标记跳过，杜绝死等。
+2. **Windows 零拷贝依赖穿透与安全回收（`worktree_core.py`）**：
+   - 传统 `git worktree add` 新建沙箱后往往丢失重达数 GB 的 `node_modules` 或 `.venv`，重新安装动辄耗时数分钟。Helm 调用底层 `_winapi.CreateJunction`（无需管理员权限）毫秒级建立目录联接，实现依赖零拷贝瞬时共享。
+   - **防误删铁律**：销毁沙箱时，清理器会先枚举并精准解除目录重解析点（Unlink Junction），再递归清理沙箱目录，**100% 杜绝顺着软链接误删主工作区依赖库**。
+   - 所有沙箱基准点均受私有引用 `refs/hyn/worktrees/<key>/{base,head,pre_apply}` 保护；合入主目录前自动冻结 `pre_apply` 快照，支持冲突零残留阻断与一键无损回滚。
+3. **4-Teammate 并行加速实测（`/benchmarks/harness-ablation-v1`）**：
+   - 在跨栈多模块并行重构实测中，4 名 Teammate 协同较单代理串行实现 **`2.88×～3.04×` 端到端墙钟加速**，并发写盘冲突率严格保持 **`0.0%`**。
