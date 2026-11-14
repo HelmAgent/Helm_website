@@ -1,10 +1,11 @@
 <script setup>
 /**
- * 旗舰企业级客户端下载与 3 步零信任安全验证中心（DownloadView.vue）。
+ * DownloadView.vue — Apple macOS 级客户端分发与三步「零信任」离线安全验证中心
  *
  * 职责与协作：
  * - 对应 `/download`、`/ja/download`、`/en/download`。
- * - 提供标准桌面安装版（`.exe`）分发卡片、内嵌运行时规格说明、一键复制 SHA-256 校验值，以及 3 步物理断网离线验证流程。
+ * - 提供标准桌面安装版（`.exe`）分发卡片、内嵌 Python 3.13 运行时规格、一键复制 SHA-256 与 PowerShell 自检命令，以及官方社区直联入口。
+ * - 100% 引用 `flagship.css` 语义令牌，零硬编码色值。
  */
 import { ref, computed } from 'vue'
 import { SITE_META, tt, getLangPrefix } from '../data/siteData.js'
@@ -18,14 +19,14 @@ function t(zh, ja, en) {
   return tt(currentLang.value, zh, ja, en)
 }
 
-async function copyHash(key, hash) {
+async function copyText(key, val) {
   try {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      await navigator.clipboard.writeText(hash)
+      await navigator.clipboard.writeText(val)
       copiedKey.value = key
       setTimeout(() => {
         if (copiedKey.value === key) copiedKey.value = ''
-      }, 2000)
+      }, 2100)
     }
   } catch {
     // 忽略无剪贴板权限环境
@@ -34,743 +35,702 @@ async function copyHash(key, hash) {
 
 const auditSteps = computed(() => [
   {
-    step: 'AUDIT 01 // BINARY INTEGRITY',
-    title: t('第一步：校验安装包 SHA-256 与内嵌运行时完整性', 'Step 1：SHA-256 ハッシュ値の照合と内蔵ランタイムの確認', 'Step 1: Verify SHA-256 Checksum & Embedded Runtime'),
-    desc: t(
-      '下载完成后在 PowerShell 执行哈希比对，确认分发包未经任何篡改（VirusTotal 57 家安全引擎扫描 0/57 零报毒）。客户端内置 Python 3.13 官方嵌入式环境，渲染进程仅通过回环地址 127.0.0.1:8001 与本机 FastAPI 子进程通信。',
-      'ダウンロード完了後、PowerShell で SHA-256 ハッシュ値を照合し、ファイルの完全性を確認します（VirusTotal 0/57 検出ゼロ検証済）。クライアントには公式 Python 3.13 ランタイムが同梱されており、127.0.0.1:8001 のループバック通信のみで動作します。',
-      'Verify binary integrity via PowerShell SHA-256 (VirusTotal 0/57 Clean). The client bundles an official Python 3.13 runtime communicating strictly over 127.0.0.1:8001.'
+    key: 'step1',
+    num: '01',
+    tag: 'BINARY INTEGRITY',
+    title: t(
+      '校验安装包 SHA-256 与内嵌运行时完整性',
+      'SHA-256 ハッシュ照合と内蔵ランタイムの確認',
+      'Verify SHA-256 Checksum & Embedded Runtime'
     ),
-    cmd: 'Get-FileHash .\\Helm.Setup.1.0.0.exe -Algorithm SHA256   # SHA-256: c93002b2...536ccf0f'
+    desc: t(
+      '下载后可在 PowerShell 一键比对哈希值，确认分发包未经任何篡改（VirusTotal 57 家引擎扫描 0/57 零报毒）。渲染进程仅通过 127.0.0.1:8001 与本机 FastAPI 通信。',
+      'PowerShell で SHA-256 ハッシュ値を照合し完全性を確認できます（VirusTotal 0/57 検証済）。内蔵 Python 3.13 ランタイムと 127.0.0.1:8001 ループバックのみで通信します。',
+      'Verify binary integrity via PowerShell SHA-256 (VirusTotal 0/57 clean). Communicates strictly with bundled Python 3.13 over 127.0.0.1:8001.'
+    ),
+    cmd: `Get-FileHash .\\${SITE_META.installerAssetName} -Algorithm SHA256`
   },
   {
-    step: 'AUDIT 02 // AIR-GAPPED EXECUTION',
-    title: t('第二步：物理断网或配置防火墙出站阻断测试', 'Step 2：ネットワーク遮断（オフライン環境）での動作検証', 'Step 2: Test Under Air-Gapped / Firewall-Blocked Conditions'),
-    desc: t(
-      '开启本机 Ollama（127.0.0.1:11434）后，可直接拔除网线、关闭 Wi-Fi 或在企业防火墙中禁止 Helm 出站访问公网。在此状态下执行代码重构、影子 Git 检查点与 Office 文档生成，验证 100% 本地闭环能力。',
-      'ローカル Ollama（127.0.0.1:11434）を起動した状態で、LANケーブルを抜くか Wi-Fi をオフにして外部通信を物理的に遮断してください。そのままコード改修・シャドウチェックポイント・Office文書生成が100%稼働することを実証できます。',
-      'With local Ollama running on 127.0.0.1:11434, unplug your network cable or block outbound traffic. Verify that coding, Shadow Git Checkpoints, and Office editing run 100% locally.'
+    key: 'step2',
+    num: '02',
+    tag: 'AIR-GAPPED LOOPBACK',
+    title: t(
+      '物理断网或防火墙出站阻断实测',
+      'ネットワーク物理遮断（オフライン）での動作検証',
+      'Test Under Air-Gapped / Firewall-Blocked Conditions'
     ),
-    cmd: 'netstat -ano | findstr :8001   # Verify strict 127.0.0.1 loopback binding'
+    desc: t(
+      '开启本机 Ollama（127.0.0.1:11434）后，直接拔除网线或关闭 Wi-Fi，在此状态下执行代码重构、影子 Git 检查点与 Office 热更新，验证 100% 本地闭环能力。',
+      'ローカル Ollama（127.0.0.1:11434）起動後、LANケーブルを抜いて外部通信を物理遮断したまま、コード改修・シャドウGit・Office更新が100%稼働することを確認できます。',
+      'With local Ollama on 127.0.0.1:11434, unplug your network cable and verify that coding, Shadow Git checkpoints, and Office hot-patching run 100% locally.'
+    ),
+    cmd: 'netstat -ano | findstr :8001'
   },
   {
-    step: 'AUDIT 03 // DPAPI VAULT & LOG SANITIZATION',
-    title: t('第三步：审计 DPAPI 系统级凭据金库与正则脱敏日志', 'Step 3：Windows DPAPI 暗号化金庫と自動マスキングログの監査', 'Step 3: Audit Windows DPAPI Vault & Pre-Write Sanitized Logs'),
+    key: 'step3',
+    num: '03',
+    tag: 'DPAPI VAULT & LOGS',
+    title: t(
+      '审计 Windows DPAPI 密钥库与脱敏日志',
+      'Windows DPAPI 暗号化金庫と自動マスクログの監査',
+      'Audit Windows DPAPI Vault & Scrubbed Logs'
+    ),
     desc: t(
-      '所有 API 密钥与 MCP OAuth 令牌均通过 Windows DPAPI (CryptProtectData) 绑定当前操作系统账户硬件级加密存储于 secrets_vault.json；会话历史、双层记忆与文件快照透明存放于本地 .hyn_agent/ 目录，且写盘前自动将敏感凭证脱敏为 ***。',
-      'APIキーやMCP OAuthトークンは Windows DPAPI によりOSユーザー単位で暗号化保存されます。会話履歴や2層メモリは .hyn_agent/ に保存され、ログ内の認証情報は書込前に *** へ自動消去されます。',
-      'API keys and MCP OAuth tokens are encrypted via OS-level Windows DPAPI (CryptProtectData). Sessions and 2-tier Markdown memory reside in .hyn_agent/, with all tokens scrubbed to *** before disk write.'
+      'API Key 与 MCP OAuth 令牌均通过 Windows DPAPI 绑定当前账户硬件级加密落盘；会话与双层记忆透明存放于 .hyn_agent/，敏感凭证写盘前自动脱敏为 ***。',
+      'APIキーとOAuthトークンは Windows DPAPI でOSアカウント単位に暗号化保存。会話とメモリは .hyn_agent/ に保存され、認証情報は書込前に *** へ自動消去されます。',
+      'API keys and MCP OAuth tokens are encrypted via Windows DPAPI. Sessions and 2-tier memory reside in .hyn_agent/, with secrets scrubbed to *** before disk write.'
     ),
     cmd: 'Get-ChildItem .\\.hyn_agent\\ -Recurse | Select-Object FullName, Length'
+  }
+])
+
+const runtimeSpecs = computed(() => [
+  {
+    k: t('桌面宿主与工作台', 'デスクトップUI', 'Desktop Host & UI'),
+    v: 'Electron 44 + Vue 3.5 (Stone Workbench)'
+  },
+  {
+    k: t('内嵌本地后端引擎', '内蔵バックエンド', 'Embedded Backend'),
+    v: 'Python 3.13 + FastAPI (127.0.0.1:8001)'
+  },
+  {
+    k: t('三级模型接入架构', '対応モデル接続', '3-Tier Model Routing'),
+    v: t('本机 Ollama / 企业内网 vLLM / 主流云端 API', 'ローカル Ollama / 社内LAN vLLM / クラウドAPI', 'Local Ollama / Corporate LAN vLLM / Cloud APIs')
+  },
+  {
+    k: t('免提权工具链自愈', '自動環境修復', 'System Doctor Repair'),
+    v: t('缺失 Git / Node / uvx 时免管理员拉取便携沙箱', '管理者不要でポータブル Git / Node / uvx を自動構築', 'Zero-admin 1-click portable MinGit / Node v22 / uvx')
+  },
+  {
+    k: t('数据与凭据存储', 'データ・暗号化保管', 'Vault & Disk Isolation'),
+    v: t('Windows DPAPI 密钥金库 + 独立 .hyn_agent/（零 C 盘污染）', 'Windows DPAPI 金庫 + .hyn_agent/ 分離保存', 'Windows DPAPI vault + isolated .hyn_agent/ directory')
   }
 ])
 </script>
 
 <template>
-  <div class="nx-download-view">
-    <div class="nx-container">
-      <!-- 顶部横幅 -->
-      <div class="nx-dl-hero">
-        <div class="nx-sec-kicker">
-          <span class="nx-pulse-dot"></span>
-          <span>OFFICIAL CLIENT DISTRIBUTION &amp; SECURITY VERIFICATION</span>
+  <div class="hl-dl-page">
+    <!-- 顶部极昼标题区 -->
+    <section class="hl-dl-hero">
+      <div class="hl-container">
+        <div class="hl-dl-brand-pill hl-tabular">
+          <img :src="SITE_META.brandIconUrl" alt="Helm Emblem" />
+          <strong>Helm Desktop</strong>
+          <span class="hl-dl-sep">·</span>
+          <span>{{ SITE_META.version }} Beta ({{ SITE_META.releaseDate }})</span>
+          <span class="hl-pill-tag is-ok">{{ t('零公网中转 · 100% 本地落盘', '外部クラウド中継ゼロ', 'Zero Cloud Relay') }}</span>
         </div>
 
-        <div class="nx-dl-brand-banner nx-glass-card">
-          <img class="nx-dl-emblem" :src="SITE_META.brandIconUrl" alt="Helm Emblem" />
-          <div class="nx-dl-brand-info">
-            <div class="nx-dl-brand-row">
-              <strong>HELM DESKTOP</strong>
-              <span class="nx-badge">{{ t(`${SITE_META.version} 内测版`, `${SITE_META.version} ベータ版`, `${SITE_META.version} Beta`) }} · {{ SITE_META.releaseDate }}</span>
-              <span class="nx-badge is-emerald">{{ t('零公网中转 · 100% 本地落盘', '外部クラウド中継ゼロ', 'Zero Cloud Relay') }}</span>
-            </div>
-            <div class="nx-dl-slogan">"Take the Helm of Long-Running Code &amp; Docs."</div>
-          </div>
-        </div>
-
-        <h1 class="nx-dl-title">
+        <h1 class="hl-dl-title">
           {{
             t(
-              '客户端下载与三步「零信任」离线安全验证',
-              'クライアント導入＆3ステップ・オフライン安全性検証',
-              'Client Distribution & 3-Step Offline Security Verification'
+              '下载 Helm 桌面端，开箱即享完整本地运行时。',
+              'Helm デスクトップ版を導入。環境構築は一切不要。',
+              'Download Helm Desktop. Complete local runtime inside.'
             )
           }}
         </h1>
-        <p class="nx-dl-desc">
+        <p class="hl-dl-desc">
           {{
             t(
-              '提供 Windows 64 位标准桌面安装程序（.exe）。安装包已内嵌 Python 3.13 FastAPI 异步运行时与全套 Office 文档处理引擎，无需额外部署 Python 环境，安装即用，零 C 盘空间污染。',
-              'Windows 64bit 標準インストーラー版（.exe）を提供。Python 3.13 FastAPI 非同期ランタイムと Office 文書処理エンジンをすべて内蔵しており、追加の環境構築なしでインストール後すぐに稼働します。',
-              'Available as a standard Windows x64 Installer (.exe). Bundles the complete Python 3.13 FastAPI async runtime and Office document engine out of the box.'
+              '提供 Windows 64 位标准安装程序（.exe），内嵌 Python 3.13 FastAPI 异步引擎与全套 Office 原生处理组件。无需预装 Python 或 Node.js，支持自定义非系统盘路径安装。',
+              'Python 3.13 非同期エンジンと Office 文書処理基盤をすべて内蔵した Windows 64bit 標準インストーラー（.exe）。事前セットアップ不要で任意のドライブへ導入可能。',
+              'Standard Windows x64 installer (.exe) bundling the complete Python 3.13 FastAPI engine and native Office processors—no pre-installed Python or Node.js required.'
             )
           }}
         </p>
       </div>
+    </section>
 
-      <!-- 双栏下载与内置运行时规格卡片 -->
-      <div class="nx-dl-cards-grid">
-        <!-- 卡片 1：桌面安装版 (.exe) -->
-        <div class="nx-dl-card nx-glass-card is-recommended">
-          <div class="nx-dl-card-top">
-            <span class="nx-badge">{{ t('BETA RELEASE // WINDOWS x64 内测版安装程序', 'BETA RELEASE // WINDOWS x64 ベータ版インストーラー', 'BETA RELEASE // WINDOWS x64 BETA INSTALLER') }}</span>
-            <span class="nx-dl-size">{{ SITE_META.installerSize }}</span>
-          </div>
-          <h2 class="nx-dl-card-title">
-            {{ t(`Windows 桌面安装版 · ${SITE_META.version} 内测版 (.exe)`, `Windows インストーラー版 · ${SITE_META.version} ベータ版 (.exe)`, `Windows Desktop Installer · ${SITE_META.version} Beta (.exe)`) }}
-          </h2>
-          <p class="nx-dl-card-sub">
-            {{
-              t(
-                '适合个人电脑与企业研发工作站主力使用。支持自定义非系统盘安装路径、自动创建桌面与开始菜单快捷方式，并提供完整干净的卸载向导。',
-                '個人PCや開発ワークステーションでの利用に最適。任意のドライブへのインストール、デスクトップショートカット自動作成、クリーンアンインストールに対応。',
-                'Ideal for personal PCs and developer workstations. Supports custom non-system installation paths, desktop shortcuts, and clean uninstallation.'
-              )
-            }}
-          </p>
+    <!-- 核心双栏分发与运行时规格 -->
+    <section class="hl-dl-main">
+      <div class="hl-container">
+        <div class="hl-dl-grid">
+          <!-- 左卡：.exe 分发主卡 -->
+          <div class="hl-bento-card hl-dl-primary-card">
+            <div class="hl-dl-card-head">
+              <span class="hl-pill-tag is-accent">WINDOWS 10 / 11 (x64) INSTALLER</span>
+              <span class="hl-dl-size hl-tabular">{{ SITE_META.installerSize }}</span>
+            </div>
 
-          <a
-            class="nx-btn nx-btn-primary nx-dl-main-btn"
-            :href="SITE_META.installerUrl"
-            target="_blank"
-            rel="noopener"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            <span>{{ t(`立即下载 Windows 版 (.exe) · ${SITE_META.version} 内测版`, `無料ダウンロード Windows版 (.exe) · ${SITE_META.version} ベータ版`, `Download for Windows (.exe) · ${SITE_META.version} Beta`) }}</span>
-          </a>
-
-          <!-- 下载按钮正下方：精致安全验证提示行 -->
-          <div class="nx-dl-verify-subline">
-            <span class="nx-dl-v-safe">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;" aria-hidden="true">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              <strong>100% Local &amp; Safe</strong>
-            </span>
-            <span class="nx-dl-v-sep">·</span>
-            <a
-              class="nx-dl-v-link"
-              :href="SITE_META.virusTotalUrl"
-              target="_blank"
-              rel="noopener"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 3px;" aria-hidden="true">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                <path d="m9 12 2 2 4-4" />
-              </svg>
+            <h2>
               {{
                 t(
-                  `VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore})`,
-                  `VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore})`,
-                  `VirusTotal Scan Report (${SITE_META.virusTotalScore})`
+                  `Windows 桌面安装版 · ${SITE_META.version} Beta`,
+                  `Windows 標準インストーラー · ${SITE_META.version} Beta`,
+                  `Windows Desktop Installer · ${SITE_META.version} Beta`
                 )
-              }} ↗
-            </a>
-            <span class="nx-dl-v-sep">·</span>
-            <code class="nx-dl-v-sha">SHA-256: {{ SITE_META.installerSha256Short }}</code>
-          </div>
+              }}
+            </h2>
+            <p class="hl-dl-card-sub">
+              {{
+                t(
+                  '适合个人工作站与企业内网研发终端主力使用。支持自定义非 C 盘路径、自动创建桌面快捷方式与完整干净卸载。',
+                  '個人PCおよび社内開発端末向け。非システムドライブへの導入、ショートカット作成、クリーンアンインストールに対応。',
+                  'Built for personal PCs and enterprise workstations. Supports non-C: install paths, shortcuts, and clean uninstall.'
+                )
+              }}
+            </p>
 
-          <div class="nx-hash-box">
-            <div class="nx-hash-top">
-              <span>SHA-256 CHECKSUM ({{ SITE_META.installerFileName }})</span>
-              <div class="nx-hash-actions">
-                <a
-                  class="nx-vt-badge-link"
-                  :href="SITE_META.virusTotalUrl"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  VirusTotal {{ SITE_META.virusTotalScore }} ↗
-                </a>
-                <button
-                  type="button"
-                  class="nx-hash-copy"
-                  @click="copyHash('exe', SITE_META.installerSha256)"
-                >
-                  {{ copiedKey === 'exe' ? t('✓ 已复制', '✓ コピー完了', '✓ Copied') : t('复制哈希', 'ハッシュをコピー', 'Copy Hash') }}
-                </button>
-              </div>
-            </div>
-            <code class="nx-hash-val">{{ SITE_META.installerSha256 }}</code>
-          </div>
-        </div>
-
-        <!-- 卡片 2：内嵌运行时与系统环境规格 -->
-        <div class="nx-dl-card nx-glass-card">
-          <div class="nx-dl-card-top">
-            <span class="nx-badge is-emerald">EMBEDDED RUNTIME // ZERO ENV SETUP</span>
-            <span class="nx-dl-size">Win 10 / 11 (x64)</span>
-          </div>
-          <h2 class="nx-dl-card-title">
-            {{ t('内嵌完整运行时与环境规格说明', '内蔵ランタイム・システム環境仕様', 'Embedded Runtime & System Specifications') }}
-          </h2>
-          <p class="nx-dl-card-sub">
-            {{
-              t(
-                '安装包已完整打包前后端运行环境，无需在本机预先安装 Python、Node.js 或 Microsoft Office，安装完成后双击桌面图标即可直接启动。',
-                'フロントエンドとバックエンドの実行環境をすべて同梱しているため、Python や Node.js、Office の事前導入は不要です。インストール後すぐに起動できます。',
-                'Packages the complete frontend and backend runtime. No prior Python, Node.js, or Office installation is required on your machine.'
-              )
-            }}
-          </p>
-
-          <ul class="nx-dl-spec-list">
-            <li>
-              <strong>{{ t('桌面宿主与界面：', 'デスクトップUI：', 'Desktop Host & UI:') }}</strong>
-              <span>Electron 44 + Vue 3.5 (Stone Workbench)</span>
-            </li>
-            <li>
-              <strong>{{ t('内嵌本地后端：', '内蔵バックエンド：', 'Embedded Backend:') }}</strong>
-              <span>Python 3.13 + FastAPI (<code>127.0.0.1:8001</code>)</span>
-            </li>
-            <li>
-              <strong>{{ t('模型接入支持：', '対応モデル：', 'Model Support:') }}</strong>
-              <span>{{ t('本机 Ollama 离线 / 企业内网 vLLM / 主流云端 API', 'ローカル Ollama / 社内LAN vLLM / 各種クラウドAPI', 'Local Ollama / Corporate LAN vLLM / Cloud APIs') }}</span>
-            </li>
-            <li>
-              <strong>{{ t('免管理员自愈诊断：', '自動ツールチェーン修復：', 'System Doctor Auto-Repair:') }}</strong>
-              <span>{{ t('缺失 Git / Node / uvx 时免管理员一键拉取沙箱便携环境', 'Git / Node / uvx 不足時に管理者権限不要でポータブル環境を自動構築', 'Zero-admin 1-click portable MinGit / Node v22 / uvx sandbox setup') }}</span>
-            </li>
-            <li>
-              <strong>{{ t('数据与凭据隔离：', 'データ・認証情報分離：', 'Vault & Storage Isolation:') }}</strong>
-              <span>{{ t('Windows DPAPI 加密密钥库 + 独立 .hyn_agent/ 目录（零 C 盘侵占）', 'Windows DPAPI 暗号化金庫 + 独立 .hyn_agent/ 保存（Cドライブ非圧迫）', 'Windows DPAPI encrypted vault + isolated .hyn_agent/ folder') }}</span>
-            </li>
-          </ul>
-
-          <div class="nx-dl-spec-actions">
-            <a
-              class="nx-btn nx-btn-glass"
-              :href="`${prefix}/guide/getting-started`"
-              @click.prevent="navigate(`${prefix}/guide/getting-started`)"
-            >
-              {{ t('查看 3 分钟快速上手指南 →', '3分クイックスタートを見る →', 'Read 3-Minute Quick Start →') }}
-            </a>
-            <a
-              class="nx-btn nx-btn-glass"
-              :href="`${prefix}/architecture/overview`"
-              @click.prevent="navigate(`${prefix}/architecture/overview`)"
-            >
-              {{ t('阅读 6 卷架构白皮书', '技術白書 (全6章) を読む', 'Read 6-Vol Whitepaper') }}
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 三步物理级离线安全审计指南 -->
-      <div class="nx-audit-section">
-        <div class="nx-sec-header">
-          <div class="nx-sec-kicker">ZERO-TRUST SECURITY VERIFICATION PROTOCOL</div>
-          <h2 class="nx-sec-title">
-            {{
-              t(
-                '面向企业安全部门的三步「物理级离线与数据主权」自测指南',
-                '情報セキュリティ部門向け：3ステップ・オフライン安全性検証プロトコル',
-                'Three-Step Air-Gapped & Data Sovereignty Verification Protocol'
-              )
-            }}
-          </h2>
-        </div>
-
-        <div class="nx-audit-grid">
-          <div v-for="item in auditSteps" :key="item.step" class="nx-audit-card nx-glass-card">
-            <div class="nx-audit-step">{{ item.step }}</div>
-            <h3 class="nx-audit-title">{{ item.title }}</h3>
-            <p class="nx-audit-desc">{{ item.desc }}</p>
-            <pre class="nx-audit-cmd"><code>{{ item.cmd }}</code></pre>
-          </div>
-        </div>
-      </div>
-
-      <!-- 社区交流群、使用反馈与私人订制联系区 -->
-      <div class="nx-dl-community-section">
-        <div class="nx-sec-header">
-          <div class="nx-sec-kicker">COMMUNITY, SUPPORT &amp; CUSTOM DEVELOPMENT</div>
-          <h2 class="nx-sec-title">
-            {{
-              t(
-                '交流群、问题反馈与私人订制开发',
-                'コミュニティ・サポート・カスタム機能開発のご相談',
-                'Community Channels, Issue Feedback & Custom Development'
-              )
-            }}
-          </h2>
-        </div>
-
-        <div class="nx-dl-remark-box nx-glass-card">
-          <span class="nx-badge is-emerald">{{ t('内测致谢与痛点共创计划', 'ベータ感謝＆無償共創計画', 'BETA & FREE CO-CREATION') }}</span>
-          <p class="nx-dl-remark-text">
-            {{
-              t(
-                '目前处于内测阶段，感谢大家的支持与使用！遇到任何问题请务必提出，我会尽快优化修复。正式版发布及后续升级中，将由大家的真实痛点决定下一版新功能——具有行业共性、高频高票的痛点需求（符合「行业共性、边界清晰、公开内置」3 条标准），我会免费为大家开发为官方内置功能！若有紧急且私人订制的功能需求，请通过邮箱（785430621@qq.com）单独与我联系。',
-                '現在ベータテスト段階にあり、皆様のご支援に心より感謝申し上げます。不具合やご要望はぜひお知らせください。正式版および今後のアップデートでは、業界共通の課題や賛同票の多いご要望を無償で標準機能として開発いたします。緊急・非公開の個別カスタム機能開発はメール（785430621@qq.com）にて個別にご連絡ください。',
-                'Currently in beta—thank you for your support! Please report any issues for rapid fixes. For the official release and future updates, you decide the roadmap: high-vote industry pain points meeting our 3 fair criteria will be built into official features for free! For urgent or private custom features, please contact me directly via email (785430621@qq.com).'
-              )
-            }}
-          </p>
-        </div>
-
-        <div class="nx-dl-comm-grid">
-          <div class="nx-dl-comm-card nx-glass-card">
-            <div class="nx-dl-comm-label">{{ t('Helm的discord交流群链接', 'Helm Discord 交流サーバー', 'Helm Discord Community') }}</div>
-            <code class="nx-dl-comm-val">{{ SITE_META.discordUrl }}</code>
-            <div class="nx-dl-comm-actions">
+            <div class="hl-dl-cta-wrap">
               <a
-                class="nx-btn nx-btn-primary nx-dl-comm-btn"
-                :href="SITE_META.discordUrl"
+                class="hl-btn hl-btn-ink hl-btn-lg hl-dl-btn-full"
+                :href="SITE_META.installerUrl"
                 target="_blank"
                 rel="noopener"
               >
-                {{ t('加入 Discord 交流群 ↗', 'Discord に参加 ↗', 'Join Discord ↗') }}
-              </a>
-              <button
-                type="button"
-                class="nx-btn nx-btn-glass nx-dl-comm-btn"
-                @click="copyHash('discord', SITE_META.discordUrl)"
-              >
-                {{ copiedKey === 'discord' ? t('✓ 已复制', '✓ コピー済', '✓ Copied') : t('复制链接', 'コピー', 'Copy') }}
-              </button>
-            </div>
-          </div>
-
-          <div class="nx-dl-comm-card nx-glass-card">
-            <div class="nx-dl-comm-label">{{ t('QQ交流群号', 'QQ 開発者交流グループ番号', 'QQ Community Group ID') }}</div>
-            <code class="nx-dl-comm-val is-em">{{ SITE_META.qqGroup }}</code>
-            <div class="nx-dl-comm-actions">
-              <button
-                type="button"
-                class="nx-btn nx-btn-primary nx-dl-comm-btn"
-                @click="copyHash('qq', SITE_META.qqGroup)"
-              >
-                {{
-                  copiedKey === 'qq'
-                    ? t(`✓ 已复制群号：${SITE_META.qqGroup}`, `✓ コピー完了：${SITE_META.qqGroup}`, `✓ Copied: ${SITE_META.qqGroup}`)
-                    : t(`复制 QQ 群号 (${SITE_META.qqGroup})`, `QQグループ番号をコピー (${SITE_META.qqGroup})`, `Copy QQ Group ID (${SITE_META.qqGroup})`)
-                }}
-              </button>
-            </div>
-          </div>
-
-          <div class="nx-dl-comm-card nx-glass-card">
-            <div class="nx-dl-comm-label">{{ t('交流合作邮箱（私人订制功能请联系）', '提携・カスタム開発メール', 'Collaboration & Custom Dev Email') }}</div>
-            <code class="nx-dl-comm-val is-em">{{ SITE_META.contactEmail }}</code>
-            <div class="nx-dl-comm-actions">
-              <a
-                class="nx-btn nx-btn-primary nx-dl-comm-btn"
-                :href="`mailto:${SITE_META.contactEmail}`"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <rect width="20" height="16" x="2" y="4" rx="2" />
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3 5.5 10.5 4.5v7H3v-6zm8.5-1.15L21 3v8.5h-9.5V4.35zM3 12.5h7.5v7L3 18.5v-6zm8.5 0H21V21l-9.5-1.35V12.5z" />
                 </svg>
-                <span>{{ t('发送邮件联系', 'メール送信', 'Send Email') }}</span>
+                <span>{{ t(`下载 ${SITE_META.installerFileName}`, `${SITE_META.installerFileName} をダウンロード`, `Download ${SITE_META.installerFileName}`) }}</span>
               </a>
-              <button
-                type="button"
-                class="nx-btn nx-btn-glass nx-dl-comm-btn"
-                @click="copyHash('email', SITE_META.contactEmail)"
+
+              <div class="hl-dl-verify-row hl-tabular">
+                <span class="hl-dl-safe">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <span>100% Local &amp; Safe</span>
+                </span>
+                <span>·</span>
+                <a class="hl-link" :href="SITE_META.virusTotalUrl" target="_blank" rel="noopener">
+                  <span>VirusTotal {{ SITE_META.virusTotalScore }} {{ t('安全扫描报告', '検査レポート', 'Scan Report') }} ↗</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- SHA-256 校验盒 -->
+            <div class="hl-checksum-box hl-tabular">
+              <div class="hl-checksum-head">
+                <span>SHA-256 CHECKSUM</span>
+                <button
+                  type="button"
+                  class="hl-btn hl-btn-outline hl-btn-xs"
+                  @click="copyText('exe-sha', SITE_META.installerSha256)"
+                >
+                  {{ copiedKey === 'exe-sha' ? t('已复制哈希', 'コピー完了', 'Copied') : t('复制完整哈希', 'ハッシュをコピー', 'Copy SHA-256') }}
+                </button>
+              </div>
+              <code class="hl-checksum-val">{{ SITE_META.installerSha256 }}</code>
+            </div>
+          </div>
+
+          <!-- 右卡：内嵌运行时规格清单 -->
+          <div class="hl-bento-card hl-dl-spec-card">
+            <div class="hl-dl-card-head">
+              <span class="hl-pill-tag">EMBEDDED RUNTIME · ZERO SETUP</span>
+              <span class="hl-dl-size">Turnkey Bundle</span>
+            </div>
+
+            <h2>{{ t('内嵌运行时与系统架构规格', '内蔵ランタイム・システム仕様', 'Bundled Runtime & System Specs') }}</h2>
+            <p class="hl-dl-card-sub">
+              {{
+                t(
+                  '前后端与文档解析依赖已全部随包封装，双击图标即可进入工作台，亦可随时由 System Doctor 诊断环境。',
+                  'フロントエンド・バックエンド・文書エンジンをすべて同梱。インストール後すぐに稼働を開始します。',
+                  'All frontend, backend, and Office engines are pre-packaged—launch immediately after install.'
+                )
+              }}
+            </p>
+
+            <dl class="hl-spec-dl">
+              <div v-for="sp in runtimeSpecs" :key="sp.k" class="hl-spec-row">
+                <dt>{{ sp.k }}</dt>
+                <dd>{{ sp.v }}</dd>
+              </div>
+            </dl>
+
+            <div class="hl-spec-actions">
+              <a
+                class="hl-btn hl-btn-tonal hl-btn-sm"
+                :href="`${prefix}/guide/getting-started`"
+                @click.prevent="navigate(`${prefix}/guide/getting-started`)"
               >
-                {{ copiedKey === 'email' ? t('✓ 已复制', '✓ コピー済', '✓ Copied') : t('复制邮箱', 'コピー', 'Copy') }}
+                <span>{{ t('阅读 3 分钟上手指南', '3分クイックスタート', '3-Minute Quick Start') }}</span>
+              </a>
+              <a
+                class="hl-btn hl-btn-outline hl-btn-sm"
+                :href="`${prefix}/architecture/overview`"
+                @click.prevent="navigate(`${prefix}/architecture/overview`)"
+              >
+                <span>{{ t('6 卷工程架构白皮书', '技術白書（全6章）', '6-Vol Whitepaper') }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 三步物理级离线安全自检协议 -->
+        <div class="hl-audit-block">
+          <div class="hl-sec-head">
+            <p class="hl-eyebrow">{{ t('零信任自检协议', 'ゼロトラスト検証プロトコル', 'Zero-Trust Audit Protocol') }}</p>
+            <h2 class="hl-sec-title">
+              {{
+                t(
+                  '面向企业安全审查的三步离线自检指南',
+                  '情報セキュリティ部門向け：3ステップ安全性検証',
+                  'Three-step verification for enterprise security teams'
+                )
+              }}
+            </h2>
+          </div>
+
+          <div class="hl-audit-grid">
+            <article v-for="item in auditSteps" :key="item.key" class="hl-bento-card hl-audit-card">
+              <div class="hl-audit-top">
+                <span class="hl-audit-idx hl-tabular">{{ item.num }}</span>
+                <span class="hl-audit-tag">{{ item.tag }}</span>
+              </div>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.desc }}</p>
+              <div class="hl-cmd-bar">
+                <code>{{ item.cmd }}</code>
+                <button
+                  type="button"
+                  class="hl-cmd-copy"
+                  @click="copyText(item.key, item.cmd)"
+                >
+                  {{ copiedKey === item.key ? t('已复制', '済', 'Copied') : t('复制', 'コピー', 'Copy') }}
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- 社区支持与私人订制联系带 -->
+        <div class="hl-dl-comm-strip">
+          <div class="hl-dl-comm-intro">
+            <span class="hl-pill-tag is-ok">{{ t('内测痛点免费共创', 'ベータ無償共創計画', 'Free Beta Co-Creation') }}</span>
+            <h3>
+              {{
+                t(
+                  '遇到安装或使用问题？欢迎进群交流，高票行业痛点免费为你开发',
+                  '導入サポート・無償機能リクエスト・個別カスタム開発窓口',
+                  'Need help or a custom workflow? Reach out anytime'
+                )
+              }}
+            </h3>
+            <p>
+              {{
+                t(
+                  '符合「行业共性、边界清晰、公开内置」标准的痛点需求将按投票免费开发进下一版；涉及商业机密或紧急专属交付请发送邮件一对一联系。',
+                  '業界共通の課題はコミュニティ投票順で無償実装します。社外秘・緊急の個別カスタム開発はメールにて個別にご相談ください。',
+                  'Common industry pain points are built into official releases for free; urgent or confidential custom requirements are available via email.'
+                )
+              }}
+            </p>
+          </div>
+
+          <div class="hl-dl-comm-cards">
+            <div class="hl-mini-comm">
+              <span>Discord</span>
+              <code>{{ SITE_META.discordUrl }}</code>
+              <a class="hl-btn hl-btn-ink hl-btn-xs" :href="SITE_META.discordUrl" target="_blank" rel="noopener">
+                {{ t('加入频道 ↗', '参加 ↗', 'Join ↗') }}
+              </a>
+            </div>
+
+            <div class="hl-mini-comm">
+              <span>{{ t('QQ 交流群', 'QQ グループ', 'QQ Group') }}</span>
+              <code class="hl-tabular">{{ SITE_META.qqGroup }}</code>
+              <button type="button" class="hl-btn hl-btn-tonal hl-btn-xs" @click="copyText('dl-qq', SITE_META.qqGroup)">
+                {{ copiedKey === 'dl-qq' ? t('已复制', '完了', 'Copied') : t('复制群号', 'コピー', 'Copy ID') }}
               </button>
+            </div>
+
+            <div class="hl-mini-comm">
+              <span>{{ t('合作与定制邮箱', 'カスタム開発メール', 'Custom Dev Email') }}</span>
+              <code>{{ SITE_META.contactEmail }}</code>
+              <div class="hl-mini-actions">
+                <a class="hl-btn hl-btn-ink hl-btn-xs" :href="`mailto:${SITE_META.contactEmail}`">
+                  {{ t('发邮件', '送信', 'Email') }}
+                </a>
+                <button type="button" class="hl-btn hl-btn-outline hl-btn-xs" @click="copyText('dl-mail', SITE_META.contactEmail)">
+                  {{ copiedKey === 'dl-mail' ? t('已复制', '完了', 'Copied') : t('复制', 'コピー', 'Copy') }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.nx-download-view {
-  position: relative;
-  z-index: 5;
-  padding: 48px 0 44px;
+.hl-dl-page {
+  background-color: var(--hl-surface-alt);
+  color: var(--hl-ink);
+  padding-bottom: 96px;
 }
 
-.nx-dl-hero {
-  max-width: 880px;
-  margin-bottom: 36px;
+.hl-dl-hero {
+  background-color: var(--hl-bg);
+  padding: 56px 0 48px;
+  border-bottom: 1px solid var(--hl-border);
 }
 
-.nx-dl-brand-banner {
+.hl-dl-brand-pill {
   display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 20px 12px 12px;
-  margin: 10px 0 22px;
-}
-
-.nx-dl-emblem {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
-  border: 1px solid rgba(96, 165, 250, 0.4);
-}
-
-.nx-dl-brand-row {
-  display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--hl-ink-3);
 }
 
-.nx-dl-brand-row strong {
-  font-size: 15px;
-  letter-spacing: 0.14em;
-  color: #ffffff;
+.hl-dl-brand-pill img {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--hl-radius-xs);
 }
 
-.nx-dl-slogan {
-  margin-top: 4px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: #38bdf8;
+.hl-dl-brand-pill strong {
+  color: var(--hl-ink);
+  font-weight: 650;
 }
 
-.nx-dl-title {
-  margin: 0 0 14px;
-  font-size: clamp(28px, 3.4vw, 40px);
-  font-weight: 850;
-  letter-spacing: -0.025em;
-  color: #ffffff;
+.hl-dl-sep {
+  color: var(--hl-border-strong);
 }
 
-.nx-dl-desc {
+.hl-dl-title {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.7;
-  color: #94a3b8;
+  max-width: 840px;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  color: var(--hl-ink);
 }
 
-.nx-dl-cards-grid {
+.hl-dl-desc {
+  margin: 16px 0 0;
+  max-width: 64ch;
+  font-size: 16px;
+  line-height: 1.64;
+  color: var(--hl-ink-3);
+}
+
+.hl-dl-main {
+  padding-top: 40px;
+}
+
+.hl-dl-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 56px;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 20px;
 }
 
-.nx-dl-card {
+.hl-dl-primary-card,
+.hl-dl-spec-card {
   padding: 32px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.nx-dl-card.is-recommended {
-  border-color: rgba(56, 189, 248, 0.42);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
-    0 24px 60px -15px rgba(37, 99, 235, 0.25);
-}
-
-.nx-dl-card-top {
+.hl-dl-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-.nx-dl-size {
+.hl-dl-size {
   font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: #94a3b8;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--hl-ink-3);
 }
 
-.nx-dl-card-title {
+.hl-dl-primary-card h2,
+.hl-dl-spec-card h2 {
   margin: 0 0 10px;
   font-size: 22px;
-  font-weight: 800;
-  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--hl-ink);
 }
 
-.nx-dl-card-sub {
+.hl-dl-card-sub {
   margin: 0 0 24px;
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: #cbd5e1;
-  flex: 1;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--hl-ink-3);
 }
 
-.nx-dl-main-btn {
+.hl-dl-cta-wrap {
+  margin-bottom: 24px;
+}
+
+.hl-dl-btn-full {
   width: 100%;
-  height: 48px;
-  font-size: 14px;
-  margin-bottom: 12px;
 }
 
-.nx-dl-verify-subline {
+.hl-dl-verify-row {
+  margin-top: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 6px 8px;
-  padding: 8px 12px;
-  margin-bottom: 14px;
-  border-radius: 8px;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(52, 211, 153, 0.28);
-  font-size: 12px;
-  color: #cbd5e1;
+  gap: 8px 10px;
+  font-size: 12.5px;
+  color: var(--hl-ink-4);
 }
 
-.nx-dl-v-safe strong {
-  color: #34d399;
-  font-weight: 750;
-}
-
-.nx-dl-v-sep {
-  color: #475569;
-  font-weight: 700;
-}
-
-.nx-dl-v-link {
-  color: #38bdf8;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.nx-dl-v-link:hover {
-  color: #7dd3fc;
-  text-decoration: underline;
-}
-
-.nx-dl-v-sha {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: rgba(5, 8, 17, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #f8fafc;
-}
-
-.nx-hash-actions {
+.hl-dl-safe {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
+  font-weight: 600;
+  color: var(--hl-ok);
 }
 
-.nx-vt-badge-link {
-  padding: 2px 8px;
-  border-radius: 5px;
-  background: rgba(16, 185, 129, 0.14);
-  border: 1px solid rgba(52, 211, 153, 0.35);
-  color: #34d399;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  text-decoration: none;
+.hl-checksum-box {
+  margin-top: auto;
+  padding: 16px 18px;
+  border-radius: var(--hl-radius-md);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border);
 }
 
-.nx-vt-badge-link:hover {
-  background: rgba(16, 185, 129, 0.24);
-  color: #6ee7b7;
-}
-
-.nx-hash-box {
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: rgba(5, 8, 17, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.nx-hash-top {
+.hl-checksum-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: #64748b;
-  margin-bottom: 6px;
-}
-
-.nx-hash-copy {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  color: #38bdf8;
-  border-radius: 5px;
-  padding: 2px 8px;
-  font-size: 10.5px;
-  font-family: var(--font-mono);
-  cursor: pointer;
-}
-
-.nx-hash-val {
-  display: block;
+  gap: 10px;
+  margin-bottom: 8px;
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #cbd5e1;
-  word-break: break-all;
+  font-weight: 650;
+  color: var(--hl-ink-4);
 }
 
-.nx-dl-spec-list {
-  margin: 0 0 22px;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 13px;
-  line-height: 1.55;
-  color: #cbd5e1;
-  flex: 1;
-}
-
-.nx-dl-spec-list li {
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: rgba(5, 8, 17, 0.72);
-  border: 1px solid rgba(148, 163, 184, 0.14);
-}
-
-.nx-dl-spec-list strong {
-  color: #f8fafc;
-}
-
-.nx-dl-spec-list code {
+.hl-checksum-val {
+  display: block;
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: #38bdf8;
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-all;
+  color: var(--hl-ink-2);
 }
 
-.nx-dl-spec-actions {
+/* 运行时规格定义列表 */
+.hl-spec-dl {
+  margin: 0 0 24px;
+  border-top: 1px solid var(--hl-border);
+}
+
+.hl-spec-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--hl-border);
+  font-size: 13.5px;
+}
+
+.hl-spec-row dt {
+  font-weight: 600;
+  color: var(--hl-ink);
+  flex-shrink: 0;
+}
+
+.hl-spec-row dd {
+  margin: 0;
+  text-align: right;
+  color: var(--hl-ink-3);
+}
+
+.hl-spec-actions {
+  margin-top: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.nx-audit-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+/* 三步安全验证 */
+.hl-audit-block {
+  margin-top: 64px;
 }
 
-.nx-audit-card {
+.hl-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.hl-audit-card {
   padding: 26px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.nx-audit-step {
+.hl-audit-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.hl-audit-idx {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #38bdf8;
-  margin-bottom: 8px;
-}
-
-.nx-audit-title {
-  margin: 0 0 10px;
-  font-size: 17px;
-  font-weight: 750;
-  color: #ffffff;
-}
-
-.nx-audit-desc {
-  margin: 0 0 18px;
   font-size: 13px;
-  line-height: 1.62;
-  color: #cbd5e1;
-  flex: 1;
+  font-weight: 700;
+  color: var(--hl-accent);
 }
 
-.nx-audit-cmd {
-  margin: 0;
-  padding: 12px;
-  border-radius: 8px;
-  background: #050811;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+.hl-audit-tag {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #34d399;
-  overflow-x: auto;
+  color: var(--hl-ink-4);
 }
 
-.nx-dl-community-section {
-  margin-top: 56px;
+.hl-audit-card h3 {
+  margin: 0 0 10px;
+  font-size: 16.5px;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--hl-ink);
 }
 
-.nx-dl-remark-box {
+.hl-audit-card p {
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: var(--hl-ink-3);
+}
+
+.hl-cmd-bar {
+  margin-top: auto;
+  padding: 10px 12px;
+  border-radius: var(--hl-radius-sm);
+  background-color: var(--hl-pro-code);
+  color: var(--hl-pro-text-2);
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 22px;
-  margin-bottom: 20px;
-  border-color: rgba(52, 211, 153, 0.35);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.88) 100%);
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.nx-dl-remark-text {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 650;
-  line-height: 1.65;
-  color: #f8fafc;
+.hl-cmd-bar code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
-.nx-dl-comm-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+.hl-cmd-copy {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--hl-radius-pill);
+  border: 1px solid var(--hl-pro-border-strong);
+  background-color: var(--hl-pro-surface);
+  color: var(--hl-pro-text);
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background-color 150ms ease;
 }
 
-.nx-dl-comm-card {
-  padding: 24px;
+.hl-cmd-copy:hover {
+  background-color: var(--hl-pro-surface-2);
+}
+
+/* 底部社区条 */
+.hl-dl-comm-strip {
+  margin-top: 56px;
+  padding: 32px;
+  border-radius: var(--hl-radius-xl);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border-soft);
+  box-shadow: var(--hl-shadow-bento);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 24px;
 }
 
-.nx-dl-comm-label {
-  font-size: 12.5px;
+.hl-dl-comm-intro h3 {
+  margin: 10px 0 6px;
+  font-size: 20px;
   font-weight: 700;
-  color: #94a3b8;
+  letter-spacing: -0.02em;
+  color: var(--hl-ink);
 }
 
-.nx-dl-comm-val {
+.hl-dl-comm-intro p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--hl-ink-3);
+  max-width: 72ch;
+}
+
+.hl-dl-comm-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hl-mini-comm {
+  padding: 16px 18px;
+  border-radius: var(--hl-radius-lg);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.hl-mini-comm span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hl-ink-4);
+}
+
+.hl-mini-comm code {
+  width: 100%;
   font-family: var(--font-mono);
   font-size: 13px;
-  font-weight: 700;
-  color: #7dd3fc;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: rgba(5, 8, 17, 0.85);
-  border: 1px solid rgba(56, 189, 248, 0.22);
-  word-break: break-all;
+  font-weight: 600;
+  color: var(--hl-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.nx-dl-comm-val.is-em {
-  font-size: 15px;
-  color: #ffffff;
-}
-
-.nx-dl-comm-actions {
+.hl-mini-actions {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.nx-dl-comm-btn {
-  flex: 1;
-  height: 38px;
-  font-size: 12.5px;
-}
-
-@media (max-width: 1024px) {
-  .nx-dl-cards-grid,
-  .nx-audit-grid,
-  .nx-dl-comm-grid {
+@media (max-width: 980px) {
+  .hl-dl-grid,
+  .hl-audit-grid,
+  .hl-dl-comm-cards {
     grid-template-columns: 1fr;
   }
-  .nx-dl-remark-box {
+
+  .hl-spec-row {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .hl-spec-row dd {
+    text-align: left;
   }
 }
 </style>

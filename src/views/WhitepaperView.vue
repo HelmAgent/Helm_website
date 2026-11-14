@@ -1,10 +1,10 @@
 <script setup>
 /**
- * 旗舰企业级工程架构白皮书与部署指南阅读器（WhitepaperView.vue）。
+ * WhitepaperView.vue — 极昼杂志级工程架构白皮书与部署指南阅读器
  *
  * 职责与协作：
- * - 彻底取代 VitePress 默认的 `.VPDoc` 与 `.VPSidebar`，使内页与首页 100% 统一在「风格 1：深邃科技旗舰风」视觉体系下。
- * - 自动加载 `docs/architecture/*` 与 `docs/guide/*` 的中/日/英三语 Markdown 原文，并通过 `markdownRenderer.js` + `mermaid` 渲染深色矢量拓扑图与可复制代码块。
+ * - 统一渲染 `/architecture/*`（全 6 卷）与 `/guide/*`（3 篇部署与生态指南）的中/日/英三语正文。
+ * - 共享 `flagship.css` 的 `.hl-doc-prose` 排版体系与浅色矢量 Mermaid 架构图渲染，零硬编码色值。
  */
 import { computed, watch, onMounted, nextTick } from 'vue'
 import {
@@ -64,19 +64,20 @@ async function renderMermaidDiagrams() {
     const mermaid = mermaidModule.default || mermaidModule
     const rootStyle = getComputedStyle(document.documentElement)
     const token = (name) => rootStyle.getPropertyValue(name).trim()
+
     mermaid.initialize({
       startOnLoad: false,
-      theme: 'dark',
+      theme: 'base',
       themeVariables: {
-        darkMode: true,
-        background: token('--nx-bg-code'),
-        primaryColor: token('--nx-primary-deep'),
-        primaryTextColor: token('--nx-text-1'),
-        primaryBorderColor: token('--nx-primary-bright'),
-        lineColor: token('--nx-primary-bright'),
-        secondaryColor: token('--nx-bg-deep'),
-        tertiaryColor: token('--nx-bg-surface'),
-        fontFamily: '"Inter", "Segoe UI", "Yu Gothic UI", "Microsoft YaHei UI", sans-serif',
+        darkMode: false,
+        background: token('--hl-surface-subtle'),
+        primaryColor: token('--hl-accent-soft'),
+        primaryTextColor: token('--hl-ink'),
+        primaryBorderColor: token('--hl-accent'),
+        lineColor: token('--hl-ink-4'),
+        secondaryColor: token('--hl-surface-alt'),
+        tertiaryColor: token('--hl-surface'),
+        fontFamily: token('--font-ui'),
         fontSize: '13px'
       }
     })
@@ -86,17 +87,17 @@ async function renderMermaidDiagrams() {
       if (el.dataset.rendered === '1') continue
       const rawCode = decodeURIComponent(el.dataset.mermaid || '')
       if (!rawCode) continue
-      const id = `nx-mermaid-${Date.now()}-${i}`
+      const id = `hl-mermaid-${Date.now()}-${i}`
       try {
         const { svg } = await mermaid.render(id, rawCode)
         el.innerHTML = svg
         el.dataset.rendered = '1'
       } catch (stageErr) {
-        console.warn(`[Helm Blueprint Reader] Mermaid stage ${i} skipped:`, stageErr)
+        console.warn(`[Helm Whitepaper] Mermaid stage ${i} skipped:`, stageErr)
       }
     }
   } catch (err) {
-    console.warn('[Helm Blueprint Reader] Mermaid render skipped:', err)
+    console.warn('[Helm Whitepaper] Mermaid render skipped:', err)
   }
 }
 
@@ -107,7 +108,7 @@ function handleArticleClick(e) {
     if (navigator.clipboard && raw) {
       navigator.clipboard.writeText(raw)
       const orig = copyBtn.textContent
-      copyBtn.textContent = 'COPIED ✓'
+      copyBtn.textContent = t('已复制', 'コピー済', 'Copied')
       setTimeout(() => {
         copyBtn.textContent = orig
       }, 1800)
@@ -138,164 +139,154 @@ watch(
 </script>
 
 <template>
-  <div class="nx-blueprint-reader">
-    <div class="nx-container">
-      <div class="nx-reader-layout">
-        <!-- ==================== 左栏：企业级架构卷宗导航器 ==================== -->
-        <aside class="nx-reader-sidebar">
-          <div class="nx-sidebar-sticky nx-glass-card">
-            <div class="nx-sb-group">
-              <div class="nx-sb-group-title">
-                {{ t('ENGINEERING BLUEPRINT // 架构白皮书', 'ENGINEERING BLUEPRINT // 技術設計白書', 'ARCHITECTURE WHITEPAPER') }}
+  <div class="hl-reader-page">
+    <div class="hl-container-wide">
+      <div class="hl-reader-grid">
+        <!-- 左栏：白皮书全 6 卷与私有化指南目录 -->
+        <aside class="hl-reader-left">
+          <div class="hl-sidebar-card">
+            <div class="hl-sb-section">
+              <div class="hl-sb-heading">
+                {{ t('工程架构白皮书（全 6 卷）', '技術アーキテクチャ白書（全6章）', 'Architecture Whitepaper') }}
               </div>
-              <nav class="nx-sb-nav">
+              <nav class="hl-sb-nav">
                 <a
                   v-for="ch in archChapters"
                   :key="ch.id"
-                  class="nx-sb-link"
+                  class="hl-sb-item"
                   :class="{ 'is-active': strippedPath === ch.slug }"
                   :href="ch.link"
                   @click.prevent="navigate(ch.link)"
                 >
-                  <span class="nx-sb-num">{{ ch.num }}</span>
-                  <span class="nx-sb-text">{{ ch.title }}</span>
+                  <span class="hl-sb-num hl-tabular">{{ ch.num }}</span>
+                  <span class="hl-sb-title">{{ ch.title }}</span>
                 </a>
               </nav>
             </div>
 
-            <div class="nx-sb-divider"></div>
+            <div class="hl-sb-sep"></div>
 
-            <div class="nx-sb-group">
-              <div class="nx-sb-group-title">
-                {{ t('USER & LAN GUIDES // 部署与使用指南', 'USER & LAN GUIDES // 導入・設定ガイド', 'DEPLOYMENT & USER GUIDES') }}
+            <div class="hl-sb-section">
+              <div class="hl-sb-heading">
+                {{ t('部署与使用指南', '導入・設定ガイド', 'Deployment & Guides') }}
               </div>
-              <nav class="nx-sb-nav">
+              <nav class="hl-sb-nav">
                 <a
                   v-for="g in guideChapters"
                   :key="g.id"
-                  class="nx-sb-link"
+                  class="hl-sb-item"
                   :class="{ 'is-active': strippedPath === g.slug }"
                   :href="g.link"
                   @click.prevent="navigate(g.link)"
                 >
-                  <span class="nx-sb-num is-guide">{{ g.num }}</span>
-                  <span class="nx-sb-text">{{ g.title }}</span>
+                  <span class="hl-sb-num hl-tabular">{{ g.num }}</span>
+                  <span class="hl-sb-title">{{ g.title }}</span>
                 </a>
               </nav>
             </div>
 
-            <div class="nx-sb-divider"></div>
+            <div class="hl-sb-sep"></div>
 
-            <!-- 权威实测报告与下载中心直达入口 -->
-            <a
-              class="nx-sb-audit-btn"
-              style="margin-bottom: 10px;"
-              :href="`${prefix}/benchmarks/swebench-mini-v1`"
-              @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
-            >
-              <span class="nx-sb-audit-tag">EMPIRICAL EVIDENCE // 6 SUITES</span>
-              <strong>
-                {{ t('6 大权威实测报告与证据包下载 →', '6大ベンチマーク実証＆証跡DL →', '6 Empirical Reports & ZIP Bundles →') }}
-              </strong>
-            </a>
+            <div class="hl-sb-shortcuts">
+              <a
+                class="hl-sb-shortcut"
+                :href="`${prefix}/benchmarks/swebench-mini-v1`"
+                @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
+              >
+                <span>EMPIRICAL EVIDENCE · 6 SUITES</span>
+                <strong>{{ t('6 大权威实测报告与证据包 →', '6大ベンチマーク実証レポート →', '6 Empirical Reports & ZIPs →') }}</strong>
+              </a>
 
-            <!-- 架构透明性与本地安全运行说明卡片 -->
-            <button type="button" class="nx-sb-audit-btn" @click="openAuditModal">
-              <span class="nx-sb-audit-tag">ARCHITECTURE &amp; SECURITY</span>
-              <strong>
-                {{ t('架构透明性与本地安全运行说明 →', '設計の透明性とローカル安全稼働について →', 'Architecture & Local Security Info →') }}
-              </strong>
-            </button>
+              <button type="button" class="hl-sb-shortcut" @click="openAuditModal">
+                <span>SECURITY &amp; PRIVACY</span>
+                <strong>{{ t('离线安全与架构透明性说明 →', 'オフライン安全仕様を見る →', 'Offline Security Brief →') }}</strong>
+              </button>
+            </div>
           </div>
         </aside>
 
-        <!-- ==================== 中栏：深色黑曜石架构白皮书正文画布 ==================== -->
-        <main class="nx-reader-main">
-          <article class="nx-article-card nx-glass-card" @click="handleArticleClick">
-            <!-- 卷宗页头 -->
-            <header class="nx-article-header">
-              <div class="nx-article-meta-bar">
-                <span class="nx-badge">{{ currentMeta.num }} · {{ currentMeta.badge }}</span>
-                <span v-if="currentMeta.metric" class="nx-article-metric">{{ currentMeta.metric }}</span>
+        <!-- 中栏：杂志级白皮书正文画布 -->
+        <main class="hl-reader-center">
+          <article class="hl-article-sheet" @click="handleArticleClick">
+            <header class="hl-article-head">
+              <div class="hl-article-meta hl-tabular">
+                <span class="hl-pill-tag is-accent">{{ currentMeta.num }} · {{ currentMeta.badge }}</span>
+                <span v-if="currentMeta.metric" class="hl-article-metric">{{ currentMeta.metric }}</span>
               </div>
 
-              <h1 class="nx-article-h1">{{ renderedDoc.title || currentMeta.title }}</h1>
+              <h1 class="hl-article-title">{{ renderedDoc.title || currentMeta.title }}</h1>
 
-              <p v-if="renderedDoc.description || currentMeta.subtitle" class="nx-article-lead">
+              <p v-if="renderedDoc.description || currentMeta.subtitle" class="hl-article-lead">
                 {{ renderedDoc.description || currentMeta.subtitle }}
               </p>
 
-              <div v-if="currentMeta.modules && currentMeta.modules.length" class="nx-article-modules">
-                <span class="nx-mod-label">{{ t('关联核心模块：', '対応コアモジュール：', 'Verified Source Modules:') }}</span>
+              <div v-if="currentMeta.modules && currentMeta.modules.length" class="hl-article-mods">
+                <span>{{ t('对应核心模块：', '対応モジュール：', 'Verified Modules:') }}</span>
                 <code v-for="m in currentMeta.modules" :key="m">{{ m }}</code>
               </div>
             </header>
 
-            <!-- 编译后的白皮书 HTML 正文 -->
-            <div :key="currentPath" class="nx-article-body" v-html="renderedDoc.html"></div>
+            <div :key="currentPath" class="hl-doc-prose" v-html="renderedDoc.html"></div>
 
-            <!-- 底部上下卷切换卡片 -->
-            <footer class="nx-article-pager">
+            <footer class="hl-article-pager">
               <a
                 v-if="prevChapter"
-                class="nx-pager-card is-prev"
+                class="hl-pager-btn"
                 :href="prevChapter.link"
                 @click.prevent="navigate(prevChapter.link)"
               >
-                <span class="nx-pager-dir">← {{ t('上一卷', '前の章', 'Previous') }} · {{ prevChapter.num }}</span>
-                <strong class="nx-pager-title">{{ prevChapter.title }}</strong>
+                <span class="hl-pager-dir">← {{ t('上一篇', '前の章', 'Previous') }} · {{ prevChapter.num }}</span>
+                <strong>{{ prevChapter.title }}</strong>
               </a>
               <div v-else></div>
 
               <a
                 v-if="nextChapter"
-                class="nx-pager-card is-next"
+                class="hl-pager-btn is-next"
                 :href="nextChapter.link"
                 @click.prevent="navigate(nextChapter.link)"
               >
-                <span class="nx-pager-dir">{{ t('下一卷', '次の章', 'Next') }} · {{ nextChapter.num }} →</span>
-                <strong class="nx-pager-title">{{ nextChapter.title }}</strong>
+                <span class="hl-pager-dir">{{ t('下一篇', '次の章', 'Next') }} · {{ nextChapter.num }} →</span>
+                <strong>{{ nextChapter.title }}</strong>
               </a>
             </footer>
           </article>
         </main>
 
-        <!-- ==================== 右栏：本卷章节锚点与快捷实机体验 ==================== -->
-        <aside class="nx-reader-toc">
-          <div class="nx-toc-sticky">
-            <div v-if="renderedDoc.toc && renderedDoc.toc.length" class="nx-toc-box nx-glass-card">
-              <div class="nx-toc-title">{{ t('本卷目录 // ON THIS PAGE', '目次 // ON THIS PAGE', 'ON THIS PAGE') }}</div>
-              <ul class="nx-toc-list">
+        <!-- 右栏：本页锚点目录与沙盒快捷卡 -->
+        <aside class="hl-reader-right">
+          <div class="hl-toc-sticky">
+            <div v-if="renderedDoc.toc && renderedDoc.toc.length" class="hl-toc-card">
+              <div class="hl-toc-heading">{{ t('本页目录', '目次', 'On This Page') }}</div>
+              <ul class="hl-toc-list">
                 <li
                   v-for="item in renderedDoc.toc"
                   :key="item.id"
-                  :class="`is-level-${item.level}`"
+                  :class="`is-lv-${item.level}`"
                 >
                   <a :href="`#${item.id}`">{{ item.text }}</a>
                 </li>
               </ul>
             </div>
 
-            <div class="nx-toc-cta-card nx-glass-card">
-              <div class="nx-toc-cta-tag">INTERACTIVE SANDBOX</div>
-              <h4>
-                {{ t('在 1:1 交互沙盒中验证本卷架构', '1:1 対話型デモで本設計を検証', 'Verify in 1:1 Interactive Sandbox') }}
-              </h4>
+            <div class="hl-toc-promo">
+              <span class="hl-pill-tag">1:1 SANDBOX</span>
+              <h4>{{ t('在交互工作台中验证架构', '対話型デモで設計を体験', 'Test in 1:1 Sandbox') }}</h4>
               <p>
                 {{
                   t(
-                    '直接在浏览器中在线操作体验影子 Git 检查点、Worktree 团队与 Office 局部热补丁。',
-                    'ブラウザ上でシャドウGit、Worktreeチーム、Office部分AI更新を直接操作できます。',
-                    'Test Shadow Git Checkpoints, Worktree Teams, and Office hot-patching right in your browser.'
+                    '在线操作影子 Git 检查点、Worktree 多智能体协同与 Office 划词热补丁。',
+                    'シャドウGit・Worktree協調・Office部分更新をブラウザで操作できます。',
+                    'Try Shadow Git, Worktree teams, and surgical Office hot-patching in browser.'
                   )
                 }}
               </p>
               <a
-                class="nx-btn nx-btn-primary nx-toc-btn"
+                class="hl-btn hl-btn-ink hl-btn-sm hl-toc-cta"
                 :href="`${prefix}/demo`"
                 @click.prevent="navigate(`${prefix}/demo`)"
               >
-                {{ t('打开交互沙盒 (/demo) →', '対話型デモを開く →', 'Open Live Sandbox →') }}
+                <span>{{ t('打开 1:1 工作台', '1:1 デモを開く', 'Open 1:1 Sandbox') }}</span>
               </a>
             </div>
           </div>
@@ -306,136 +297,144 @@ watch(
 </template>
 
 <style scoped>
-.nx-blueprint-reader {
-  position: relative;
-  z-index: 5;
-  padding: 40px 0 48px;
+.hl-reader-page {
+  background-color: var(--hl-surface-alt);
+  color: var(--hl-ink);
+  padding: 36px 0 88px;
 }
 
-.nx-reader-layout {
+.hl-reader-grid {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 240px;
+  grid-template-columns: 268px minmax(0, 1fr) 232px;
   gap: 24px;
   align-items: start;
 }
 
-/* 左栏侧边导航 */
-.nx-sidebar-sticky {
+.hl-sidebar-card {
   position: sticky;
-  top: 88px;
+  top: 76px;
   padding: 18px 14px;
+  border-radius: var(--hl-radius-xl);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border-soft);
+  box-shadow: var(--hl-shadow-bento);
 }
 
-.nx-sb-group-title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  color: #38bdf8;
-  padding: 0 8px 8px;
+.hl-sb-heading {
+  padding: 0 10px 8px;
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--hl-ink-4);
 }
 
-.nx-sb-nav {
+.hl-sb-nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
-.nx-sb-link {
+.hl-sb-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 9px 10px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  transition: all 150ms ease;
+  border-radius: var(--hl-radius-sm);
+  transition: background-color 150ms ease;
 }
 
-.nx-sb-link:hover {
-  background: rgba(30, 41, 69, 0.55);
+.hl-sb-item:hover {
+  background-color: var(--hl-surface-alt);
 }
 
-.nx-sb-link.is-active {
-  background: rgba(37, 99, 235, 0.22);
-  border-color: rgba(56, 189, 248, 0.4);
+.hl-sb-item.is-active {
+  background-color: var(--hl-accent-soft);
 }
 
-.nx-sb-num {
+.hl-sb-num {
   font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  color: #64748b;
-}
-
-.nx-sb-link.is-active .nx-sb-num {
-  color: #38bdf8;
-}
-
-.nx-sb-num.is-guide {
-  color: #34d399;
-}
-
-.nx-sb-text {
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 650;
+  color: var(--hl-ink-4);
+}
+
+.hl-sb-item.is-active .hl-sb-num {
+  color: var(--hl-accent);
+}
+
+.hl-sb-title {
+  font-size: 13px;
+  font-weight: 550;
   line-height: 1.4;
-  color: #cbd5e1;
+  color: var(--hl-ink-2);
 }
 
-.nx-sb-link.is-active .nx-sb-text {
-  color: #ffffff;
+.hl-sb-item.is-active .hl-sb-title {
+  font-weight: 650;
+  color: var(--hl-ink);
 }
 
-.nx-sb-divider {
+.hl-sb-sep {
   height: 1px;
-  background: rgba(148, 163, 184, 0.12);
-  margin: 14px 0;
+  background-color: var(--hl-border);
+  margin: 14px 6px;
 }
 
-.nx-sb-audit-btn {
+.hl-sb-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hl-sb-shortcut {
   width: 100%;
   text-align: left;
   padding: 11px 12px;
-  border-radius: 9px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: var(--hl-radius-md);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border);
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  transition: all 160ms ease;
+  gap: 3px;
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
-.nx-sb-audit-btn:hover {
-  border-color: #38bdf8;
-  background: rgba(30, 41, 69, 0.9);
+.hl-sb-shortcut:hover {
+  border-color: var(--hl-border-strong);
+  background-color: var(--hl-surface-tonal);
 }
 
-.nx-sb-audit-tag {
+.hl-sb-shortcut span {
   font-family: var(--font-mono);
-  font-size: 9.5px;
-  font-weight: 700;
-  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--hl-accent);
 }
 
-.nx-sb-audit-btn strong {
-  font-size: 12px;
-  color: #f1f5f9;
+.hl-sb-shortcut strong {
+  font-size: 12.5px;
+  font-weight: 600;
   line-height: 1.4;
+  color: var(--hl-ink);
 }
 
-/* 中栏正文卡片 */
-.nx-article-card {
-  padding: 40px 44px;
+/* 中栏正文画布 */
+.hl-article-sheet {
+  padding: 44px 48px;
+  border-radius: var(--hl-radius-xl);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border-soft);
+  box-shadow: var(--hl-shadow-bento);
+  min-width: 0;
 }
 
-.nx-article-header {
-  padding-bottom: 26px;
-  margin-bottom: 30px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+.hl-article-head {
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--hl-border);
 }
 
-.nx-article-meta-bar {
+.hl-article-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -444,470 +443,184 @@ watch(
   margin-bottom: 16px;
 }
 
-.nx-article-metric {
+.hl-article-metric {
   font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 11.5px;
-  color: var(--nx-emerald);
+  font-size: 12px;
+  color: var(--hl-ink-4);
 }
 
-.nx-article-h1 {
+.hl-article-title {
   margin: 0 0 14px;
-  font-size: clamp(24px, 2.8vw, 34px);
-  font-weight: 850;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  color: #ffffff;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--hl-ink);
 }
 
-.nx-article-lead {
-  margin: 0 0 18px;
-  font-size: 15px;
-  line-height: 1.68;
-  color: #94a3b8;
+.hl-article-lead {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.66;
+  color: var(--hl-ink-3);
+  max-width: 70ch;
 }
 
-.nx-article-modules {
+.hl-article-mods {
+  margin-top: 18px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+  font-size: 12.5px;
+  color: var(--hl-ink-4);
 }
 
-.nx-mod-label {
+.hl-article-mods code {
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: #64748b;
-}
-
-.nx-article-modules code {
-  padding: 3px 8px;
-  border-radius: 5px;
-  background: rgba(5, 8, 17, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: #7dd3fc;
-}
-
-/* 正文深度排版（v-html 内部元素） */
-.nx-article-body :deep(.nx-doc-h2) {
-  margin: 38px 0 16px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(148, 163, 184, 0.14);
-  font-size: 21px;
-  font-weight: 800;
-  color: #ffffff;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  scroll-margin-top: 92px;
-}
-
-.nx-article-body :deep(.nx-doc-h2:first-child) {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
-
-.nx-article-body :deep(.nx-doc-h3) {
-  margin: 26px 0 12px;
-  font-size: 16.5px;
-  font-weight: 750;
-  color: #f1f5f9;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  scroll-margin-top: 92px;
-}
-
-.nx-article-body :deep(.nx-heading-anchor) {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: #38bdf8;
-  opacity: 0.45;
-}
-
-.nx-article-body :deep(.nx-doc-p) {
-  margin: 0 0 16px;
-  font-size: 14.5px;
-  line-height: 1.75;
-  color: #cbd5e1;
-}
-
-.nx-article-body :deep(.nx-doc-list) {
-  margin: 0 0 18px;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #cbd5e1;
-}
-
-.nx-article-body :deep(.nx-doc-list strong) {
-  color: #ffffff;
-}
-
-.nx-article-body :deep(.nx-inline-code) {
-  padding: 2px 6px;
-  border-radius: 5px;
-  background: rgba(30, 41, 59, 0.78);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  color: #7dd3fc;
-}
-
-.nx-article-body :deep(.nx-doc-link) {
-  color: #38bdf8;
-  font-weight: 600;
-  border-bottom: 1px dashed rgba(56, 189, 248, 0.45);
-}
-
-.nx-article-body :deep(.nx-doc-divider) {
-  border: none;
-  height: 1px;
-  background: rgba(148, 163, 184, 0.14);
-  margin: 28px 0;
-}
-
-/* GitHub Callout 玻璃卡片 */
-.nx-article-body :deep(.nx-callout) {
-  margin: 20px 0;
-  padding: 16px 20px;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(56, 189, 248, 0.32);
-  border-left: 3px solid #38bdf8;
-}
-
-.nx-article-body :deep(.nx-callout.is-tip) {
-  border-color: rgba(16, 185, 129, 0.32);
-  border-left-color: #10b981;
-}
-
-.nx-article-body :deep(.nx-callout-head) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.nx-article-body :deep(.nx-callout-badge) {
-  padding: 1px 7px;
-  border-radius: 4px;
-  background: rgba(56, 189, 248, 0.18);
-  color: #38bdf8;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 750;
-}
-
-.nx-article-body :deep(.nx-callout-title) {
-  font-size: 13.5px;
-  color: #ffffff;
-}
-
-.nx-article-body :deep(.nx-callout-body) {
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: #cbd5e1;
-}
-
-/* Mermaid 矢量架构图舞台 */
-.nx-article-body :deep(.nx-mermaid-card) {
-  margin: 24px 0;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  background: #070b14;
-}
-
-.nx-article-body :deep(.nx-mermaid-bar) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: #0b1120;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: #38bdf8;
-}
-
-.nx-article-body :deep(.nx-mermaid-dot) {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #38bdf8;
-}
-
-.nx-article-body :deep(.nx-mermaid-stage) {
-  padding: 24px 18px;
-  overflow-x: auto;
-  text-align: center;
-}
-
-.nx-article-body :deep(.nx-mermaid-stage svg) {
-  max-width: 100%;
-  height: auto;
-}
-
-/* 代码块视窗 */
-.nx-article-body :deep(.nx-code-block) {
-  margin: 20px 0;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: #050811;
-}
-
-.nx-article-body :deep(.nx-code-header) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 14px;
-  background: #0b1120;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-  font-family: var(--font-mono);
-  font-size: 11px;
-}
-
-.nx-article-body :deep(.nx-code-dots) {
-  display: flex;
-  gap: 5px;
-}
-
-.nx-article-body :deep(.nx-code-dots span) {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #334155;
-}
-
-.nx-article-body :deep(.nx-code-lang) {
-  color: #94a3b8;
-  font-weight: 700;
-}
-
-.nx-article-body :deep(.nx-code-copy-btn) {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  color: #38bdf8;
-  border-radius: 4px;
   padding: 2px 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  cursor: pointer;
+  border-radius: var(--hl-radius-xs);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border);
+  color: var(--hl-ink-2);
 }
 
-.nx-article-body :deep(.nx-code-pre) {
-  margin: 0;
-  padding: 16px;
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--nx-text-2);
-}
-
-.nx-article-body :deep(.nx-code-pre::-webkit-scrollbar),
-.nx-article-body :deep(.nx-table-wrap::-webkit-scrollbar) {
-  height: 6px;
-  background: transparent;
-}
-
-.nx-article-body :deep(.nx-code-pre::-webkit-scrollbar-track),
-.nx-article-body :deep(.nx-table-wrap::-webkit-scrollbar-track) {
-  background: transparent;
-}
-
-.nx-article-body :deep(.nx-code-pre::-webkit-scrollbar-thumb),
-.nx-article-body :deep(.nx-table-wrap::-webkit-scrollbar-thumb) {
-  background: var(--nx-border-mid);
-  border-radius: var(--nx-radius-xs);
-}
-
-/* 表格 */
-.nx-article-body :deep(.nx-table-wrap) {
-  margin: 20px 0;
-  overflow-x: auto;
-  border-radius: var(--nx-radius-md);
-  border: 1px solid var(--nx-border-mid);
-}
-
-.nx-article-body :deep(.nx-doc-table) {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-article-body :deep(.nx-doc-table th),
-.nx-article-body :deep(.nx-doc-table td) {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--nx-border-subtle);
-  text-align: left;
-  white-space: nowrap;
-}
-
-.nx-article-body :deep(.nx-doc-table td:first-child) {
-  white-space: normal;
-  min-width: 156px;
-}
-
-.nx-article-body :deep(.nx-doc-table th) {
-  background: rgba(8, 13, 26, 0.9);
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.nx-article-body :deep(.nx-doc-table td) {
-  background: rgba(13, 20, 36, 0.5);
-  color: #cbd5e1;
-}
-
-/* 上下卷翻页器 */
-.nx-article-pager {
-  margin-top: 40px;
+.hl-article-pager {
+  margin-top: 48px;
   padding-top: 24px;
-  border-top: 1px solid rgba(148, 163, 184, 0.16);
+  border-top: 1px solid var(--hl-border);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
-.nx-pager-card {
+.hl-pager-btn {
+  padding: 16px 20px;
+  border-radius: var(--hl-radius-lg);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border);
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 16px 18px;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.72);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  transition: all 160ms ease;
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
-.nx-pager-card:hover {
-  border-color: #38bdf8;
-  background: rgba(30, 41, 69, 0.85);
+.hl-pager-btn:hover {
+  border-color: var(--hl-border-strong);
+  background-color: var(--hl-surface-tonal);
 }
 
-.nx-pager-card.is-next {
+.hl-pager-btn.is-next {
   text-align: right;
 }
 
-.nx-pager-dir {
+.hl-pager-dir {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: #38bdf8;
+  font-size: 11.5px;
+  color: var(--hl-accent);
 }
 
-.nx-pager-title {
+.hl-pager-btn strong {
   font-size: 14px;
-  color: #ffffff;
+  line-height: 1.4;
+  color: var(--hl-ink);
 }
 
-/* 右栏目录与快捷卡片 */
-.nx-toc-sticky {
+/* 右栏目录与卡片 */
+.hl-toc-sticky {
   position: sticky;
-  top: 88px;
+  top: 76px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.nx-toc-box {
-  padding: 18px 16px;
+.hl-toc-card,
+.hl-toc-promo {
+  padding: 18px;
+  border-radius: var(--hl-radius-lg);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border-soft);
+  box-shadow: var(--hl-shadow-bento);
 }
 
-.nx-toc-title {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  color: #38bdf8;
-  margin-bottom: 12px;
+.hl-toc-heading {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--hl-ink);
+  margin-bottom: 10px;
 }
 
-.nx-toc-list {
+.hl-toc-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  max-height: 52vh;
+  overflow-y: auto;
 }
 
-.nx-toc-list li a {
-  font-size: 12px;
-  line-height: 1.45;
-  color: #94a3b8;
+.hl-toc-list li a {
   display: block;
+  font-size: 12.5px;
+  line-height: 1.42;
+  color: var(--hl-ink-3);
   transition: color 150ms ease;
 }
 
-.nx-toc-list li a:hover {
-  color: #38bdf8;
+.hl-toc-list li a:hover {
+  color: var(--hl-accent);
 }
 
-.nx-toc-list li.is-level-3 {
+.hl-toc-list li.is-lv-3 {
   padding-left: 12px;
 }
 
-.nx-toc-cta-card {
-  padding: 18px 16px;
+.hl-toc-promo h4 {
+  margin: 10px 0 6px;
+  font-size: 14.5px;
+  font-weight: 650;
+  color: var(--hl-ink);
 }
 
-.nx-toc-cta-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  color: #34d399;
-  margin-bottom: 6px;
-}
-
-.nx-toc-cta-card h4 {
-  margin: 0 0 8px;
-  font-size: 13.5px;
-  color: #ffffff;
-}
-
-.nx-toc-cta-card p {
+.hl-toc-promo p {
   margin: 0 0 14px;
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.55;
-  color: #94a3b8;
+  color: var(--hl-ink-3);
 }
 
-.nx-toc-btn {
+.hl-toc-cta {
   width: 100%;
-  height: 36px;
-  font-size: 12px;
 }
 
 @media (max-width: 1180px) {
-  .nx-reader-layout {
-    grid-template-columns: 250px minmax(0, 1fr);
+  .hl-reader-grid {
+    grid-template-columns: 248px minmax(0, 1fr);
   }
-  .nx-reader-toc {
+
+  .hl-reader-right {
     display: none;
   }
 }
 
 @media (max-width: 860px) {
-  .nx-reader-layout {
+  .hl-reader-grid {
     grid-template-columns: 1fr;
   }
-  .nx-sidebar-sticky {
+
+  .hl-sidebar-card {
     position: static;
   }
-  .nx-article-card {
-    padding: 24px 20px;
+
+  .hl-article-sheet {
+    padding: 28px 22px;
   }
-  .nx-article-pager {
+
+  .hl-article-pager {
     grid-template-columns: 1fr;
   }
 }

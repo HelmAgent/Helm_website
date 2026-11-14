@@ -1,12 +1,13 @@
 <script setup>
 /**
- * 旗舰深邃科技风产品首页视图（HomeView.vue）。
+ * HomeView.vue — Antigravity × Apple 极昼旗舰产品首页（7 章节呼吸感架构）
  *
- * 设计语言（Style 1）：
- * - 对标 Cursor / Linear / Warp 与日本顶尖科技企业（LayerX / Preferred Networks）的深邃黑曜石舞台、径向星光聚光灯、1px 顶部高光玻璃卡片与交互式特性画廊。
- * - 提供「Architecture Whitepaper（工程架构白皮书 · 全 5 卷）」导览矩阵与「架构透明性与离线安全说明」弹窗触发器。
+ * 视觉与交互契约：
+ * 1. 遵循 60-30-10 配色纪律（纯白画布 `--hl-bg` + 苹果冷灰 `--hl-surface-alt` + 单章节曜石深色剧场 `--hl-pro-bg`）。
+ * 2. 全胶囊按钮几何（Pill Geometry），将版本号、体积、VirusTotal 0/57 与 SHA-256 剥离至静谧校验条。
+ * 3. 通过 Bento 右下角圆形 `+` 触发 `BentoSheetModal` 抽屉，兼顾首屏留白与全量硬核实证数据。
  */
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import {
   SITE_META,
   tt,
@@ -15,6 +16,7 @@ import {
 } from '../data/siteData.js'
 import { useAppRouter } from '../router.js'
 import ProductPlayground from '../components/ProductPlayground.vue'
+import BentoSheetModal from '../components/BentoSheetModal.vue'
 
 const { currentLang, navigate, openAuditModal } = useAppRouter()
 
@@ -23,15 +25,29 @@ const videoLoadError = ref(false)
 const videoPlayerRef = ref(null)
 const playbackRate = ref(1)
 const activeFeatureIdx = ref(0)
-const copiedContactKey = ref('')
+const activeBentoSheet = ref('')
+const showAllCompareRows = ref(false)
+const copiedKey = ref('')
 
-async function copyContactText(key, text) {
+// 首屏交互式微罗盘引力场（Azimuth Compass Vector Field）
+const azimuthCanvasRef = ref(null)
+let animFrameId = 0
+let removeCanvasListeners = null
+
+const prefix = computed(() => getLangPrefix(currentLang.value))
+const archChapters = computed(() => getArchitectureChapters(currentLang.value))
+
+function t(zh, ja, en) {
+  return tt(currentLang.value, zh, ja, en)
+}
+
+async function copyText(key, text) {
   try {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
       await navigator.clipboard.writeText(text)
-      copiedContactKey.value = key
+      copiedKey.value = key
       setTimeout(() => {
-        if (copiedContactKey.value === key) copiedContactKey.value = ''
+        if (copiedKey.value === key) copiedKey.value = ''
       }, 2200)
     }
   } catch {
@@ -53,99 +69,85 @@ function handleVideoLoaded() {
   }
 }
 
-const prefix = computed(() => getLangPrefix(currentLang.value))
-const archChapters = computed(() => getArchitectureChapters(currentLang.value))
-
-function t(zh, ja, en) {
-  return tt(currentLang.value, zh, ja, en)
+function openInteractiveStage() {
+  showcaseTab.value = 'interactive'
+  if (typeof document !== 'undefined') {
+    const el = document.getElementById('hero-stage')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 }
 
-// 4 项核心定量指标
-const kpiMetrics = computed(() => [
+// 首屏实机录屏三段导读
+const videoHighlights = computed(() => [
   {
-    num: '0 Byte',
-    unit: 'EXTERNAL DATA EGRESS',
-    badge: t('100% 本地与内网闭环', '社外送信データ量ゼロ', '100% Air-Gap Ready'),
-    label: t('公网外发机密数据量', '外部クラウド送信データ量', 'External Cloud Data Egress'),
+    step: '01',
+    title: t('一句话零干预工程拆解', '1文からの自律設計・構築', 'Single-Prompt Engineering Plan'),
     desc: t(
-      '原生支持 127.0.0.1 本机 Ollama 与企业内网 GPU 集群直连，核心源码与办公文档 100% 不出网。',
-      '127.0.0.1 ローカル完結および社内閉域網（LAN）直結に対応。機密コードや文書の社外流出を物理的に遮断。',
-      'Native 127.0.0.1 loopback and corporate LAN GPU cluster support; zero external cloud relay required.'
+      '仅输入「帮我制作一个记账软件」，自主完成目录规划、账目持久化与现代 UI 编写。',
+      '「家計簿ソフトを作って」の1文だけで、設計・データ永続化・UI構築を自律完遂。',
+      'From a single sentence, Helm plans project structure, persistence, and clean UI.'
     )
   },
   {
-    num: '84.0%',
-    unit: 'SWE-BENCH VERIFIED MINI',
-    badge: t('均值 81.0% · 98% 定位率', '2回平均 81.0% · 98% 特定', 'Avg 81.0% · 98% Gold Hit'),
-    label: t('端到端开源缺陷修复率 (Pass@1)', 'SWE-bench Verified Mini 解決率', 'SWE-bench Verified Mini Pass@1'),
+    step: '02',
+    title: t('7 分 35 秒连续自检闭环', '7分35秒の自己検証ループ', '7m 35s Self-Verifying Loop'),
     desc: t(
-      '搭载 DeepSeek-V4.1-Flash 在官方 Docker 全断网沙箱（n=50）下实测：单轮干净全量最高 84.00%（42/50），两轮独立均值 81.00% ± 4.24%（Django 稳定达 88.00%），100/100 题次非空有效补丁率 100%。',
-      'DeepSeek-V4.1-Flash を用い公式 Docker 完全オフライン環境（n=50）で実測：単回最高 84.00%（42/50）、2回独立平均 81.00% ± 4.24%（Django 88.00%）、有効パッチ生成率 100%（100/100）。',
-      'Measured with DeepSeek-V4.1-Flash in official air-gapped Docker harness (n=50): 84.00% (42/50) single-run peak, 81.00% ± 4.24% 2-run mean (88.00% on Django), and 100% (100/100) valid patch rate.'
+      '高密度串联文件读写、依赖安装与终端验证，遇到运行细节自动自检修复，零人工中断。',
+      'ファイル操作・依存解決・コマンド検証を連続実行し、問題も自己修正して完走。',
+      'Chains file edits, dependency checks, and shell tests with automatic self-correction.'
     )
   },
   {
-    num: '97.74%',
-    unit: 'PREFIX CACHE HIT',
-    badge: t('单题修复仅 ¥0.27', '1問解決 ¥0.27', '¥0.27 / Solved Issue'),
-    label: t('SWE-bench 1.2亿 Token 缓存命中率', '実戦 1.2億Token キャッシュヒット率', '120M-Token Live Cache Hit Rate'),
+    step: '03',
+    title: t('编码完成后直接本机拉起成品', '完了後にローカルで即時起動', 'Verified Local App Launch'),
     desc: t(
-      '四层只增前缀与缓存感知裁剪在 SWE-bench 两轮 100 题次（1.2亿+ Prompt Tokens）实测中达成 97.62%–97.74% 缓存命中，跑完全套 50 题仅需 ¥10.39（多场景双轨基准热态命中 89.58%，计费省 57.27%）。',
-      '4層追記型プレフィックスにより SWE-bench 2回計100問（1.2億+ Token）実戦で 97.62%–97.74% のヒット率を達成し、50問完走コストはわずか ¥10.39（双軌道ベンチではウォーム 89.58%・課金 -57.27%）。',
-      '4-layer append-only prefix achieves 97.62%–97.74% cache hit rate across 120M+ SWE-bench tokens (50 tasks solved for ¥10.39 / ~$1.45), plus 89.58% warm hit (-57.27% billable) on controlled suites.'
-    )
-  },
-  {
-    num: '502',
-    unit: 'AUTOMATED PYTEST SUITE',
-    badge: t('52 项原生工具 + MCP 生态', '52 標準ツール + MCP 統合', '52 Built-In Tools + MCP'),
-    label: t('零框架自研长程引擎核心单测数', 'ゼロフレームワーク自律エンジン単体テスト数', 'Zero-Framework Engine Automated Tests'),
-    desc: t(
-      '摒弃 LangChain 等黑盒封装，纯自研 5,227 行异步状态机，集成三路只读并发、ripgrep 42倍检索、tree-sitter 大纲、D1–D7 防死循环与影子 Git 检查点，由 502 项自动化测试严密守护。',
-      '外部フレームワークに依存しない 5,227行の独自非同期状態マシン。3経路並列読取、ripgrep 42倍検索、tree-sitter 構造抽出、D1–D7 ループ防止、シャドウGitを統合し、502件の単体テストで検証済。',
-      'Zero LangChain wrappers: a custom 5,227-LOC async state machine uniting 3-path read concurrency, 42x ripgrep, tree-sitter AST, D1–D7 loop guards, and Shadow Git—verified by 502 pytest tests.'
+      '拒绝无法跑通的代码片段演示——完成后直接在本机启动服务并打开可交互记账软件。',
+      'コード断片だけでなく、構築完了後にローカルで実際のアプリを起動して動作実証。',
+      'Goes beyond raw snippets—launches and opens the working app locally upon completion.'
     )
   }
 ])
 
-// 五大旗舰工程引擎交互画廊（覆盖全 6 卷核心架构）
+// 第 3 章：Apple Pro 曜石深色剧场 — 五大核心状态机引擎
 const featurePillars = computed(() => [
   {
     id: 'privacy',
-    code: 'ENGINE 01 // ZERO-TRUST, DPAPI VAULT & SYSTEM DOCTOR',
+    code: 'ENGINE 01 · ZERO-TRUST, DPAPI VAULT & SYSTEM DOCTOR',
     shortTab: t('01. 离线安全与自愈诊断', '01. 完全オフライン＆自動修復', '01. Zero-Trust & Doctor'),
     title: t(
-      '全本地/内网三级架构、Windows DPAPI 金库与免管理员环境自愈',
-      '完全オフライン＆社内LAN 3層構造・DPAPI暗号化金庫＆環境自動修復',
+      '全本地/内网三级架构、Windows DPAPI 金库与免管理员自愈',
+      '完全オフライン＆社内LAN 3層構造・DPAPI暗号化金庫＆自動修復',
       'Air-Gapped Local/LAN Topology, Windows DPAPI Vault & System Doctor'
     ),
     desc: t(
-      '将模型供应商严格划分为 local（Ollama）、lan（企业内网 vLLM/SGLang/OneAPI）与 cloud 三级。内置纯 ASGI 反 DNS 重绑定令牌鉴权（子框架严格剥离）、Windows DPAPI 操作系统级密钥加密存储，以及免管理员一键拉取沙箱便携版 MinGit / Node v22 / uvx 的 System Doctor 引擎。',
-      'プロバイダを local・lan・cloud の3階層に分離。純粋ASGIによるDNSリバインディング防御、Windows DPAPI OSレベル暗号化金庫、管理者権限不要でポータブル Git/Node/uvx を自動構築する System Doctor を統合しています。',
-      'Separates local, corporate LAN, and cloud tiers. Combines pure-ASGI anti-DNS-rebinding auth (subFrame token isolation), OS-level Windows DPAPI credential encryption, and zero-admin System Doctor portable toolchain auto-repair.'
+      '将模型严格划分为 local（Ollama）、lan（企业内网 vLLM/OneAPI）与 cloud 三级。内置纯 ASGI 反 DNS 重绑定鉴权、Windows DPAPI 系统级密钥加密，以及免管理员自愈便携版 Git / Node / uvx 的 System Doctor。',
+      'モデル接続を local・lan・cloud の3階層に分離。純粋ASGIによるDNSリバインディング防御、Windows DPAPI 暗号化保管庫、管理者不要で Git/Node/uvx を自動修復する System Doctor を統合。',
+      'Separates local, corporate LAN, and cloud tiers. Unites pure-ASGI anti-DNS-rebinding auth, OS-level Windows DPAPI secret encryption, and zero-admin System Doctor toolchain auto-repair.'
     ),
     highlights: [
-      t('拔除网线即可在 127.0.0.1 闭环运行；纯 ASGI 鉴权防止预览子框架窃取令牌', 'LAN抜線の完全オフライン稼働に対応；プレビュー子フレームへのトークン注入を物理遮断', 'Full offline loopback execution; excludes subFrames from X-HYN-Token injection'),
-      t('Windows DPAPI 硬件账户级加密 API Key 与 MCP OAuth 令牌，日志写盘前自动脱敏', 'Windows DPAPI で API キーと OAuth トークンを暗号化し、ログ書込前に自動マスキング', 'Windows DPAPI CryptProtectData vault for API & OAuth keys + pre-write log scrubbing'),
-      t('System Doctor 免管理员一键修复缺失工具链，跨 3 大协议编译自适应 Schema', '管理者権限不要で不足ツールを自動修復し、3大LLMプロトコル向けにSchemaを自動変換', 'Zero-admin 1-click portable MinGit/Node/uvx repair + 3-protocol adapt_schema compiler')
+      t('拔除网线即可在 127.0.0.1 闭环运行；纯 ASGI 鉴权严格剥离预览子框架令牌', 'LAN抜線の完全オフライン稼働に対応；プレビュー子フレームへのトークン注入を遮断', 'Full 127.0.0.1 air-gapped execution; strips X-HYN-Token from preview subframes'),
+      t('Windows DPAPI 硬件账户级加密 API Key 与 MCP OAuth 凭证，日志写盘前自动脱敏', 'Windows DPAPI で API キーと OAuth 資格情報を暗号化し、ログ書込前に自動マスク', 'Windows DPAPI CryptProtectData vault for API & OAuth keys + pre-write log scrubbing'),
+      t('System Doctor 免管理员一键修复缺失工具链，跨 3 大协议自适应编译 Schema', '管理者権限不要で不足ツールを自動構築し、3大LLMプロトコル向けにSchemaを変換', 'Zero-admin 1-click portable MinGit/Node/uvx repair + 3-protocol schema compiler')
     ],
     visualNodes: [
-      { tag: 'TIER 1 & 2 · LAN', name: 'Ollama & Corporate vLLM', addr: '127.0.0.1 / 192.168.x.x', status: t('机密零出网', '社内閉域網完結', 'Zero Internet Egress') },
-      { tag: 'OS CRYPTO VAULT', name: 'Windows DPAPI SecretBox', addr: 'CryptProtectData · SubFrame Guard', status: t('硬件账户级加密', 'OS暗号化保護', 'OS-Bound Encryption') },
-      { tag: 'SELF-HEALING', name: 'System Doctor Sandboxed', addr: 'MinGit · Node v22 · uvx', status: t('免管理员一键自愈', '管理者不要修復', 'Zero-Admin Repair') }
+      { tag: 'TIER 1 & 2 · LAN', name: 'Ollama & Corporate vLLM', addr: '127.0.0.1 / 192.168.x.x', status: t('机密零出网', '閉域網完結', 'Zero Egress') },
+      { tag: 'OS CRYPTO VAULT', name: 'Windows DPAPI SecretBox', addr: 'CryptProtectData · SubFrame', status: t('系统级加密', 'OS暗号保護', 'OS-Bound') },
+      { tag: 'SELF-HEALING', name: 'System Doctor Sandboxed', addr: 'MinGit · Node v22 · uvx', status: t('免提权自愈', '自動環境構築', 'Zero-Admin') }
     ],
-    snippetTitle: 'app/core/local_auth.py & secret_box.py · Zero-Trust Guard',
+    snippetTitle: 'app/core/local_auth.py & secret_box.py',
     snippet: `# Pure-ASGI anti-DNS-rebinding + constant-time token verify
 if host not in _LOOPBACK_HOSTS or not secrets.compare_digest(token, expected):
     return await send_403(send)
 # OS-level Windows DPAPI encryption for API keys & MCP OAuth tokens
 cipher_blob = win32_crypt_protect_data(plaintext_secret.encode("utf-8"))`,
     docLink: `${prefix.value}/architecture/overview`,
-    docLabel: t('阅读第 1 卷：双进程、DPAPI 金库与自愈诊断 →', '第1章：デュアルプロセス・DPAPI金庫を読む →', 'Read Vol. 01: Dual-Process, DPAPI & Doctor →')
+    docLabel: t('阅读第 1 卷：双进程与 DPAPI 架构', '第1章：デュアルプロセス基盤を読む', 'Read Vol. 01: Dual-Process & DPAPI')
   },
   {
     id: 'longrun',
-    code: 'ENGINE 02 // 3-PATH PARALLELISM, SHADOW GIT & D1–D7 GUARD',
+    code: 'ENGINE 02 · 3-PATH PARALLELISM, SHADOW GIT & D1–D7 GUARD',
     shortTab: t('02. 三路并发与长程引擎', '02. 3経路並列＆自律制御', '02. 3-Path & Long-Horizon'),
     title: t(
       '零框架三路保序并发、确定性代码导航与无侵入影子 Git 检查点',
@@ -153,32 +155,32 @@ cipher_blob = win32_crypt_protect_data(plaintext_secret.encode("utf-8"))`,
       'Zero-Framework 3-Path Read Concurrency, Code Navigation & Shadow Git'
     ),
     desc: t(
-      '纯自研 5,227 行异步状态机自动将连续只读工具、allow 级 MCP 与 explore 子代理合并为 asyncio.gather 保序并发。配合随包 ripgrep（42.1× 提速）、tree-sitter 符号大纲、StuckDetector v2（D1–D7 七维防死循环）与私有命名空间影子检查点，在 SWE-bench Verified Mini 斩获 84.0% 峰值解决率与 100% 有效补丁率。',
-      '独自実装 5,227行の非同期ループが読取系ツール・MCP・探索サブエージェントを順序維持のまま並列実行。同梱 ripgrep（42.1倍高速）、tree-sitter、D1–D7 ループ防止、専用シャドウGitにより SWE-bench Verified Mini 最高 84.0%・有効パッチ率 100% を実証。',
-      'Custom 5,227-LOC async loop batches consecutive read tools, allow-MCP calls, and explore subagents via order-preserving asyncio.gather. Paired with 42.1x ripgrep, tree-sitter AST, D1–D7 StuckDetector, and Shadow Git—reaching 84.0% peak Pass@1 on SWE-bench Mini.'
+      '纯自研 5,227 行异步状态机将连续只读工具、MCP 与探索子代理合并保序并发。配合随包 ripgrep（42.1× 提速）、tree-sitter 大纲、StuckDetector D1–D7 护栏与私有影子检查点，斩获 SWE-bench Mini 84.0% 峰值解决率。',
+      '独自実装 5,227行の非同期ループが読取ツール・MCP・探索サブエージェントを順序維持並列実行。ripgrep（42.1倍高速）、tree-sitter、D1–D7 ループ防止、シャドウGitにより SWE-bench 84.0% を実証。',
+      'Custom 5,227-LOC async state machine batches read tools, MCP calls, and explore subagents concurrently. Paired with 42.1× ripgrep, tree-sitter AST, D1–D7 loop guard, and Shadow Git.'
     ),
     highlights: [
-      t('SWE-bench Verified Mini 实测 98.0%（49/50）Gold 文件定位率，100/100 题次零空补丁', 'SWE-bench Verified Mini で 98.0%（49/50）の正解ファイル特定率、100/100 問で空パッチゼロ', '98.0% (49/50) Gold File localization and 100% (100/100) valid patches on SWE-bench Mini'),
-      t('D1–D7 七维检测 -> L1–L4 渐进介入（拦截率 100%，省 87.7% 无效步数）+ G1–G4 完工门禁', 'D1–D7 ループ検知（阻止率 100%・無駄ステップ -87.7%）＋ G1–G4 完了定義ゲート', 'D1–D7 loop guard (100% recall, -87.7% wasted steps) + G1–G4 CompletionGate DoD'),
-      t('临时 GIT_INDEX_FILE 写入 refs/hyn/checkpoints/，用户分支零污染；写后 37ms 语法自检 0% 误报', '一時インデックスで専用refへ保存し作業ブランチ汚染ゼロ；編集後37ms構文検査は誤報 0.0%', 'Zero-pollution Shadow Git refs + 37ms in-process post-edit syntax check (0.0% FP)')
+      t('SWE-bench Verified Mini 实测 98.0%（49/50）Gold 文件定位率，100/100 零空补丁', 'SWE-bench Verified Mini で 98.0%（49/50）の正解特定率、100/100 空パッチゼロ', '98.0% (49/50) Gold File localization and 100% (100/100) valid non-empty patches'),
+      t('D1–D7 七维死循环检测 -> L1–L4 渐进介入（拦截率 100%，省 87.7% 无效步数）', 'D1–D7 ループ検知（阻止率 100%・無駄ステップ -87.7%）＋ G1–G4 完了ゲート', 'D1–D7 loop guard (100% recall, -87.7% wasted steps) + CompletionGate DoD'),
+      t('临时 GIT_INDEX_FILE 写入 refs/hyn/checkpoints/，用户分支零污染；写后 37ms 语法自检', '一時インデックスで専用refへ保存しブランチ汚染ゼロ；編集後37ms構文検査', 'Zero-pollution Shadow Git refs + 37ms post-edit syntax check (0.0% FP)')
     ],
     visualNodes: [
-      { tag: '3-PATH PARALLEL', name: 'Read Tools + MCP + Explore', addr: 'Order-Preserving gather()', status: t('多路并发保序归并', '順序維持並列実行', 'Concurrent Read Batch') },
-      { tag: 'CODE NAVIGATION', name: 'ripgrep 15.2 + tree-sitter', addr: '119ms P50 · -95.4% Tokens', status: t('42倍检索 · 98%定位', '42倍高速 · 98%特定', '42x Search · 98% Hit') },
-      { tag: 'SHADOW & GUARD', name: 'refs/hyn/checkpoints + D1–D7', addr: '100/100 Valid Patches', status: t('零污染 · 零死循环', '汚染ゼロ · ループ阻止', 'Zero Dirty Index') }
+      { tag: '3-PATH PARALLEL', name: 'Read Tools + MCP + Explore', addr: 'Order-Preserving gather()', status: t('保序并发归并', '順序維持並列', 'Concurrent Read') },
+      { tag: 'CODE NAVIGATION', name: 'ripgrep 15.2 + tree-sitter', addr: '119ms P50 · -95.4% Tokens', status: t('42× 检索 · 98%定位', '42倍高速 · 98%特定', '42× Search') },
+      { tag: 'SHADOW & GUARD', name: 'refs/hyn/checkpoints + D1–D7', addr: '100/100 Valid Patches', status: t('零污染 · 零死循环', '汚染ゼロ', 'Zero Dirty Git') }
     ],
-    snippetTitle: 'app/services/git_checkpoints.py · Plumbing Snapshot',
+    snippetTitle: 'app/services/git_checkpoints.py',
     snippet: `GIT_INDEX_FILE=<temp_index> git add -A
 tree=$(GIT_INDEX_FILE=<temp_index> git write-tree)
 commit=$(git commit-tree $tree -p $parent -m "hyn checkpoint")
 # Write to private namespace; user HEAD & index remain 100% untouched
 git update-ref refs/hyn/checkpoints/<session_id> $commit`,
     docLink: `${prefix.value}/architecture/long-running`,
-    docLabel: t('阅读第 2 卷：三路并发与长程自治引擎 →', '第2章：3経路並列と長時間自律エンジンを読む →', 'Read Vol. 02: 3-Path Concurrency & Engine →')
+    docLabel: t('阅读第 2 卷：长程自治引擎', '第2章：長時間自律エンジンを読む', 'Read Vol. 02: Long-Horizon Engine')
   },
   {
     id: 'team',
-    code: 'ENGINE 03 // DAG WORKTREE TEAM & MULTI-AGENT COMPARE',
+    code: 'ENGINE 03 · DAG WORKTREE TEAM & MULTI-AGENT COMPARE',
     shortTab: t('03. Worktree 团队与赛马对比', '03. Worktree 並列＆比較統合', '03. Worktree Team & Compare'),
     title: t(
       '最多 8 队友 DAG 协同、零拷贝 Worktree 隔离与多方案并行赛马',
@@ -186,3719 +188,2396 @@ git update-ref refs/hyn/checkpoints/<session_id> $commit`,
       '8-Teammate Task DAG, Zero-Copy Worktrees & Multi-Agent Compare'
     ),
     desc: t(
-      '主代理（Lead）通过项目级 Task DAG 统筹 1–8 名常驻队友（默认 4 名）。每名队友锁定在独立 .worktrees/<name> 工作树并通过 Windows 目录联接（Junction）零拷贝秒级共享 node_modules/.venv；支持 compare_group 多代理同题赛马与 git apply --3way 三方合并，实测 4 队友并发加速 2.88×–3.04×、写冲突率 0.0%。',
-      'リードが Task DAG で最大8名の常駐メイトを統括。独立した .worktrees/<name> と Windows Junction により node_modules/.venv をゼロコピー共有し、compare_group 並列比較と 3-way マージに対応。4並列で 2.88×〜3.04× 高速化・競合 0.0% を実証。',
-      'Lead orchestrates 1–8 resident teammates via a persistent Task DAG. Bound to isolated .worktrees/<name> with zero-copy Windows Junctions for node_modules/.venv, supporting compare_group parallel evaluation and git apply --3way merge (2.88x–3.04x speedup, 0.0% collision).'
+      '主代理通过 Task DAG 统筹 1–8 名常驻队友。每名队友绑定独立 .worktrees/<name> 并通过 Windows Junction 零拷贝共享巨型依赖；支持 compare_group 多方案同题竞技与 3-way 安全合入，并发加速 2.88×–3.04×。',
+      'リードが Task DAG で最大8名の常駐メイトを統括。独立 .worktrees/<name> と Windows Junction により依存関係をゼロコピー共有し、並列比較と 3-way マージで 2.88×〜3.04× 高速化。',
+      'Lead orchestrates 1–8 resident teammates via Task DAG on isolated .worktrees/<name> with zero-copy Windows Junctions, parallel compare_group evaluation, and 3-way merge (3.04× speedup).'
     ),
     highlights: [
-      t('Windows _winapi.CreateJunction 零磁盘拷贝共享巨型依赖，毫秒级拉起独立工作树', 'Windows Junction により依存ディレクトリをコピーせず共有し、瞬時に独立Worktreeを起動', 'Zero-copy Windows Directory Junctions share node_modules/.venv instantaneously'),
-      t('分级唤醒 JSONL 邮箱（3s 防抖 + 200K 无人值守预算熔断）+ 计划获批前物理剥离写工具', '優先度別 JSONL 受信箱（200K 無人トークン上限）＋ 計画承認前の変更系ツール物理除外', 'Classified wake/piggyback JSONL inbox (200K unattended cap) + physical _MUTATING plan gate'),
-      t('内置 compare_group 多智能体并行方案对比与 pre_apply 快照一键无损撤销', '複数エージェントの実装案を並列比較し、pre_apply スナップショットでいつでも復元可能', 'Multi-agent compare_group diff review + 1-click undo via pre_apply Git refs')
+      t('Windows CreateJunction 零磁盘拷贝共享 node_modules/.venv，毫秒级拉起独立工作树', 'Windows Junction で node_modules/.venv をコピーせず共有し瞬時に起動', 'Zero-copy Windows Directory Junctions share node_modules/.venv instantaneously'),
+      t('分级唤醒信箱（200K 无人值守预算熔断）+ 计划获批前物理剥离全部写盘工具', '優先度別受信箱（200K 無人上限）＋ 計画承認前の変更ツール物理除外', 'Classified wake inbox (200K unattended cap) + physical _MUTATING plan gate'),
+      t('compare_group 多方案同题赛马对比，配合 pre_apply 快照支持一键无损撤销', '複数案の差分を並列比較し、pre_apply スナップショットでいつでも復元可能', 'Multi-agent compare_group diff review + 1-click undo via pre_apply Git refs')
     ],
     visualNodes: [
-      { tag: 'TASK DAG & LEAD', name: 'Atomic create_tasks + Plan Gate', addr: '1–8 Resident Mates', status: t('拓扑依赖自动解锁', 'DAG依存自動解決', 'Topological Unblock') },
-      { tag: 'ZERO-COPY WT', name: '.worktrees/mate-* + Junction', addr: '2.88×–3.04× Speedup', status: t('0% 并发写冲突', 'ファイル競合 0.0%', '0.0% Write Collision') },
-      { tag: 'COMPARE & MERGE', name: 'compare_group + 3-Way Apply', addr: 'refs/hyn/worktrees/*', status: t('多方案赛马优选', '並列比較・3-way統合', 'Parallel Diff Pick') }
+      { tag: 'TASK DAG & LEAD', name: 'Atomic create_tasks + Plan Gate', addr: '1–8 Resident Mates', status: t('拓扑自动解锁', 'DAG依存解決', 'DAG Unblock') },
+      { tag: 'ZERO-COPY WT', name: '.worktrees/mate-* + Junction', addr: '2.88×–3.04× Speedup', status: t('0% 并发写冲突', '書込競合 0%', '0% Collision') },
+      { tag: 'COMPARE & MERGE', name: 'compare_group + 3-Way Apply', addr: 'refs/hyn/worktrees/*', status: t('多方案赛马优选', '並列比較統合', '3-Way Pick') }
     ],
-    snippetTitle: 'app/services/team_runtime.py · Physical Plan Gate',
+    snippetTitle: 'app/services/team_runtime.py',
     snippet: `_MUTATING = {"write_file", "edit_file", "apply_patch",
              "write_docx", "edit_document", "run_powershell"}
 # Physically strip all mutating tools until implementation plan is approved
 if mate.require_plan and not mate.plan_approved:
     allowed_tools = _WORKSPACE - _MUTATING`,
     docLink: `${prefix.value}/architecture/multi-agent-team`,
-    docLabel: t('阅读第 3 卷：DAG 团队、Worktree 与赛马对比 →', '第3章：DAGチーム・Worktree並列を読む →', 'Read Vol. 03: DAG Team & Worktree Compare →')
+    docLabel: t('阅读第 3 卷：智能体团队与 Worktree', '第3章：DAGチーム・Worktreeを読む', 'Read Vol. 03: Agent Team & Worktree')
   },
   {
     id: 'memory',
-    code: 'ENGINE 04 // 4-LAYER CACHE, 7-STAGE COMPACT & RAGFLOW',
+    code: 'ENGINE 04 · 4-LAYER CACHE, 7-STAGE COMPACT & RAGFLOW',
     shortTab: t('04. 四层缓存与异构 RAG', '04. 4層キャッシュ＆高精度RAG', '04. 4-Layer Cache & RAG'),
     title: t(
-      '四层只增前缀缓存、7 级保真裁剪、BM25 记忆召回与 4 阶段异构 RAG',
-      '4層追記型キャッシュ・7段階圧縮・BM25記憶想起＆4段階異種RAG',
+      '四层只增前缀缓存、7 级保真裁剪、BM25 记忆与 4 阶段异构 RAG',
+      '4層追記型キャッシュ・7段階圧縮・BM25記憶＆4段階異種RAG',
       '4-Layer Prefix Cache, 7-Stage Compactor, BM25 Memory & 4-Stage RAG'
     ),
     desc: t(
-      '严格将上下文切分为 L1–L4 四层只增前缀并用 SHA-256 逐层监控失效点，在 SWE-bench 1.2 亿+ Token 实测达成 97.74% 缓存命中（单题 ¥0.27）。配合 7 级缓存感知裁剪（60/40 头尾保留 100% 异常堆栈 + 缓存经济学延迟去重）、<2ms 会话中增量记忆召回，以及 100% 完整命中的企业异构 RAG 管线。',
-      'L1–L4 追記型プレフィックスと SHA-256 診断により SWE-bench 1.2億+ Token 実戦で 97.74% ヒット率を達成。7段階キャッシュ認識圧縮（60/40 先頭末尾保持で例外トレース 100% 維持）、<2ms セッション中記憶想起、完全正解率 100% の4段階RAGを統合。',
-      'Enforces L1–L4 append-only prefixes with SHA-256 layer diagnostics—hitting 97.74% cache rate across 120M+ SWE-bench tokens (¥0.27/fix). Pairs a 7-stage cache-aware compactor (100% traceback retention), <2ms mid-session BM25 memory recall, and 100% recall 4-stage RAG.'
+      '将上下文切分为 L1–L4 四层只增前缀并用 SHA-256 逐层诊断，SWE-bench 1.2 亿+ Token 实测达成 97.74% 缓存命中（单题 ¥0.27）。配合 7 级缓存经济学裁剪（100% 保留末尾堆栈）与 100% 召回异构 RAG。',
+      'L1–L4 追記型プレフィックスと SHA-256 診断により SWE-bench 実戦で 97.74% ヒット率を達成。7段階キャッシュ経済性圧縮（末尾トレース 100% 維持）と完全正解率 100% の4段階RAGを統合。',
+      'Enforces L1–L4 append-only prefixes with SHA-256 diagnostics—hitting 97.74% cache rate across 120M+ tokens (¥0.27/fix). Pairs 7-stage compaction with 100%-recall 4-stage RAG.'
     ),
     highlights: [
-      t('precache-v1 双轨 160 次真实 API 实测：热态缓存命中率 89.58%，意外断层 25 -> 0，计费省 57.27%', 'precache-v1 実API 160回検証：ウォームヒット 89.58%、予期せぬキャッシュ破壊 25→0、課金 -57.27%', 'precache-v1 (160 live calls): 89.58% warm hit, unexpected breaks 25 -> 0, -57.27% billable cost'),
-      t('7 级渐进裁剪：仅当未来 6 轮省下费用大于重建成本时才触发去重，60/40 裁剪 100% 保住末尾报错', 'キャッシュ経済性式に基づき重複排除を遅延実行；60/40 圧縮で末尾スタックトレースを 100% 保持', 'KV-economics delayed dedup + 60/40 head-tail preview retaining 100% of tail tracebacks'),
-      t('企业异构知识库 v0→v3 四阶段消融：双栏财报与修订合同完整命中率 36.7% → 100.0%，MRR 1.000', '2段組PDF・改訂契約書の4段階RAG検証：完全正解率 36.7% → 100.0%、MRR 1.000、汚染 0.0%', '4-stage RAG ablation (v0->v3): lifts strict recall from 36.7% to 100.0% (MRR 1.000, 0% noise)')
+      t('precache-v1 双轨 160 次真实 API 实测：热态命中 89.58%，意外断层 25→0，计费省 57.27%', 'precache-v1 実API 160回検証：ウォーム 89.58%、キャッシュ破壊 25→0、課金 -57.27%', 'precache-v1 (160 live calls): 89.58% warm hit, unexpected breaks 25→0, -57.27% cost'),
+      t('仅当未来 6 轮缓存收益大于重建成本时才触发去重；60/40 头尾裁剪 100% 保住异常堆栈', 'キャッシュ経済性式に基づき遅延重複排除；60/40 圧縮で末尾スタックトレースを 100% 保持', 'KV-economics delayed dedup + 60/40 preview retaining 100% of tail tracebacks'),
+      t('异构知识库 v0→v3 四阶段消融：双栏财报与修订合同完整命中率 36.7% → 100.0%', '2段組PDF・改訂契約書の4段階RAG検証：完全正解率 36.7% → 100.0%、MRR 1.000', '4-stage RAG ablation (v0→v3): lifts strict recall from 36.7% to 100.0% (MRR 1.000)')
     ],
     visualNodes: [
-      { tag: 'PREFIX POLICY', name: 'L1–L4 SHA-256 Guard', addr: '97.74% Live · 0 Breaks', status: t('单题修复仅 ¥0.27', '1問解決 ¥0.27', '¥0.27 / Solved Bug') },
-      { tag: '7-STAGE COMPACT', name: '60/40 Preview + Econ Dedup', addr: '-93.1% Size · 100% Trace', status: t('堆栈零丢失', 'トレース保持100%', 'Zero Traceback Loss') },
-      { tag: 'HYBRID RAG v3', name: 'Layout + Breadcrumb + Rerank', addr: 'Recall 100% · MRR 1.000', status: t('拒答率 100% · 零污染', '境界外拒否 100%', '100% OOD Refusal') }
+      { tag: 'PREFIX POLICY', name: 'L1–L4 SHA-256 Guard', addr: '97.74% Live · 0 Breaks', status: t('单题仅 ¥0.27', '1問 ¥0.27', '¥0.27 / Bug') },
+      { tag: '7-STAGE COMPACT', name: '60/40 Preview + Econ Dedup', addr: '-93.1% Size · 100% Trace', status: t('堆栈零丢失', 'トレース100%', '100% Trace') },
+      { tag: 'HYBRID RAG v3', name: 'Layout + Breadcrumb + Rerank', addr: 'Recall 100% · MRR 1.000', status: t('零噪声污染', 'ノイズ 0%', '0% Noise') }
     ],
-    snippetTitle: 'app/services/context_compact.py · Cache-Economics Gate',
+    snippetTitle: 'app/services/context_compact.py',
     snippet: `# Only deduplicate repeated file reads when 6-turn cache savings beat rebuild cost
 future_savings = delta_tokens_saved * 6 * CACHE_READ_RATE   # 0.10x
 rebuild_penalty = invalidated_suffix_tokens * REBUILD_COST  # 0.90x
 if future_savings > rebuild_penalty:
     apply_stale_read_dedup(messages)`,
     docLink: `${prefix.value}/architecture/memory-and-rag`,
-    docLabel: t('阅读第 4 卷：四层前缀缓存、7 级裁剪与异构 RAG →', '第4章：4層キャッシュ・7段階圧縮・RAGを読む →', 'Read Vol. 04: Prefix Cache, Compaction & RAG →')
+    docLabel: t('阅读第 4 卷：前缀缓存与异构 RAG', '第4章：4層キャッシュ・RAGを読む', 'Read Vol. 04: Prefix Cache & RAG')
   },
   {
     id: 'workbench',
-    code: 'ENGINE 05 // DUAL WORKBENCH, PLAN MODE & MCP OAUTH',
+    code: 'ENGINE 05 · DUAL WORKBENCH, PLAN MODE & MCP OAUTH',
     shortTab: t('05. 双模工作台与 MCP 生态', '05. Office編集＆MCP拡張', '05. Workbench, Plan & MCP'),
     title: t(
-      '双模高保真文档工作台、零缓存抖动 Plan Mode 与 MCP OAuth 开放生态',
-      'デュアルモード Office ワークベンチ・Plan Mode ＆ MCP OAuth エコシステム',
-      'Dual-Mode Office Workbench, Prefix-Safe Plan Mode & MCP OAuth Ecosystem'
+      '双模高保真文档工作台、零缓存抖动 Plan Mode 与 MCP OAuth 生态',
+      'デュアルモード Office ワークベンチ・Plan Mode ＆ MCP OAuth',
+      'Dual-Mode Office Workbench, Prefix-Safe Plan Mode & MCP OAuth'
     ),
     desc: t(
-      '右侧统一工作台无缝切换「实时运行观测舱（拓扑图/预算/后台终端）」与「7 格式原生预览编辑舱（docx/xlsx/pptx/pdf/md/html/Shiki Diff）」，支持鼠标划词 SelectionAnchor 手术刀级热补丁。同时内置 5 档权限（含零前缀失效 Plan Mode）、<1ms 三语 BM25 零 RTT 技能预载、RFC 8252 MCP OAuth 2.0、6 阶段 Hooks 与 Cron 定时引擎。',
-      '右ペインは「リアルタイム稼働監視」と「7形式ネイティブ編集（SelectionAnchor 部分更新）」をシームレスに切替。さらにキャッシュを壊さない Plan Mode、<1ms 3言語 BM25 スキル事前読込、RFC 8252 MCP OAuth 2.0、6段階 Hooks、ローカル Cron を統合しています。',
-      'Unites a dual-mode RightWorkbench (4-tab Live Telemetry + 7 native editors with SelectionAnchor SSE hot-patching) with 5-tier permissions (prefix-safe Plan Mode), <1ms trilingual BM25 Zero-RTT skill preloading, RFC 8252 MCP OAuth 2.0, 6-stage Hooks, and Cron scheduling.'
+      '右侧工作台无缝切换「运行观测舱」与「7 格式原生编辑舱（docx/xlsx/pptx/pdf/md/html/Diff）」，支持鼠标划词 SelectionAnchor 手术刀级热补丁；内置零缓存失效 Plan Mode、<1ms 技能预载与 MCP OAuth 2.0。',
+      '右ペインで「稼働監視」と「7形式ネイティブ編集（SelectionAnchor 部分更新）」を切替。キャッシュを壊さない Plan Mode、<1ms スキル読込、MCP OAuth 2.0 を統合。',
+      'Switches seamlessly between Live Telemetry and 7 native editors with SelectionAnchor SSE hot-patching, paired with prefix-safe Plan Mode, <1ms skill preload, and MCP OAuth 2.0.'
     ),
     highlights: [
-      t('Office 微基准 20/20 全通，GAIA Validation 30 题多步实测 90.0%（27/30，L2 达 100%）', 'Office 微小ベンチ 20/20 合格、GAIA Validation 30問実測 90.0%（27/30、L2 100%）', '20/20 Office surgical patch benchmark & 90.0% (27/30) on GAIA Validation multi-step tasks'),
-      t('5 档权限 + 受保护路径硬门禁（30/30 越权攻击 100% 拦截）；Plan Mode 切换零 L1/L2 缓存失效', '5段階権限＋保護パス強制確認（攻撃阻止 30/30）；Plan Mode 切替時のキャッシュ無効化ゼロ', '5 permission modes + Protected Path Guard (0.0% ASR across 30 attacks); zero-churn Plan Mode'),
-      t('<1ms 三语 BM25 意图富化器省去 1 次 LLM 往返，全协议 MCP OAuth 2.0 + 30 工具上限防膨胀', '<1ms 3言語 BM25 で 1 RTT を削減し、MCP OAuth 2.0 と最大30ツール制限でコンテキストを保護', '<1ms trilingual BM25 saves 1 LLM RTT; full MCP OAuth 2.0 + 30-tool cap prevents prompt bloat')
+      t('Office 微基准 20/20 全通，GAIA Validation 30 题多步实测 90.0%（L2 达 100%）', 'Office 微小ベンチ 20/20 合格、GAIA Validation 30問実測 90.0%（L2 100%）', '20/20 Office surgical patch microbench & 90.0% (27/30) on GAIA Validation'),
+      t('5 档权限 + 受保护路径硬门禁（30/30 攻击 100% 拦截）；Plan Mode 切换零前缀失效', '5段階権限＋保護パス強制確認（攻撃阻止 30/30）；Plan Mode 切替時キャッシュ維持', '5 permission tiers + Protected Path Guard (30/30 block); zero-churn Plan Mode'),
+      t('<1ms 三语 BM25 零 RTT 技能直注，全协议 MCP OAuth 2.0 + 30 工具上限防上下文膨胀', '<1ms 3言語 BM25 で 1 RTT 削減、MCP OAuth 2.0 と最大30ツール制限を実装', '<1ms trilingual BM25 saves 1 RTT; full MCP OAuth 2.0 + 30-tool cap')
     ],
     visualNodes: [
-      { tag: 'SURGICAL OFFICE', name: '7 Native Editors + Diff Bar', addr: '20/20 Office · 90% GAIA', status: t('划词原地热更新', '選択範囲即時反映', 'SSE Live Hot-Patch') },
-      { tag: 'INTENT & PLAN', name: 'Plan Mode + <1ms BM25 Enrich', addr: '0.67ms P50 · Zero-RTT', status: t('零缓存抖动对齐', 'キャッシュ維持計画', 'Prefix-Safe Plan') },
-      { tag: 'ECOSYSTEM', name: 'MCP OAuth 2.0 + Hooks + Cron', addr: 'stdio / SSE / Streamable HTTP', status: t('SHA-256 信任门禁', 'SHA-256 署名検証', 'SHA-256 Trust Gate') }
+      { tag: 'SURGICAL OFFICE', name: '7 Native Editors + Diff Bar', addr: '20/20 Office · 90% GAIA', status: t('划词原地热更新', '選択即時更新', 'Live Hot-Patch') },
+      { tag: 'INTENT & PLAN', name: 'Plan Mode + <1ms BM25 Enrich', addr: '0.67ms P50 · Zero-RTT', status: t('零缓存抖动对齐', 'キャッシュ維持', 'Prefix-Safe') },
+      { tag: 'ECOSYSTEM', name: 'MCP OAuth 2.0 + Hooks + Cron', addr: 'stdio / SSE / HTTP', status: t('SHA-256 门禁', '署名検証済', 'Trust Gate') }
     ],
-    snippetTitle: 'SelectionAnchor & TurnEnricher · Surgical & Zero-RTT',
+    snippetTitle: 'SelectionAnchor & TurnEnricher',
     snippet: `{
   "locator": { "type": "pptx_shape", "slide_index": 2, "shape_id": 104 },
   "intent_enricher": { "slash_skill": "Zero-RTT L4 Preload", "bm25_p50": "0.67ms" },
   "mcp_runtime": { "auth": "RFC8252 Loopback OAuth2 + DPAPI", "cap": 30 }
 }`,
     docLink: `${prefix.value}/architecture/intent-and-ecosystem`,
-    docLabel: t('阅读第 5 & 6 卷：双模工作台、Plan Mode 与 MCP 生态 →', '第5・6章：Officeワークベンチ・Plan Mode・MCPを読む →', 'Read Vol. 05 & 06: Workbench, Plan Mode & MCP →')
+    docLabel: t('阅读第 5 & 6 卷：工作台与 MCP 生态', '第5・6章：ワークベンチ＆MCPを読む', 'Read Vol. 05 & 06: Workbench & MCP')
   }
 ])
 
 const activeFeature = computed(() => featurePillars.value[activeFeatureIdx.value])
 
-// SWE-bench Verified Mini 四组运行与核心实测指标
-const swebenchKeyStats = computed(() => [
+// 第 4 章：极简 1px 细线选型与工程对比（前 3 项直面核心选型拷问，后 4 项按需展开底层架构）
+const comparisonRows = computed(() => [
   {
-    code: 'STAT 01 · 2-RUN',
-    badge: t('独立双轮复现', '独立2回再現', '2-Run Verified'),
-    val: '81.0% ± 4.2%',
-    lbl: t('两轮独立全量运行均值 ± 标准差', '2回独立フル実行の平均 ± 標準偏差', '2-Run Independent Mean ± SD'),
-    sub: t('R1 干净全量 84.00% (42/50) · R2 全新重跑 78.00% (39/50)', 'R1 クリーン 84.00% (42/50) · R2 新規実行 78.00% (39/50)', 'R1 Clean 84.00% (42/50) · R2 Fresh Run 78.00% (39/50)')
-  },
-  {
-    code: 'STAT 02 · DJANGO',
-    badge: t('零波动 SD=0%', '分散ゼロ SD=0%', 'Zero Variance'),
-    val: '88.0% ± 0.0%',
-    lbl: t('django/django 核心仓库解决率', 'django/django 課題解決率', 'django/django Resolution Rate'),
-    sub: t('两轮均稳定达成 22 / 25，零退化波动', '2回とも 22 / 25 を安定達成（分散ゼロ）', '22 / 25 resolved consistently across both runs')
-  },
-  {
-    code: 'STAT 03 · GOLD HIT',
-    badge: t('100% 发现目标', '100% ファイル発見', '100% Target Seen'),
-    val: '98.0% (49/50)',
-    lbl: t('Gold 黄金源码文件精准定位修改率', 'Gold 正解ソースファイル直接特定率', 'Gold Target File Localization & Edit Rate'),
-    sub: t('100% 题目发现目标文件，L2 读取截断 0%，L3 引用盲区 0%', '全問で対象ファイル発見、L2 読取欠損 0%、L3 参照漏れ 0%', '100% target file seen; 0% L2 truncation loss; 0% L3 symbol miss')
-  },
-  {
-    code: 'STAT 04 · PATCHES',
-    badge: t('对比官方 96.0%', '公式参照群 96.0%', 'vs. 96.0% Ref'),
-    val: '100% (100/100)',
-    lbl: t('非空有效补丁交付率（零崩溃/零超时）', '有効非空パッチ生成率（エラー・中断ゼロ）', 'Valid Non-Empty Patch Rate (Zero Crashes)'),
-    sub: t('对比同模型官方 mini-SWE-agent 出现 4.0% 步数耗尽空补丁', '同モデルの公式 mini-SWE-agent は 4.0% がステップ枯渇で空パッチ', 'vs. 96.0% on same-model official mini-SWE-agent (2 empty patches)')
-  },
-  {
-    code: 'STAT 05 · CACHE',
-    badge: t('Step 2+ 97.81%', 'Step 2+ 97.81%', '97.81% Warm'),
-    val: '97.74%',
-    lbl: t('实战前缀缓存命中率（1.2亿+ Tokens）', '実戦 Prefix Cache ヒット率（1.2億+ Tokens）', 'Live Prefix Cache Hit Rate (120M+ Tokens)'),
-    sub: t('第 2 步起热缓存命中率高达 97.81%，彻底消除重复 Prefill', '2ステップ目以降のウォームヒット率は最大 97.81%', 'Up to 97.81% warm cache hit rate from Step 2 onward')
-  },
-  {
-    code: 'STAT 06 · COST',
-    badge: t('50题总计 ¥10.4', '50問計 ¥10.4', '~$1.50 / 50 Tasks'),
-    val: '¥0.27 / 题',
-    lbl: t('每成功修复一道真实缺陷平均成本', '1問解決あたりの平均APIコスト', 'Average API Cost per Resolved Issue'),
-    sub: t('错峰跑完全套 50 道真实开源仓库任务总计仅需 ¥10.39–¥12.16', 'オフピーク時 50問完走の総コストはわずか ¥10.39〜¥12.16', 'Full 50-task suite completed for just ¥10.39–¥12.16 (~$1.45–$1.70)')
-  }
-])
-
-// 2026 主流 Coding Agent 与公开基准横向对标表
-const swebenchComparisonRows = computed(() => [
-  {
-    isHelm: true,
-    tagType: 'emerald',
-    name: 'Helm (HYN Agent) + DeepSeek-V4.1-Flash',
-    tag: t('本仓库实测 · 最佳单轮 / 两轮均值', '本リポジトリ実測 · 最高 / 2回平均', 'Verified Empirical · Peak / 2-Run Mean'),
-    dataset: 'Verified Mini (n=50)',
-    passRate: '84.0% (Avg 81.0% ± 4.2%)',
-    patchHealth: t('100% 有效补丁 (100/100)', '100% 有効パッチ (100/100)', '100% Valid Patches (100/100)'),
-    costPerTask: t('¥0.21–¥0.24 / 题 (解决题 ¥0.27)', '¥0.21–¥0.24 / 問 (解決 ¥0.27)', '~$0.03 / task (¥0.27 / solved)'),
-    privacy: t('100% 断网沙箱 (--network none) · 支持本机/内网', '100% 通信遮断 (--network none) · ローカル/社内LAN対応', '100% Air-Gapped (--network none) · Local/LAN Ready')
-  },
-  {
-    isHelm: false,
-    tagType: 'primary',
-    name: 'mini-SWE-agent + DeepSeek-V4.1-Flash',
-    tag: t('同模型同题集官方脚手架配对参照', '同モデル・同課題セット公式参照群', 'Same-Model Official Scaffold Reference'),
-    dataset: 'Verified Mini (n=50)',
-    passRate: '82.0% (McNemar p = 1.00)',
-    patchHealth: t('96.0% (2 题步数耗尽空补丁)', '96.0% (2問がステップ上限で空パッチ)', '96.0% (2 step-exhausted empty patches)'),
-    costPerTask: t('¥0.14 / 题 (纯单步 Bash)', '¥0.14 / 問 (最小 Bash のみ)', '~$0.02 / task (minimal bash-only)'),
-    privacy: t('研究用 CLI 评测脚本，无桌面工作台与安全门禁', '研究用 CLI スクリプト（GUI・権限ゲートなし）', 'Research CLI script; no desktop workbench or gates')
-  },
-  {
-    isHelm: false,
-    tagType: 'amber',
-    name: 'Claude Code (Claude 4.5 / 4.6 Sonnet & Opus)',
-    tag: t('Anthropic 官方 Agent 脚手架公开成绩', 'Anthropic 公式エージェント公開スコア', 'Anthropic Official Agent Benchmark'),
-    dataset: 'Verified Full (n=500)',
-    passRate: '77.2% – 80.9% (Opus 4.7/Fable 85.8%–95%)',
-    patchHealth: t('未公开空补丁与定位漏斗明细', '空パッチ率・特定率の明細非公開', 'Funnel & empty-patch breakdown undisclosed'),
-    costPerTask: t('约 ¥5.8 – ¥18+ / 题 ($0.80–$2.50+)', '約 ¥5.8 – ¥18+ / 問 ($0.80–$2.50+)', '$0.80 – $2.50+ / task (~20x–50x cost)'),
-    privacy: t('强制上传 Anthropic 海外云端，不支持私有内网', '海外クラウド送信必須・閉域網利用不可', 'Requires Anthropic cloud; no air-gapped LAN support')
-  },
-  {
-    isHelm: false,
-    tagType: 'amber',
-    name: 'OpenAI Codex (codex-1 / GPT-5.x Codex)',
-    tag: t('OpenAI 官方 System Card 与 2026 榜单', 'OpenAI 公式 System Card・2026 公開値', 'OpenAI System Card & 2026 Leaderboards'),
-    dataset: 'Verified Full (n=500)',
-    passRate: '72.1% (codex-1) / 76.0% – 86.2% (GPT-5.x)',
-    patchHealth: t('codex-1 剔除 23 道内部不可运行题', 'codex-1 は実行不可23問を除外して集計', 'codex-1 excludes 23 unrunnable instances'),
-    costPerTask: t('约 ¥3.6 – ¥11+ / 题 ($0.50–$1.50+)', '約 ¥3.6 – ¥11+ / 問 ($0.50–$1.50+)', '$0.50 – $1.50+ / task + Pro subscription'),
-    privacy: t('强制运行于 OpenAI 远程云端容器，源码需出网', 'OpenAI クラウド環境必須・ソースコード外部送信', 'Runs in OpenAI remote cloud containers only')
-  },
-  {
-    isHelm: false,
-    tagType: 'neutral',
-    name: 'Cursor (Background / Autonomous Agent)',
-    tag: t('2026 第三方端到端自治模式评测快照', '2026 第三者機関による自律モード計測値', '2026 Independent Autonomous Mode Snapshot'),
-    dataset: 'Verified Full (n=500)',
-    passRate: '67.0% – 76.8%',
-    patchHealth: t('偏向交互式配对编程，长程无人值守易中断', '対話型支援中心・長時間無人実行で中断しやすい', 'Optimized for interactive pair coding over batch runs'),
-    costPerTask: t('$20–$40/月订阅 + Fast Requests 计费', '$20–$40/月サブスク + 従量リクエスト課金', '$20–$40/mo subscription + fast-request metering'),
-    privacy: t('强制经过 Cursor 海外中转服务器，无法物理断网运行', 'Cursor 外部中継サーバー必須・完全オフライン不可', 'Routes via Cursor cloud relay; no air-gapped mode')
-  },
-  {
-    isHelm: false,
-    tagType: 'neutral',
-    name: 'swebench.com Bash-Only (Gemini 3 Flash / MiniMax M2.5 / DeepSeek-V4-Pro)',
-    tag: t('官方排行榜标准化模型基准', '公式リーダーボード標準ベースライン', 'Official Leaderboard Standardized Baselines'),
-    dataset: 'Verified Full (n=500)',
-    passRate: '75.8% / 75.8% / 80.6%',
-    patchHealth: t('受限于固定步数上限，无自省恢复与影子快照', '固定ステップ制限・内省ループ回復やシャドウGitなし', 'Fixed step cap; no StuckDetector or Shadow Git'),
-    costPerTask: t('约 ¥1.0 – ¥12.0 / 题', '約 ¥1.0 – ¥12.0 / 問', '~$0.15 – $1.80 / task'),
-    privacy: t('仅提供基准分数，非开箱即用的桌面端产品', 'ベンチマーク値のみ（デスクトップ製品ではない）', 'Benchmark harness only; not a turnkey desktop app')
-  }
-])
-
-// Step 1–2 代码导航确定性微基准（零 API 实测，三大真实语料 150 条查询 + 60 个千行大文件）
-const navMicroBenchmarks = computed(() => [
-  {
-    code: 'BENCH 01 · RIPGREP',
-    metric: '119.3 ms',
-    delta: t('提速 42.1× · 0% 噪声', '42.1倍高速 · ノイズ0%', '42.1× · 0% Noise'),
-    title: t('随包 ripgrep 15.2 剪枝检索引擎', '同梱 ripgrep 15.2 高速検索エンジン', 'Bundled ripgrep 15.2 Pruned Search'),
-    beforeAfter: '5,026.2 ms → 119.3 ms (P95 160.3 ms)',
-    desc: t(
-      '工作区快照 grep P50 延迟由 5,026.2 ms 压降至 119.3 ms（P95 160.3 ms < 1s 目标），噪声命中率从 49.17% 降至 0.00%，宏平均召回率达 99.33%。',
-      'ワークスペース検索の P50 遅延を 5,026.2 ms から 119.3 ms へ短縮。ノイズ率を 49.17% → 0.00% に排除し、再現率 99.33% を達成。',
-      'Cuts workspace grep P50 latency from 5,026.2 ms to 119.3 ms (P95 160.3 ms), eliminating 49.17% noise down to 0.00% with 99.33% macro recall.'
+    core: true,
+    dim: t('细分行业痛点共创', '業界特化ワークフロー共創', 'Vertical Workflow Co-Creation'),
+    helm: t(
+      '你提痛点，我免费写进下一版内置功能；高票行业共性需求公开排期，紧急私密需求支持一对一定制',
+      'ユーザーの業務課題を無償で次期標準機能として実装。緊急・非公開の個別要件もカスタム対応',
+      'High-vote industry pain points built into official releases for free; private custom workflows on demand'
+    ),
+    other: t(
+      'Codex 等大厂只做全球通用标准化底座，财务、运营、科研、制造等细分岗位诉求难以被响应',
+      '汎用クラウドツールは標準機能のみで、特定業界・現場固有の業務フロー要望には対応しない',
+      'Big-tech cloud tools build generic horizontal primitives and never tailor for niche industry workflows'
     )
   },
   {
-    code: 'BENCH 02 · AST OUTLINE',
-    metric: '95.41%',
-    delta: t('省 Token · P50 23.8ms', 'Token削減 · 23.8ms', 'Saved · 23.8ms P50'),
-    title: t('code_outline 大文件 AST 符号大纲', 'code_outline 構造化シンボル抽出', 'tree-sitter code_outline Symbol AST'),
-    beforeAfter: '100% Full File → 4.59% Outline (0.8 ms Warm)',
-    desc: t(
-      '跨三大仓库 60 个超千行真实源码文件实测：冷解析 P50 仅 23.81 ms（热缓存 0.8 ms），大纲仅占整文件字符数的 4.59%，60/60 解析失败率 0.00%。',
-      '1,000行超の大型ソースファイル60件で実測：コールド解析 P50 は 23.81 ms（キャッシュ時 0.8 ms）、文字数を 4.59% に圧縮し失敗率 0.00%。',
-      'Across 60 real files >1,000 lines: 23.81 ms cold parse P50 (0.8 ms cached), compressing file characters to 4.59% with 0.00% parse failure rate.'
+    core: true,
+    dim: t('数据主权与推理成本', 'データ主権と推論コスト', 'Data Sovereignty & Cost'),
+    helm: t(
+      'Windows .exe 开箱即用（内嵌 Python 3.13），100% 支持本机 Ollama 与内网 vLLM；平价模型单题修复仅 ¥0.27',
+      'Python 3.13 内蔵 .exe で即稼働。ローカル Ollama / 社内LAN直結に対応し、1課題解決わずか ¥0.27',
+      'Turnkey Windows .exe (bundled Python 3.13); 100% local Ollama & LAN vLLM ready at ¥0.27 per solved bug'
+    ),
+    other: t(
+      '强制上传海外云端服务器，依赖高昂美元月费订阅与高价闭源模型（单题成本常达 ¥5–¥18+）',
+      '海外クラウド送信必須・高額なドル建てサブスクと高価なモデルに依存（1問 ¥5〜¥18+）',
+      'Requires uploading source code to external clouds plus $20–$200/mo subscriptions ($0.80–$2.50+/task)'
     )
   },
   {
-    code: 'BENCH 03 · READ_FILE',
-    metric: '100.0%',
-    delta: t('漏读 0 行 (原 28.8万)', '欠損 0 行 (旧 28.8万)', '0 Missed (vs 288k)'),
-    title: t('read_file 严格整行边界与续读对齐', 'read_file 行境界維持とページング整合性', 'Zero-Loss Line-Aligned read_file'),
-    beforeAfter: '30.33% (288,084 Missed) → 100.00% (0 Missed)',
-    desc: t(
-      '彻底修复字符硬截断导致的行号失真，三语料顺序续读一致率从 30.33% 提升至 100.00%，确保 SWE-bench 两轮 100 题次中 L2（截断丢失）失败为 0%。',
-      '文字数切り詰めによる行番号ズレを根絶し、連続読取の整合性を 30.33% → 100.00% に改善。SWE-bench 実戦での L2（読取欠損）失敗 0% を実現。',
-      'Raises sequential pagination consistency from 30.33% to 100.00% (0 missed lines across all corpora), driving L2 truncation failures to 0% in SWE-bench.'
+    core: true,
+    dim: t('同屏可视化文档与回滚', '同画面Office編集＆復元', 'Visual Office & Shadow Git'),
+    helm: t(
+      '右侧内建 7 格式高保真预览，鼠标框选 PPT 形状或 Word 段落原地热更新；私有影子 Git 检查点零分支污染',
+      '右ペインで PPT 図形や Word 段落をマウス選択して即時部分更新。非侵襲シャドウGitで履歴汚染ゼロ',
+      'Highlight PPT shapes or Word paragraphs on the right canvas for live SSE hot-patching + zero-dirty Shadow Git'
+    ),
+    other: t(
+      '黑盒命令行盲写脚本，极易改坏整篇排版格式，或产生大量临时提交污染用户 git status',
+      'レイアウトが見えないCUIスクリプト処理で書式が崩れやすく、不要コミットで履歴も汚れやすい',
+      'Blind CLI script generation often breaks document layouts or pollutes user Git commit history'
     )
   },
   {
-    code: 'BENCH 04 · SYNTAX',
-    metric: '0.0% FP',
-    delta: t('100% 检出 · 37 ms', '検出 100% · 37 ms', '100% Recall · 37ms'),
-    title: t('写盘后零依赖进程内语法自检', '編集直後のゼロ依存・高速構文検査', 'Zero-Dependency Post-Edit Syntax Check'),
-    beforeAfter: '100.0% Recall · 0.0% False Positives (30/30)',
-    desc: t(
-      '在 write_file / edit_file / apply_patch 后自动校验新引入的语法错误（跳过历史遗留损坏文件），30 组对抗测试集检出率 100.0%、误报率 0.0%。',
-      'ファイル変更直後に新規混入した構文エラーのみを自動検知（既存の破損ファイルは静観）。30組の検証セットで検出率 100.0%・誤検知率 0.0% を達成。',
-      'Automatically flags newly introduced syntax errors after file edits while suppressing pre-existing broken files: 100.0% recall and 0.0% false positives.'
+    core: false,
+    dim: t('代码定位与补丁完整性', 'コード特定精度とパッチ品質', 'Code Localization & Integrity'),
+    helm: t(
+      'SWE-bench Mini 峰值 84.0%（均值 81.0%），ripgrep 42× + AST 大纲达成 98% Gold 定位与 100% 非空补丁',
+      'SWE-bench 最高 84.0%（平均 81.0%）、Gold特定率 98.0%、100/100 有効非空パッチを達成',
+      '84.0% SWE-bench Mini peak (81.0% mean), 98.0% Gold file localization, 100/100 valid patches'
+    ),
+    other: t(
+      '缺乏整行续读对齐与 AST 符号骨架，千行大文件易因截断盲区或步数耗尽产生空补丁',
+      '行境界維持やAST抽出がなく、大型ファイルの切り捨てやステップ枯渇で空パッチが発生',
+      'Lacks line-aligned pagination and AST outlines; prone to truncation blind spots and empty patches'
+    )
+  },
+  {
+    core: false,
+    dim: t('长任务防死循环与容错', '長時間耐障害性・ループ防止', 'Long-Run Fault Tolerance'),
+    helm: t(
+      'TurnHub 单调 seq 断线无缝回放 + 写后 37ms 进程内语法门禁 + StuckDetector D1–D7（拦截率 100%）',
+      'TurnHub seq 再接続 + 編集後 37ms 構文検査 + StuckDetector D1–D7（ループ阻止 100%）',
+      'TurnHub seq replay + 37ms post-edit syntax guard + StuckDetector D1–D7 (100% loop recall)'
+    ),
+    other: t(
+      '窗口刷新或网络抖动即丢失执行上下文，极易在同一报错命令上无限空转消耗 Token',
+      '通信瞬断で処理が失われ、同一エラーコマンドの無限ループでトークンを浪費しやすい',
+      'Loses state on network hiccups and burns tokens repeating identical failing commands'
+    )
+  },
+  {
+    core: false,
+    dim: t('多智能体并发与权限门禁', '並列Worktree＆ゼロトラスト権限', 'Worktree Team & Safety Gate'),
+    helm: t(
+      '最多 8 队友独立 Worktree（Junction 零拷贝共享依赖，加速 3.04×，0% 冲突）+ 5 档权限（30/30 攻击拦截）',
+      '最大8メイト独立 Worktree（Junction共有・3.04倍高速・競合0%）＋ 5段階権限（30/30 攻撃遮断）',
+      'Up to 8 isolated Worktrees (zero-copy Junctions, 3.04× speedup, 0% collision) + 5-tier gate (30/30 block)'
+    ),
+    other: t(
+      '多代理共享同一工作目录互相覆盖，缺乏细粒度只读 Plan Mode 与受保护路径硬门禁',
+      '同一ディレクトリを同時編集して競合破損。細粒度な Plan Mode や保護パス強制確認がない',
+      'Subagents overwrite shared directories without prefix-safe Plan Mode or protected-path guards'
+    )
+  },
+  {
+    core: false,
+    dim: t('前缀缓存保护与保真压缩', 'Prefix Cache 保護と7段階圧縮', 'Prefix Cache & Compaction'),
+    helm: t(
+      '四层只增前缀达成 97.74% 实战缓存命中；7 级经济学裁剪压缩 93.1% 输出且 100% 保住末尾异常堆栈',
+      '4層追記型で実戦 97.74% キャッシュヒット；7段階圧縮で末尾スタックトレースを 100% 保持',
+      '4-layer append-only prefix hits 97.74% cache; 7-stage compactor retains 100% of tail tracebacks'
+    ),
+    other: t(
+      '每轮动态改写 System Prompt 或暴力一刀切截断输出，导致缓存频繁失效与关键报错丢失',
+      '毎ターン System Prompt を書き換えるか末尾を切り捨て、キャッシュ破壊とエラー欠損を招く',
+      'Mutates system prompts per turn and truncates tail stack traces, causing severe KV-cache churn'
     )
   }
 ])
 
-// 四维全栈消融实测矩阵（RAG 4阶段消融 · 架构护栏消融 · 多智能体 Worktree · 多语言 & Office 多模态）
-const fullStackAblationBenchmarks = computed(() => [
+const visibleCompareRows = computed(() =>
+  showAllCompareRows.value ? comparisonRows.value : comparisonRows.value.filter((r) => r.core)
+)
+
+// 第 6 章：内测共创 3 条客观标准
+const coCreationRules = computed(() => [
   {
-    code: 'ABLATION 01 · RAG v0→v3',
-    metric: '100.0%',
-    delta: t('MRR 1.000 · 0% 污染', 'MRR 1.000 · 汚染 0%', 'MRR 1.000 · 0% Noise'),
-    title: t('企业异构知识库 4 阶段递进消融', '異種混合文書の4段階RAGアブレーション', '4-Stage Enterprise Multimodal RAG Ablation'),
-    beforeAfter: 'Fact Recall@K: 59.4% (v0) → 100.0% (v3)',
+    num: '01',
+    title: t('具备「行业共性」，造福同行而非孤立私活', '「業界の共通課題」であること', 'Industry Commonality Over One-Offs'),
     desc: t(
-      '跨双栏 PDF 财报、Word 合同与修订备忘录 36 道黄金 QA 实测：经版面还原 (v1)、章节面包屑分块 (v2) 与混合检索+时间权重重排 (v3)，完整命中率由 36.7% 跃升至 100.0%，干扰污染降至 0.0%。',
-      '2段組PDF・Word・改訂メモの36問QAで実測：レイアウト解析(v1)、階層チャンク(v2)、ハイブリッド検索+時系列リランク(v3)により完全正解率が 36.7% → 100.0% に向上、ノイズ混入率 0.0%。',
-      'Across 36 golden QAs over 2-col PDFs, DOCX, and revision memos: layout parsing (v1), breadcrumb chunking (v2), and hybrid temporal reranking (v3) lift strict recall from 36.7% to 100.0% with 0.0% distractor pollution.'
-    ),
-    reportSlug: 'rag-eval-v1'
+      '痛点应来自财务、运营、科研、教育、法务、制造等行业同行的日常高频刚需，开发后作为标准内置功能向所有人免费开放。',
+      '特定の1社のみの特殊手順ではなく、経理・運営・研究・教育・法務・製造など同じ業界の実務者が共有する高頻度課題を対象とします。',
+      'Pain points should reflect recurring challenges shared across your profession so the built-in feature benefits the entire community.'
+    )
   },
   {
-    code: 'ABLATION 02 · LOOP & COMPACT',
-    metric: '-87.7%',
-    delta: t('100% 拦死循环 · 0% 误报', 'ループ阻止 100% · 誤報 0%', '100% Loop Recall · 0% FP'),
-    title: t('StuckDetector v2 与 60/40 保真裁剪', 'StuckDetector v2 と 60/40 コンテキスト圧縮', 'StuckDetector v2 & 60/40 Fidelity Compaction'),
-    beforeAfter: 'Fact Retention: 33.3% (Naive) → 100.0% (HYN)',
+    num: '02',
+    title: t('输入与输出边界清晰，附脱敏样例可验收', '入出力境界が明確（匿名化サンプル付）', 'Verifiable Input & Output Samples'),
     desc: t(
-      '覆盖 D1–D6 六维死循环轨迹 100.0% (18/18) 精准介入，平均第 7.5 步收敛，节省 87.7% 无效步数；60/40 头尾裁剪在压缩 93.1% 超长输出的同时 100.0% 保留末尾异常堆栈。',
-      'D1〜D6の6次元ループを 100.0% (18/18) 検知し、平均7.5ステップで収束（無駄なステップを 87.7% 削減）。60/40 先頭・末尾保持圧縮により 93.1% 圧縮しつつ末尾の例外トレースを 100.0% 保持。',
-      'Detects 100.0% (18/18) of D1–D6 loop patterns (mean intervention at step 7.5, saving 87.7% wasted steps). 60/40 head-tail compaction shrinks oversized outputs by 93.1% while retaining 100.0% of tail tracebacks.'
-    ),
-    reportSlug: 'harness-ablation-v1',
-    secondaryReportSlug: 'precache-v1',
-    secondaryLabel: t('Pre-Cache 报告 (89.58%)', 'Pre-Cache レポート', 'Pre-Cache Report')
+      '提交时请附上【行业场景 + 当前耗时痛点 + 脱敏输入样例 + 期望输出成品样式】，免去反复拉扯，确保精准复现与交付。',
+      '【業務シーン＋現状の手間＋機密を除いた入力例＋期待する出力イメージ】を添えていただくことで、迅速かつ正確に実装します。',
+      'Include [Scenario + Bottleneck + Sanitized Input Sample + Expected Output] so we can reproduce and verify cleanly.'
+    )
   },
   {
-    code: 'ABLATION 03 · WORKTREE & GATE',
-    metric: '2.88×–3.04×',
-    delta: t('0% 写冲突 · 100% 拦越权', '競合 0% · 脅威阻止 100%', '0% Collision · 0% ASR'),
-    title: t('4 队友 Worktree 并行与零信任权限门', '4メイト Worktree 並列＆ゼロトラスト権限ゲート', '4-Mate Worktree Speedup & Zero-Trust Gate'),
-    beforeAfter: 'Collision: 100% → 0.0% · Attack ASR: 0.0% (30/30)',
+    num: '03',
+    title: t('按社区同行「+1 投票」客观排期（紧急私密走邮箱）', 'コミュニティ「+1 投票順」で透明開発', 'Community Vote Queue (Private via Email)'),
     desc: t(
-      '4 名常驻队友绑定独立 Git Worktree 并发实测取得 2.88×–3.04× 墙钟加速比，同名文件并发写冲突率 0.0%，主分支污染 0 字节；PermissionGate 对 30 组高危/越界/注入载荷实现 100.0% 拦截。',
-      '4名の常駐メイトが独立 Git Worktree で並列稼働し 2.88×〜3.04× の実測高速化と競合率 0.0% を達成。PermissionGate は30種の破壊的コマンド・パストラバーサルを 100.0% 遮断（誤検知 0.0%）。',
-      '4 concurrent teammates on isolated Git Worktrees achieve a 2.88×–3.04× wall-clock speedup with 0.0% file collision and 0 dirty main-repo bytes; PermissionGate blocks 100.0% (30/30) of adversarial payloads with 0.0% benign FP.'
-    ),
-    reportSlug: 'harness-ablation-v1'
-  },
-  {
-    code: 'ABLATION 04 · POLYGLOT & GAIA',
-    metric: '100% / 90%',
-    delta: t('Polyglot 24/24 · GAIA 27/30', 'Polyglot 24/24 · GAIA 27/30', 'Polyglot 24/24 · GAIA 27/30'),
-    title: t('6 语言 Polyglot 盲测与 GAIA 多步办公实测', '6言語 Polyglot 盲検＆GAIA 多段階Office実証', '6-Lang Polyglot Blind & GAIA Multi-Step Live'),
-    beforeAfter: 'Polyglot 24/24 (100%) · GAIA L1-L3 27/30 (90.0%)',
-    desc: t(
-      'Aider-Polyglot 6 语言 24 题无提示盲测 100.0% (24/24) 通过（工具链微基准 36/36）；GAIA Validation 30 题多步工具调用实测 90.0% (27/30，L1 90% / L2 100% / L3 75%)，Office 热补丁微基准 20/20 全通。',
-      'Aider-Polyglot 6言語24問ブラインド実装で 100.0% (24/24) 合格（基盤検証 36/36）；GAIA Validation 30問多段階ツール呼び出しで 90.0% (27/30、L1 90% / L2 100% / L3 75%)、Office検証 20/20 通過。',
-      '100.0% (24/24) on 6-language Aider-Polyglot blind tasks (36/36 tool microbench); 90.0% (27/30: L1 90%, L2 100%, L3 75%) on GAIA Validation 30-task multi-step agent loop (20/20 Office microbench).'
-    ),
-    reportSlug: 'polyglot-mini-v1',
-    primaryLabel: t('Polyglot 实测报告', 'Polyglot レポート', 'Polyglot Report'),
-    secondaryReportSlug: 'gaia-mini-v1',
-    secondaryLabel: t('GAIA 30题实测报告', 'GAIA 30問レポート', 'GAIA 30-Task Report')
+      '免费功能严格按社群需求池附议票数排期。若涉及商业机密不便公开、企业独有流程或需紧急加塞交付，请直接联系下方邮箱定制。',
+      '無償開発の優先順位は「+1 賛同票数」で客観決定します。社外秘・個別仕様・緊急納期のご依頼はメール窓口にて承ります。',
+      'Free features are prioritized transparently by "+1" community votes; confidential or urgent custom workflows are available via email.'
+    )
   }
 ])
+
+// 初始化 Antigravity 启发式极昼罗盘微矢量场（克制 8%–16% 透明度，支持无障碍减弱动态）
+onMounted(() => {
+  if (typeof window === 'undefined') return
+  const canvas = azimuthCanvasRef.value
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const rawRgb = getComputedStyle(document.documentElement).getPropertyValue('--hl-azimuth-rgb').trim() || '26, 79, 214'
+
+  let width = 0
+  let height = 0
+  let pointerX = -9999
+  let pointerY = -9999
+  let smoothX = -9999
+  let smoothY = -9999
+
+  function resize() {
+    const parent = canvas.parentElement
+    if (!parent) return
+    const rect = parent.getBoundingClientRect()
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    width = rect.width
+    height = Math.min(rect.height, 620)
+    canvas.width = Math.floor(width * dpr)
+    canvas.height = Math.floor(height * dpr)
+    canvas.style.width = `${width}px`
+    canvas.style.height = `${height}px`
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    if (reducedMotion) drawFrame()
+  }
+
+  function onMouseMove(e) {
+    const rect = canvas.getBoundingClientRect()
+    pointerX = e.clientX - rect.left
+    pointerY = e.clientY - rect.top
+  }
+
+  function onMouseLeave() {
+    pointerX = -9999
+    pointerY = -9999
+  }
+
+  function drawFrame() {
+    ctx.clearRect(0, 0, width, height)
+    if (pointerX > -1000) {
+      smoothX = smoothX < -1000 ? pointerX : smoothX + (pointerX - smoothX) * 0.12
+      smoothY = smoothY < -1000 ? pointerY : smoothY + (pointerY - smoothY) * 0.12
+    } else {
+      smoothX = -9999
+      smoothY = -9999
+    }
+
+    const step = 44
+    const cx = width * 0.5
+    const cy = 220
+
+    for (let x = step * 0.5; x < width; x += step) {
+      for (let y = 28; y < height - 20; y += step) {
+        const dxCenter = (x - cx) / Math.max(width * 0.52, 1)
+        const dyCenter = (y - cy) / 340
+        const radialFade = Math.max(0, 1 - Math.sqrt(dxCenter * dxCenter + dyCenter * dyCenter))
+        if (radialFade <= 0.04) continue
+
+        let angle = -Math.PI * 0.25
+        let boost = 0
+        if (smoothX > -1000) {
+          const dx = smoothX - x
+          const dy = smoothY - y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < 260) {
+            angle = Math.atan2(dy, dx)
+            boost = (1 - dist / 260) * 0.16
+          }
+        }
+
+        const alpha = radialFade * 0.085 + boost
+        const len = 4.5 + boost * 16
+        ctx.save()
+        ctx.translate(x, y)
+        ctx.rotate(angle)
+        ctx.strokeStyle = `rgba(${rawRgb}, ${alpha.toFixed(3)})`
+        ctx.lineWidth = 1.25
+        ctx.lineCap = 'round'
+        ctx.beginPath()
+        ctx.moveTo(-len * 0.5, 0)
+        ctx.lineTo(len * 0.5, 0)
+        ctx.stroke()
+        ctx.restore()
+      }
+    }
+
+    if (!reducedMotion) {
+      animFrameId = window.requestAnimationFrame(drawFrame)
+    }
+  }
+
+  resize()
+  window.addEventListener('resize', resize)
+  window.addEventListener('mousemove', onMouseMove, { passive: true })
+  window.addEventListener('mouseleave', onMouseLeave)
+
+  if (!reducedMotion) {
+    animFrameId = window.requestAnimationFrame(drawFrame)
+  }
+
+  removeCanvasListeners = () => {
+    window.removeEventListener('resize', resize)
+    window.removeEventListener('mousemove', onMouseMove)
+    window.removeEventListener('mouseleave', onMouseLeave)
+    if (animFrameId) window.cancelAnimationFrame(animFrameId)
+  }
+})
+
+onUnmounted(() => {
+  if (removeCanvasListeners) removeCanvasListeners()
+})
 </script>
 
 <template>
-  <div class="nx-home">
-    <!-- ==================== 1. 电影级深邃科技首屏舞台 (HERO STAGE) ==================== -->
-    <section class="nx-hero-section">
-      <div class="nx-container">
-        <div class="nx-hero-center">
-          <!-- 顶部发布胶囊 -->
+  <div class="hl-home">
+    <!-- ==================== CHAPTER 01 · ANTIGRAVITY × APPLE HERO STAGE ==================== -->
+    <section class="hl-hero">
+      <canvas ref="azimuthCanvasRef" class="hl-azimuth-canvas" aria-hidden="true"></canvas>
+
+      <div class="hl-container hl-hero-inner">
+        <!-- 静谧实证公告胶囊 -->
+        <a class="hl-announce-pill hl-tabular" href="#benchmarks">
+          <span class="hl-announce-dot" aria-hidden="true"></span>
+          <span class="hl-announce-strong">SWE-bench Mini 84.0%</span>
+          <span class="hl-announce-sep" aria-hidden="true">·</span>
+          <span class="hl-announce-sub">
+            {{
+              t(
+                '单题修复仅 ¥0.27 · 100% 本地与内网零出网实证',
+                '1問解決 ¥0.27 · ローカル＆社内閉域網ゼロ送信実証',
+                '¥0.27 / Solved Bug · 100% Air-Gapped Local & LAN Ready'
+              )
+            }}
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </a>
+
+        <!-- 雕塑级双行主标题 -->
+        <h1 class="hl-hero-title">
+          <span>
+            {{
+              t(
+                '掌控代码与文档的长程航向，',
+                'コードと文書の自律実行を、',
+                'Take the Helm of Code & Docs.'
+              )
+            }}
+          </span>
+          <span class="hl-hero-title-sub">
+            {{
+              t(
+                '让核心机密永远留在本地。',
+                '100%ローカルの主権のもとへ。',
+                'Keep Every Secret on Your Machine.'
+              )
+            }}
+          </span>
+        </h1>
+
+        <p class="hl-hero-lead">
+          {{
+            t(
+              '集零框架三路并发状态机、最多 8 队友 Git Worktree 协同与同屏可视化 Office 热补丁于一体的桌面级 AI 工程工作台。原生直连本机 Ollama 与企业内网集群。',
+              'ゼロフレームワーク3経路並列エンジン、最大8メイトの Git Worktree 協調、同画面 Office ピンポイント更新を統合したデスクトップ AI ワークベンチ。ローカル Ollama・社内LANに直結。',
+              'A native desktop agent workbench uniting a zero-framework 3-path state machine, 8-teammate Git Worktrees, and visual in-place Office hot-patching—built for local Ollama and corporate LANs.'
+            )
+          }}
+        </p>
+
+        <!-- 双胶囊主行动按钮（Antigravity Pill Geometry） -->
+        <div class="hl-hero-ctas">
           <a
-            class="nx-release-pill"
-            href="#benchmarks"
+            class="hl-btn hl-btn-ink hl-btn-lg"
+            :href="`${prefix}/download`"
+            @click.prevent="navigate(`${prefix}/download`)"
           >
-            <span class="nx-release-tag">{{ t('SWE-BENCH MINI 84.0%', 'SWE-BENCH MINI 84.0%', 'SWE-BENCH MINI 84.0%') }}</span>
-            <span class="nx-release-text">
-              {{
-                t(
-                  'SWE-bench Verified Mini 单轮峰值 84.0% Pass@1（两轮均值 81.0% · 98% Gold 命中 · ¥0.27/题）· 查看实证报告',
-                  'SWE-bench Verified Mini ピーク 84.0% Pass@1（2回平均 81.0%・Gold特定 98%・¥0.27/件）· 実証データを表示',
-                  'SWE-bench Verified Mini 84.0% Peak Pass@1 (81.0% 2-Run Mean · 98% Gold Hit · ¥0.27/Fix) · View Empirical Report'
-                )
-              }}
-            </span>
-            <span class="nx-release-arrow">↓</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M3 5.5 10.5 4.5v7H3v-6zm8.5-1.15L21 3v8.5h-9.5V4.35zM3 12.5h7.5v7L3 18.5v-6zm8.5 0H21V21l-9.5-1.35V12.5z" />
+            </svg>
+            <span>{{ t('下载 Windows 版', 'Windows 版をダウンロード', 'Download for Windows') }}</span>
           </a>
 
-          <!-- 品牌罗盘徽章与官方 Slogan -->
-          <div class="nx-hero-brand-pill">
-            <img class="nx-hero-compass" :src="SITE_META.brandIconUrl" alt="Helm Compass Emblem" />
-            <div class="nx-hero-brand-meta">
-              <span class="nx-hero-brand-name">HELM</span>
-              <span class="nx-hero-brand-sep">·</span>
-              <span class="nx-hero-brand-slogan">"Take the Helm of Long-Running Code &amp; Docs."</span>
-            </div>
-          </div>
+          <button type="button" class="hl-btn hl-btn-tonal hl-btn-lg" @click="openInteractiveStage">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="18" height="14" x="3" y="5" rx="2" />
+              <path d="M9 9h6M9 13h4" />
+            </svg>
+            <span>{{ t('在线体验 1:1 工作台', '1:1 ワークベンチを体験', 'Launch 1:1 Workbench') }}</span>
+          </button>
+        </div>
 
-          <!-- 极具冲击力的金属渐变主标题 -->
-          <h1 class="nx-hero-title">
-            {{
-              t(
-                '执掌长周期代码与文档创作之舵，机密数据 100% 零出网',
-                '機密コードを外部に送信しない。数時間の自律開発と文書制作の舵を取る',
-                'Take the Helm of Long-Running Code & Docs. Zero Data Egress.'
-              )
-            }}
-          </h1>
-
-          <p class="nx-hero-subtitle">
-            {{
-              t(
-                '专为对信息安全与工程可靠性有严苛要求的研发团队打造。在 SWE-bench Verified Mini 实测斩获 84.0% 单轮峰值解决率（两轮均值 81.0% ± 4.2%，Gold 文件定位率 98.0%），原生直连本机 Ollama 与企业内网私有大模型（vLLM / OneAPI），将 P0–P3 长程自治引擎、确定性代码导航、无侵入影子 Git 检查点与 Office 手术刀级局部热修改融于一体。',
-                '厳格な情報セキュリティ基準と高度なエンジニアリング品質を求める開発現場へ。SWE-bench Verified Mini でピーク解決率 84.0%（2回平均 81.0% ± 4.2%、Goldファイル特定率 98.0%）を実証。ローカル Ollama や社内閉域網 LLM（vLLM / OneAPI）へ直結し、P0–P3 長時間自律エンジン、決定的コードナビゲーション、シャドウGitチェックポイント、Office選択範囲AI部分更新を単一デスクトップに統合しました。',
-                'Engineered for security-critical R&D teams. Proven at 84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% ± 4.2% 2-run mean, 98.0% Gold file localization). Connects natively to local Ollama and corporate LAN LLMs (vLLM / OneAPI), uniting a P0–P3 long-horizon engine, deterministic code navigation, Shadow Git Checkpoints, and surgical in-place Office AI editing.'
-              )
-            }}
-          </p>
-
-          <!-- 首屏核心操作栏 -->
-          <div class="nx-hero-cta-row">
-            <a
-              class="nx-btn nx-btn-primary nx-hero-btn-main"
-              :href="`${prefix}/download`"
-              @click.prevent="navigate(`${prefix}/download`)"
-            >
-              <span>{{ t(`免费下载 Windows 客户端 (${SITE_META.version} 内测版)`, `無料ダウンロード Windows版 (${SITE_META.version} ベータ版)`, `Download for Windows (${SITE_META.version} Beta)`) }}</span>
-              <span class="nx-hero-btn-sub">{{ t('Windows 64 位内测版安装包 (.exe)', 'Windows 64bit ベータ版インストーラー (.exe)', 'Windows x64 Beta Installer (.exe)') }}</span>
-            </a>
-
-            <a
-              class="nx-btn nx-btn-glass nx-hero-btn-sec"
-              :href="`${prefix}/architecture/overview`"
-              @click.prevent="navigate(`${prefix}/architecture/overview`)"
-            >
-              <span>{{ t('审阅工程架构白皮书 (全 6 卷)', '技術アーキテクチャ白書 (全6章)', 'Architecture Whitepaper (6 Vols)') }}</span>
-              <span>→</span>
-            </a>
-          </div>
-
-          <!-- 下载按钮正下方：VirusTotal 0/57 安全扫描报告与 SHA-256 精致验证条 -->
-          <div class="nx-hero-verify-bar">
-            <span class="nx-verify-safe">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;" aria-hidden="true">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              <strong>100% Local &amp; Safe</strong>
-            </span>
-            <span class="nx-verify-sep">·</span>
-            <a
-              class="nx-verify-vt-link"
-              :href="SITE_META.virusTotalUrl"
-              target="_blank"
-              rel="noopener"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 3px;" aria-hidden="true">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                <path d="m9 12 2 2 4-4" />
-              </svg>
+        <!-- 静谧元数据与安全验签条（从按钮内部剥离，干净得体） -->
+        <div class="hl-trust-strip hl-tabular">
+          <span>{{ SITE_META.version }} Beta · {{ SITE_META.installerSize }} · {{ t('内嵌 Python 3.13 免配环境', 'Python 3.13 同梱・設定不要', 'Bundled Python 3.13') }}</span>
+          <span class="hl-trust-dot" aria-hidden="true">·</span>
+          <a class="hl-trust-link is-ok" :href="SITE_META.virusTotalUrl" target="_blank" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+            <span>VirusTotal {{ SITE_META.virusTotalScore }}</span>
+          </a>
+          <span class="hl-trust-dot" aria-hidden="true">·</span>
+          <button
+            type="button"
+            class="hl-trust-copy"
+            @click="copyText('sha', SITE_META.installerSha256)"
+          >
+            <span>
               {{
-                t(
-                  `VirusTotal 安全扫描报告 (${SITE_META.virusTotalScore} 零报毒)`,
-                  `VirusTotal セキュリティ検査レポート (${SITE_META.virusTotalScore} 検出ゼロ)`,
-                  `VirusTotal Security Scan Report (${SITE_META.virusTotalScore} Clean)`
-                )
-              }} ↗
-            </a>
-            <span class="nx-verify-sep">·</span>
-            <button
-              type="button"
-              class="nx-verify-sha-btn"
-              :title="t(`点击复制完整 SHA-256：${SITE_META.installerSha256}`, `クリックして完全な SHA-256 をコピー：${SITE_META.installerSha256}`, `Click to copy full SHA-256: ${SITE_META.installerSha256}`)"
-              @click="copyContactText('hero-sha', SITE_META.installerSha256)"
-            >
-              <code>SHA-256: {{ SITE_META.installerSha256Short }}</code>
-              <span class="nx-verify-copy-tag">
-                {{ copiedContactKey === 'hero-sha' ? t('✓ 已复制', '✓ コピー済', '✓ Copied') : t('复制', 'コピー', 'Copy') }}
-              </span>
-            </button>
-            <span class="nx-verify-sep">·</span>
-            <a
-              class="nx-verify-direct-link"
-              :href="SITE_META.installerUrl"
-              target="_blank"
-              rel="noopener"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 3px;" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              {{ t('直接下载 .exe', '.exe 直リンク', 'Direct .exe') }}
-            </a>
-          </div>
+                copiedKey === 'sha'
+                  ? t('已复制完整 SHA-256', 'SHA-256 コピー完了', 'SHA-256 Copied')
+                  : `SHA-256 ${SITE_META.installerSha256Short}`
+              }}
+            </span>
+          </button>
+        </div>
 
-          <!-- 舞台模式切换胶囊（默认展示实机演示视频） -->
-          <div class="nx-stage-switcher">
+        <!-- 舞台切换分段胶囊（默认展示 7m 35s 实机交付录屏） -->
+        <div id="hero-stage" class="hl-stage-Controls">
+          <div class="hl-segmented" role="tablist" :aria-label="t('首屏产品演示模式', 'デモ表示モード', 'Product Showcase Mode')">
             <button
               type="button"
-              class="nx-stage-tab"
+              role="tab"
+              class="hl-seg-btn"
               :class="{ 'is-active': showcaseTab === 'video' }"
+              :aria-selected="showcaseTab === 'video'"
               @click="showcaseTab = 'video'"
             >
-              <span class="nx-pulse-dot"></span>
-              <span>{{ t('实机演示视频：一句话 7分35秒 从零开发记账软件', '実機デモ動画：1文の指示で 7分35秒 ゼロから家計簿ソフトを完遂', 'Live Demo Video: 1-Prompt Bookkeeping App Built in 7m 35s') }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8 5.14v14l11-7-11-7z" />
+              </svg>
+              <span>{{ t('7m 35s 一句话实机交付录屏', '7分35秒 実機アプリ構築デモ', '7m 35s Live Delivery Recording') }}</span>
             </button>
             <button
               type="button"
-              class="nx-stage-tab"
+              role="tab"
+              class="hl-seg-btn"
               :class="{ 'is-active': showcaseTab === 'interactive' }"
+              :aria-selected="showcaseTab === 'interactive'"
               @click="showcaseTab = 'interactive'"
             >
-              <span>{{ t('1:1 实时交互工作台 (在线体验)', '1:1 対話型ワークベンチ (ブラウザ上で操作可能)', '1:1 Interactive Desktop Workbench') }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+              </svg>
+              <span>{{ t('1:1 实时交互桌面工作台', '1:1 インタラクティブ操作体験', '1:1 Interactive Desktop Sandbox') }}</span>
             </button>
           </div>
         </div>
+      </div>
 
-        <!-- 1320px 宽屏实机舞台容器（带底部深海蓝光晕） -->
-        <div class="nx-hero-stage-wrap">
-          <div class="nx-stage-glow"></div>
-          <div v-if="showcaseTab === 'interactive'" class="nx-stage-mount">
-            <ProductPlayground :lang="currentLang" :standalone="true" />
+      <!-- 宽幅钛金属质感产品视窗 -->
+      <div class="hl-container-wide hl-stage-wrap">
+        <!-- 模式 A：7m 35s 真实录屏视窗 -->
+        <div v-if="showcaseTab === 'video'" class="hl-studio-window">
+          <div class="hl-studio-bar">
+            <div class="hl-studio-dots" aria-hidden="true">
+              <span class="is-r"></span>
+              <span class="is-y"></span>
+              <span class="is-g"></span>
+            </div>
+            <div class="hl-studio-title">
+              {{
+                t(
+                  'Helm Desktop — 一句话生成并启动本地记账软件（7m 35s 全程无剪辑）',
+                  'Helm Desktop — 1文から家計簿ソフトを自律構築＆ローカル起動（7分35秒）',
+                  'Helm Desktop — Single-Prompt Bookkeeping App Build & Local Launch (7m 35s)'
+                )
+              }}
+            </div>
+            <div class="hl-speed-group hl-tabular" role="group" :aria-label="t('视频倍速', '再生速度', 'Playback speed')">
+              <button
+                v-for="spd in [1, 1.5, 2]"
+                :key="spd"
+                type="button"
+                class="hl-speed-pill"
+                :class="{ 'is-active': playbackRate === spd }"
+                @click="setVideoSpeed(spd)"
+              >
+                {{ spd }}×
+              </button>
+            </div>
           </div>
-          <div v-else class="nx-video-stage nx-glass-card">
-            <!-- 顶部实机挑战说明与倍速控制栏 -->
-            <div class="nx-video-hud">
-              <div class="nx-video-hud-left">
-                <div class="nx-video-kicker-row">
-                  <span class="nx-badge is-emerald">
-                    <span class="nx-pulse-dot"></span>
-                    {{ t('REAL-WORLD AUTONOMOUS BENCHMARK · 实机端到端交付实录', 'REAL-WORLD AUTONOMOUS BENCHMARK · 実機一気通貫デモ', 'REAL-WORLD AUTONOMOUS BENCHMARK · END-TO-END RUN') }}
-                  </span>
-                  <span class="nx-video-duration-chip">
-                    {{ t('实机任务总耗时：7 分 35 秒', '実機タスク総所要時間：7分35秒', 'Total Task Duration: 7m 35s') }}
-                  </span>
-                </div>
-                <h2 class="nx-video-headline">
-                  {{
-                    t(
-                      '仅凭一句话指令，7 分 35 秒从零搭建完整可用的「记账软件」并自动本地运行',
-                      'わずか1文の指示から 7分35秒 で実用可能な「家計簿・収支管理ソフト」をゼロから構築・ローカル起動',
-                      'From a Single Sentence to a Fully Working Local Bookkeeping App in 7 Minutes 35 Seconds'
-                    )
-                  }}
-                </h2>
-              </div>
 
-              <div class="nx-video-hud-right">
-                <div class="nx-speed-group" role="group" aria-label="Playback Speed">
-                  <span class="nx-speed-label">{{ t('倍速', '再生速度', 'Speed') }}</span>
-                  <button
-                    v-for="rate in [1, 1.5, 2]"
-                    :key="rate"
-                    type="button"
-                    class="nx-speed-btn"
-                    :class="{ 'is-active': playbackRate === rate }"
-                    @click="setVideoSpeed(rate)"
-                  >
-                    {{ rate }}x
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  class="nx-btn nx-btn-glass nx-video-switch-btn"
-                  @click="showcaseTab = 'interactive'"
-                >
-                  <span>{{ t('切换至 1:1 交互工作台亲自操作 →', '1:1 対話型ワークベンチで操作する →', 'Try 1:1 Interactive Workbench →') }}</span>
+          <div class="hl-video-viewport">
+            <video
+              v-if="!videoLoadError"
+              ref="videoPlayerRef"
+              class="hl-video-el"
+              :src="SITE_META.demoVideoUrl"
+              controls
+              playsinline
+              preload="metadata"
+              @loadedmetadata="handleVideoLoaded"
+              @error="videoLoadError = true"
+            ></video>
+
+            <div v-else class="hl-video-fallback">
+              <p>{{ t('实机演示视频暂时未能加载，您可立即切换至 1:1 实时交互桌面工作台体验完整界面。', '動画を読み込めませんでした。1:1 インタラクティブワークベンチをお試しください。', 'Demo video unavailable right now—switch to the 1:1 interactive workbench below.') }}</p>
+              <div class="hl-fallback-actions">
+                <button type="button" class="hl-btn hl-btn-ink hl-btn-sm" @click="videoLoadError = false">
+                  {{ t('重试加载视频', '再試行', 'Retry Video') }}
+                </button>
+                <button type="button" class="hl-btn hl-btn-tonal hl-btn-sm" @click="showcaseTab = 'interactive'">
+                  {{ t('切换至 1:1 交互工作台', '1:1 ワークベンチへ切替', 'Open 1:1 Sandbox') }}
                 </button>
               </div>
             </div>
+          </div>
 
-            <!-- 一句话指令输入与三大硬核战绩指标条 -->
-            <div class="nx-video-mission-bar">
-              <div class="nx-mission-prompt">
-                <span class="nx-mission-tag">{{ t('单句输入指令 (PROMPT)', '入力プロンプト (1文のみ)', 'SINGLE-SENTENCE PROMPT') }}</span>
-                <p class="nx-mission-text">
-                  {{
-                    t(
-                      '“从零开发一个功能完整的记账软件，支持收支录入、分类统计与可视化明细，开发完成后直接在本地打开运行。”',
-                      '「収支登録・カテゴリ別集計・明細表示を備えた家計簿ソフトをゼロから開発し、完了後にローカルで起動して開いてください。」',
-                      '"Develop a full-featured bookkeeping software from scratch with income/expense entry and analytics, then launch and open it locally upon completion."'
-                    )
-                  }}
-                </p>
-              </div>
-
-              <div class="nx-mission-stats">
-                <div class="nx-mission-stat-item">
-                  <span class="nx-ms-val">7m 35s</span>
-                  <span class="nx-ms-lbl">{{ t('从空目录到软件成功运行', '空ディレクトリから起動完了まで', 'Blank Dir to Running App') }}</span>
-                </div>
-                <div class="nx-mission-stat-item">
-                  <span class="nx-ms-val">{{ t('0 人工干预', '人間介入 0回', 'Zero Intervention') }}</span>
-                  <span class="nx-ms-lbl">{{ t('一句话触发全链路自主闭环', '1文の指示で設計・実装・検証を完遂', '1-Prompt Autonomous Loop') }}</span>
-                </div>
-                <div class="nx-mission-stat-item">
-                  <span class="nx-ms-val">{{ t('本地实机拉起', 'ローカル即時起動', 'Auto Local Launch') }}</span>
-                  <span class="nx-ms-lbl">{{ t('完成后自动启动并打开可用成品', '開発完了後に自動でアプリを起動・表示', 'Built, Verified & Opened Locally') }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 视频播放器本体（进入页面默认自动播放） -->
-            <div v-if="!videoLoadError" class="nx-video-viewport">
-              <video
-                ref="videoPlayerRef"
-                class="nx-video-player"
-                :src="SITE_META.demoVideoUrl"
-                autoplay
-                muted
-                loop
-                playsinline
-                controls
-                preload="auto"
-                @loadedmetadata="handleVideoLoaded"
-                @error="videoLoadError = true"
-              ></video>
-            </div>
-            <div v-else class="nx-video-fallback">
-              <span class="nx-badge">DEMO VIDEO SLOT // READY</span>
-              <h3>
-                {{
-                  t(
-                    '将实机录屏放入 docs/public/media/hero-demo.mp4 即可自动启用播放',
-                    'docs/public/media/hero-demo.mp4 に動画を配置すると自動再生されます',
-                    'Place your screen recording at docs/public/media/hero-demo.mp4 to auto-enable'
-                  )
-                }}
-              </h3>
-              <p>
-                {{
-                  t(
-                    '访客与技术审阅者也可随时切换至「1:1 实时交互工作台」，在浏览器内直接体验离线重构、影子检查点与 PPT 划词局部 AI 热更新。',
-                    '「1:1 対話型ワークベンチ」タブにてオフライン改修・シャドウチェックポイント・Office部分AI修正をそのまま操作体験いただけます。',
-                    'Visitors can also switch to the 1:1 Interactive Workbench tab to test all workflows directly in the browser.'
-                  )
-                }}
-              </p>
-              <button type="button" class="nx-btn nx-btn-primary" @click="showcaseTab = 'interactive'">
-                {{ t('切回 1:1 实时交互工作台', '1:1 対話型ワークベンチに戻る', 'Return to Interactive Workbench') }}
-              </button>
-            </div>
-
-            <!-- 视频下方：为什么这段 7分35秒 实机录屏具有代表性（三栏亮点卡） -->
-            <div class="nx-video-highlights">
-              <div class="nx-vh-card">
-                <div class="nx-vh-num">01 // ONE-PROMPT ZERO-TO-ONE</div>
-                <h4 class="nx-vh-title">
-                  {{ t('一句话完成从 0 到 1 全栈构建', '1文の指示からゼロベースで一気通貫構築', '1-Prompt Zero-to-One Full Build') }}
-                </h4>
-                <p class="nx-vh-desc">
-                  {{
-                    t(
-                      '无需人工分步拆解任务或手写项目脚手架。仅凭一句话，Helm 自主规划工程结构、账目数据持久化与现代交互界面，展现完整的软件工程落地能力。',
-                      '細かな段階的指示やボイラープレートの手動作成は不要。わずか1文からディレクトリ設計、データ永続化、UI構築までを自律的に完遂します。',
-                      'No step-by-step handholding or manual scaffolding required. From a single sentence, Helm plans the project structure, data persistence, and modern UI.'
-                    )
-                  }}
-                </p>
-              </div>
-
-              <div class="nx-vh-card">
-                <div class="nx-vh-num">02 // 7M 35S UNATTENDED EXECUTION</div>
-                <h4 class="nx-vh-title">
-                  {{ t('7 分 35 秒高密度工具调用零中断', '7分35秒の連続ツール実行・自己検証ループ', '7m 35s Unattended Execution Loop') }}
-                </h4>
-                <p class="nx-vh-desc">
-                  {{
-                    t(
-                      '在 7 分 35 秒的连续运行中，Agent 自动串联文件读写、依赖检查与终端命令执行，遇到环境或运行细节问题自动自检修正，一气呵成跑通全流程。',
-                      '7分35秒の連続稼働中、ファイル作成・依存解決・コマンド実行を自律的に連鎖。実行時の細かな問題も自己検証ループで即座に修正し完走します。',
-                      'Across 7m 35s of continuous execution, the agent chains file writes, dependency checks, and shell commands, automatically self-correcting along the way.'
-                    )
-                  }}
-                </p>
-              </div>
-
-              <div class="nx-vh-card">
-                <div class="nx-vh-num">03 // VERIFIED LOCAL LAUNCH &amp; QUALITY</div>
-                <h4 class="nx-vh-title">
-                  {{ t('高水准交付质量：完成后直接本地打开', '高い完成度：構築完了後にローカルで即時起動', 'High Delivery Quality & Local Launch') }}
-                </h4>
-                <p class="nx-vh-desc">
-                  {{
-                    t(
-                      '告别“只输出代码片段不管能否跑通”的半成品演示。Helm 在完成记账软件编码后，直接在本机启动服务并打开软件界面，交付真正开箱即用的高质量成品。',
-                      '「コード断片を出すだけで動かない」デモとは一線を画し、実装完了後にローカル環境でアプリを直接起動・表示。即座に使える高品質な成果物を実証します。',
-                      'Beyond generating unverified code snippets—upon finishing the code, Helm launches the service and opens the working bookkeeping app locally on screen.'
-                    )
-                  }}
-                </p>
+          <!-- 视窗底部三栏精炼叙事带 -->
+          <div class="hl-video-digest">
+            <div v-for="vh in videoHighlights" :key="vh.step" class="hl-digest-item">
+              <span class="hl-digest-num hl-tabular">{{ vh.step }}</span>
+              <div>
+                <strong>{{ vh.title }}</strong>
+                <p>{{ vh.desc }}</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- ==================== 2. 精密定量技术指标矩阵 (TELEMETRY STRIP) ==================== -->
-    <section class="nx-telemetry-section">
-      <div class="nx-container">
-        <div class="nx-telemetry-grid">
-          <div v-for="m in kpiMetrics" :key="m.unit" class="nx-telemetry-card nx-glass-card">
-            <div class="nx-telemetry-top">
-              <span class="nx-telemetry-unit">{{ m.unit }}</span>
-              <span class="nx-telemetry-badge">{{ m.badge }}</span>
-            </div>
-            <div class="nx-telemetry-num">{{ m.num }}</div>
-            <div class="nx-telemetry-label">{{ m.label }}</div>
-            <p class="nx-telemetry-desc">{{ m.desc }}</p>
-          </div>
+        <!-- 模式 B：1:1 桌面客户端交互沙盒 -->
+        <div v-else class="hl-playground-wrap">
+          <ProductPlayground :lang="currentLang" :standalone="true" />
         </div>
       </div>
     </section>
 
-    <!-- ==================== 3. 五大核心工程引擎交互画廊 (INTERACTIVE ENGINE SPOTLIGHT) ==================== -->
-    <section id="capabilities" class="nx-spotlight-section">
-      <div class="nx-container">
-        <div class="nx-sec-header is-center">
-          <div class="nx-sec-kicker">
-            <span>CORE ENGINEERING ARCHITECTURE // 6-VOLUME HARNESS STACK</span>
-          </div>
-          <h2 class="nx-sec-title">
+    <!-- ==================== CHAPTER 02 · APPLE ASYMMETRIC BENTO GRID ==================== -->
+    <section id="benchmarks" class="hl-section hl-section-alt">
+      <div class="hl-container">
+        <div class="hl-sec-head">
+          <p class="hl-eyebrow">{{ t('可复现工程实证', '再現可能なエンジニアリング実証', 'Verifiable Engineering Proof') }}</p>
+          <h2 class="hl-sec-title">
             {{
               t(
-                '超越薄封装 API 套壳：深入底层状态机与数据契约的五大核心引擎',
-                '単なるAPIラッパーではない：状態マシンとデータ契約に基づく5大コアエンジン',
-                'Beyond Thin API Wrappers: Five Core State-Machine & Data-Contract Engines'
+                '每一项核心指标，皆附带原始日志与 SHA-256 验签。',
+                'すべての主要指標に、生ログと SHA-256 署名を添付。',
+                'Every headline number, backed by raw traces and SHA-256 proofs.'
               )
             }}
           </h2>
-          <p class="nx-sec-desc">
+          <p class="hl-sec-desc">
             {{
               t(
-                '点击下方五大引擎模块，直观检视 Helm 如何解决「机密代码外泄、长任务死循环、多代理并发写冲突、前缀缓存频繁失效、Office 全量盲改」五大工业痛点。',
-                '以下の5つのエンジンタブを切り替えて、「機密コード漏洩・長時間ループ・並列編集競合・キャッシュ無効化・Office文書の全体再生成」を解決する内部機構をご確認ください。',
-                'Explore how Helm solves the five hardest enterprise agent bottlenecks: data leakage, long-run loops, multi-agent collisions, KV-cache churn, and destructive document rewrites.'
+                '轻点任意卡片右下角的「+」，即可展开主流 Coding Agent 横向对标表、双零出网拓扑与四维消融实测明细。',
+                '各カード右下の「+」をクリックすると、主要エージェント比較表やゼロ・イグレス構成、アブレーション詳細が開きます。',
+                'Tap the "+" button on any card to inspect the full agent comparison table, zero-egress topologies, and ablation matrices.'
               )
             }}
           </p>
         </div>
 
-        <!-- 引擎切换胶囊栏 -->
-        <div class="nx-pillar-tabs">
+        <div class="hl-bento-grid">
+          <!-- Card 1 (Span 7): 84.0% SWE-bench -->
+          <article
+            class="hl-bento-card is-interactive hl-bento-span-7"
+            tabindex="0"
+            role="button"
+            @click="activeBentoSheet = 'swebench'"
+            @keydown.enter.prevent="activeBentoSheet = 'swebench'"
+            @keydown.space.prevent="activeBentoSheet = 'swebench'"
+          >
+            <div class="hl-bento-top">
+              <span class="hl-pill-tag is-ok">DOCKER --network none · n=50</span>
+              <span class="hl-bento-meta hl-tabular">DeepSeek-V4.1-Flash</span>
+            </div>
+
+            <div class="hl-bento-hero-stat hl-tabular">84.0%</div>
+            <h3 class="hl-bento-title">
+              {{ t('SWE-bench Verified Mini 单轮峰值解决率', 'SWE-bench Verified Mini ピーク解決率', 'SWE-bench Verified Mini Peak Pass@1') }}
+            </h3>
+            <p class="hl-bento-desc">
+              {{
+                t(
+                  '两轮独立全量均值 81.0% ± 4.2%（Django 核心子集稳定达 88.0%），Gold 目标文件定位率 98.0%，100/100 题次有效非空补丁率 100%。',
+                  '独立2回平均 81.0% ± 4.2%（Django 88.0%）、正解ファイル特定率 98.0%、有効非空パッチ率 100%（100/100）を達成。',
+                  '81.0% ± 4.2% two-run independent mean (88.0% on Django), 98.0% Gold file localization, and 100% (100/100) valid patches.'
+                )
+              }}
+            </p>
+
+            <div class="hl-bento-bars hl-tabular" aria-hidden="true">
+              <div class="hl-bar-row">
+                <span class="hl-bar-lbl">Helm R1 Clean</span>
+                <div class="hl-bar-track"><span class="hl-bar-fill is-accent" style="width: 84%"></span></div>
+                <strong>84.0%</strong>
+              </div>
+              <div class="hl-bar-row">
+                <span class="hl-bar-lbl">mini-SWE-agent (Same LLM)</span>
+                <div class="hl-bar-track"><span class="hl-bar-fill" style="width: 82%"></span></div>
+                <strong>82.0%</strong>
+              </div>
+              <div class="hl-bar-row">
+                <span class="hl-bar-lbl">Django Subset (2-Run)</span>
+                <div class="hl-bar-track"><span class="hl-bar-fill is-ok" style="width: 88%"></span></div>
+                <strong>88.0%</strong>
+              </div>
+            </div>
+
+            <div class="hl-bento-foot">
+              <span class="hl-bento-hint">{{ t('展开 6 大 Agent 对标表与代码导航微基准', '比較表・ナビゲーション詳細を表示', 'Compare 6 agents & navigation primitives') }}</span>
+              <span class="hl-plus-btn" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+              </span>
+            </div>
+          </article>
+
+          <!-- Card 2 (Span 5): 0 Byte Zero Egress -->
+          <article
+            class="hl-bento-card is-interactive hl-bento-span-5"
+            tabindex="0"
+            role="button"
+            @click="activeBentoSheet = 'privacy'"
+            @keydown.enter.prevent="activeBentoSheet = 'privacy'"
+            @keydown.space.prevent="activeBentoSheet = 'privacy'"
+          >
+            <div class="hl-bento-top">
+              <span class="hl-pill-tag">AIR-GAPPED &amp; CORPORATE LAN</span>
+            </div>
+
+            <div class="hl-bento-hero-stat hl-tabular">0 Byte</div>
+            <h3 class="hl-bento-title">
+              {{ t('公网外发机密数据量', '外部クラウドへの機密送信量', 'Public Cloud Data Egress') }}
+            </h3>
+            <p class="hl-bento-desc">
+              {{
+                t(
+                  '原生支持 127.0.0.1 本机离线 Ollama 与企业内网 vLLM 集群直连。API 凭证由 Windows DPAPI 系统级加密保护，预览子帧严格剥离令牌。',
+                  '127.0.0.1 ローカル Ollama と社内閉域網 vLLM 直結に対応。認証情報は Windows DPAPI で OS 暗号化保管。',
+                  'Native 127.0.0.1 Ollama and corporate LAN vLLM support, guarded by Windows DPAPI encryption and subframe token isolation.'
+                )
+              }}
+            </p>
+
+            <div class="hl-tier-pills">
+              <span>127.0.0.1 Ollama</span>
+              <span>LAN vLLM / RAGFlow</span>
+              <span>DPAPI SecretBox</span>
+            </div>
+
+            <div class="hl-bento-foot">
+              <span class="hl-bento-hint">{{ t('查看单机离线与企业内网双拓扑', '2つのゼロ・イグレス構成を見る', 'Inspect Topology A & B diagrams') }}</span>
+              <span class="hl-plus-btn" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+              </span>
+            </div>
+          </article>
+
+          <!-- Card 3 (Span 5): 97.74% Prefix Cache -->
+          <article
+            class="hl-bento-card is-interactive hl-bento-span-5"
+            tabindex="0"
+            role="button"
+            @click="activeBentoSheet = 'cache'"
+            @keydown.enter.prevent="activeBentoSheet = 'cache'"
+            @keydown.space.prevent="activeBentoSheet = 'cache'"
+          >
+            <div class="hl-bento-top">
+              <span class="hl-pill-tag is-accent">¥0.27 / {{ t('成功修复一题', '1問解決', 'Solved Issue') }}</span>
+              <span class="hl-bento-meta hl-tabular">120M+ Tokens</span>
+            </div>
+
+            <div class="hl-bento-hero-stat hl-tabular">97.74%</div>
+            <h3 class="hl-bento-title">
+              {{ t('实战四层只增前缀缓存命中率', '実戦 4層追記プレフィックスヒット率', 'Live 4-Layer Prefix Cache Hit Rate') }}
+            </h3>
+            <p class="hl-bento-desc">
+              {{
+                t(
+                  '跑完全套 50 道开源仓库修复仅需 ¥10.39。配合 7 级缓存经济学裁剪（100% 保住异常堆栈）与异构 RAG 100% 严格召回。',
+                  '50問完走コストはわずか ¥10.39。末尾例外を100%残す7段階圧縮と、完全正解率100%の4段階異種RAGを統合。',
+                  'Completes all 50 repository issues for ¥10.39 (~$1.45), paired with 100% traceback-retaining compaction and 100%-recall RAG.'
+                )
+              }}
+            </p>
+
+            <div class="hl-bento-foot">
+              <span class="hl-bento-hint">{{ t('查看缓存经济学公式与 RAG 四阶段消融', 'キャッシュ経済性とRAG詳細を見る', 'Explore cache economics & RAG v0→v3') }}</span>
+              <span class="hl-plus-btn" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+              </span>
+            </div>
+          </article>
+
+          <!-- Card 4 (Span 7): Visual Office & Worktree 3.04x -->
+          <article
+            class="hl-bento-card is-interactive hl-bento-span-7"
+            tabindex="0"
+            role="button"
+            @click="activeBentoSheet = 'workbench'"
+            @keydown.enter.prevent="activeBentoSheet = 'workbench'"
+            @keydown.space.prevent="activeBentoSheet = 'workbench'"
+          >
+            <div class="hl-bento-top">
+              <span class="hl-pill-tag">VISUAL WORKBENCH · 8-MATE WORKTREE</span>
+              <span class="hl-bento-meta hl-tabular">GAIA 90% · Polyglot 24/24</span>
+            </div>
+
+            <div class="hl-bento-hero-stat hl-tabular">3.04×</div>
+            <h3 class="hl-bento-title">
+              {{
+                t(
+                  '零拷贝 Worktree 并行加速 & 同屏「指哪改哪」文档工作台',
+                  'Worktree 3.04倍並列加速 ＆ 同画面 Office ピンポイント更新',
+                  'Zero-Copy Worktree Speedup & Surgical Visual Office Workbench'
+                )
+              }}
+            </h3>
+            <p class="hl-bento-desc">
+              {{
+                t(
+                  '4 队友并发写冲突率 0.0%（Windows Junction 零拷贝共享依赖）；右侧内建 7 格式原生预览，鼠标框选 PPT 形状或 Word 段落原地热更新（20/20 全通）。',
+                  '4メイト並列で書込競合 0.0%（Junction共有）。右ペインの7形式プレビュー上で PPT 図形や Word 段落を選択し即時部分更新（20/20 合格）。',
+                  '0.0% write collision across parallel teammates via Windows Junctions, plus 7 native editors with mouse-selected SSE hot-patching (20/20 pass).'
+                )
+              }}
+            </p>
+
+            <div class="hl-tier-pills hl-tabular">
+              <span>{{ t('502 项自动化单测', '502 単体テスト', '502 Pytest Suite') }}</span>
+              <span>{{ t('30/30 越权攻击拦截', '30/30 攻撃遮断', '30/30 Attack Block') }}</span>
+              <span>{{ t('Polyglot 6 语言 100%', 'Polyglot 100%', 'Polyglot 24/24') }}</span>
+            </div>
+
+            <div class="hl-bento-foot">
+              <span class="hl-bento-hint">{{ t('查看四维架构壁垒与多模态办公消融实证', '4次元フルスタック実証を見る', 'View 4-dimension full-stack ablations') }}</span>
+              <span class="hl-plus-btn" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+              </span>
+            </div>
+          </article>
+        </div>
+
+        <!-- 6 大权威实测中心静谧横幅 -->
+        <div class="hl-evidence-strip">
+          <div class="hl-evidence-text">
+            <strong>{{ t('全套 6 大权威实测套件在线审阅与原始证据包验签', '全6種ベンチマーク実証レポート＆SHA-256証跡センター', '6 Empirical Benchmark Suites & Live WebCrypto Verification') }}</strong>
+            <span>{{ t('涵盖 SWE-bench Mini、Pre-Cache、RAG 消融、Harness 护栏、Polyglot 与 GAIA，支持浏览器端实时校验 SHA-256。', 'SWE-bench・Pre-Cache・RAG・Harness・Polyglot・GAIA の全レポートと ZIP 証跡を公開。', 'Read full reports, inspect raw JSONL logs, and verify SHA-256 digests directly in your browser.') }}</span>
+          </div>
+          <a
+            class="hl-btn hl-btn-outline hl-btn-sm"
+            :href="`${prefix}/benchmarks/swebench-mini-v1`"
+            @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
+          >
+            <span>{{ t('进入实测报告中心', '実証レポートセンターへ', 'Open Benchmark Hub') }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CHAPTER 03 · APPLE PRO DARK CINEMA (5 CORE ENGINES) ==================== -->
+    <section id="capabilities" class="hl-pro-section">
+      <div class="hl-container">
+        <div class="hl-sec-head is-pro">
+          <p class="hl-pro-eyebrow">CORE STATE-MACHINE ARCHITECTURE · 5 ENGINES</p>
+          <h2 class="hl-pro-title">
+            {{
+              t(
+                '超越薄封装 API 套壳，深入状态机与数据契约。',
+                '単なるAPIラッパーを超える、状態マシンとデータ契約。',
+                'Beyond thin API wrappers. Engineered down to the state machine.'
+              )
+            }}
+          </h2>
+          <p class="hl-pro-desc">
+            {{
+              t(
+                '摒弃黑盒框架堆砌，5,227 行纯异步核心逐一攻克「机密外泄、长任务死循环、并发写冲突、缓存频繁失效与文档盲改」五大工业顽疾。',
+                '外部フレームワークに頼らない 5,227行の非同期コアが、「情報漏洩・無限ループ・並列競合・キャッシュ破断・文書破壊」を根本解決します。',
+                'Zero LangChain wrappers: a 5,227-LOC async core purpose-built to eliminate data leaks, infinite loops, merge collisions, KV churn, and blind document rewrites.'
+              )
+            }}
+          </p>
+        </div>
+
+        <!-- 5 大引擎胶囊切换器 -->
+        <div class="hl-pro-tabs" role="tablist">
           <button
             v-for="(item, idx) in featurePillars"
             :key="item.id"
             type="button"
-            class="nx-pillar-tab"
+            role="tab"
+            class="hl-pro-tab"
             :class="{ 'is-active': activeFeatureIdx === idx }"
+            :aria-selected="activeFeatureIdx === idx"
             @click="activeFeatureIdx = idx"
           >
             {{ item.shortTab }}
           </button>
         </div>
 
-        <!-- 当前选中引擎的左右双栏深度互动展示 -->
-        <div class="nx-spotlight-panel nx-glass-card">
-          <div class="nx-spotlight-left">
-            <div class="nx-spotlight-code">{{ activeFeature.code }}</div>
-            <h3 class="nx-spotlight-title">{{ activeFeature.title }}</h3>
-            <p class="nx-spotlight-desc">{{ activeFeature.desc }}</p>
+        <!-- 双栏深色剧场面板 -->
+        <div class="hl-pro-stage">
+          <div class="hl-pro-left">
+            <div class="hl-pro-code">{{ activeFeature.code }}</div>
+            <h3 class="hl-pro-stage-title">{{ activeFeature.title }}</h3>
+            <p class="hl-pro-stage-desc">{{ activeFeature.desc }}</p>
 
-            <ul class="nx-spotlight-checklist">
+            <ul class="hl-pro-list">
               <li v-for="(hl, hIdx) in activeFeature.highlights" :key="hIdx">
-                <span class="nx-check-icon">✓</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
                 <span>{{ hl }}</span>
               </li>
             </ul>
 
-            <div class="nx-spotlight-actions">
+            <div class="hl-pro-actions">
               <a
-                class="nx-btn nx-btn-primary"
+                class="hl-pro-pill-cta"
                 :href="activeFeature.docLink"
                 @click.prevent="navigate(activeFeature.docLink)"
               >
-                {{ activeFeature.docLabel }}
+                <span>{{ activeFeature.docLabel }}</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
               </a>
             </div>
           </div>
 
-          <div class="nx-spotlight-right">
-            <!-- 动态架构拓扑卡片组 -->
-            <div class="nx-visual-topology">
-              <div class="nx-visual-head">
-                <span class="nx-pulse-dot"></span>
-                <span>LIVE ARCHITECTURE PIPELINE // VERIFIED RUNTIME</span>
-              </div>
-
-              <div class="nx-visual-nodes">
-                <div
-                  v-for="(node, nIdx) in activeFeature.visualNodes"
-                  :key="nIdx"
-                  class="nx-visual-node-card"
-                >
-                  <div class="nx-vn-top">
-                    <span class="nx-vn-tag">{{ node.tag }}</span>
-                    <span class="nx-vn-status">{{ node.status }}</span>
-                  </div>
-                  <div class="nx-vn-main">
-                    <strong>{{ node.name }}</strong>
-                    <code>{{ node.addr }}</code>
-                  </div>
+          <div class="hl-pro-right">
+            <div class="hl-pro-nodes">
+              <div v-for="(node, nIdx) in activeFeature.visualNodes" :key="nIdx" class="hl-pro-node">
+                <div class="hl-pro-node-top">
+                  <span class="hl-pro-node-tag">{{ node.tag }}</span>
+                  <span class="hl-pro-node-status">{{ node.status }}</span>
+                </div>
+                <div class="hl-pro-node-main">
+                  <strong>{{ node.name }}</strong>
+                  <code>{{ node.addr }}</code>
                 </div>
               </div>
+            </div>
 
-              <!-- 常驻预览的源码契约视窗 -->
-              <div class="nx-contract-window">
-                <div class="nx-contract-bar">
-                  <div class="nx-contract-dots"><span></span><span></span><span></span></div>
-                  <span class="nx-contract-file">{{ activeFeature.snippetTitle }}</span>
-                  <span class="nx-contract-tag">SOURCE CONTRACT</span>
+            <div class="hl-pro-terminal">
+              <div class="hl-pro-term-bar">
+                <div class="hl-studio-dots" aria-hidden="true">
+                  <span class="is-r"></span><span class="is-y"></span><span class="is-g"></span>
                 </div>
-                <pre class="nx-contract-pre"><code>{{ activeFeature.snippet }}</code></pre>
+                <span class="hl-pro-term-file">{{ activeFeature.snippetTitle }}</span>
+                <span class="hl-pro-term-badge">CONTRACT</span>
               </div>
+              <pre class="hl-pro-pre"><code>{{ activeFeature.snippet }}</code></pre>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 4. 企业级信息安全与零出网部署拓扑 (SECURITY & DEPLOYMENT TOPOLOGY) ==================== -->
-    <section class="nx-topology-section">
-      <div class="nx-container">
-        <div class="nx-sec-header">
-          <div class="nx-sec-kicker">ZERO-TRUST SECURITY &amp; DEPLOYMENT TOPOLOGIES</div>
-          <h2 class="nx-sec-title">
+    <!-- ==================== CHAPTER 04 · HAIRLINE ARCHITECTURAL CONTRAST ==================== -->
+    <section id="why-helm" class="hl-section">
+      <div class="hl-container">
+        <div class="hl-sec-head">
+          <p class="hl-eyebrow">{{ t('核心选型对比', 'アーキテクチャ比較', 'Why Helm') }}</p>
+          <h2 class="hl-sec-title">
             {{
               t(
-                '满足严苛企业信息安全审查的两种「零外泄」私有化部署拓扑',
-                '厳格な「情報セキュリティ審査」をクリアする2つのゼロ・イグレス導入構成',
-                'Two Zero-Egress Deployment Topologies for Strict Enterprise Security Audits'
+                '既然有了 Codex 等通用工具，为什么还要选择 Helm？',
+                '既存のクラウド型ツールではなく、なぜ Helm を選ぶのか？',
+                'Why choose Helm over conventional cloud coding agents?'
               )
             }}
           </h2>
-          <p class="nx-sec-desc">
+          <p class="hl-sec-desc">
             {{
               t(
-                '无论是金融、汽车与制造业的完全物理断网终端，还是科技研发部门的企业内网 GPU 集群，Helm 均可在不经过任何外部云端中转服务器的前提下独立闭环运行。',
-                '外部インターネットから完全に隔離されたオフライン開発端末から、社内GPUサーバー（vLLM / OneAPI）を共有するイントラネット環境まで、外部クラウド中継サーバーを一切介さずに稼働します。',
-                'Whether on an air-gapped workstation or a shared internal GPU cluster, Helm operates 100% independently without any external cloud relay servers.'
+                '通用云端 Agent 擅长公网辅助编程；而 Helm 专为「本地/内网物理合规、同屏精细改文档、以及免费为你定制垂直行业工作流」而生。',
+                '汎用クラウドツールが対応できない「ローカル/社内LAN主権・Office同画面編集・業界特化ワークフローの無償共創」に特化しています。',
+                'Built for what generic cloud agents cannot offer: 100% local/LAN sovereignty, visual Office hot-patching, and free co-created industry workflows.'
               )
             }}
           </p>
         </div>
 
-        <div class="nx-topo-grid">
-          <!-- 拓扑 A：单机完全离线闭环 -->
-          <div class="nx-topo-card nx-glass-card">
-            <div class="nx-topo-header">
-              <span class="nx-topo-code">TOPOLOGY A // AIR-GAPPED WORKSTATION</span>
-              <span class="nx-badge is-emerald">{{ t('物理断网可用', '完全オフライン完結', '100% Air-Gapped') }}</span>
+        <!-- 无外框 1px 细分割线对比矩阵 -->
+        <div class="hl-hairline-matrix">
+          <div class="hl-matrix-head">
+            <div>{{ t('评估维度', '評価軸', 'Dimension') }}</div>
+            <div class="is-helm-head">
+              <span class="hl-helm-dot" aria-hidden="true"></span>
+              <span>Helm Desktop ({{ SITE_META.version }})</span>
             </div>
-            <h3 class="nx-topo-title">
-              {{ t('单机完全离线闭环模式（本机 Ollama 直连）', '端末内・完全オフライン完結モデル（ローカル Ollama 直結）', 'Standalone Air-Gapped Mode (Local Ollama)') }}
-            </h3>
-            <div class="nx-topo-boundary">
-              <div class="nx-topo-boundary-tag">
-                {{ t('物理终端边界 (127.0.0.1 回环 · 拔除网线可用)', 'ローカルPC境界内 (127.0.0.1 ループバック · LAN抜線稼働可)', 'Local PC Boundary (127.0.0.1 Loopback · Air-Gap Ready)') }}
-              </div>
-              <div class="nx-topo-flow">
-                <div class="nx-topo-box">
-                  <strong>Electron + Vue 3</strong>
-                  <span>Stone Workbench UI</span>
-                </div>
-                <div class="nx-topo-arrow">⇄</div>
-                <div class="nx-topo-box is-highlight">
-                  <strong>FastAPI Engine</strong>
-                  <span>127.0.0.1:8001</span>
-                </div>
-                <div class="nx-topo-arrow">⇄</div>
-                <div class="nx-topo-box">
-                  <strong>Local Ollama</strong>
-                  <span>127.0.0.1:11434</span>
-                </div>
-              </div>
-              <div class="nx-topo-foot">
-                <code>.hyn_agent/</code> — {{ t('会话 JSON · 双层记忆 · Office 快照 · 影子 Git 引用全本地落盘', '会話履歴 · 2層メモリ · 文書スナップショット · シャドウGit参照をすべてローカル保存', 'Sessions, 2-tier memory, file snapshots & shadow Git refs stored on local disk') }}
-              </div>
-            </div>
+            <div>{{ t('常规云端 / 通用 Coding Agent', '一般的なクラウド型 Agent', 'Conventional Cloud Agents') }}</div>
           </div>
 
-          <!-- 拓扑 B：企业内网集群共享 -->
-          <div class="nx-topo-card nx-glass-card">
-            <div class="nx-topo-header">
-              <span class="nx-topo-code">TOPOLOGY B // CORPORATE INTRANET CLUSTER</span>
-              <span class="nx-badge">{{ t('数据不出企业内网', '社内閉域網完結', 'Corporate LAN Only') }}</span>
+          <div
+            v-for="row in visibleCompareRows"
+            :key="row.dim"
+            class="hl-matrix-row"
+          >
+            <div class="hl-matrix-dim">{{ row.dim }}</div>
+            <div class="hl-matrix-helm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <span>{{ row.helm }}</span>
             </div>
-            <h3 class="nx-topo-title">
-              {{ t('企业内网集群模式（私有 vLLM / SGLang / RAGFlow）', '社内閉域網クラスタ共有モデル（社内 vLLM / SGLang / RAGFlow）', 'Corporate Intranet Cluster (Internal vLLM & RAGFlow)') }}
-            </h3>
-            <div class="nx-topo-boundary is-lan">
-              <div class="nx-topo-boundary-tag">
-                {{ t('企业防火墙内部局域网 (192.168.x.x / 10.x.x.x · 阻断公网出站)', '社内イントラネット境界 (外部インターネットへのデータ送信ゼロ)', 'Corporate Firewall Boundary (Zero Public Internet Egress)') }}
-              </div>
-              <div class="nx-topo-flow">
-                <div class="nx-topo-box">
-                  <strong>Helm Desktop Client</strong>
-                  <span>Developer PC (Local Git)</span>
-                </div>
-                <div class="nx-topo-arrow">⇄</div>
-                <div class="nx-topo-box is-highlight">
-                  <strong>LAN LLM Gateway</strong>
-                  <span>vLLM / SGLang / OneAPI</span>
-                </div>
-                <div class="nx-topo-arrow">+</div>
-                <div class="nx-topo-box">
-                  <strong>LAN RAGFlow</strong>
-                  <span>{{ t('企业内部技术文档库', '社内規定・設計書RAG', 'Internal Spec RAG') }}</span>
-                </div>
-              </div>
-              <div class="nx-topo-foot">
-                <code>lan_server</code> — {{ t('全团队共享企业内网 GPU 算力与知识库，机密代码 100% 留存内网', 'チーム全体で社内GPUリソースと知識ベースを共有し、機密コードは社外へ一切出ない', 'Share on-premise GPU clusters and RAG datasets across the team with zero external exposure') }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 4.5 权威软件工程评测：SWE-BENCH VERIFIED MINI & 代码导航实证 ==================== -->
-    <section id="benchmarks" class="nx-swebench-section">
-      <div class="nx-container">
-        <div class="nx-sec-header is-center">
-          <div class="nx-sec-kicker">
-            <span class="nx-pulse-dot"></span>
-            <span>EMPIRICAL BENCHMARK // SWE-BENCH VERIFIED MINI (N=50) · 2026-11</span>
-          </div>
-          <h2 class="nx-sec-title">
-            {{
-              t(
-                '硬核软件工程实证：SWE-bench Verified Mini 单轮峰值 84.0% Pass@1',
-                'ソフトウェア工学ベンチマーク実証：SWE-bench Verified Mini 84.0% Pass@1',
-                'Empirical Software Engineering Benchmark: 84.0% Pass@1 on SWE-bench Verified Mini'
-              )
-            }}
-          </h2>
-          <p class="nx-sec-desc">
-            {{
-              t(
-                '基于 MariusHobbhahn/swe-bench-verified-mini（50 题真实 GitHub 仓库 Issue）与严格物理断网容器（--network none），Helm 仅用高性价比的 DeepSeek-V4.1-Flash 即达到 84.0% 单轮峰值解决率（两轮独立均值 81.0% ± 4.2%），每修复一个真实 Bug 模型成本仅 ¥0.27–¥0.29。',
-                'MariusHobbhahn/swe-bench-verified-mini（実GitHubリポジトリ50課題）および完全ネットワーク隔離コンテナ（--network none）において、高コスパな DeepSeek-V4.1-Flash のみでピーク解決率 84.0%（独立2回平均 81.0% ± 4.2%）を達成。1課題解決あたりの推論コストはわずか ¥0.27〜¥0.29 です。',
-                'Evaluated on MariusHobbhahn/swe-bench-verified-mini (50 real GitHub issues) inside network-isolated Docker sandboxes (--network none), Helm achieves an 84.0% single-run peak Pass@1 (81.0% ± 4.2% 2-run mean) powered by cost-efficient DeepSeek-V4.1-Flash at just ¥0.27–¥0.29 per resolved bug.'
-              )
-            }}
-          </p>
-        </div>
-
-        <!-- 1. 核心战绩双栏记分牌：左栏 84.0% 旗舰巨幅卡 + 右栏 6 大定量指标矩阵 -->
-        <div class="nx-swebench-hero-grid">
-          <div class="nx-swebench-primary-card nx-glass-card">
-            <div class="nx-swebench-primary-top">
-              <span class="nx-swebench-kicker">PASS@1 PEAK SCORE // HYN_FLASH_R1_CLEAN</span>
-              <span class="nx-badge is-emerald">DOCKER --network none</span>
-            </div>
-
-            <div class="nx-swebench-giant-row">
-              <div class="nx-swebench-giant-num">84.0%</div>
-              <div class="nx-swebench-giant-meta">
-                <strong>{{ t('42 / 50 真实仓库 Issue 独立修复通过', '42 / 50 実リポジトリ課題を自律修正・テスト通過', '42 / 50 Real Repository Issues Resolved') }}</strong>
-                <span>Wilson 95% CI [71.49%, 91.66%] · DeepSeek-V4.1-Flash</span>
-              </div>
-            </div>
-
-            <div class="nx-swebench-run-breakdown">
-              <div class="nx-swebench-run-item">
-                <span class="nx-swebench-run-name">{{ t('Run 1 干净复测 (hyn_flash_r1_clean)', 'Run 1 クリーン評価 (hyn_flash_r1_clean)', 'Run 1 Clean (hyn_flash_r1_clean)') }}</span>
-                <code class="nx-swebench-run-val is-emerald">42 / 50 (84.00%) · ¥12.16</code>
-              </div>
-              <div class="nx-swebench-run-item">
-                <span class="nx-swebench-run-name">{{ t('Run 2 全门禁独立复跑 (hyn_flash_r2)', 'Run 2 完全ゲート独立再実行 (hyn_flash_r2)', 'Run 2 Full Gate (hyn_flash_r2)') }}</span>
-                <code class="nx-swebench-run-val">39 / 50 (78.00%) · ¥10.39</code>
-              </div>
-              <div class="nx-swebench-run-item">
-                <span class="nx-swebench-run-name">{{ t('两轮独立运行均值 ± 标准差', '独立2回実行の平均 ± 標準偏差', '2-Run Independent Mean ± SD') }}</span>
-                <code class="nx-swebench-run-val is-primary">40.5 / 50 (81.00% ± 4.24%)</code>
-              </div>
-              <div class="nx-swebench-run-item">
-                <span class="nx-swebench-run-name">{{ t('django/django 核心子集稳定性 (n=25)', 'django/django コア課題の再現性 (n=25)', 'django/django Core Subset Stability (n=25)') }}</span>
-                <code class="nx-swebench-run-val is-emerald">22 / 25 (88.00% ± 0.00%)</code>
-              </div>
-            </div>
-
-            <div class="nx-swebench-card-actions">
-              <a
-                class="nx-btn nx-btn-primary nx-swebench-btn"
-                :href="`${prefix}/benchmarks/swebench-mini-v1`"
-                @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-                <span>{{ t('查看完整实测报告与下载', '完全な評価レポート・DL', 'Read Full Report & Download') }}</span>
-              </a>
-              <a
-                class="nx-btn nx-btn-glass nx-swebench-btn"
-                :href="`${prefix}/benchmarks/swebench-mini-v1#evidence-bundle`"
-                @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1#evidence-bundle`)"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <path d="m9 12 2 2 4-4" />
-                </svg>
-                <span>{{ t('SHA-256 证据包校验与打包下载', 'SHA-256 証跡検証・ZIP一括DL', 'SHA-256 Evidence & ZIP Bundle') }}</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="nx-swebench-stats-grid">
-            <div
-              v-for="stat in swebenchKeyStats"
-              :key="stat.code"
-              class="nx-swebench-stat-card nx-glass-card"
-            >
-              <div class="nx-swebench-stat-top">
-                <span class="nx-swebench-stat-code">{{ stat.code }}</span>
-                <span class="nx-swebench-stat-badge">{{ stat.badge }}</span>
-              </div>
-              <div class="nx-swebench-stat-num">{{ stat.val }}</div>
-              <div class="nx-swebench-stat-label">{{ stat.lbl }}</div>
-              <p class="nx-swebench-stat-desc">{{ stat.sub }}</p>
+            <div class="hl-matrix-other">
+              <span>{{ row.other }}</span>
             </div>
           </div>
         </div>
 
-        <!-- 2. 2026 主流 Coding Agent 公开跑分与同模型受控横向对标表 -->
-        <div class="nx-swebench-table-card nx-glass-card">
-          <div class="nx-swebench-panel-head">
-            <div>
-              <div class="nx-swebench-panel-kicker">2026 INDUSTRY AGENT BENCHMARK COMPARISON // 公开跑分与受控实验对标</div>
-              <h3 class="nx-swebench-panel-title">
-                {{
-                  t(
-                    '2026 主流 Coding Agent 公开成绩与同模型 1:1 受控对标',
-                    '2026年 主要 Coding Agent 公開スコア＆同一モデル 1:1 対照比較',
-                    '2026 Public Coding Agent Scores & 1:1 Controlled Same-Model Comparison'
-                  )
-                }}
-              </h3>
-            </div>
-            <span class="nx-badge is-emerald">
-              {{ t('严格区分 n=50 与 n=500 样本口径', 'n=50 と n=500 の評価スコープを明記', 'Transparent n=50 vs n=500 Scope') }}
+        <div class="hl-matrix-more">
+          <button
+            type="button"
+            class="hl-btn hl-btn-tonal hl-btn-sm"
+            @click="showAllCompareRows = !showAllCompareRows"
+          >
+            <span>
+              {{
+                showAllCompareRows
+                  ? t('收起底层工程对比项', '詳細項目を折りたたむ', 'Show Fewer Dimensions')
+                  : t('展开全部 7 项底层工程架构对比', '全7項目の技術比較を展開する', 'Expand All 7 Architectural Dimensions')
+              }}
             </span>
-          </div>
-
-          <div class="nx-table-scroll">
-            <table class="nx-comp-table nx-swebench-table">
-              <thead>
-                <tr>
-                  <th>{{ t('Agent / 评测系统与模型', 'Agent / 評価対象・モデル', 'Agent / System & Model') }}</th>
-                  <th>{{ t('评测基准与样本量', 'ベンチマーク・母数', 'Benchmark Scope') }}</th>
-                  <th>{{ t('Pass@1 解决率', 'Pass@1 解決率', 'Pass@1 Resolved') }}</th>
-                  <th>{{ t('有效非空补丁与完整性', '有効パッチ率・健全性', 'Valid Patch Integrity') }}</th>
-                  <th>{{ t('单题推理成本', '1問あたり推論コスト', 'Cost per Task') }}</th>
-                  <th>{{ t('数据主权与部署形态', 'データ主権・稼働形態', 'Privacy & Deployment') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="row in swebenchComparisonRows"
-                  :key="row.name"
-                  :class="{ 'is-helm-row': row.isHelm }"
-                >
-                  <td>
-                    <div class="nx-swebench-agent-cell">
-                      <strong>{{ row.name }}</strong>
-                      <span
-                        class="nx-swebench-role-tag"
-                        :class="`is-${row.tagType}`"
-                      >
-                        {{ row.tag }}
-                      </span>
-                    </div>
-                  </td>
-                  <td><code>{{ row.dataset }}</code></td>
-                  <td class="nx-swebench-score-cell">
-                    <strong>{{ row.passRate }}</strong>
-                  </td>
-                  <td class="nx-swebench-patch-cell">
-                    <span>{{ row.patchHealth }}</span>
-                  </td>
-                  <td><code>{{ row.costPerTask }}</code></td>
-                  <td class="nx-swebench-note-cell">{{ row.privacy }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- 统计口径与方法论透明声明 -->
-          <div class="nx-swebench-methodology-note">
-            <div class="nx-swebench-method-col">
-              <strong>{{ t('口径透明声明（Sample Size Disclosure）：', '評価スコープの透明性に関する注記：', 'Sample Size & Scope Disclosure:') }}</strong>
-              <span>
-                {{
-                  t(
-                    'Helm 与同模型 mini-SWE-agent 对照组运行于 SWE-bench Verified Mini（50 题，覆盖 django/django 与 sphinx-doc/sphinx，单题 Docker --network none 物理断网验证）；Claude Code、OpenAI Codex 与 Cursor 的参考分来自 2026 年公开的 SWE-bench Verified 全量集（500 题，12 仓库）。不同样本容量的绝对百分比不可直接等同，因此我们同时公开了同题集、同模型（DeepSeek-V4.1-Flash）的官方 mini-SWE-agent 1:1 严格受控对标。',
-                    'Helm および同一モデル対照群（mini-SWE-agent）は SWE-bench Verified Mini（50課題、django/sphinx、Docker --network none 隔離検証）で計測。Claude Code、OpenAI Codex、Cursor の数値は 2026 年公開の SWE-bench Verified フルセット（500課題、12リポジトリ）の参考値です。母数の異なるスコアを単純比較しないよう、同一50課題・同一モデルによる mini-SWE-agent との 1:1 厳密対照実験を併記しています。',
-                    'Helm and the same-model mini-SWE-agent reference were evaluated on SWE-bench Verified Mini (50 issues across django/sphinx under Docker --network none). Scores for Claude Code, OpenAI Codex, and Cursor reflect publicly reported 2026 results on the full SWE-bench Verified set (500 issues across 12 repos). Because n=50 and n=500 percentages are not directly interchangeable, we provide a strict 1:1 same-model, same-subset comparison against official mini-SWE-agent.'
-                  )
-                }}
-              </span>
-            </div>
-            <div class="nx-swebench-method-col">
-              <strong>{{ t('配对统计检验（Paired Exact McNemar）：', '対応のある厳密 McNemar 検定：', 'Paired Exact McNemar Test:') }}</strong>
-              <span>
-                {{
-                  t(
-                    'Helm 两轮（84.0% / 78.0%，均值 81.0%）与同模型官方 mini-SWE-agent（82.0%）在配对精确 McNemar 检验下 p = 1.00 / p = 0.7266（无显著差异，统计完全打平）；但 mini-SWE-agent 因 80 步耗尽产生了 2 题空补丁（96.0% 有效率），而 Helm 在两轮 100 次任务中达成 100.0% 有效非空补丁、0 错误、0 超时，且完美修复了 mini-SWE-agent 耗尽步数的两道难题。',
-                    'Helm の2回実行（84.0% / 78.0%、平均 81.0%）と公式 mini-SWE-agent（82.0%）は、対応のある厳密 McNemar 検定で p = 1.00 / p = 0.7266（統計的有意差なし・同等水準）。一方、mini-SWE-agent が80ステップ上限到達により2件の空パッチ（有効率 96.0%）を出したのに対し、Helm は計100タスクすべてで 100.0% 有効な非空パッチ・エラー0・タイムアウト0を達成しました。',
-                    'Across both runs (84.0% / 78.0%, mean 81.0%), Helm is statistically tied with official mini-SWE-agent (82.0%) under paired exact McNemar testing (p = 1.00 / p = 0.7266). Crucially, whereas mini-SWE-agent produced 2 empty patches (96.0% valid rate) due to 80-step exhaustion, Helm achieved 100.0% (100/100) valid non-empty patches with 0 errors and 0 timeouts, resolving both tasks where mini-SWE-agent timed out.'
-                  )
-                }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. 底层确定性代码导航微基准测试（Step 1–2 Zero-API Micro-Benchmarks） -->
-        <div class="nx-swebench-micro-head">
-          <div class="nx-swebench-panel-kicker">DETERMINISTIC CODE NAVIGATION ENGINE // 零大模型噪声的底层工具链实测</div>
-          <h3 class="nx-swebench-panel-title">
-            {{
-              t(
-                '为什么平价模型也能跑出 84.0%？四大确定性代码导航基建消除了信息丢失与定位幻觉',
-                'なぜ軽量モデルで 84.0% を出せるのか？4つの決定的コードナビゲーション基盤が情報欠落と幻覚を排除',
-                'How a Cost-Efficient Model Reaches 84.0%: Four Deterministic Code Navigation Primitives'
-              )
-            }}
-          </h3>
-        </div>
-
-        <div class="nx-swebench-micro-grid">
-          <div
-            v-for="item in navMicroBenchmarks"
-            :key="item.code"
-            class="nx-swebench-micro-card nx-glass-card"
-          >
-            <div class="nx-swebench-micro-top">
-              <span class="nx-swebench-micro-tag">{{ item.code }}</span>
-              <span class="nx-swebench-micro-delta">{{ item.delta }}</span>
-            </div>
-            <div class="nx-swebench-micro-metric">{{ item.metric }}</div>
-            <h4 class="nx-swebench-micro-title">{{ item.title }}</h4>
-            <code class="nx-swebench-micro-ba">{{ item.beforeAfter }}</code>
-            <p class="nx-swebench-micro-desc">{{ item.desc }}</p>
-          </div>
-        </div>
-
-        <!-- 4. 四维全栈消融实测矩阵（RAG 4阶段 · 架构护栏 · Worktree 并行 · Polyglot & Office 多模态） -->
-        <div class="nx-swebench-micro-head" style="margin-top: 36px;">
-          <div class="nx-swebench-panel-kicker">FULL-STACK ARCHITECTURE &amp; MULTIMODAL ABLATION // 四维架构壁垒与多模态消融实证</div>
-          <h3 class="nx-swebench-panel-title">
-            {{
-              t(
-                '不止于单点 Coding：RAG 知识库 4 阶段消融、防死循环护栏、Worktree 并行与多模态办公实测',
-                'Codingだけではない：4段階RAGアブレーション、ループ防止、Worktree並列、Officeマルチモーダル実証',
-                'Beyond Coding: 4-Stage RAG Ablation, Loop Guard, Worktree Parallelism & Multimodal Office Benchmarks'
-              )
-            }}
-          </h3>
-        </div>
-
-        <div class="nx-swebench-micro-grid">
-          <div
-            v-for="item in fullStackAblationBenchmarks"
-            :key="item.code"
-            class="nx-swebench-micro-card nx-glass-card"
-          >
-            <div class="nx-swebench-micro-top">
-              <span class="nx-swebench-micro-tag">{{ item.code }}</span>
-              <span class="nx-swebench-micro-delta">{{ item.delta }}</span>
-            </div>
-            <div class="nx-swebench-micro-metric">{{ item.metric }}</div>
-            <h4 class="nx-swebench-micro-title">{{ item.title }}</h4>
-            <code class="nx-swebench-micro-ba">{{ item.beforeAfter }}</code>
-            <p class="nx-swebench-micro-desc">{{ item.desc }}</p>
-            <div class="nx-bench-card-actions">
-              <a
-                v-if="item.reportSlug"
-                :href="`${prefix}/benchmarks/${item.reportSlug}`"
-                class="nx-bench-card-btn is-primary"
-                @click.prevent="navigate(`${prefix}/benchmarks/${item.reportSlug}`)"
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                </svg>
-                <span>{{ item.primaryLabel || t('查看实测报告与下载', '評価レポート・DL', 'View Report & Download') }}</span>
-                <span>→</span>
-              </a>
-              <a
-                v-if="item.secondaryReportSlug"
-                :href="`${prefix}/benchmarks/${item.secondaryReportSlug}`"
-                class="nx-bench-card-btn"
-                @click.prevent="navigate(`${prefix}/benchmarks/${item.secondaryReportSlug}`)"
-              >
-                <span>{{ item.secondaryLabel }}</span>
-                <span>→</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 6 大权威实测报告与证据包下载中心总入口 -->
-        <div class="nx-bench-hub-banner nx-glass-card">
-          <div class="nx-bench-hub-info">
-            <span class="nx-badge is-emerald">SHA-256 SIGNED EVIDENCE HUB // 6 SUITES</span>
-            <div>
-              <strong>{{ t('6 大权威实测报告全文阅读与原始证据包下载中心', '全6種ベンチマーク実証レポート閲覧＆SHA-256証跡ダウンロードセンター', '6-Suite Empirical Benchmark Reader & Cryptographic Evidence Center') }}</strong>
-              <p>{{ t('支持在线审阅 SWE-bench Mini、Pre-Cache、RAG 4阶段消融、Harness 护栏消融、Polyglot 与 GAIA 完整报告，并提供一键下载 .md / .zip 证据包与浏览器端 SHA-256 实时验签。', 'SWE-bench・Pre-Cache・RAG・Harness・Polyglot・GAIA の全レポート閲覧、Markdown/ZIP一括ダウンロード、ブラウザ上での SHA-256 即時検証に対応しています。', 'Read all 6 formatted empirical reports online, verify SHA-256 checksums live via WebCrypto, and download Markdown or complete ZIP evidence bundles in one click.') }}</p>
-            </div>
-          </div>
-          <a
-            class="nx-btn nx-btn-primary"
-            :href="`${prefix}/benchmarks/swebench-mini-v1`"
-            @click.prevent="navigate(`${prefix}/benchmarks/swebench-mini-v1`)"
-          >
-            <span>{{ t('进入实测报告与下载中心 →', '実証レポート＆DLセンターへ →', 'Open Benchmark & Download Hub →') }}</span>
-          </a>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              :style="{ transform: showAllCompareRows ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 5. 企业级能力对比矩阵 (COMPARISON MATRIX) ==================== -->
-    <section class="nx-matrix-section">
-      <div class="nx-container">
-        <div class="nx-sec-header is-center">
-          <div class="nx-sec-kicker">ARCHITECTURAL BENCHMARK</div>
-          <h2 class="nx-sec-title">
-            {{ t('Helm 与常规云端 Coding Agent 的工程能力对比', 'Helm と一般的なクラウド型 Coding Agent のアーキテクチャ比較', 'Helm vs. Conventional Cloud Coding Agents') }}
-          </h2>
-        </div>
-
-        <div class="nx-matrix-card nx-glass-card">
-          <div class="nx-table-scroll">
-            <table class="nx-comp-table">
-              <thead>
-                <tr>
-                  <th>{{ t('核心评估维度', '技術評価項目', 'Evaluation Dimension') }}</th>
-                  <th class="is-helm-col">
-                    <span class="nx-helm-th-badge">{{ t(`HELM DESKTOP (${SITE_META.version} 内测版)`, `HELM DESKTOP (${SITE_META.version} ベータ版)`, `HELM DESKTOP (${SITE_META.version} Beta)`) }}</span>
-                  </th>
-                  <th>{{ t('常规云端 Agent / 简单 API 套壳', '一般的なクラウド型 / 簡易エージェント', 'Typical Cloud / Wrapper Agents') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>{{ t('权威基准实测与代码定位精度', 'SWE-bench 実証とコード特定精度', 'SWE-bench Verified Mini & Localization') }}</strong></td>
-                  <td class="is-helm-col">
-                    <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('SWE-bench Verified Mini 单轮峰值 84.0%（均值 81.0% ± 4.2%），Gold 文件修改命中率 98.0%，100% 有效非空补丁', 'SWE-bench Verified Mini ピーク 84.0%（平均 81.0% ± 4.2%）、Goldファイル特定率 98.0%、有効パッチ率 100%', '84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% mean), 98.0% Gold file hit rate, 100% valid patches') }}</strong>
-                  </td>
-                  <td class="is-dim">
-                    <span class="nx-status-no">✕</span>
-                    {{ t('缺乏确定性 AST 骨架与分页对齐机制，长任务易因截断盲区或步数耗尽产生空补丁', 'AST構造抽出やページング整合性がなく、長大ファイルの切り捨てやステップ枯渇で空パッチが発生', 'Lacks deterministic AST outlines and aligned pagination; prone to truncation blind spots and empty patches') }}
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>{{ t('数据主权与离线能力', 'データ主権とオフライン稼働', 'Data Sovereignty & Offline') }}</strong></td>
-                  <td class="is-helm-col">
-                    <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('100% 本地落盘，原生直连本机 Ollama 与企业内网 vLLM', '100% ローカル保存。Ollama / 社内閉域網 vLLM で完全オフライン稼働', '100% local disk; native offline Ollama & corporate LAN vLLM') }}</strong>
-                  </td>
-                  <td class="is-dim">
-                    <span class="nx-status-no">✕</span>
-                    {{ t('强制经过外部云端中转服务器，难以通过严苛的企业安全合规审查', '外部クラウド中継が必須で、企業の情報セキュリティ審査を通過困難', 'Requires external cloud relays; blocked by strict enterprise security') }}
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>{{ t('长任务流式容错与防死循环', '長時間ストリーム耐障害性・ループ防止', 'Long-Horizon Fault Tolerance') }}</strong></td>
-                  <td class="is-helm-col">
-                    <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('TurnHub 单调 seq 断线回放 + 写后 37ms 进程内语法门禁 + StuckDetector L2 自省', 'TurnHub seq 再接続 + 編集後 37ms 構文検査 + StuckDetector L2 ループ検知', 'TurnHub seq replay + 37ms in-process post-edit syntax guard + StuckDetector L2 retrospective') }}</strong>
-                  </td>
-                  <td class="is-dim">
-                    <span class="nx-status-no">✕</span>
-                    {{ t('刷新窗口或网络抖动即丢失任务，极易在同一报错命令上无限空转', '通信瞬断で処理が失われ、同一エラーコマンドの無限ループに陥りやすい', 'Loses state on hiccups; prone to infinite tool-error loops') }}
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>{{ t('版本快照与回滚机制', 'スナップショットとロールバック', 'Snapshot & Rollback Mechanism') }}</strong></td>
-                  <td class="is-helm-col">
-                    <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('无侵入影子 Git 检查点（临时 GIT_INDEX_FILE + 私有 refs，零工作区污染）', '非侵襲シャドウGitチェックポイント（作業ブランチ・Indexを一切汚さない）', 'Non-invasive Shadow Git Checkpoints (zero pollution to user HEAD/index)') }}</strong>
-                  </td>
-                  <td class="is-dim">
-                    <span class="nx-status-no">✕</span>
-                    {{ t('直接覆盖工作区文件，或产生大量临时 commit 污染用户分支历史', '作業ツリーを直接上書きするか、不要なコミットでブランチ履歴を汚す', 'Overwrites working tree directly or pollutes git commit history') }}
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>{{ t('多智能体并发与零信任权限', 'マルチエージェント並列性と権限ゲート', 'Multi-Agent Concurrency & Safety') }}</strong></td>
-                  <td class="is-helm-col">
-                    <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('最多 8 队友独立 .worktrees/（Windows Junction 零拷贝共享依赖 + 多方案并行对比）+ 5 档权限（含零缓存失效 Plan Mode，30/30 攻击 100% 拦截）', '最大8メイト独立 .worktrees/（Junctionゼロコピー共有＋並列比較）＋ 5段階権限（Plan Mode含む、攻撃阻止 30/30）', 'Up to 8 isolated .worktrees/ (Windows Junction zero-copy + compare_group) + 5-tier permissions (prefix-safe Plan Mode, 30/30 attack block)') }}</strong>
-                  </td>
-                  <td class="is-dim">
-                    <span class="nx-status-no">✕</span>
-                    {{ t('多代理共享同一目录互相覆盖，缺乏细粒度写盘与受保护路径硬门禁', '同一ディレクトリを同時編集して競合破損。細粒度な書込・保護パスゲートがない', 'Subagents overwrite each other in shared directories without protected-path gates') }}
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>{{ t('大模型 Prefix Cache 与保真裁剪', 'LLM Prefix Cache 保護と7段階圧縮', 'Prefix Cache & 7-Stage Compaction') }}</strong></td>
-                  <td class="is-helm-col">
-                    <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('四层只增前缀 + 7 级缓存经济学裁剪：SWE-bench 1.2 亿 Token 命中率 97.74%（单题 ¥0.27），60/40 头尾 100% 保住异常堆栈', '4層追記型プレフィックス＋7段階圧縮：SWE-bench 1.2億Tokenヒット率 97.74%（1問 ¥0.27）、末尾トレース 100% 保持', '4-layer append-only prefix + 7-stage cache-aware compactor: 97.74% SWE-bench cache hit (¥0.27/fix) & 100% traceback retention') }}</strong>
-                  </td>
-                  <td class="is-dim">
-                    <span class="nx-status-no">✕</span>
-                    {{ t('每轮动态改写 System Prompt 记忆区或暴力截断工具结果，导致缓存失效与末尾报错丢失', '毎ターン System Prompt を書き換えるか末尾を切り捨てるため、キャッシュ無効化とエラー欠損が発生', 'Mutates system prompt every turn and truncates tail stack traces') }}
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>{{ t('双模文档工作台与 MCP 开放生态', 'Officeワークベンチ＆MCP拡張エコシステム', 'Office Workbench & MCP Ecosystem') }}</strong></td>
-                  <td class="is-helm-col">
-                    <span class="nx-status-ok">✓</span>
-                    <strong>{{ t('7 格式原生预览编辑 + SelectionAnchor 热补丁（GAIA 90%）+ 全协议 MCP OAuth 2.0 + <1ms 零 RTT 技能预载 + 6 阶段 Hooks', '7形式ネイティブ編集＋SelectionAnchor（GAIA 90%）＋ MCP OAuth 2.0 ＋ <1ms スキル事前読込 ＋ 6段階 Hooks', '7 native editors + SelectionAnchor hot-patch (90% GAIA) + RFC 8252 MCP OAuth 2.0 + <1ms Zero-RTT skills + 6-stage Hooks') }}</strong>
-                  </td>
-                  <td class="is-dim">
-                    <span class="nx-status-no">✕</span>
-                    {{ t('仅输出纯文本代码，改一句话也需重写整份 PPT；缺乏 OAuth 加密存储与 MCP 工具上限防膨胀机制', 'テキスト出力のみでPPTの1箇所修正にも全体再生成が必要。OAuth暗号化やMCPツール肥大化防止がない', 'Text-only output requiring full file rewrites; lacks DPAPI OAuth vault and MCP tool caps') }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 6. 尊贵得体的「Architecture Whitepaper（工程架构白皮书 · 全 6 卷）」导览区 ==================== -->
-    <section class="nx-blueprint-section">
-      <div class="nx-container">
-        <div class="nx-blueprint-top">
+    <!-- ==================== CHAPTER 05 · 6-VOLUME ARCHITECTURE WHITEPAPER SHELF ==================== -->
+    <section class="hl-section hl-section-alt">
+      <div class="hl-container">
+        <div class="hl-shelf-header">
           <div>
-            <div class="nx-sec-kicker">ARCHITECTURE WHITEPAPER // 6-VOLUME ENGINEERING BLUEPRINT</div>
-            <h2 class="nx-sec-title">
-              {{
-                t(
-                  '深入源码级设计：Helm 工程架构白皮书（全 6 卷）',
-                  'ソースコードレベルの設計開示：Helm 技術アーキテクチャ白書（全6章）',
-                  'Source-Level Design Disclosure: Helm Architecture Whitepaper (6 Volumes)'
-                )
-              }}
+            <p class="hl-eyebrow">{{ t('源码级透明披露', 'ソースコードレベルの設計開示', 'Source-Level Blueprint') }}</p>
+            <h2 class="hl-sec-title">
+              {{ t('Helm 工程架构白皮书（全 6 卷）', 'Helm 技術アーキテクチャ白書（全6章）', 'Helm Architecture Whitepaper (6 Volumes)') }}
             </h2>
-            <p class="nx-sec-desc">
-              {{
-                t(
-                  '完整公开双进程 DPAPI 安全基座、三路并发长程状态机、Worktree 多智能体赛马对比、四层前缀缓存与 7 级裁剪、双模文档工作台以及 Plan Mode / MCP OAuth 生态的核心源码契约与矢量架构图。',
-                  'デュアルプロセス DPAPI 安全基盤、3経路並列状態マシン、Worktree マルチエージェント並列比較、4層キャッシュ＆7段階圧縮、Officeワークベンチ、Plan Mode / MCP OAuth の内部設計と架構図を全6章で詳述。',
-                  'Complete source-level specifications and architecture diagrams covering dual-process DPAPI security, 3-path state machines, Worktree compare teams, 4-layer prefix cache, dual-mode workbench, and Plan Mode / MCP OAuth.'
-                )
-              }}
-            </p>
           </div>
-
-          <div class="nx-blueprint-top-actions">
+          <div class="hl-shelf-actions">
             <a
-              class="nx-btn nx-btn-primary"
+              class="hl-btn hl-btn-ink hl-btn-sm"
               :href="`${prefix}/architecture/overview`"
               @click.prevent="navigate(`${prefix}/architecture/overview`)"
             >
-              {{ t('进入白皮书阅读中心 →', '白書リーダーで第1章から読む →', 'Open Architecture Reader →') }}
+              <span>{{ t('进入白皮书阅读器', '白書リーダーを開く', 'Open Whitepaper Reader') }}</span>
             </a>
-            <button type="button" class="nx-btn nx-btn-glass" @click="openAuditModal">
-              <span>{{ t('架构透明性与离线安全说明', '設計の透明性とオフライン安全仕様', 'Architecture & Offline Security Info') }}</span>
+            <button type="button" class="hl-btn hl-btn-outline hl-btn-sm" @click="openAuditModal">
+              <span>{{ t('离线安全与透明性说明', 'オフライン安全仕様', 'Offline Security Brief') }}</span>
             </button>
           </div>
         </div>
 
-        <div class="nx-blueprint-grid">
+        <div class="hl-vol-grid">
           <a
             v-for="ch in archChapters"
             :key="ch.id"
-            class="nx-blueprint-card nx-glass-card is-interactive"
+            class="hl-bento-card is-interactive hl-vol-card"
             :href="ch.link"
             @click.prevent="navigate(ch.link)"
           >
-            <div class="nx-bp-card-head">
-              <span class="nx-bp-vol">{{ ch.num }}</span>
-              <span class="nx-bp-badge">{{ ch.badge }}</span>
+            <div class="hl-vol-top">
+              <span class="hl-vol-num hl-tabular">{{ ch.num }}</span>
+              <span class="hl-vol-badge">{{ ch.badge }}</span>
             </div>
-            <h3 class="nx-bp-title">{{ ch.title }}</h3>
-            <p class="nx-bp-desc">{{ ch.subtitle }}</p>
-            <div class="nx-bp-modules">
-              <code v-for="m in ch.modules" :key="m">{{ m }}</code>
-            </div>
-            <div class="nx-bp-foot">
-              <span class="nx-bp-metric">{{ ch.metric }}</span>
-              <span class="nx-bp-read">{{ t('阅读本卷 →', '本章を読む →', 'Read Volume →') }}</span>
+            <h3 class="hl-vol-title">{{ ch.title }}</h3>
+            <p class="hl-vol-desc">{{ ch.subtitle }}</p>
+            <div class="hl-vol-foot">
+              <span class="hl-vol-metric hl-tabular">{{ ch.metric }}</span>
+              <span class="hl-vol-arrow" aria-hidden="true">→</span>
             </div>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 7. 核心问答 Q&A：为什么不用 Codex 等通用工具，而要用 Helm？ ==================== -->
-    <section id="why-helm" class="nx-qa-section">
-      <div class="nx-container">
-        <div class="nx-sec-header is-center">
-          <div class="nx-sec-kicker">
-            <span class="nx-pulse-dot"></span>
-            <span>CORE FAQ // 直面最核心的选型拷问</span>
-          </div>
-          <h2 class="nx-sec-title">
-            {{
-              t(
-                '核心问答 Q&A：既然有了 Codex 等大厂工具，为什么还要用 Helm？',
-                'よくある質問 Q&A：なぜ Codex などの既存ツールではなく Helm を選ぶのか？',
-                'Core Q&A: Why Choose Helm Over Conventional Tools Like Codex?'
-              )
-            }}
-          </h2>
-          <p class="nx-sec-desc">
-            {{
-              t(
-                '通用云端 Coding Agent 擅长在公网环境下为程序员辅助编码；而 Helm 聚焦于大厂通用工具无法覆盖的「本地/内网物理合规、可视化同屏精细交付、以及为你免费量身定制垂直行业工作流」三大真实痛点。',
-                '汎用クラウド型エージェントはパブリック環境でのコーディング支援に優れていますが、Helm は「完全オフライン/社内LANのデータ主権・Office同画面でのピンポイント部分更新・業界特化ワークフローの無償共創」という3つの領域に特化しています。',
-                'While cloud coding agents excel at general coding on the public internet, Helm is purpose-built for three areas they do not cover: 100% local/LAN data sovereignty, visual in-place Office hot-patching, and free co-created vertical industry workflows.'
-              )
-            }}
-          </p>
-        </div>
-
-        <div class="nx-qa-grid">
-          <!-- Q&A 理由 01：大厂通用 vs 垂直痛点免费定制 -->
-          <div class="nx-qa-card nx-glass-card">
-            <div class="nx-qa-top">
-              <span class="nx-qa-num">REASON 01 // VERTICAL CO-CREATION</span>
-              <span class="nx-badge is-emerald">{{ t('核心差异 · 行业痛点共创', '業界特化・無償開発', 'Free Vertical Co-Creation') }}</span>
-            </div>
-            <h3 class="nx-qa-title">
+    <!-- ==================== CHAPTER 06 · BETA CO-CREATION & COMMUNITY CHANNELS ==================== -->
+    <section id="community" class="hl-section">
+      <div class="hl-container">
+        <div class="hl-comm-layout">
+          <!-- 左栏：内测共创宣言与 3 条客观标准 -->
+          <div class="hl-comm-left">
+            <p class="hl-eyebrow">{{ t('内测共创计划', 'ベータ共創プログラム', 'Beta Co-Creation Program') }}</p>
+            <h2 class="hl-sec-title">
               {{
                 t(
-                  '大厂绝不会为你的细分工作流改一行代码，而 Helm 会免费为你写进下一版',
-                  '巨大テック企業は個別の業務フローに対応しないが、Helm はあなたの課題を次期標準機能として無償開発',
-                  'Big Tech Will Never Customize for Your Niche Workflow—Helm Builds Your Pain Points into the Next Release for Free'
+                  '你提真实行业痛点，我免费写进下一版。',
+                  'あなたの業界課題を、無償で次期標準機能へ。',
+                  'Share your workflow pain points. We build them in for free.'
                 )
               }}
-            </h3>
-            <p class="nx-qa-desc">
+            </h2>
+            <p class="hl-comm-lead">
               {{
                 t(
-                  'Codex 等产品只做面向全球的标准化底座，你提出任何针对特定岗位（如财务多表核对、电商运营、科研数据处理、教务排课、标书审查、制造业报表）的痛点都只会石沉大海。而在 Helm，下个版本开发什么完全由用户痛点决定——高票共性需求我直接免费为你开发成官方内置功能；紧急或私密的专属需求更可一对一联系作者私人订制。',
-                  'Codex 等の汎用ツールに特定の業界業務（経理照合、EC運営、研究データ処理、教育、製造帳票など）の要望を出しても反映されません。Helm では次期バージョンの機能をユーザーの声で決定し、共通性の高い課題は無償で公式標準機能として実装します。緊急・非公開の個別要件もメールで直接カスタム受注可能です。',
-                  'General cloud tools will never tailor features for specific industry workflows (finance reconciliation, operations, research, education, or manufacturing). With Helm, users decide the roadmap: high-vote industry pain points are built into official features for free, and urgent private workflows can be custom-built on demand.'
+                  'Helm 目前处于内测阶段，感谢每一位早期用户的支持！遇到任何问题请随时提出，我会第一时间优化修复。后续版本开发什么完全由大家决定——希望 AI 真正走进各行各业解决高频痛点。',
+                  '現在ベータテスト段階にあります。不具合や改善要望は迅速に修正いたします。今後の新機能は皆様の声で決定し、あらゆる業界の実務課題を無償で標準機能として実装してまいります。',
+                  'Helm is in active beta—every bug report is fixed promptly, and our roadmap is driven directly by users. High-value industry workflows are built into official releases at zero cost.'
                 )
               }}
             </p>
+
+            <div class="hl-rules-list">
+              <div class="hl-rules-caption">
+                {{ t('免费需求入选的 3 条客观透明标准', '無償機能開発の3つの客観的採択基準', '3 Objective Criteria for Free Feature Inclusion') }}
+              </div>
+              <div v-for="rule in coCreationRules" :key="rule.num" class="hl-rule-row">
+                <span class="hl-rule-idx hl-tabular">{{ rule.num }}</span>
+                <div>
+                  <strong>{{ rule.title }}</strong>
+                  <p>{{ rule.desc }}</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Q&A 理由 02：物理级数据主权与零环境折腾 -->
-          <div class="nx-qa-card nx-glass-card">
-            <div class="nx-qa-top">
-              <span class="nx-qa-num">REASON 02 // ZERO EGRESS &amp; MODEL FREEDOM</span>
-              <span class="nx-badge">{{ t('100% 本地/内网闭环 · ¥0.27/题', '完全ローカル・社内LAN · ¥0.27/件', '100% Local/LAN · ¥0.27/Fix') }}</span>
+          <!-- 右栏：三大官方直联卡片 -->
+          <div class="hl-comm-right">
+            <!-- Discord -->
+            <div class="hl-channel-card">
+              <div class="hl-channel-top">
+                <span class="hl-channel-kicker">DISCORD COMMUNITY</span>
+                <span class="hl-pill-tag">{{ t('全球开发者社区', '公式サーバー', 'Global Server') }}</span>
+              </div>
+              <h3>{{ t('Helm Discord 交流频道', 'Helm 公式 Discord', 'Helm Discord Server') }}</h3>
+              <p>{{ t('实时交流工作流配置、反馈使用体验、参与新功能投票并获取更新通知。', 'ワークフロー共有・質問相談・新機能投票・アップデート通知。', 'Discuss workflows, vote on upcoming features, and get release updates.') }}</p>
+              <code class="hl-channel-val">{{ SITE_META.discordUrl }}</code>
+              <div class="hl-channel-actions">
+                <a class="hl-btn hl-btn-ink hl-btn-sm" :href="SITE_META.discordUrl" target="_blank" rel="noopener">
+                  <span>{{ t('加入 Discord ↗', 'Discord に参加 ↗', 'Join Discord ↗') }}</span>
+                </a>
+                <button type="button" class="hl-btn hl-btn-outline hl-btn-sm" @click="copyText('discord', SITE_META.discordUrl)">
+                  <span>{{ copiedKey === 'discord' ? t('已复制', 'コピー済', 'Copied') : t('复制链接', 'リンクをコピー', 'Copy Link') }}</span>
+                </button>
+              </div>
             </div>
-            <h3 class="nx-qa-title">
-              {{
-                t(
-                  '机密数据 100% 不出本机/内网，平价国产模型亦能跑出 84.0% SWE-bench 水准',
-                  '機密データは100%端末・社内LAN内で完結。軽量モデルでも SWE-bench 84.0% の実力を発揮',
-                  '100% Local/Intranet Data Sovereignty & 84.0% SWE-bench Accuracy Without Costly Subscriptions'
-                )
-              }}
-            </h3>
-            <p class="nx-qa-desc">
-              {{
-                t(
-                  'Codex 与 Claude Code 强依赖海外网络、高昂美元订阅或高价闭源模型（单题修复成本常达数元），且要求将源码上传至外部云端。Helm 提供 Windows 标准 .exe 一键安装即用（内嵌完整 Python 3.13 运行时），不仅原生支持 127.0.0.1 本机离线 Ollama 与企业内网 vLLM，更能凭借确定性代码导航与 97.74% Prefix Cache 命中率，让高性价比的 DeepSeek-V4.1-Flash 跑出 84.0% SWE-bench Verified Mini 解决率（每修复一题仅 ¥0.27–¥0.29）。',
-                  '海外クラウド必須・高額なドル建て課金・社外サーバーへのデータ送信を伴うツールは、厳格なセキュリティ環境では利用できません。Helm は Python 3.13 内蔵の Windows .exe で即座に起動し、ローカル Ollama や社内閉域網 vLLM に直結可能。さらに決定的コードナビゲーションと 97.74% のキャッシュヒット率により、DeepSeek-V4.1-Flash で SWE-bench Verified Mini 84.0%（1課題あたり ¥0.27〜¥0.29）の圧倒的コストパフォーマンスを実現します。',
-                  'Cloud-only agents require external data uploads and costly flagship models. Helm installs as a turnkey Windows .exe (bundling Python 3.13) and connects natively to local Ollama or corporate LAN vLLM clusters. Backed by deterministic code navigation and a 97.74% Prefix Cache hit rate, it enables cost-efficient DeepSeek-V4.1-Flash to achieve 84.0% on SWE-bench Verified Mini at just ¥0.27–¥0.29 per resolved bug.'
-                )
-              }}
-            </p>
-          </div>
 
-          <!-- Q&A 理由 03：同屏可视化指哪改哪与零污染快照 -->
-          <div class="nx-qa-card nx-glass-card">
-            <div class="nx-qa-top">
-              <span class="nx-qa-num">REASON 03 // VISUAL WORKBENCH &amp; SHADOW GIT</span>
-              <span class="nx-badge">{{ t('同屏指哪改哪 · 零污染回滚', '同画面ピンポイント更新', 'Visual Anchor & Shadow Git') }}</span>
+            <!-- QQ 交流群 -->
+            <div class="hl-channel-card">
+              <div class="hl-channel-top">
+                <span class="hl-channel-kicker">QQ GROUP · CN</span>
+                <span class="hl-pill-tag is-ok">{{ t('实时答疑与需求征集', '迅速サポート・要望受付', 'Fast Q&A & Ideas') }}</span>
+              </div>
+              <h3>{{ t('官方 QQ 交流群', '公式 QQ 交流グループ', 'Official QQ Group') }}</h3>
+              <p>{{ t('遇到任何问题欢迎进群直联作者，群内定期征集高频痛点进行免费排期开发。', 'トラブル相談や無償開発リクエストの提案・投票を行える公式グループです。', 'Direct troubleshooting with the author and periodic free feature request polls.') }}</p>
+              <div class="hl-channel-inline">
+                <code class="hl-channel-val is-lg hl-tabular">{{ SITE_META.qqGroup }}</code>
+                <button type="button" class="hl-btn hl-btn-ink hl-btn-sm" @click="copyText('qq', SITE_META.qqGroup)">
+                  <span>{{ copiedKey === 'qq' ? t('已复制群号', 'コピー完了', 'Copied ID') : t('一键复制群号', '番号をコピー', 'Copy Group ID') }}</span>
+                </button>
+              </div>
             </div>
-            <h3 class="nx-qa-title">
-              {{
-                t(
-                  '告别“黑盒命令行盲改”：右侧画布可视化“指哪改哪” + 零分支污染的影子快照',
-                  'ブラックボックスなCUI操作からの脱却：右ペインでの選択範囲ピンポイント更新＆非侵襲シャドウGit',
-                  'Beyond Black-Box CLI Scripts: Visual Selection Hot-Patching & Non-Invasive Shadow Git'
-                )
-              }}
-            </h3>
-            <p class="nx-qa-desc">
-              {{
-                t(
-                  '即便让命令行 Agent 写脚本处理文档，也是看不见排版的“黑盒盲改”，经常改坏整篇格式或用临时提交污染 Git 历史。Helm 在右侧内建了高保真文档工作台，你可以一边看着渲染好的 PPT / Word / Excel，一边直接用鼠标框选某一页的某个形状或段落触发局部精准热替换；配合底层 refs/hyn/checkpoints/ 私有影子检查点与 5 版本文件快照，任何一步不满意均可毫秒级一键回退，且用户 git status 100% 保持干净。',
-                  'CUIベースのエージェントによるスクリプト生成はレイアウトが見えない「ブラックボックス処理」になりがちです。Helm は右ペインに高精細プレビューを備え、マウスで選択した PPT 図形や Word 段落だけをピンポイントで即時更新（SSEホットリロード）。さらにブランチ履歴を一切汚さないシャドウGitチェックポイントにより、いつでもワンクリックでロールバック可能です。',
-                  'Running blind CLI scripts to edit documents often breaks formatting or pollutes Git history. Helm features an integrated right-pane visual workbench where you highlight specific PPT shapes or Word paragraphs with your mouse for surgical SSE hot-patching—backed by zero-pollution Shadow Git refs and 5-version file snapshots for instant 1-click undo.'
-                )
-              }}
-            </p>
+
+            <!-- 私人订制与合作邮箱 -->
+            <div class="hl-channel-card">
+              <div class="hl-channel-top">
+                <span class="hl-channel-kicker">DIRECT EMAIL · CUSTOM DEV</span>
+                <span class="hl-pill-tag is-accent">{{ t('私人订制与商务合作', '個別カスタム受注・提携', 'Private Custom & Enterprise') }}</span>
+              </div>
+              <h3>{{ t('专属功能定制与企业合作邮箱', '個別カスタム開発・提携メール', 'Private Custom Dev & Inquiry Email') }}</h3>
+              <p>{{ t('涉及商业机密不便公开、紧急交付或企业内网私有化落地方案，请发送邮件一对一沟通。', '社外秘の個別仕様・緊急開発・社内閉域網への導入相談はメールでご連絡ください。', 'For confidential custom features, urgent deadlines, or enterprise LAN deployments.') }}</p>
+              <code class="hl-channel-val is-lg">{{ SITE_META.contactEmail }}</code>
+              <div class="hl-channel-actions">
+                <a class="hl-btn hl-btn-ink hl-btn-sm" :href="`mailto:${SITE_META.contactEmail}`">
+                  <span>{{ t('发送邮件联系', 'メールを送信', 'Send Email') }}</span>
+                </a>
+                <button type="button" class="hl-btn hl-btn-outline hl-btn-sm" @click="copyText('email', SITE_META.contactEmail)">
+                  <span>{{ copiedKey === 'email' ? t('已复制', 'コピー済', 'Copied') : t('复制邮箱', 'アドレスをコピー', 'Copy Email') }}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 8. 内测共创计划、公开「3 条客观入选标准」与官方联系方式 ==================== -->
-    <section id="community" class="nx-community-section">
-      <div class="nx-container">
-        <div class="nx-sec-header is-center">
-          <div class="nx-sec-kicker">
-            <span class="nx-pulse-dot"></span>
-            <span>BETA CO-CREATION, FAIR RULES &amp; COMMUNITY // 内测共创计划与官方交流渠道</span>
-          </div>
-          <h2 class="nx-sec-title">
-            {{
-              t(
-                '内测共创计划、3 条客观入选标准与联系方式',
-                'ベータ共創プログラム・無償開発の3つの客観基準・連絡先',
-                'Beta Co-Creation Plan, 3 Objective Selection Rules & Community Channels'
-              )
-            }}
-          </h2>
-        </div>
-
-        <!-- 升级版：内测致谢与「你提痛点 · 我免费开发」共创计划完整说明 -->
-        <div class="nx-remark-banner nx-glass-card">
-          <div class="nx-remark-header">
-            <span class="nx-badge is-emerald">
-              <span class="nx-pulse-dot"></span>
-              {{ t('内测致谢与「你提痛点 · 我免费开发」共创计划', 'ベータ版への感謝と「課題提案・無償開発」共創計画', 'BETA GRATITUDE & FREE PAIN-POINT CO-CREATION PLAN') }}
-            </span>
-            <span class="nx-remark-sub-pill">
-              {{ t('共性痛点免费开发 · 私人紧急需求邮箱定制', '共通課題は無償実装 · 個別緊急要件はメール受注', 'Public Pain Points Built Free · Private Urgent Needs via Email') }}
-            </span>
-          </div>
-          <div class="nx-remark-body">
-            <p>
-              {{
-                t(
-                  '目前处于内测阶段，感谢大家的支持与使用！大家在使用中遇到任何问题都请务必提出，我会尽快优化并修复。',
-                  '現在 Helm はベータテスト段階にあります。皆様のご支援とご利用に心より感謝申し上げます。ご利用中に何か問題やご不便がございましたらぜひお知らせください。迅速に改善・修正いたします。',
-                  'Helm is currently in beta—thank you so much for your support! Please report any issues or friction you encounter during use, and I will optimize and fix them as quickly as possible.'
-                )
-              }}
-            </p>
-            <p>
-              {{
-                t(
-                  '并计划在正式版本发布后，广泛征集大家的意见，由大家来决定下一个版本的新功能——希望 AI 能够真正服务各行各业，尽可能地解决大家的真实痛点。且在后续的升级中，我也会持续积极听取大家的意见，免费为大家开发新的功能！',
-                  '正式版リリースおよび今後のアップデートでは、皆様から広くご意見を募集し、次期バージョンの新機能を皆様と共に決定していきます。AI があらゆる業界に役立ち、日々の実務の痛みを解決できるよう、皆様の声を積極的に取り入れ、新しい機能を無償で開発・提供してまいります。',
-                  'Following the official release and across future upgrades, you decide what comes next! We will actively collect your feedback so AI can serve every industry and solve real-world pain points—continuously developing requested features for everyone for free.'
-                )
-              }}
-            </p>
-            <p class="is-highlight-line">
-              {{
-                t(
-                  '私人订制通道：要是大家有紧急交付、不便公开或高度定制化的私人订制功能，也请通过下方合作邮箱（785430621@qq.com）单独与我联系。',
-                  '個別カスタム開発窓口：緊急の納期対応や社外秘・個別仕様のプライベートカスタム機能開発をご希望の場合は、下記のメールアドレス（785430621@qq.com）まで個別にご連絡ください。',
-                  'Private Custom Development: If you have urgent, confidential, or highly tailored private custom feature requirements, please contact me directly via email (785430621@qq.com).'
-                )
-              }}
-            </p>
-          </div>
-        </div>
-
-        <!-- 专门版块：提前立规矩 · 公开「3 条客观入选标准」与透明排期机制 -->
-        <div class="nx-rules-panel nx-glass-card">
-          <div class="nx-rules-head">
-            <div>
-              <div class="nx-rules-kicker">TRANSPARENT &amp; OBJECTIVE SELECTION PROTOCOL // 公平透明原则</div>
-              <h3 class="nx-rules-title">
-                {{
-                  t(
-                    '提前立规矩：免费需求开发的「3 条客观入选标准」与大众投票机制',
-                    '公平・透明な選考ルール：無償機能開発における「3つの客観的採択基準」',
-                    'Fair & Transparent Rules: 3 Objective Criteria for Free Feature Development'
-                  )
-                }}
-              </h3>
-            </div>
-            <span class="nx-badge">
-              {{ t('同行附议投票排期 · 全程公开透明', 'コミュニティ投票順・完全透明', 'Community Vote Prioritized') }}
-            </span>
-          </div>
-
-          <div class="nx-rules-grid">
-            <div class="nx-rule-card">
-              <div class="nx-rule-num">RULE 01 // INDUSTRY COMMONALITY</div>
-              <h4 class="nx-rule-card-title">
-                {{ t('标准一：具备「行业共性」（拒绝孤立私活）', '基準 1：「業界の共通課題」であること（個別私用案件の除外）', 'Rule 1: Industry Commonality (No Isolated One-Offs)') }}
-              </h4>
-              <p class="nx-rule-card-desc">
-                {{
-                  t(
-                    '提出的痛点不能只是“仅某一家公司独有的奇葩内部流程”，而应是你所在行业（如财务、运营、科研、教育、法务、工程等）同行普遍每天都会遇到的高频痛点，开发后能作为内置功能造福整个行业。',
-                    '特定の1社のみに存在する特殊な内部手順ではなく、経理・運営・研究・教育・法務・製造など、同じ業界の多くの実務者が日々直面している共通の課題であることを基準とします。',
-                    'The pain point should not be an idiosyncratic workflow unique to a single company, but a high-frequency challenge shared by peers across your industry (finance, ops, research, education, legal, engineering) so the built-in feature benefits everyone.'
-                  )
-                }}
-              </p>
-            </div>
-
-            <div class="nx-rule-card">
-              <div class="nx-rule-num">RULE 02 // VERIFIABLE INPUT &amp; OUTPUT</div>
-              <h4 class="nx-rule-card-title">
-                {{ t('标准二：输入与输出边界清晰（附脱敏样例）', '基準 2：入出力の定義が明確であること（匿名化サンプルの提供）', 'Rule 2: Clear Input/Output Boundaries (With Sample Data)') }}
-              </h4>
-              <p class="nx-rule-card-desc">
-                {{
-                  t(
-                    '为避免需求模糊反复拉扯，提交共创需求时请明确：【所在行业/场景】+【目前耗时与痛点】+【一份脱敏的原始输入文件/表格样例】+【期望最终生成的输出成品样式】，以便快速复现与精准验收。',
-                    '曖昧な要件定義を防ぐため、【業界・業務シーン】＋【現状の手間】＋【機密情報を除いた入力ファイル例】＋【期待する出力結果のイメージ】を明記してご提案ください。',
-                    'To ensure rapid and accurate delivery, submissions must include: [Industry/Scenario] + [Current Bottleneck] + [Sanitized Input Sample File] + [Expected Output Format].'
-                  )
-                }}
-              </p>
-            </div>
-
-            <div class="nx-rule-card">
-              <div class="nx-rule-num">RULE 03 // PUBLIC SHARING &amp; VOTE QUEUE</div>
-              <h4 class="nx-rule-card-title">
-                {{ t('标准三：同意公开内置 & 按同行投票排期（私密紧急走邮箱）', '基準 3：標準機能としての公開＆投票順での開発（非公開・緊急はメールへ）', 'Rule 3: Public Built-In Sharing & Vote Queue (Private/Urgent via Email)') }}
-              </h4>
-              <p class="nx-rule-card-desc">
-                {{
-                  t(
-                    '免费开发的功能将内置于 Helm 正式版供所有人免费使用，并严格按照社群需求池中同行「+1 附议投票数」客观决定开发先后顺序。若您的需求涉及商业机密不便公开、属于企业独有业务或需紧急加塞交付，请走下方邮箱私人订制通道。',
-                    '無償開発した機能は全ユーザーが利用できるよう Helm に標準搭載され、開発の優先順位はコミュニティ内の「+1 賛同票数」で客観的に決定します。社外秘で公開できない要件や緊急の個別開発は、下記のメール窓口よりご依頼ください。',
-                    'Free co-created features are shipped in Helm for all users, prioritized objectively by community "+1" votes. If your requirement is confidential, proprietary to your business, or requires urgent expedited delivery, please use the private email channel below.'
-                  )
-                }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 三大官方联系方式与交流群卡片 -->
-        <div class="nx-community-grid">
-          <!-- 卡片 1：Helm Discord 交流群 -->
-          <div class="nx-community-card nx-glass-card">
-            <div class="nx-comm-head">
-              <span class="nx-comm-tag">DISCORD COMMUNITY</span>
-              <span class="nx-comm-status">{{ t('全球开发者社区', '公式サーバー', 'Official Server') }}</span>
-            </div>
-            <h3 class="nx-comm-title">
-              {{ t('Helm 的 Discord 交流群', 'Helm 公式 Discord 交流サーバー', 'Helm Discord Community') }}
-            </h3>
-            <p class="nx-comm-desc">
-              {{
-                t(
-                  '加入 Discord 频道，实时交流 Agent 工作流配置、反馈使用问题、探讨新功能想法并获取版本更新通知。',
-                  'Discord サーバーに参加して、ワークフローの共有、不具合や使い方の相談、新機能のアイデア提案を行えます。',
-                  'Join our Discord server to discuss workflows, report usage questions, share feature ideas, and get release updates.'
-                )
-              }}
-            </p>
-            <div class="nx-comm-value-box">
-              <span class="nx-comm-label">{{ t('Helm的discord交流群链接', 'Discord 招待リンク', 'Discord Invite Link') }}</span>
-              <code class="nx-comm-code">{{ SITE_META.discordUrl }}</code>
-            </div>
-            <div class="nx-comm-actions">
-              <a
-                class="nx-btn nx-btn-primary nx-comm-btn-main"
-                :href="SITE_META.discordUrl"
-                target="_blank"
-                rel="noopener"
-              >
-                <span>{{ t('立即加入 Discord 交流群 ↗', 'Discord に参加する ↗', 'Join Discord Server ↗') }}</span>
-              </a>
-              <button
-                type="button"
-                class="nx-btn nx-btn-glass nx-comm-btn-copy"
-                @click="copyContactText('discord', SITE_META.discordUrl)"
-              >
-                {{
-                  copiedContactKey === 'discord'
-                    ? t('✓ 已复制链接', '✓ コピー完了', '✓ Copied')
-                    : t('复制链接', 'リンクをコピー', 'Copy Link')
-                }}
-              </button>
-            </div>
-          </div>
-
-          <!-- 卡片 2：QQ 交流群 -->
-          <div class="nx-community-card nx-glass-card">
-            <div class="nx-comm-head">
-              <span class="nx-comm-tag">QQ GROUP // CN COMMUNITY</span>
-              <span class="nx-comm-status">{{ t('实时答疑与需求征集', '迅速サポート・要望受付', 'Fast Q&A & Ideas') }}</span>
-            </div>
-            <h3 class="nx-comm-title">
-              {{ t('QQ 交流群', 'QQ 開発者交流グループ', 'QQ Community Group') }}
-            </h3>
-            <p class="nx-comm-desc">
-              {{
-                t(
-                  '使用过程中遇到任何问题请积极进群联系，群内不定期征集特定需求进行免费开发，欢迎分享你的奇思妙想。',
-                  '利用上の疑問やトラブルの相談、不定期の無償機能開発リクエスト、アイデア共有のための公式 QQ グループです。',
-                  'Connect directly for troubleshooting, usage support, and periodic free feature request selection.'
-                )
-              }}
-            </p>
-            <div class="nx-comm-value-box">
-              <span class="nx-comm-label">{{ t('QQ交流群号', 'QQ グループ番号', 'QQ Group Number') }}</span>
-              <code class="nx-comm-code is-large">{{ SITE_META.qqGroup }}</code>
-            </div>
-            <div class="nx-comm-actions">
-              <button
-                type="button"
-                class="nx-btn nx-btn-primary nx-comm-btn-main"
-                @click="copyContactText('qq', SITE_META.qqGroup)"
-              >
-                <span>
-                  {{
-                    copiedContactKey === 'qq'
-                      ? t(`✓ 已复制群号：${SITE_META.qqGroup}`, `✓ コピー完了：${SITE_META.qqGroup}`, `✓ Copied: ${SITE_META.qqGroup}`)
-                      : t(`一键复制 QQ 群号 (${SITE_META.qqGroup})`, `QQグループ番号をコピー (${SITE_META.qqGroup})`, `Copy QQ Group ID (${SITE_META.qqGroup})`)
-                  }}
-                </span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 卡片 3：交流合作与私人订制邮箱 -->
-          <div class="nx-community-card nx-glass-card">
-            <div class="nx-comm-head">
-              <span class="nx-comm-tag">DIRECT EMAIL // CUSTOM DEV</span>
-              <span class="nx-comm-status">{{ t('私人订制与商务合作', '個別カスタム開発・提携', 'Custom Dev & Inquiry') }}</span>
-            </div>
-            <h3 class="nx-comm-title">
-              {{ t('交流合作邮箱', '交流・提携・カスタム開発メール', 'Collaboration & Custom Dev Email') }}
-            </h3>
-            <p class="nx-comm-desc">
-              {{
-                t(
-                  '私人订制专属功能、企业内网私有化落地方案、特定业务工作流定制及深度合作交流，请直接发送邮件联系。',
-                  'プライベートなカスタム機能開発（個別受注）、社内閉域網への導入相談、業務提携についてはメールにてご連絡ください。',
-                  'For private custom feature development, tailored enterprise workflows, or partnership inquiries, please contact via email.'
-                )
-              }}
-            </p>
-            <div class="nx-comm-value-box">
-              <span class="nx-comm-label">{{ t('交流合作邮箱', '連絡先メールアドレス', 'Contact Email') }}</span>
-              <code class="nx-comm-code is-large">{{ SITE_META.contactEmail }}</code>
-            </div>
-            <div class="nx-comm-actions">
-              <a
-                class="nx-btn nx-btn-primary nx-comm-btn-main"
-                :href="`mailto:${SITE_META.contactEmail}`"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <rect width="20" height="16" x="2" y="4" rx="2" />
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                </svg>
-                <span>{{ t('发送邮件联系', 'メールを送信する', 'Send Email') }}</span>
-              </a>
-              <button
-                type="button"
-                class="nx-btn nx-btn-glass nx-comm-btn-copy"
-                @click="copyContactText('email', SITE_META.contactEmail)"
-              >
-                {{
-                  copiedContactKey === 'email'
-                    ? t('✓ 已复制邮箱', '✓ コピー完了', '✓ Copied')
-                    : t('复制邮箱', 'アドレスをコピー', 'Copy Email')
-                }}
-              </button>
-            </div>
-          </div>
+    <!-- ==================== CHAPTER 07 · ANTIGRAVITY LIFTOFF CLOSING STAGE ==================== -->
+    <section class="hl-closing">
+      <div class="hl-container hl-closing-inner">
+        <img class="hl-closing-emblem" :src="SITE_META.brandIconUrl" alt="Helm Emblem" />
+        <h2 class="hl-closing-title">
+          {{
+            t(
+              '把长程工程与核心机密，重新握回自己手中。',
+              '自律開発とデータ主権を、あなたの手元へ。',
+              'Take the helm of your code, documents, and privacy.'
+            )
+          }}
+        </h2>
+        <p class="hl-closing-sub">
+          {{ SITE_META.sloganEn }}
+        </p>
+        <div class="hl-hero-ctas">
+          <a
+            class="hl-btn hl-btn-ink hl-btn-lg"
+            :href="`${prefix}/download`"
+            @click.prevent="navigate(`${prefix}/download`)"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M3 5.5 10.5 4.5v7H3v-6zm8.5-1.15L21 3v8.5h-9.5V4.35zM3 12.5h7.5v7L3 18.5v-6zm8.5 0H21V21l-9.5-1.35V12.5z" />
+            </svg>
+            <span>{{ t('免费下载 Windows 版', 'Windows 版を無料ダウンロード', 'Download Free for Windows') }}</span>
+          </a>
+          <a
+            class="hl-btn hl-btn-outline hl-btn-lg"
+            :href="`${prefix}/demo`"
+            @click.prevent="navigate(`${prefix}/demo`)"
+          >
+            <span>{{ t('全屏打开 1:1 交互沙盒', '1:1 サンドボックスを全画面で開く', 'Open Fullscreen 1:1 Sandbox') }}</span>
+          </a>
         </div>
       </div>
     </section>
+
+    <!-- Bento `+` 渐进披露详情抽屉 -->
+    <BentoSheetModal
+      :active-sheet="activeBentoSheet"
+      :lang="currentLang"
+      :prefix="prefix"
+      @close="activeBentoSheet = ''"
+      @navigate="navigate"
+    />
   </div>
 </template>
 
 <style scoped>
-.nx-home {
+.hl-home {
+  background-color: var(--hl-bg);
+  color: var(--hl-ink);
+}
+
+/* ==================== 通用章节骨架 ==================== */
+.hl-section {
+  padding: 96px 0;
+  background-color: var(--hl-bg);
+}
+
+.hl-section-alt {
+  background-color: var(--hl-surface-alt);
+}
+
+.hl-sec-head {
+  max-width: 760px;
+  margin-bottom: 48px;
+}
+
+/* ==================== CHAPTER 01 · HERO STAGE ==================== */
+.hl-hero {
   position: relative;
-  z-index: 5;
+  padding: 64px 0 88px;
+  background-color: var(--hl-bg);
+  overflow: hidden;
 }
 
-/* ==================== 1. HERO STAGE ==================== */
-.nx-hero-section {
-  padding: 56px 0 64px;
-}
-
-.nx-hero-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: 1020px;
-  margin: 0 auto 38px;
-}
-
-.nx-release-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 14px 5px 6px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.78);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 0 24px rgba(37, 99, 235, 0.2);
-  font-size: 12px;
-  color: #cbd5e1;
-  margin-bottom: 22px;
-  transition: all 180ms ease;
-}
-
-.nx-release-pill:hover {
-  border-color: #38bdf8;
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.nx-release-tag {
-  padding: 2px 9px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-}
-
-.nx-release-arrow {
-  color: #38bdf8;
-  font-family: var(--font-mono);
-}
-
-.nx-hero-brand-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 18px 8px 10px;
-  border-radius: 12px;
-  background: rgba(13, 20, 36, 0.82);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  margin-bottom: 22px;
-}
-
-.nx-hero-compass {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  border: 1px solid rgba(96, 165, 250, 0.4);
-}
-
-.nx-hero-brand-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.nx-hero-brand-name {
-  font-size: 15px;
-  font-weight: 850;
-  letter-spacing: 0.16em;
-  color: #ffffff;
-}
-
-.nx-hero-brand-sep {
-  color: #475569;
-}
-
-.nx-hero-brand-slogan {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  font-weight: 650;
-  color: #38bdf8;
-}
-
-.nx-hero-title {
-  margin: 0 0 20px;
-  font-size: clamp(32px, 4.4vw, 54px);
-  font-weight: 850;
-  line-height: 1.18;
-  letter-spacing: -0.03em;
-  background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 65%, #94a3b8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.nx-hero-subtitle {
-  margin: 0 0 30px;
-  font-size: clamp(15px, 1.45vw, 17.5px);
-  line-height: 1.72;
-  color: #94a3b8;
-  max-width: 880px;
-}
-
-.nx-hero-cta-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.nx-hero-verify-bar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px 10px;
-  padding: 7px 16px;
-  margin-bottom: 26px;
-  border-radius: 999px;
-  background: rgba(11, 18, 34, 0.78);
-  border: 1px solid rgba(52, 211, 153, 0.28);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
-  font-size: 12.5px;
-  color: #cbd5e1;
-}
-
-.nx-verify-safe {
-  color: #e2e8f0;
-}
-
-.nx-verify-safe strong {
-  color: #34d399;
-  font-weight: 750;
-}
-
-.nx-verify-sep {
-  color: #475569;
-  font-weight: 700;
-}
-
-.nx-verify-vt-link {
-  color: #38bdf8;
-  font-weight: 700;
-  text-decoration: none;
-  transition: color 150ms ease;
-}
-
-.nx-verify-vt-link:hover {
-  color: #7dd3fc;
-  text-decoration: underline;
-}
-
-.nx-verify-sha-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: rgba(5, 8, 17, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  color: #cbd5e1;
-  cursor: pointer;
-  transition: all 150ms ease;
-}
-
-.nx-verify-sha-btn:hover {
-  border-color: rgba(56, 189, 248, 0.55);
-}
-
-.nx-verify-sha-btn code {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: #f8fafc;
-}
-
-.nx-verify-copy-tag {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: #38bdf8;
-}
-
-.nx-verify-direct-link {
-  font-size: 12px;
-  font-weight: 650;
-  color: #94a3b8;
-  transition: color 150ms ease;
-}
-
-.nx-verify-direct-link:hover {
-  color: #ffffff;
-}
-
-.nx-hero-btn-main {
-  height: 50px;
-  padding: 0 26px;
-  font-size: 14.5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.nx-hero-btn-sub {
-  padding-left: 10px;
-  border-left: 1px solid rgba(255, 255, 255, 0.25);
-  font-size: 11.5px;
-  font-weight: 500;
-  color: #dbeafe;
-}
-
-.nx-hero-btn-sec {
-  height: 50px;
-  padding: 0 24px;
-  font-size: 14px;
-}
-
-.nx-stage-switcher {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px;
-  border-radius: 10px;
-  background: rgba(12, 19, 36, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-}
-
-.nx-stage-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 34px;
-  padding: 0 16px;
-  border: none;
-  border-radius: 7px;
-  background: transparent;
-  color: #94a3b8;
-  font-size: 12.5px;
-  font-weight: 650;
-  cursor: pointer;
-  transition: all 160ms ease;
-}
-
-.nx-stage-tab:hover {
-  color: #f8fafc;
-}
-
-.nx-stage-tab.is-active {
-  background: rgba(37, 99, 235, 0.28);
-  color: #ffffff;
-  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.42);
-}
-
-.nx-hero-stage-wrap {
-  position: relative;
-}
-
-.nx-stage-glow {
+.hl-azimuth-canvas {
   position: absolute;
-  inset: -24px 40px -20px;
-  background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.28) 0%, rgba(14, 165, 233, 0.08) 50%, transparent 75%);
-  filter: blur(36px);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.nx-stage-mount {
-  position: relative;
-  z-index: 2;
-}
-
-.nx-video-stage {
-  position: relative;
-  z-index: 2;
-  padding: 28px 30px 30px;
-  text-align: left;
-}
-
-.nx-video-hud {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 18px;
-  padding-bottom: 18px;
-  margin-bottom: 18px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-}
-
-.nx-video-hud-left {
-  max-width: 820px;
-}
-
-.nx-video-kicker-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.nx-video-duration-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: rgba(37, 99, 235, 0.22);
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #7dd3fc;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 750;
-}
-
-.nx-video-headline {
-  margin: 0;
-  font-size: clamp(19px, 2.2vw, 24px);
-  font-weight: 800;
-  line-height: 1.32;
-  letter-spacing: -0.02em;
-  color: #ffffff;
-}
-
-.nx-video-hud-right {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.nx-speed-group {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 5px 3px 10px;
-  border-radius: 9px;
-  background: rgba(8, 13, 26, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-}
-
-.nx-speed-label {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #64748b;
-  margin-right: 4px;
-}
-
-.nx-speed-btn {
-  height: 26px;
-  padding: 0 9px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: #94a3b8;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 150ms ease;
-}
-
-.nx-speed-btn:hover {
-  color: #ffffff;
-}
-
-.nx-speed-btn.is-active {
-  background: rgba(37, 99, 235, 0.35);
-  color: #38bdf8;
-  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.45);
-}
-
-.nx-video-switch-btn {
-  height: 34px;
-  padding: 0 14px;
-  font-size: 12px;
-}
-
-.nx-video-mission-bar {
-  display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  gap: 16px;
-  padding: 16px 18px;
-  margin-bottom: 18px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(11, 20, 40, 0.95) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-  align-items: center;
-}
-
-.nx-mission-prompt {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-right: 14px;
-  border-right: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.nx-mission-tag {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  color: #38bdf8;
-}
-
-.nx-mission-text {
-  margin: 0;
-  font-size: 13.5px;
-  font-weight: 650;
-  line-height: 1.55;
-  color: #f1f5f9;
-}
-
-.nx-mission-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.nx-mission-stat-item {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: rgba(6, 10, 21, 0.65);
-  border: 1px solid rgba(148, 163, 184, 0.14);
-}
-
-.nx-ms-val {
-  font-family: var(--font-mono);
-  font-size: 15.5px;
-  font-weight: 850;
-  color: #34d399;
-}
-
-.nx-ms-lbl {
-  font-size: 11px;
-  line-height: 1.35;
-  color: #94a3b8;
-}
-
-.nx-video-viewport {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(96, 165, 250, 0.32);
-  background: #020617;
-  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.85);
-}
-
-.nx-video-player {
-  display: block;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-height: 680px;
-  background: #000;
+  height: 580px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.nx-video-highlights {
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.nx-vh-card {
-  padding: 16px 18px;
-  border-radius: 11px;
-  background: rgba(11, 17, 32, 0.82);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.nx-vh-num {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  color: #38bdf8;
-  margin-bottom: 6px;
-}
-
-.nx-vh-title {
-  margin: 0 0 6px;
-  font-size: 14.5px;
-  font-weight: 750;
-  color: #ffffff;
-}
-
-.nx-vh-desc {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.58;
-  color: #94a3b8;
-}
-
-.nx-video-fallback {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 36px 16px;
+.hl-hero-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-.nx-video-fallback h3 {
-  margin: 16px 0 10px;
-  font-size: 20px;
-  color: #f8fafc;
-}
-
-.nx-video-fallback p {
-  margin: 0 0 22px;
-  font-size: 14px;
-  line-height: 1.65;
-  color: #94a3b8;
-}
-
-/* ==================== 2. TELEMETRY STRIP ==================== */
-.nx-telemetry-section {
-  padding: 20px 0 72px;
-}
-
-.nx-telemetry-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-}
-
-.nx-telemetry-card {
-  padding: 24px 22px;
-}
-
-.nx-telemetry-top {
-  display: flex;
+.hl-announce-pill {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  margin-bottom: 12px;
-}
-
-.nx-telemetry-unit {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #38bdf8;
-}
-
-.nx-telemetry-badge {
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--nx-emerald-soft);
-  border: 1px solid var(--nx-emerald);
-  color: var(--nx-emerald);
-  font-size: 10.5px;
-  font-weight: 650;
-  white-space: nowrap;
-  flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-telemetry-num {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 36px;
-  font-weight: 850;
-  letter-spacing: -0.03em;
-  color: var(--nx-text-1);
-  margin-bottom: 6px;
-}
-
-.nx-telemetry-label {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: #e2e8f0;
-  margin-bottom: 8px;
-}
-
-.nx-telemetry-desc {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: #94a3b8;
-}
-
-/* ==================== 3. INTERACTIVE ENGINE SPOTLIGHT ==================== */
-.nx-spotlight-section {
-  padding: 64px 0 80px;
-}
-
-.nx-pillar-tabs {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  max-width: 100%;
+  padding: 6px 14px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border);
+  font-size: 13px;
+  color: var(--hl-ink-2);
   margin-bottom: 28px;
+  transition: border-color 160ms var(--hl-ease), background-color 160ms var(--hl-ease), transform 160ms var(--hl-ease);
 }
 
-.nx-pillar-tab {
-  height: 42px;
-  padding: 0 20px;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(13, 20, 36, 0.72);
-  color: #cbd5e1;
-  font-size: 13.5px;
-  font-weight: 650;
-  cursor: pointer;
-  transition: all 180ms ease;
-}
-
-.nx-pillar-tab:hover {
-  border-color: rgba(56, 189, 248, 0.45);
-  color: #ffffff;
-}
-
-.nx-pillar-tab.is-active {
-  background: linear-gradient(180deg, rgba(37, 99, 235, 0.38) 0%, rgba(15, 76, 129, 0.52) 100%);
-  border-color: #38bdf8;
-  color: #ffffff;
-  box-shadow: 0 0 24px rgba(56, 189, 248, 0.24);
-}
-
-.nx-spotlight-panel {
-  display: grid;
-  grid-template-columns: 1.08fr 1fr;
-  gap: 36px;
-  padding: 38px;
-  align-items: center;
-}
-
-.nx-spotlight-code {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: #38bdf8;
-  margin-bottom: 10px;
-}
-
-.nx-spotlight-title {
-  margin: 0 0 14px;
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1.28;
-  color: #ffffff;
-}
-
-.nx-spotlight-desc {
-  margin: 0 0 20px;
-  font-size: 14.5px;
-  line-height: 1.7;
-  color: #cbd5e1;
-}
-
-.nx-spotlight-checklist {
-  list-style: none;
-  margin: 0 0 26px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-}
-
-.nx-spotlight-checklist li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: #e2e8f0;
-}
-
-.nx-check-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.16);
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #34d399;
-  font-size: 11px;
-  font-weight: 800;
-  flex: none;
-  margin-top: 1px;
-}
-
-.nx-spotlight-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.nx-visual-topology {
-  background: rgba(7, 11, 22, 0.85);
-  border: 1px solid rgba(96, 165, 250, 0.24);
-  border-radius: 14px;
-  padding: 20px;
-}
-
-.nx-visual-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #94a3b8;
-  margin-bottom: 14px;
-}
-
-.nx-visual-nodes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.nx-visual-node-card {
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.nx-vn-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  margin-bottom: 4px;
-}
-
-.nx-vn-tag {
-  color: #38bdf8;
-  font-weight: 700;
-}
-
-.nx-vn-status {
-  color: #34d399;
-  font-weight: 650;
-}
-
-.nx-vn-main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.nx-vn-main strong {
-  font-size: 13.5px;
-  color: #f8fafc;
-}
-
-.nx-vn-main code {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: #94a3b8;
-  background: rgba(2, 6, 23, 0.6);
-  padding: 2px 7px;
-  border-radius: 5px;
-}
-
-.nx-contract-window {
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: #050811;
-}
-
-.nx-contract-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: #0b1120;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-  font-family: var(--font-mono);
-  font-size: 11px;
-}
-
-.nx-contract-dots {
-  display: flex;
-  gap: 5px;
-}
-
-.nx-contract-dots span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #334155;
-}
-
-.nx-contract-file {
-  color: #cbd5e1;
-}
-
-.nx-contract-tag {
-  color: #38bdf8;
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.nx-contract-pre {
-  margin: 0;
-  padding: 14px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.55;
-  color: #e2e8f0;
-  overflow-x: auto;
-}
-
-/* ==================== 4. DEPLOYMENT TOPOLOGIES ==================== */
-.nx-topology-section {
-  padding: 64px 0 80px;
-}
-
-.nx-topo-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.nx-topo-card {
-  padding: 30px;
-}
-
-.nx-topo-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.nx-topo-code {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  color: #94a3b8;
-}
-
-.nx-topo-title {
-  margin: 0 0 18px;
-  font-size: 19px;
-  font-weight: 750;
-  color: #ffffff;
-}
-
-.nx-topo-boundary {
-  padding: 18px;
-  border-radius: 12px;
-  border: 1px dashed rgba(16, 185, 129, 0.45);
-  background: rgba(6, 12, 24, 0.75);
-}
-
-.nx-topo-boundary.is-lan {
-  border-color: rgba(56, 189, 248, 0.45);
-}
-
-.nx-topo-boundary-tag {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 650;
-  color: #34d399;
-  margin-bottom: 14px;
-}
-
-.nx-topo-boundary.is-lan .nx-topo-boundary-tag {
-  color: #38bdf8;
-}
-
-.nx-topo-flow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.nx-topo-box {
-  flex: 1;
-  padding: 12px 10px;
-  border-radius: 8px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.nx-topo-box.is-highlight {
-  border-color: #38bdf8;
-  background: rgba(37, 99, 235, 0.18);
-}
-
-.nx-topo-box strong {
-  font-size: 12.5px;
-  color: #ffffff;
-}
-
-.nx-topo-box span {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: #94a3b8;
-}
-
-.nx-topo-arrow {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  color: #38bdf8;
-  font-weight: 700;
-}
-
-.nx-topo-foot {
-  padding-top: 12px;
-  border-top: 1px solid rgba(148, 163, 184, 0.14);
-  font-size: 12px;
-  color: #cbd5e1;
-  line-height: 1.5;
-}
-
-.nx-topo-foot code {
-  font-family: var(--font-mono);
-  color: #38bdf8;
-}
-
-/* ==================== 4.5 SWE-BENCH VERIFIED MINI & CODE NAVIGATION ==================== */
-.nx-swebench-section {
-  padding: 64px 0 80px;
-  scroll-margin-top: 84px;
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-swebench-hero-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 1.45fr;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.nx-swebench-primary-card {
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
-  background: var(--nx-surface-score);
-  border-color: var(--nx-emerald-border);
-}
-
-.nx-swebench-primary-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.nx-swebench-kicker {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-  color: var(--nx-emerald-bright);
-}
-
-.nx-swebench-giant-row {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 8px 0;
-}
-
-.nx-swebench-giant-num {
-  font-family: var(--font-mono);
-  font-size: clamp(54px, 5.2vw, 72px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
-  background: var(--nx-gradient-score);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.nx-swebench-giant-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.nx-swebench-giant-meta strong {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--nx-text-1);
-}
-
-.nx-swebench-giant-meta span {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--nx-text-3);
-}
-
-.nx-swebench-run-breakdown {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px 16px;
-  border-radius: var(--nx-radius-md);
-  background: var(--nx-bg-code);
-  border: 1px solid var(--nx-border-subtle);
-}
-
-.nx-swebench-run-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--nx-border-subtle);
-  font-size: 12.5px;
-}
-
-.nx-swebench-run-item:last-child {
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.nx-swebench-run-name {
-  color: var(--nx-text-2);
-  font-weight: 600;
-}
-
-.nx-swebench-run-val {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 750;
-  color: var(--nx-text-1);
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-swebench-run-val.is-emerald {
-  color: var(--nx-emerald-bright);
-}
-
-.nx-swebench-run-val.is-primary {
-  color: var(--nx-primary-bright);
-}
-
-.nx-swebench-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.nx-swebench-btn {
-  flex: 1;
-  min-height: 40px;
-  font-size: 12.5px;
-  padding: 8px 14px;
-  text-align: center;
-}
-
-.nx-swebench-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.nx-swebench-stat-card {
-  padding: 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.nx-swebench-stat-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-}
-
-.nx-swebench-stat-code {
-  color: var(--nx-text-4);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.nx-swebench-stat-badge {
-  color: var(--nx-primary-bright);
-  font-weight: 750;
-  white-space: nowrap;
-}
-
-.nx-swebench-stat-num {
-  font-family: var(--font-mono);
-  font-size: 24px;
-  font-weight: 850;
-  color: var(--nx-text-1);
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  margin-top: 2px;
-}
-
-.nx-swebench-stat-label {
-  font-size: 13.5px;
-  font-weight: 750;
-  color: var(--nx-text-1);
-}
-
-.nx-swebench-stat-desc {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.55;
-  color: var(--nx-text-3);
-}
-
-.nx-swebench-table-card {
-  padding: 26px 28px;
-  margin-bottom: 32px;
-  border-color: var(--nx-primary-border);
-}
-
-.nx-swebench-panel-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.nx-swebench-panel-kicker {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  color: var(--nx-primary-bright);
-  margin-bottom: 4px;
-}
-
-.nx-swebench-panel-title {
-  margin: 0;
-  font-size: 19px;
-  font-weight: 800;
-  color: var(--nx-text-1);
-}
-
-.nx-swebench-table {
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-swebench-table th,
-.nx-swebench-table td {
-  padding: 14px 16px;
-  vertical-align: middle;
-}
-
-.nx-swebench-table tr.is-helm-row td {
-  background: var(--nx-primary-soft);
-  color: var(--nx-text-1);
-}
-
-.nx-swebench-table tr.is-helm-row td:first-child {
-  border-left: 3px solid var(--nx-emerald-bright);
-}
-
-.nx-swebench-agent-cell {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.nx-swebench-role-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: var(--nx-radius-xs);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 750;
-}
-
-.nx-swebench-role-tag.is-emerald {
-  background: var(--nx-emerald-soft);
-  border: 1px solid var(--nx-emerald-border);
-  color: var(--nx-emerald-bright);
-}
-
-.nx-swebench-role-tag.is-primary {
-  background: var(--nx-primary-soft);
-  border: 1px solid var(--nx-primary-border);
-  color: var(--nx-primary-bright);
-}
-
-.nx-swebench-role-tag.is-amber {
-  background: var(--nx-amber-soft);
-  border: 1px solid var(--nx-amber-border);
-  color: var(--nx-amber-bright);
-}
-
-.nx-swebench-role-tag.is-neutral {
-  background: var(--nx-bg-code);
-  border: 1px solid var(--nx-border-subtle);
-  color: var(--nx-text-3);
-}
-
-.nx-swebench-score-cell strong {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--nx-emerald-bright);
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-swebench-patch-cell span {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  color: var(--nx-text-2);
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-swebench-note-cell {
-  font-size: 12.5px;
-  line-height: 1.55;
-  color: var(--nx-text-2);
-  max-width: 380px;
-}
-
-.nx-swebench-methodology-note {
-  margin-top: 18px;
-  padding: 16px 18px;
-  border-radius: var(--nx-radius-md);
-  background: var(--nx-bg-code);
-  border: 1px solid var(--nx-border-subtle);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  font-size: 12px;
-  line-height: 1.62;
-  color: var(--nx-text-3);
-}
-
-.nx-swebench-method-col strong {
-  color: var(--nx-text-1);
-  display: block;
-  margin-bottom: 4px;
-}
-
-.nx-swebench-micro-head {
-  margin-bottom: 16px;
-}
-
-.nx-swebench-micro-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-.nx-swebench-micro-card {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.nx-swebench-micro-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-}
-
-.nx-swebench-micro-tag {
-  color: var(--nx-text-4);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.nx-swebench-micro-delta {
-  padding: 2px 7px;
-  border-radius: var(--nx-radius-xs);
-  background: var(--nx-emerald-soft);
-  color: var(--nx-emerald-bright);
-  font-weight: 750;
-  white-space: nowrap;
-}
-
-.nx-swebench-micro-metric {
-  font-family: var(--font-mono);
-  font-size: 24px;
-  font-weight: 850;
-  color: var(--nx-text-1);
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-swebench-micro-title {
-  margin: 0;
-  font-size: 14.5px;
-  font-weight: 750;
-  color: var(--nx-text-1);
-}
-
-.nx-swebench-micro-ba {
-  padding: 4px 8px;
-  border-radius: var(--nx-radius-xs);
-  background: var(--nx-bg-code);
-  border: 1px solid var(--nx-border-subtle);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--nx-primary-bright);
-  font-variant-numeric: tabular-nums;
-}
-
-.nx-swebench-micro-desc {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.58;
-  color: var(--nx-text-3);
-  flex: 1;
-}
-
-.nx-bench-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px solid var(--nx-border-subtle);
-}
-
-.nx-bench-card-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: var(--nx-radius-sm);
-  background: var(--nx-bg-row);
-  border: 1px solid var(--nx-border-mid);
-  color: var(--nx-text-2);
-  font-size: 12px;
-  font-weight: 650;
-  text-decoration: none;
-  transition:
-    background var(--nx-transition-fast),
-    border-color var(--nx-transition-fast),
-    color var(--nx-transition-fast),
-    transform var(--nx-transition-fast);
-}
-
-.nx-bench-card-btn:hover {
-  background: var(--nx-bg-row-hover);
-  border-color: var(--nx-border-strong);
-  color: var(--nx-text-1);
+.hl-announce-pill:hover {
+  border-color: var(--hl-border-strong);
+  background-color: var(--hl-surface-tonal);
   transform: translateY(-1px);
 }
 
-.nx-bench-card-btn.is-primary {
-  background: var(--nx-primary-soft);
-  border-color: var(--nx-primary-border);
-  color: var(--nx-primary-bright);
+.hl-announce-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-ok);
+  flex-shrink: 0;
 }
 
-.nx-bench-card-btn.is-primary:hover {
-  background: var(--nx-bg-active-soft);
-  border-color: var(--nx-primary-bright);
-  color: var(--nx-text-1);
+.hl-announce-strong {
+  font-weight: 650;
+  color: var(--hl-ink);
+  white-space: nowrap;
 }
 
-.nx-bench-hub-banner {
-  margin-top: 24px;
+.hl-announce-sep {
+  color: var(--hl-ink-muted);
+}
+
+.hl-announce-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--hl-ink-3);
+}
+
+.hl-hero-title {
+  margin: 0;
+  max-width: 980px;
+  font-size: clamp(32px, 4.5vw, 58px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.034em;
+  text-wrap: balance;
+  color: var(--hl-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hl-hero-title-sub {
+  color: var(--hl-ink-2);
+}
+
+.hl-hero-lead {
+  margin: 24px 0 0;
+  max-width: 680px;
+  font-size: clamp(15.5px, 1.35vw, 18px);
+  line-height: 1.64;
+  letter-spacing: -0.008em;
+  text-wrap: pretty;
+  color: var(--hl-ink-3);
+}
+
+.hl-hero-ctas {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hl-trust-strip {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-size: 12.5px;
+  color: var(--hl-ink-4);
+}
+
+.hl-trust-dot {
+  color: var(--hl-border-strong);
+}
+
+.hl-trust-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--hl-ok);
+  transition: opacity 150ms ease;
+}
+
+.hl-trust-link:hover {
+  opacity: 0.8;
+}
+
+.hl-trust-copy {
+  padding: 2px 8px;
+  border-radius: var(--hl-radius-pill);
+  border: 1px solid var(--hl-border);
+  background-color: var(--hl-surface-alt);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--hl-ink-3);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+
+.hl-trust-copy:hover {
+  border-color: var(--hl-border-strong);
+  background-color: var(--hl-surface-tonal);
+  color: var(--hl-ink);
+}
+
+.hl-stage-Controls {
+  margin-top: 44px;
+  scroll-margin-top: 72px;
+}
+
+.hl-stage-wrap {
+  position: relative;
+  z-index: 2;
+  margin-top: 20px;
+}
+
+.hl-studio-window {
+  border-radius: var(--hl-radius-xl);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border);
+  box-shadow: var(--hl-shadow-window);
+  overflow: hidden;
+}
+
+.hl-studio-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background-color: var(--hl-window-bar);
+  border-bottom: 1px solid var(--hl-border);
+}
+
+.hl-studio-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.hl-studio-dots span {
+  width: 11px;
+  height: 11px;
+  border-radius: var(--hl-radius-pill);
+}
+
+.hl-studio-dots .is-r {
+  background-color: var(--win-dot-red);
+}
+
+.hl-studio-dots .is-y {
+  background-color: var(--win-dot-amber);
+}
+
+.hl-studio-dots .is-g {
+  background-color: var(--win-dot-green);
+}
+
+.hl-studio-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--hl-ink-3);
+}
+
+.hl-speed-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border);
+  flex-shrink: 0;
+}
+
+.hl-speed-pill {
+  height: 24px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: var(--hl-radius-pill);
+  background: transparent;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--hl-ink-4);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.hl-speed-pill:hover {
+  color: var(--hl-ink);
+}
+
+.hl-speed-pill.is-active {
+  background-color: var(--hl-ink);
+  color: var(--hl-on-ink);
+}
+
+.hl-video-viewport {
+  width: 100%;
+  background-color: var(--hl-pro-code);
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hl-video-el {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.hl-video-fallback {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--hl-pro-text-2);
+  max-width: 48ch;
+}
+
+.hl-video-fallback p {
+  margin: 0 0 16px;
+  font-size: 14.5px;
+}
+
+.hl-fallback-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hl-video-digest {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--hl-border);
+  background-color: var(--hl-surface-subtle);
+}
+
+.hl-digest-item {
   padding: 20px 24px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-  border-color: var(--nx-primary-border);
-  background: var(--nx-bg-panel);
-}
-
-.nx-bench-hub-info {
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  max-width: 820px;
+  gap: 12px;
+  border-right: 1px solid var(--hl-border);
   min-width: 0;
 }
 
-.nx-bench-hub-info strong {
+.hl-digest-item:last-child {
+  border-right: 0;
+}
+
+.hl-digest-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--hl-accent);
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.hl-digest-item strong {
   display: block;
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--nx-text-1);
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--hl-ink);
   margin-bottom: 4px;
 }
 
-.nx-bench-hub-info p {
+.hl-digest-item p {
   margin: 0;
   font-size: 13px;
-  line-height: 1.6;
-  color: var(--nx-text-3);
+  line-height: 1.55;
+  color: var(--hl-ink-3);
 }
 
-/* ==================== 5. COMPARISON MATRIX ==================== */
-.nx-matrix-section {
-  padding: 56px 0 80px;
+/* ==================== CHAPTER 02 · APPLE BENTO GRID ==================== */
+.hl-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px;
 }
 
-.nx-matrix-card {
+.hl-bento-span-7 {
+  grid-column: span 7;
+}
+
+.hl-bento-span-5 {
+  grid-column: span 5;
+}
+
+.hl-bento-grid .hl-bento-card {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hl-bento-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.hl-bento-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--hl-ink-4);
+}
+
+.hl-bento-hero-stat {
+  font-size: clamp(44px, 4.8vw, 60px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  color: var(--hl-ink);
+  margin-bottom: 12px;
+}
+
+.hl-bento-title {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.018em;
+  color: var(--hl-ink);
+}
+
+.hl-bento-desc {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--hl-ink-3);
+}
+
+.hl-bento-bars {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border-radius: var(--hl-radius-md);
+  background-color: var(--hl-surface-alt);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hl-bar-row {
+  display: grid;
+  grid-template-columns: 168px 1fr 48px;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+}
+
+.hl-bar-lbl {
+  color: var(--hl-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hl-bar-track {
+  height: 7px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-border);
   overflow: hidden;
 }
 
-.nx-table-scroll {
-  overflow-x: auto;
+.hl-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-ink-4);
 }
 
-.nx-comp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13.5px;
+.hl-bar-fill.is-accent {
+  background-color: var(--hl-accent);
 }
 
-.nx-comp-table th,
-.nx-comp-table td {
-  padding: 16px 20px;
-  text-align: left;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+.hl-bar-fill.is-ok {
+  background-color: var(--hl-ok);
 }
 
-.nx-comp-table th {
-  background: rgba(8, 13, 26, 0.9);
-  font-size: 12px;
-  font-weight: 750;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #94a3b8;
+.hl-bar-row strong {
+  text-align: right;
+  font-weight: 650;
+  color: var(--hl-ink);
 }
 
-.nx-comp-table th.is-helm-col,
-.nx-comp-table td.is-helm-col {
-  background: rgba(37, 99, 235, 0.1);
-  border-left: 1px solid rgba(56, 189, 248, 0.25);
-  border-right: 1px solid rgba(56, 189, 248, 0.25);
-  color: #ffffff;
-}
-
-.nx-helm-th-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 750;
-}
-
-.nx-status-ok {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
-  font-size: 11px;
-  font-weight: 800;
-  margin-right: 8px;
-}
-
-.nx-status-no {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(244, 63, 94, 0.16);
-  color: #fb7185;
-  font-size: 11px;
-  font-weight: 800;
-  margin-right: 8px;
-}
-
-.nx-comp-table td.is-dim {
-  color: #94a3b8;
-}
-
-/* ==================== 6. ARCHITECTURE WHITEPAPER BLUEPRINT DECK ==================== */
-.nx-blueprint-section {
-  padding: 64px 0 36px;
-}
-
-.nx-blueprint-top {
+.hl-tier-pills {
+  margin-top: 20px;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 8px;
+}
+
+.hl-tier-pills span {
+  padding: 5px 11px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--hl-ink-2);
+}
+
+.hl-bento-foot {
+  margin-top: auto;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hl-bento-hint {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hl-ink-4);
+  transition: color 160ms ease;
+}
+
+.hl-bento-card.is-interactive:hover .hl-bento-hint {
+  color: var(--hl-ink);
+}
+
+.hl-evidence-strip {
+  margin-top: 20px;
+  padding: 22px 28px;
+  border-radius: var(--hl-radius-xl);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border-soft);
+  box-shadow: var(--hl-shadow-bento);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hl-evidence-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 420px;
+}
+
+.hl-evidence-text strong {
+  font-size: 15px;
+  color: var(--hl-ink);
+}
+
+.hl-evidence-text span {
+  font-size: 13.5px;
+  color: var(--hl-ink-3);
+}
+
+/* ==================== CHAPTER 03 · APPLE PRO DARK CINEMA ==================== */
+.hl-pro-section {
+  padding: 104px 0;
+  background-color: var(--hl-pro-bg);
+  color: var(--hl-pro-text);
+}
+
+.hl-sec-head.is-pro {
+  max-width: 760px;
   margin-bottom: 36px;
 }
 
-.nx-blueprint-top .nx-sec-desc {
-  max-width: 760px;
+.hl-pro-eyebrow {
+  margin: 0 0 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--hl-pro-accent);
 }
 
-.nx-blueprint-top-actions {
+.hl-pro-title {
+  margin: 0;
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.028em;
+  color: var(--hl-pro-text);
+}
+
+.hl-pro-desc {
+  margin: 14px 0 0;
+  font-size: 16px;
+  line-height: 1.64;
+  color: var(--hl-pro-muted);
+  max-width: 64ch;
+}
+
+.hl-pro-tabs {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.hl-pro-tab {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: var(--hl-radius-pill);
+  border: 1px solid var(--hl-pro-border);
+  background-color: var(--hl-pro-surface);
+  color: var(--hl-pro-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 165ms var(--hl-ease), color 165ms var(--hl-ease), border-color 165ms var(--hl-ease);
+}
+
+.hl-pro-tab:hover {
+  color: var(--hl-pro-text);
+  border-color: var(--hl-pro-border-strong);
+}
+
+.hl-pro-tab.is-active {
+  background-color: var(--hl-pro-text);
+  color: var(--hl-pro-bg);
+  border-color: var(--hl-pro-text);
+  font-weight: 600;
+}
+
+.hl-pro-stage {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 32px;
+  padding: 36px;
+  border-radius: var(--hl-radius-2xl);
+  background-color: var(--hl-pro-surface);
+  border: 1px solid var(--hl-pro-border);
+}
+
+.hl-pro-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hl-pro-code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--hl-pro-accent);
+  margin-bottom: 10px;
+}
+
+.hl-pro-stage-title {
+  margin: 0 0 12px;
+  font-size: clamp(21px, 2.3vw, 26px);
+  font-weight: 650;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  color: var(--hl-pro-text);
+}
+
+.hl-pro-stage-desc {
+  margin: 0 0 22px;
+  font-size: 14.5px;
+  line-height: 1.66;
+  color: var(--hl-pro-text-2);
+}
+
+.hl-pro-list {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
-.nx-blueprint-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+.hl-pro-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.56;
+  color: var(--hl-pro-text-2);
 }
 
-.nx-blueprint-card {
+.hl-pro-list svg {
+  color: var(--hl-pro-ok);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.hl-pro-actions {
+  margin-top: auto;
+}
+
+.hl-pro-pill-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 22px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-pro-text);
+  color: var(--hl-pro-bg);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: transform 165ms var(--hl-ease), opacity 165ms ease;
+}
+
+.hl-pro-pill-cta:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.hl-pro-right {
   display: flex;
   flex-direction: column;
-  padding: 26px;
+  gap: 16px;
+  min-width: 0;
 }
 
-.nx-bp-card-head {
+.hl-pro-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hl-pro-node {
+  padding: 14px 16px;
+  border-radius: var(--hl-radius-md);
+  background-color: var(--hl-pro-surface-2);
+  border: 1px solid var(--hl-pro-border);
+}
+
+.hl-pro-node-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
+}
+
+.hl-pro-node-tag {
   font-family: var(--font-mono);
   font-size: 11px;
+  color: var(--hl-pro-muted);
 }
 
-.nx-bp-vol {
-  color: #38bdf8;
-  font-weight: 800;
+.hl-pro-node-status {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--hl-pro-ok);
 }
 
-.nx-bp-badge {
-  color: #64748b;
-  font-size: 10px;
-}
-
-.nx-bp-title {
-  margin: 0 0 10px;
-  font-size: 18px;
-  font-weight: 750;
-  line-height: 1.35;
-  color: #ffffff;
-}
-
-.nx-bp-desc {
-  margin: 0 0 16px;
-  font-size: 13px;
-  line-height: 1.62;
-  color: #94a3b8;
-  flex: 1;
-}
-
-.nx-bp-modules {
+.hl-pro-node-main {
   display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 16px;
 }
 
-.nx-bp-modules code {
-  padding: 2px 7px;
-  border-radius: 5px;
-  background: rgba(7, 11, 20, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.14);
+.hl-pro-node-main strong {
+  font-size: 14px;
+  color: var(--hl-pro-text);
+}
+
+.hl-pro-node-main code {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: #cbd5e1;
+  font-size: 12px;
+  color: var(--hl-pro-accent);
 }
 
-.nx-bp-foot {
-  padding-top: 12px;
-  border-top: 1px solid rgba(148, 163, 184, 0.12);
+.hl-pro-terminal {
+  border-radius: var(--hl-radius-md);
+  background-color: var(--hl-pro-code);
+  border: 1px solid var(--hl-pro-border);
+  overflow: hidden;
+  margin-top: auto;
+}
+
+.hl-pro-term-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hl-pro-border);
 }
 
-.nx-bp-metric {
+.hl-pro-term-file {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--hl-pro-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hl-pro-term-badge {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #34d399;
+  color: var(--hl-pro-accent);
+  flex-shrink: 0;
 }
 
-.nx-bp-read {
-  font-weight: 700;
-  color: #38bdf8;
+.hl-pro-pre {
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.62;
+  color: var(--hl-pro-text-2);
 }
 
-/* ==================== 7. CORE Q&A: WHY HELM OVER CODEX ==================== */
-.nx-qa-section {
-  padding: 56px 0 36px;
-  scroll-margin-top: 84px;
+/* ==================== CHAPTER 04 · HAIRLINE ARCHITECTURAL CONTRAST ==================== */
+.hl-hairline-matrix {
+  border-top: 1.5px solid var(--hl-rule-ink);
 }
 
-.nx-qa-grid {
+.hl-matrix-head,
+.hl-matrix-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: 200px 1.25fr 1fr;
+  gap: 28px;
+  padding: 20px 8px;
+  border-bottom: 1px solid var(--hl-border);
+  align-items: start;
 }
 
-.nx-qa-card {
+.hl-matrix-head {
+  padding: 14px 8px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--hl-ink-4);
+}
+
+.hl-matrix-head .is-helm-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hl-ink);
+}
+
+.hl-helm-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-accent);
+}
+
+.hl-matrix-dim {
+  font-size: 14.5px;
+  font-weight: 650;
+  color: var(--hl-ink);
+}
+
+.hl-matrix-helm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--hl-ink);
+}
+
+.hl-matrix-helm svg {
+  color: var(--hl-accent);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.hl-matrix-other {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--hl-ink-4);
+}
+
+.hl-matrix-more {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ==================== CHAPTER 05 · 6-VOLUME WHITEPAPER SHELF ==================== */
+.hl-shelf-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.hl-shelf-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hl-vol-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.hl-vol-card {
+  padding: 26px;
   display: flex;
   flex-direction: column;
-  padding: 28px;
-  border-color: rgba(56, 189, 248, 0.28);
+  min-width: 0;
 }
 
-.nx-qa-top {
+.hl-vol-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 14px;
 }
 
-.nx-qa-num {
+.hl-vol-num {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-  color: #38bdf8;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--hl-accent);
 }
 
-.nx-qa-title {
-  margin: 0 0 12px;
-  font-size: 18.5px;
-  font-weight: 800;
-  line-height: 1.38;
-  color: #ffffff;
-}
-
-.nx-qa-desc {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.68;
-  color: #cbd5e1;
-  flex: 1;
-}
-
-/* ==================== 8. COMMUNITY, RULES & CUSTOM DEV ==================== */
-.nx-community-section {
-  padding: 48px 0 36px;
-  scroll-margin-top: 84px;
-}
-
-.nx-remark-banner {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 26px 30px;
-  margin-bottom: 24px;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.92) 45%, rgba(37, 99, 235, 0.16) 100%);
-  border: 1px solid rgba(52, 211, 153, 0.42);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
-    0 18px 48px -12px rgba(16, 185, 129, 0.18);
-}
-
-.nx-remark-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.nx-remark-sub-pill {
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: rgba(37, 99, 235, 0.22);
-  border: 1px solid rgba(56, 189, 248, 0.38);
+.hl-vol-badge {
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
-  color: #7dd3fc;
+  color: var(--hl-ink-4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.nx-remark-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.hl-vol-title {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.38;
+  letter-spacing: -0.015em;
+  color: var(--hl-ink);
 }
 
-.nx-remark-body p {
+.hl-vol-desc {
   margin: 0;
-  font-size: 14.5px;
-  font-weight: 600;
-  line-height: 1.7;
-  color: #f1f5f9;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--hl-ink-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.nx-remark-body p.is-highlight-line {
-  padding-top: 10px;
-  border-top: 1px dashed rgba(52, 211, 153, 0.3);
-  color: #34d399;
-  font-weight: 700;
+.hl-vol-foot {
+  margin-top: auto;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--hl-border-soft);
 }
 
-/* 3 条客观入选标准面板 */
-.nx-rules-panel {
-  padding: 28px 30px;
-  margin-bottom: 24px;
-  border-color: rgba(56, 189, 248, 0.32);
+.hl-vol-metric {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--hl-ink-2);
 }
 
-.nx-rules-head {
+.hl-vol-arrow {
+  font-size: 15px;
+  color: var(--hl-accent);
+  transition: transform 160ms var(--hl-ease);
+}
+
+.hl-vol-card:hover .hl-vol-arrow {
+  transform: translateX(3px);
+}
+
+/* ==================== CHAPTER 06 · BETA CO-CREATION & COMMUNITY ==================== */
+.hl-comm-layout {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.hl-comm-lead {
+  margin: 16px 0 32px;
+  font-size: 15.5px;
+  line-height: 1.68;
+  color: var(--hl-ink-2);
+  max-width: 60ch;
+}
+
+.hl-rules-list {
+  border-top: 1.5px solid var(--hl-rule-ink);
+}
+
+.hl-rules-caption {
+  padding: 14px 0;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--hl-ink-4);
+  border-bottom: 1px solid var(--hl-border);
+}
+
+.hl-rule-row {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  padding-bottom: 18px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--hl-border);
 }
 
-.nx-rules-kicker {
+.hl-rule-idx {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  color: #38bdf8;
-  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hl-accent);
+  padding-top: 2px;
+  flex-shrink: 0;
 }
 
-.nx-rules-title {
+.hl-rule-row strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--hl-ink);
+  margin-bottom: 4px;
+}
+
+.hl-rule-row p {
   margin: 0;
-  font-size: 20px;
-  font-weight: 800;
-  color: #ffffff;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--hl-ink-3);
 }
 
-.nx-rules-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+.hl-comm-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.nx-rule-card {
-  padding: 20px;
-  border-radius: 12px;
-  background: rgba(8, 13, 26, 0.78);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+.hl-channel-card {
+  padding: 24px 26px;
+  border-radius: var(--hl-radius-xl);
+  background-color: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border-soft);
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.nx-rule-num {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 750;
-  color: #34d399;
-  letter-spacing: 0.06em;
-}
-
-.nx-rule-card-title {
-  margin: 0;
-  font-size: 15.5px;
-  font-weight: 750;
-  color: #f8fafc;
-}
-
-.nx-rule-card-desc {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.65;
-  color: #94a3b8;
-}
-
-.nx-community-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.nx-community-card {
-  display: flex;
-  flex-direction: column;
-  padding: 28px;
-}
-
-.nx-comm-head {
+.hl-channel-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+
+.hl-channel-kicker {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  margin-bottom: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--hl-ink-4);
 }
 
-.nx-comm-tag {
-  color: #38bdf8;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-}
-
-.nx-comm-status {
-  color: #34d399;
+.hl-channel-card h3 {
+  margin: 2px 0 0;
+  font-size: 17px;
   font-weight: 650;
+  color: var(--hl-ink);
 }
 
-.nx-comm-title {
-  margin: 0 0 10px;
-  font-size: 20px;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.nx-comm-desc {
-  margin: 0 0 18px;
+.hl-channel-card p {
+  margin: 0;
   font-size: 13.5px;
-  line-height: 1.62;
-  color: #94a3b8;
-  flex: 1;
+  line-height: 1.58;
+  color: var(--hl-ink-3);
 }
 
-.nx-comm-value-box {
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: rgba(5, 8, 17, 0.85);
-  border: 1px solid rgba(56, 189, 248, 0.24);
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.nx-comm-label {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: #64748b;
-}
-
-.nx-comm-code {
+.hl-channel-val {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 7px 12px;
+  border-radius: var(--hl-radius-sm);
+  background-color: var(--hl-surface);
+  border: 1px solid var(--hl-border);
   font-family: var(--font-mono);
   font-size: 12.5px;
-  font-weight: 700;
-  color: #7dd3fc;
-  word-break: break-all;
+  color: var(--hl-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.nx-comm-code.is-large {
-  font-size: 16px;
-  color: #ffffff;
-  letter-spacing: 0.03em;
+.hl-channel-val.is-lg {
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.nx-comm-actions {
+.hl-channel-inline {
+  margin-top: 6px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hl-channel-inline .hl-channel-val {
+  margin-top: 0;
+  flex: 1 1 160px;
+}
+
+.hl-channel-actions {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
-.nx-comm-btn-main {
-  flex: 1;
-  height: 40px;
-  font-size: 13px;
+/* ==================== CHAPTER 07 · LIFTOFF CLOSING STAGE ==================== */
+.hl-closing {
+  padding: 96px 0 108px;
+  background-color: var(--hl-surface-alt);
+  border-top: 1px solid var(--hl-border);
 }
 
-.nx-comm-btn-copy {
-  height: 40px;
-  padding: 0 14px;
-  font-size: 12.5px;
-  flex: none;
+.hl-closing-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-@media (max-width: 1100px) {
-  .nx-video-mission-bar {
+.hl-closing-emblem {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--hl-radius-md);
+  box-shadow: var(--hl-shadow-xs);
+  margin-bottom: 22px;
+}
+
+.hl-closing-title {
+  margin: 0;
+  max-width: 840px;
+  font-size: clamp(28px, 3.6vw, 44px);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  color: var(--hl-ink);
+}
+
+.hl-closing-sub {
+  margin: 12px 0 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--hl-ink-4);
+}
+
+/* ==================== 响应式断点适配 (960×640 紧凑桌面 & 移动端) ==================== */
+@media (max-width: 1040px) {
+  .hl-bento-span-7,
+  .hl-bento-span-5 {
+    grid-column: span 6;
+  }
+
+  .hl-pro-stage,
+  .hl-comm-layout {
     grid-template-columns: 1fr;
   }
-  .nx-mission-prompt {
-    padding-right: 0;
-    padding-bottom: 12px;
-    border-right: none;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+
+  .hl-vol-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .nx-video-highlights {
+
+  .hl-video-digest {
     grid-template-columns: 1fr;
   }
-  .nx-telemetry-grid {
-    grid-template-columns: repeat(2, 1fr);
+
+  .hl-digest-item {
+    border-right: 0;
+    border-bottom: 1px solid var(--hl-border);
   }
-  .nx-spotlight-panel,
-  .nx-swebench-hero-grid,
-  .nx-swebench-methodology-note,
-  .nx-topo-grid,
-  .nx-qa-grid,
-  .nx-rules-grid,
-  .nx-community-grid {
-    grid-template-columns: 1fr;
-  }
-  .nx-swebench-stats-grid,
-  .nx-swebench-micro-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .nx-remark-banner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .nx-blueprint-grid {
-    grid-template-columns: repeat(2, 1fr);
+
+  .hl-digest-item:last-child {
+    border-bottom: 0;
   }
 }
 
-@media (max-width: 680px) {
-  .nx-video-stage {
-    padding: 18px;
+@media (max-width: 780px) {
+  .hl-section,
+  .hl-pro-section,
+  .hl-closing {
+    padding: 68px 0;
   }
-  .nx-mission-stats {
+
+  .hl-bento-span-7,
+  .hl-bento-span-5 {
+    grid-column: span 12;
+  }
+
+  .hl-vol-grid {
     grid-template-columns: 1fr;
   }
-  .nx-stage-switcher {
-    flex-direction: column;
-    width: 100%;
+
+  .hl-matrix-head {
+    display: none;
   }
-  .nx-stage-tab {
-    width: 100%;
-    justify-content: center;
-  }
-  .nx-telemetry-grid,
-  .nx-swebench-stats-grid,
-  .nx-swebench-micro-grid,
-  .nx-blueprint-grid {
+
+  .hl-matrix-row {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
-  .nx-spotlight-panel {
-    padding: 22px;
+
+  .hl-bar-row {
+    grid-template-columns: 128px 1fr 44px;
   }
-  .nx-topo-flow {
-    flex-direction: column;
+
+  .hl-studio-title {
+    display: none;
+  }
+
+  .hl-pro-stage {
+    padding: 24px 20px;
   }
 }
 </style>

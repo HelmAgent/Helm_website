@@ -1,9 +1,6 @@
 <script setup>
 /**
- * 「架构透明性与本地离线安全运行说明」弹窗组件（AuditModal.vue）。
- *
- * 职责与协作：
- * - 面向所有普通用户、开发者及企业安全团队，说明 Helm 的独立桌面软件分发形态、在线交互工作台以及 100% 本地闭环隐私保障。
+ * 「架构透明性与本地离线安全运行说明」Apple Sheet 抽屉弹窗（AuditModal.vue）。
  */
 import { computed } from 'vue'
 import { tt, getLangPrefix } from '../data/siteData.js'
@@ -24,138 +21,105 @@ function jumpTo(url) {
 </script>
 
 <template>
-  <transition name="nx-modal-fade">
+  <transition name="hl-modal-fade">
     <div
       v-if="isAuditModalOpen"
-      class="nx-modal-backdrop"
+      class="hl-modal-backdrop"
       role="dialog"
       aria-modal="true"
       @click.self="closeAuditModal"
     >
-      <div class="nx-modal-card nx-glass-card">
-        <div class="nx-modal-header">
-          <div class="nx-modal-badge-row">
-            <span class="nx-badge">ARCHITECTURE &amp; LOCAL SECURITY OVERVIEW</span>
-            <span class="nx-modal-code">ELECTRON 44 · VUE 3.5 · FASTAPI (502 UNIT TESTS · 52 TOOLS · 84.0% SWE-BENCH MINI)</span>
+      <div class="hl-modal-sheet">
+        <div class="hl-modal-head">
+          <div>
+            <div class="hl-eyebrow">{{ t('架构透明性与本地安全保障', '設計の透明性とローカル安全仕様', 'Architecture & Local Privacy') }}</div>
+            <h3 class="hl-modal-title">
+              {{
+                t(
+                  '独立桌面分发、源码级设计披露与 100% 本地闭环',
+                  '独立デスクトップ配布・6章設計開示・完全ローカル完結',
+                  'Standalone Desktop Release, 6-Vol Blueprint & Zero Egress'
+                )
+              }}
+            </h3>
           </div>
           <button
             type="button"
-            class="nx-modal-close"
-            @click="closeAuditModal"
+            class="hl-modal-close"
             aria-label="Close"
+            @click="closeAuditModal"
           >
             ✕
           </button>
         </div>
 
-        <h3 class="nx-modal-title">
-          {{
-            t(
-              '系统架构透明披露、在线交互工作台与本地离线隐私安全说明',
-              'システム設計の透明性、Web対話型ワークベンチ、およびローカル安全稼働について',
-              'Architecture Transparency, Interactive Web Workbench, and Local Privacy Overview'
-            )
-          }}
-        </h3>
-
-        <div class="nx-modal-grid">
-          <div class="nx-modal-item">
-            <div class="nx-modal-item-num">01 // ARCHITECTURE TRANSPARENCY &amp; WEB WORKBENCH</div>
+        <div class="hl-modal-cols">
+          <div class="hl-modal-box">
             <h4>
               {{
                 t(
-                  '独立桌面软件分发与全透明 6 卷架构白皮书',
-                  '独立デスクトップ製品の配布と全6章の技術設計白書',
-                  'Standalone Desktop Release & 6-Volume Blueprint'
+                  '独立桌面软件与全透明工程披露',
+                  '独立デスクトップ製品と全6章の技術白書',
+                  'Standalone Desktop & Full Architectural Disclosure'
                 )
               }}
             </h4>
             <p>
               {{
                 t(
-                  'Helm 作为开箱即用的桌面端独立软件面向广大个人与企业用户提供 Windows 安装包下载。为了让用户与技术审阅者在下载前即可直观了解软件含金量与底层可靠性，本站内建了「1:1 在线交互工作台」、「6 卷工程架构白皮书」与「6 大权威实测报告与下载中心」，完整公开双进程拓扑、Windows DPAPI 凭据金库、三路并发状态机、无侵入影子 Git 检查点、Worktree 并发团队及 MCP OAuth / Plan Mode 的核心实现。',
-                  'Helm はすぐに使えるデスクトップ製品として Windows インストーラー版を配布しています。導入前に操作感や内部の信頼性を確認いただけるよう、本サイトでは「1:1 対話型ワークベンチ」「全6章の技術アーキテクチャ白書」「6大ベンチマーク実証レポートセンター」を公開しています。',
-                  'Helm is distributed as a standalone Windows desktop application. So users and technical reviewers can inspect its engineering depth prior to installation, this site provides a 1:1 Interactive Workbench, a 6-volume Architecture Whitepaper, and a 6-Suite Empirical Benchmark Center.'
+                  'Helm 面向个人与企业研发团队提供开箱即用的 Windows 安装包（内嵌 Electron 44、Vue 3.5 与 Python 3.13 运行时）。为便于在安装前审阅底层工程质量，本站完整公开了「1:1 在线交互工作台」、「全 6 卷工程架构白皮书」以及「6 套 SHA-256 签名实测证据包」。',
+                  'Helm はすぐに使える Windows デスクトップ製品として提供されます。導入前に信頼性を検証いただけるよう、「1:1 対話型ワークベンチ」「全6章の技術白書」「SHA-256 署名付き6大ベンチマーク証跡」をすべて公開しています。',
+                  'Helm ships as a turnkey Windows installer bundling Electron 44, Vue 3.5, and Python 3.13. Prior to installation, you can inspect our 1:1 Interactive Workbench, 6-volume Architecture Whitepaper, and 6 SHA-256 signed benchmark bundles.'
                 )
               }}
             </p>
           </div>
 
-          <div class="nx-modal-item">
-            <div class="nx-modal-item-num">02 // 100% LOCAL PRIVACY &amp; RELIABILITY</div>
+          <div class="hl-modal-box">
             <h4>
               {{
                 t(
-                  '物理断网实机运行与工业级工程可靠性保障',
-                  '完全オフライン環境での実機稼働と高信頼エンジニアリング基盤',
-                  'Air-Gapped Local Execution & Industrial-Grade Reliability'
+                  '物理断网可用与硬件级凭据隔离',
+                  '完全オフライン稼働と DPAPI 暗号化保護',
+                  'Air-Gapped Execution & OS-Level Credential Vault'
                 )
               }}
             </h4>
             <p>
               {{
                 t(
-                  'Helm 内置完整的 Python 3.13 FastAPI 异步运行时与 502 项自动化核心单测（SWE-bench Verified Mini 实测峰值 84.0% Pass@1，两轮均值 81.0% ± 4.2%），支持连接本机 Ollama 或企业内网大模型在物理断网环境下独立闭环运行（含长周期代码开发、System Doctor 免管理员工具链自愈、影子 Git 检查点与 Office 文档局部 AI 热修改），确保核心代码与机密文档 100% 留存本地。',
-                  'Helm は Python 3.13 FastAPI 非同期ランタイムと 502件の自動単体テスト検証済みコアエンジン（SWE-bench Verified Mini ピーク 84.0% Pass@1、2回平均 81.0% ± 4.2%）を内蔵しています。ローカルの Ollama や社内閉域網 LLM と連携し、完全オフライン環境でも自律開発と Office 文書更新が完結します。',
-                  'Bundling an embedded Python 3.13 FastAPI runtime backed by 502 automated unit tests and proven at 84.0% peak Pass@1 on SWE-bench Verified Mini (81.0% 2-run mean), Helm runs 100% locally with Ollama or corporate LAN models with zero cloud relay.'
+                  '核心引擎由 502 项自动化单测严密守护（SWE-bench Verified Mini 峰值 84.0% Pass@1）。原生直连 127.0.0.1 本机 Ollama 或企业内网 vLLM，拔掉网线亦可独立完成代码重构、影子 Git 检查点与 Office 局部热修改；所有密钥经 Windows DPAPI 硬件账户级加密，写盘日志自动脱敏。',
+                  '502件の単体テストで検証されたコアエンジン（SWE-bench Mini ピーク 84.0%）を搭載。ローカル Ollama や社内閉域網 vLLM と連携し、LAN抜線状態でも開発と Office 部分更新が完結。認証情報は Windows DPAPI で暗号化されます。',
+                  'Backed by 502 pytest tests and proven at 84.0% peak Pass@1 on SWE-bench Mini, Helm runs 100% locally over 127.0.0.1 Ollama or corporate LAN GPUs, encrypting credentials via Windows DPAPI.'
                 )
               }}
             </p>
           </div>
         </div>
 
-        <div class="nx-modal-bench-note">
-          <span class="nx-modal-bench-tag">VERIFIABLE BENCHMARK</span>
-          <span>
-            {{
-              t(
-                '本站全部 6 套权威评测（SWE-bench 84.0%、Pre-Cache 89.58%、RAG 100%、Harness 消融、Polyglot 24/24、GAIA 27/30）均提供在线阅读、浏览器端 SHA-256 实时校验与完整 ZIP 证据包下载：',
-                '本サイトの全6種のベンチマーク実証データは、オンライン閲覧・SHA-256 リアルタイム検証・ZIP証跡一括ダウンロードに対応しています：',
-                'All 6 empirical benchmark suites feature online formatted reports, live browser SHA-256 verification, and full ZIP bundle downloads:'
-              )
-            }}
-          </span>
-          <a :href="`${prefix}/benchmarks/swebench-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/swebench-mini-v1`)" class="nx-modal-bench-link">
-            SWE-bench Mini (84.0%) →
-          </a>
-          <a :href="`${prefix}/benchmarks/precache-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/precache-v1`)" class="nx-modal-bench-link">
-            Pre-Cache (89.58%) →
-          </a>
-          <a :href="`${prefix}/benchmarks/rag-eval-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/rag-eval-v1`)" class="nx-modal-bench-link">
-            RAG v0→v3 (100%) →
-          </a>
-          <a :href="`${prefix}/benchmarks/harness-ablation-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/harness-ablation-v1`)" class="nx-modal-bench-link">
-            Harness Ablation (-87.7%) →
-          </a>
-          <a :href="`${prefix}/benchmarks/polyglot-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/polyglot-mini-v1`)" class="nx-modal-bench-link">
-            Polyglot (24/24) →
-          </a>
-          <a :href="`${prefix}/benchmarks/gaia-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/gaia-mini-v1`)" class="nx-modal-bench-link">
-            GAIA &amp; Office (90%) →
-          </a>
+        <div class="hl-modal-suites hl-tabular">
+          <div class="hl-modal-suites-label">
+            {{ t('6 套公开实测证据包（支持浏览器端 SHA-256 实时验签）：', '公開実証バンドル（ブラウザ上で SHA-256 検証可能）：', '6 Verifiable Empirical Bundles (Live SHA-256 Check):') }}
+          </div>
+          <div class="hl-modal-pills">
+            <a :href="`${prefix}/benchmarks/swebench-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/swebench-mini-v1`)">SWE-bench Mini (84.0%)</a>
+            <a :href="`${prefix}/benchmarks/precache-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/precache-v1`)">Prefix Cache (97.74%)</a>
+            <a :href="`${prefix}/benchmarks/rag-eval-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/rag-eval-v1`)">RAG v0→v3 (100%)</a>
+            <a :href="`${prefix}/benchmarks/harness-ablation-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/harness-ablation-v1`)">Harness (-87.7%)</a>
+            <a :href="`${prefix}/benchmarks/polyglot-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/polyglot-mini-v1`)">Polyglot (24/24)</a>
+            <a :href="`${prefix}/benchmarks/gaia-mini-v1`" @click.prevent="jumpTo(`${prefix}/benchmarks/gaia-mini-v1`)">GAIA Office (90%)</a>
+          </div>
         </div>
 
-        <div class="nx-modal-footer">
-          <button
-            type="button"
-            class="nx-btn nx-btn-primary"
-            @click="jumpTo(`${prefix}/architecture/overview`)"
-          >
-            {{ t('审阅全 6 卷工程架构白皮书 →', '技術アーキテクチャ白書 (全6章) を読む →', 'Read 6-Vol Architecture Blueprint →') }}
+        <div class="hl-modal-actions">
+          <button type="button" class="hl-btn hl-btn-ink hl-btn-sm" @click="jumpTo(`${prefix}/architecture/overview`)">
+            {{ t('阅读全 6 卷架构白皮书', '技術白書 (全6章) を読む', 'Read 6-Vol Whitepaper') }}
           </button>
-          <button
-            type="button"
-            class="nx-btn nx-btn-glass"
-            @click="jumpTo(`${prefix}/benchmarks/swebench-mini-v1`)"
-          >
-            {{ t('打开权威实测报告与下载中心', '6大ベンチマーク証跡センターを開く', 'Open Benchmark Evidence Center') }}
+          <button type="button" class="hl-btn hl-btn-tonal hl-btn-sm" @click="jumpTo(`${prefix}/benchmarks/swebench-mini-v1`)">
+            {{ t('打开实测证据中心', 'ベンチマーク証跡へ', 'Benchmark Evidence Hub') }}
           </button>
-          <button
-            type="button"
-            class="nx-btn nx-btn-glass"
-            @click="jumpTo(`${prefix}/download`)"
-          >
-            {{ t('查看安装包与 SHA-256 校验', 'ダウンロード・SHA-256検証へ', 'Download & SHA-256 Audit') }}
+          <button type="button" class="hl-btn hl-btn-tonal hl-btn-sm" @click="jumpTo(`${prefix}/download`)">
+            {{ t('前往下载与三步校验', 'ダウンロード・検証へ', 'Download & Verify') }}
           </button>
         </div>
       </div>
@@ -164,164 +128,152 @@ function jumpTo(url) {
 </template>
 
 <style scoped>
-.nx-modal-backdrop {
+.hl-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 200;
-  background: rgba(3, 6, 14, 0.78);
-  backdrop-filter: blur(12px);
+  z-index: 220;
+  background-color: var(--hl-backdrop);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
 }
 
-.nx-modal-card {
+.hl-modal-sheet {
   width: 100%;
-  max-width: 820px;
-  background: rgba(11, 17, 32, 0.96);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: 18px;
+  max-width: 780px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background-color: var(--hl-surface);
+  border-radius: var(--hl-radius-2xl);
+  border: 1px solid var(--hl-border);
+  box-shadow: var(--hl-shadow-sheet);
   padding: 32px;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
-    0 32px 80px -12px rgba(0, 0, 0, 0.9),
-    0 0 60px rgba(37, 99, 235, 0.22);
 }
 
-.nx-modal-header {
+.hl-modal-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 22px;
 }
 
-.nx-modal-badge-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.nx-modal-code {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: #64748b;
-}
-
-.nx-modal-close {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(15, 23, 42, 0.8);
-  color: #94a3b8;
-  cursor: pointer;
-}
-
-.nx-modal-close:hover {
-  color: #ffffff;
-  border-color: rgba(56, 189, 248, 0.5);
-}
-
-.nx-modal-title {
-  margin: 0 0 22px;
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1.35;
-  color: #f8fafc;
-}
-
-.nx-modal-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-bottom: 26px;
-}
-
-.nx-modal-item {
-  padding: 20px;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.72);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.nx-modal-item-num {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #38bdf8;
-  margin-bottom: 8px;
-}
-
-.nx-modal-item h4 {
-  margin: 0 0 10px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.nx-modal-item p {
+.hl-modal-title {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.65;
-  color: #cbd5e1;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--hl-ink);
 }
 
-.nx-modal-bench-note {
-  margin-bottom: 18px;
-  padding: 12px 16px;
-  border-radius: var(--nx-radius-sm);
-  background: var(--nx-bg-glass);
-  border: 1px solid var(--nx-border-mid);
+.hl-modal-close {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--hl-radius-pill);
+  border: 0;
+  background-color: var(--hl-surface-tonal);
+  color: var(--hl-ink-2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.hl-modal-close:hover {
+  background-color: var(--hl-surface-tonal-hover);
+  color: var(--hl-ink);
+}
+
+.hl-modal-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.hl-modal-box {
+  padding: 20px;
+  border-radius: var(--hl-radius-lg);
+  background-color: var(--hl-surface-alt);
+}
+
+.hl-modal-box h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--hl-ink);
+}
+
+.hl-modal-box p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--hl-ink-3);
+}
+
+.hl-modal-suites {
+  padding: 16px 18px;
+  border-radius: var(--hl-radius-md);
+  border: 1px solid var(--hl-border);
+  margin-bottom: 22px;
+}
+
+.hl-modal-suites-label {
   font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--nx-text-2);
-  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--hl-ink-2);
+  margin-bottom: 10px;
+}
+
+.hl-modal-pills {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 8px;
 }
 
-.nx-modal-bench-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: var(--nx-radius-xs);
-  background: var(--nx-emerald-soft);
-  color: var(--nx-emerald);
-}
-
-.nx-modal-bench-link {
+.hl-modal-pills a {
+  padding: 4px 12px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-accent-soft);
+  color: var(--hl-accent);
   font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 600;
-  color: var(--nx-primary-bright);
+  font-weight: 500;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
-.nx-modal-footer {
+.hl-modal-pills a:hover {
+  background-color: var(--hl-ink);
+  color: var(--hl-on-ink);
+}
+
+.hl-modal-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  gap: 10px;
 }
 
-.nx-modal-fade-enter-active,
-.nx-modal-fade-leave-active {
+.hl-modal-fade-enter-active,
+.hl-modal-fade-leave-active {
   transition: opacity 180ms ease;
 }
 
-.nx-modal-fade-enter-from,
-.nx-modal-fade-leave-to {
+.hl-modal-fade-enter-from,
+.hl-modal-fade-leave-to {
   opacity: 0;
 }
 
-@media (max-width: 720px) {
-  .nx-modal-grid {
+@media (max-width: 680px) {
+  .hl-modal-sheet {
+    padding: 22px;
+  }
+
+  .hl-modal-cols {
     grid-template-columns: 1fr;
   }
 }

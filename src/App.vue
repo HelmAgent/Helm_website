@@ -1,10 +1,8 @@
 <script setup>
 /**
- * 旗舰官网根组件（App.vue）。
+ * Helm 官方旗舰站根组件（App.vue）。
  *
- * 职责与协作：
- * - 承载「风格 1：深邃科技旗舰风」全局星光聚光灯背景（`.nx-ambient-backdrop`）。
- * - 统一调度 `AppNavbar`、四大核心视图（`HomeView` / `DemoView` / `DownloadView` / `WhitepaperView`）、`AppFooter` 以及架构安全说明弹窗 `AuditModal`。
+ * 设计语言：Antigravity × Apple 极昼与曜石交响设计体系（Daylight & Pro Cinema）。
  */
 import { watchEffect } from 'vue'
 import { useAppRouter } from './router.js'
@@ -27,43 +25,41 @@ watchEffect(() => {
   document.title = tt(
     lang,
     'Helm · 执掌长周期代码与文档创作之舵 (Take the Helm of Long-Running Code & Docs.)',
-    'Helm · 長時間稼働するコード開発とドキュメント制作の舵を取る (Take the Helm of Long-Running Code & Docs.)',
+    'Helm · 数時間の自律開発と文書制作の舵を取る (Take the Helm of Long-Running Code & Docs.)',
     'Helm · Take the Helm of Long-Running Code & Docs.'
   )
 })
 </script>
 
 <template>
-  <div class="nx-app-shell">
-    <!-- 全局深邃黑曜石星光聚光灯与细线网格背景 -->
-    <div class="nx-ambient-backdrop" aria-hidden="true">
-      <div class="nx-ambient-aurora"></div>
-      <div class="nx-ambient-grid"></div>
-    </div>
-
-    <!-- 悬浮毛玻璃导航顶栏 -->
+  <div class="hl-app-shell">
     <AppNavbar />
 
-    <!-- 视图路由出口 -->
-    <HomeView v-if="currentView === 'home'" />
-    <DemoView v-else-if="currentView === 'demo'" />
-    <DownloadView v-else-if="currentView === 'download'" />
-    <BenchmarkReportView v-else-if="currentView === 'benchmarks'" />
-    <WhitepaperView v-else />
+    <main class="hl-app-main">
+      <HomeView v-if="currentView === 'home'" />
+      <DemoView v-else-if="currentView === 'demo'" />
+      <DownloadView v-else-if="currentView === 'download'" />
+      <BenchmarkReportView v-else-if="currentView === 'benchmarks'" />
+      <WhitepaperView v-else />
+    </main>
 
-    <!-- 企业级多栏大页脚 -->
     <AppFooter />
-
-    <!-- 架构透明性与本地安全运行说明弹窗 -->
     <AuditModal />
   </div>
 </template>
 
 <style scoped>
-.nx-app-shell {
+.hl-app-shell {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;
+  background-color: var(--hl-bg);
+  color: var(--hl-ink);
+}
+
+.hl-app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 </style>

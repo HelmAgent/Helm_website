@@ -129,7 +129,7 @@ export function renderEnterpriseMarkdown(rawMd) {
           <div class="nx-mermaid-card">
             <div class="nx-mermaid-bar">
               <span class="nx-mermaid-dot"></span>
-              <span class="nx-mermaid-tag">SYSTEM ARCHITECTURE TOPOLOGY // MERMAID VECTOR</span>
+              <span class="nx-mermaid-tag">Architecture Topology</span>
             </div>
             <div class="nx-mermaid-stage" data-mermaid="${encoded}">
               <pre class="nx-mermaid-fallback">${escapeHtml(rawCode)}</pre>

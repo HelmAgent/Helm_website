@@ -695,13 +695,10 @@ Ran 86 tests in 1.842s — OK</pre>
 .pg-frame {
   width: 100%;
   margin: 20px 0;
-  border: 1px solid rgba(96, 165, 250, 0.32);
-  border-radius: 14px;
-  background: #0b1120;
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
-    0 32px 80px -16px rgba(0, 0, 0, 0.82),
-    0 0 60px rgba(37, 99, 235, 0.18);
+  border: 1px solid var(--hl-border-strong);
+  border-radius: var(--hl-radius-lg);
+  background: var(--hl-surface);
+  box-shadow: var(--hl-shadow-window);
   overflow: hidden;
 }
 
@@ -715,9 +712,9 @@ Ran 86 tests in 1.842s — OK</pre>
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  padding: 13px 20px;
-  background: linear-gradient(180deg, #0f172a 0%, #0b1120 100%);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 12px 18px;
+  background: var(--hl-surface-alt);
+  border-bottom: 1px solid var(--hl-border);
 }
 
 .pg-deck-left {
@@ -730,49 +727,49 @@ Ran 86 tests in 1.842s — OK</pre>
 .pg-deck-kicker {
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #38bdf8;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--hl-ink-4);
 }
 
 .pg-scenario-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 6px;
 }
 
 .pg-pill-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 13px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 7px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(15, 23, 42, 0.8);
-  color: #cbd5e1;
+  gap: 7px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border-radius: var(--hl-radius-pill);
+  border: 1px solid var(--hl-border);
+  background: var(--hl-surface);
+  color: var(--hl-ink-2);
   cursor: pointer;
-  transition: all 150ms ease;
+  transition: all 160ms var(--hl-ease);
 }
 
 .pg-pill-btn:hover {
-  border-color: rgba(56, 189, 248, 0.45);
-  color: #ffffff;
+  border-color: var(--hl-border-strong);
+  color: var(--hl-ink);
 }
 
 .pg-pill-btn.is-active {
-  background: linear-gradient(180deg, rgba(37, 99, 235, 0.42) 0%, rgba(15, 76, 129, 0.55) 100%);
-  color: #ffffff;
-  border-color: #38bdf8;
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
-  font-weight: 650;
+  background: var(--hl-ink);
+  color: var(--hl-on-ink);
+  border-color: var(--hl-ink);
+  box-shadow: var(--hl-shadow-2xs);
+  font-weight: 500;
 }
 
 .pg-pill-num {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #7dd3fc;
+  opacity: 0.72;
 }
 
 .pg-autoplay-btn {
@@ -780,33 +777,35 @@ Ran 86 tests in 1.842s — OK</pre>
   align-items: center;
   gap: 7px;
   padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 650;
-  border-radius: 7px;
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  background: rgba(15, 23, 42, 0.9);
-  color: #7dd3fc;
+  font-size: 12.5px;
+  font-weight: 500;
+  border-radius: var(--hl-radius-pill);
+  border: 1px solid var(--hl-border-strong);
+  background: var(--hl-surface);
+  color: var(--hl-ink);
   cursor: pointer;
-  transition: all 150ms ease;
+  transition: all 160ms var(--hl-ease);
 }
 
 .pg-autoplay-btn:hover {
-  background: rgba(37, 99, 235, 0.3);
-  color: #ffffff;
+  background: var(--hl-surface-tonal);
 }
 
 .pg-autoplay-btn.is-playing {
-  background: #2563eb;
-  border-color: #60a5fa;
-  color: #ffffff;
+  background: var(--hl-accent);
+  border-color: var(--hl-accent);
+  color: var(--hl-on-ink);
 }
 
 .pg-play-indicator {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399;
+  background: var(--hl-ok);
+}
+
+.pg-autoplay-btn.is-playing .pg-play-indicator {
+  background: var(--hl-on-ink);
 }
 
 .pg-window-titlebar {
@@ -814,9 +813,9 @@ Ran 86 tests in 1.842s — OK</pre>
   align-items: center;
   justify-content: space-between;
   padding: 9px 18px;
-  background: #131c31;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-  font-size: 11.5px;
+  background: var(--hl-window-bar);
+  border-bottom: 1px solid var(--hl-border);
+  font-size: 12px;
 }
 
 .pg-win-dots {
@@ -828,22 +827,19 @@ Ran 86 tests in 1.842s — OK</pre>
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #334155;
+  background: var(--hl-border-strong);
 }
 
 .pg-win-dots span:nth-child(1) {
-  background: #ef4444;
-  opacity: 0.85;
+  background: var(--win-dot-red);
 }
 
 .pg-win-dots span:nth-child(2) {
-  background: #f59e0b;
-  opacity: 0.85;
+  background: var(--win-dot-amber);
 }
 
 .pg-win-dots span:nth-child(3) {
-  background: #10b981;
-  opacity: 0.85;
+  background: var(--win-dot-green);
 }
 
 .pg-win-caption {
@@ -851,30 +847,30 @@ Ran 86 tests in 1.842s — OK</pre>
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--hl-ink);
 }
 
 .pg-win-caption code {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--hl-ink-3);
 }
 
 .pg-win-badge {
-  padding: 2px 7px;
-  font-size: 10px;
+  padding: 2px 8px;
+  font-size: 10.5px;
   font-family: var(--font-mono);
-  font-weight: 700;
-  border-radius: 4px;
-  background: rgba(16, 185, 129, 0.16);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #34d399;
+  font-weight: 600;
+  border-radius: var(--hl-radius-pill);
+  background: var(--hl-ok-soft);
+  border: 1px solid var(--hl-ok-border);
+  color: var(--hl-ok);
 }
 
 .pg-win-meta {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--hl-ink-3);
 }
 
 .pg-viewport-scroll {
@@ -918,7 +914,7 @@ Ran 86 tests in 1.842s — OK</pre>
   height: 28px;
   border-radius: 6px;
   flex: none;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.14);
+  box-shadow: var(--hl-shadow-xs);
 }
 
 .stone-word {
@@ -1086,7 +1082,7 @@ Ran 86 tests in 1.842s — OK</pre>
   padding: 2px 8px;
   font-size: 11px;
   font-family: var(--font-mono);
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
   color: var(--text-tertiary);
@@ -1097,7 +1093,7 @@ Ran 86 tests in 1.842s — OK</pre>
   font-size: 11.5px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
-  background: #ffffff;
+  background: var(--bg-elevated);
   color: var(--text-secondary);
   cursor: pointer;
 }
@@ -1113,7 +1109,7 @@ Ran 86 tests in 1.842s — OK</pre>
 
 .stone-user-msg {
   padding: 10px 14px;
-  background: #ffffff;
+  background: var(--bg-elevated);
   border-left: 3px solid var(--accent);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
@@ -1162,7 +1158,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-tool-card {
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 9px 12px;
@@ -1235,7 +1231,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-completion-card {
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
@@ -1281,7 +1277,7 @@ Ran 86 tests in 1.842s — OK</pre>
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -1318,7 +1314,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-mate-card {
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
@@ -1358,7 +1354,7 @@ Ran 86 tests in 1.842s — OK</pre>
 }
 
 .stone-composer-band {
-  background: #ffffff;
+  background: var(--bg-elevated);
   border-top: 1px solid var(--border-subtle);
   padding: 10px 20px;
 }
@@ -1429,7 +1425,7 @@ Ran 86 tests in 1.842s — OK</pre>
 .stone-perm-btn.is-danger {
   color: var(--status-danger);
   background: var(--status-danger-bg);
-  border-color: #f2c9c7;
+  border-color: var(--hl-err-border);
 }
 
 .stone-perm-btn.is-accent {
@@ -1449,7 +1445,7 @@ Ran 86 tests in 1.842s — OK</pre>
   bottom: 34px;
   right: 0;
   width: 290px;
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   padding: 10px;
@@ -1517,7 +1513,7 @@ Ran 86 tests in 1.842s — OK</pre>
   width: 380px;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: var(--bg-elevated);
   border-left: 1px solid var(--border-subtle);
 }
 
@@ -1547,7 +1543,7 @@ Ran 86 tests in 1.842s — OK</pre>
 
 .stone-wps-item {
   padding: 2px 6px;
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
 }
@@ -1656,7 +1652,7 @@ Ran 86 tests in 1.842s — OK</pre>
 .stone-ppt-shape {
   position: relative;
   padding: 28px 12px 12px;
-  background: #ffffff;
+  background: var(--bg-elevated);
   border: 1.5px dashed var(--accent);
   border-radius: var(--radius-sm);
   cursor: pointer;
