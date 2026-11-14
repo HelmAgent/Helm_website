@@ -16,6 +16,7 @@ import {
   getBenchmarkManifest
 } from '../data/benchmarksRegistry.js'
 import { renderEnterpriseMarkdown } from '../utils/markdownRenderer.js'
+import { renderMermaidStages, collectArticleDiagrams } from '../utils/mermaidHelper.js'
 import {
   buildStoreZip,
   sha256Hex,
@@ -23,6 +24,7 @@ import {
   formatBytes
 } from '../utils/zipBuilder.js'
 import { useAppRouter } from '../router.js'
+import DiagramLightbox from '../components/DiagramLightbox.vue'
 
 const { currentPath, currentHash, currentLang, strippedPath, navigate, openAuditModal } = useAppRouter()
 
@@ -75,8 +77,14 @@ const totalBundleBytes = computed(() => {
 })
 
 const renderedReport = computed(() => {
-  return renderEnterpriseMarkdown(rawReportMd.value)
+  return renderEnterpriseMarkdown(rawReportMd.value, currentLang.value)
 })
+
+const articleRef = ref(null)
+const isZoomOpen = ref(false)
+const zoomDiagrams = ref([])
+const zoomActiveIndex = ref(0)
+const zoomLoading = ref(false)
 
 const zipState = ref('idle') // 'idle' | 'loading' | 'done' | 'error'
 const zipProgressText = ref('')
@@ -104,6 +112,7 @@ function resetInteractiveState() {
   previewContent.value = ''
   previewTruncated.value = false
   previewError.value = ''
+  isZoomOpen.value = false
 }
 
 function getStaticFileUrl(relPath) {
@@ -281,50 +290,61 @@ function scrollToSection(id) {
   }
 }
 
-async function renderMermaidDiagrams() {
-  if (typeof window === 'undefined') return
-  const stages = document.querySelectorAll('.hl-bench-page .nx-mermaid-stage[data-mermaid]')
-  if (!stages.length) return
-
-  try {
-    const mermaidModule = await import('mermaid')
-    const mermaid = mermaidModule.default || mermaidModule
-    const rootStyle = getComputedStyle(document.documentElement)
-    const token = (name) => rootStyle.getPropertyValue(name).trim()
-
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'base',
-      themeVariables: {
-        darkMode: false,
-        background: token('--hl-surface-subtle'),
-        primaryColor: token('--hl-accent-soft'),
-        primaryTextColor: token('--hl-ink'),
-        primaryBorderColor: token('--hl-accent'),
-        lineColor: token('--hl-ink-4'),
-        secondaryColor: token('--hl-surface-alt'),
-        tertiaryColor: token('--hl-surface'),
-        fontFamily: token('--font-ui'),
-        fontSize: '13px'
-      }
-    })
-
-    for (let i = 0; i < stages.length; i++) {
-      const el = stages[i]
-      if (el.dataset.rendered === '1') continue
-      const rawCode = decodeURIComponent(el.dataset.mermaid || '')
-      if (!rawCode) continue
-      const id = `hl-bench-mermaid-${Date.now()}-${i}`
-      const { svg } = await mermaid.render(id, rawCode)
-      el.innerHTML = svg
-      el.dataset.rendered = '1'
-    }
-  } catch (err) {
-    console.warn('[Helm Benchmark Reader] Mermaid render skipped:', err)
+async function renderMermaidDiagrams(forceRetryErrors = false) {
+  if (!articleRef.value) return
+  await renderMermaidStages(articleRef.value, { forceRetryErrors })
+  if (isZoomOpen.value) {
+    zoomDiagrams.value = collectArticleDiagrams(articleRef.value)
   }
 }
 
+async function openDiagramZoom(targetIndex) {
+  if (!articleRef.value) return
+  zoomActiveIndex.value = targetIndex
+  const pendingStages = articleRef.value.querySelectorAll(
+    '.nx-mermaid-stage[data-mermaid]:not([data-rendered])'
+  )
+  if (pendingStages.length > 0) {
+    zoomLoading.value = true
+    isZoomOpen.value = true
+    await renderMermaidStages(articleRef.value)
+    zoomDiagrams.value = collectArticleDiagrams(articleRef.value)
+    zoomLoading.value = false
+  } else {
+    zoomDiagrams.value = collectArticleDiagrams(articleRef.value)
+    zoomLoading.value = false
+    isZoomOpen.value = true
+  }
+}
+
+async function handleRetryDiagram() {
+  zoomLoading.value = true
+  await renderMermaidDiagrams(true)
+  zoomLoading.value = false
+}
+
 function handleArticleClick(e) {
+  const retryBtn = e.target.closest('[data-retry-mermaid]')
+  if (retryBtn) {
+    e.preventDefault()
+    renderMermaidDiagrams(true)
+    return
+  }
+
+  const zoomTrigger = e.target.closest('[data-zoom-mermaid]')
+  if (zoomTrigger) {
+    if (
+      zoomTrigger.classList.contains('nx-mermaid-stage') &&
+      zoomTrigger.dataset.rendered === 'error'
+    ) {
+      return
+    }
+    e.preventDefault()
+    const idx = Number(zoomTrigger.dataset.zoomMermaid) || 0
+    openDiagramZoom(idx)
+    return
+  }
+
   const copyBtn = e.target.closest('[data-copy-code]')
   if (copyBtn) {
     const raw = decodeURIComponent(copyBtn.dataset.copyCode || '')
@@ -437,7 +457,7 @@ watch(
 
         <!-- 中栏：实测正文与 SHA-256 证据舱 -->
         <main class="hl-bench-center">
-          <article class="hl-bench-sheet" @click="handleArticleClick">
+          <article ref="articleRef" class="hl-bench-sheet" @click="handleArticleClick">
             <header class="hl-bench-head">
               <div class="hl-bench-meta hl-tabular">
                 <span class="hl-pill-tag is-accent">{{ currentSuite.num }} · {{ currentSuite.category }}</span>
@@ -676,6 +696,18 @@ watch(
         </aside>
       </div>
     </div>
+
+    <DiagramLightbox
+      :open="isZoomOpen"
+      :diagrams="zoomDiagrams"
+      :active-index="zoomActiveIndex"
+      :chapter-title="currentSuite?.title || ''"
+      :loading="zoomLoading"
+      :lang="currentLang"
+      @close="isZoomOpen = false"
+      @select="zoomActiveIndex = $event"
+      @retry="handleRetryDiagram"
+    />
   </div>
 </template>
 

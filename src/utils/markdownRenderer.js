@@ -65,7 +65,7 @@ function parseInline(text) {
   return working
 }
 
-export function renderEnterpriseMarkdown(rawMd) {
+export function renderEnterpriseMarkdown(rawMd, locale = 'zh') {
   if (!rawMd) {
     return { title: '', description: '', html: '', toc: [] }
   }
@@ -92,7 +92,30 @@ export function renderEnterpriseMarkdown(rawMd) {
   const htmlParts = []
   const toc = []
   let headingCounter = 0
+  let mermaidCounter = 0
+  let currentSectionTitle = ''
   let i = 0
+
+  const defaultFigTitle =
+    locale === 'ja'
+      ? 'アーキテクチャ図'
+      : locale === 'en'
+        ? 'Architecture Topology'
+        : '架构拓扑图'
+  const zoomLabel =
+    locale === 'ja'
+      ? '拡大表示'
+      : locale === 'en'
+        ? 'Click to Zoom'
+        : '点击放大查看'
+  const errLabel =
+    locale === 'ja'
+      ? '図表の描画に失敗しました。再試行するか定義を確認してください。'
+      : locale === 'en'
+        ? 'Diagram rendering failed. Retry or inspect source below.'
+        : '架构图矢量渲染失败，请点击重试或查阅下方拓扑源码。'
+  const retryLabel =
+    locale === 'ja' ? '再試行' : locale === 'en' ? 'Retry' : '重试渲染'
 
   while (i < lines.length) {
     const line = lines[i]
@@ -113,7 +136,7 @@ export function renderEnterpriseMarkdown(rawMd) {
     // 围栏代码块 ```lang
     const fenceMatch = line.match(/^```([a-zA-Z0-9_-]*)\s*$/)
     if (fenceMatch) {
-      const lang = (fenceMatch[1] || 'text').toLowerCase()
+      const codeLang = (fenceMatch[1] || 'text').toLowerCase()
       const codeLines = []
       i++
       while (i < lines.length && !/^```\s*$/.test(lines[i])) {
@@ -123,18 +146,45 @@ export function renderEnterpriseMarkdown(rawMd) {
       i++ // 跳过结束 ```
       const rawCode = codeLines.join('\n')
 
-      if (lang === 'mermaid') {
+      if (codeLang === 'mermaid') {
         const encoded = encodeURIComponent(rawCode.trim())
+        const figIndex = mermaidCounter++
+        const figNum = String(figIndex + 1).padStart(2, '0')
+        const figTitle = currentSectionTitle || meta.title || defaultFigTitle
+        const ariaZoom = `${zoomLabel}: ${figTitle}`
         htmlParts.push(`
-          <div class="nx-mermaid-card">
+          <figure class="nx-mermaid-card" data-mermaid-index="${figIndex}" data-mermaid-title="${escapeHtml(figTitle)}">
             <div class="nx-mermaid-bar">
-              <span class="nx-mermaid-dot"></span>
-              <span class="nx-mermaid-tag">Architecture Topology</span>
+              <div class="nx-mermaid-meta">
+                <span class="nx-mermaid-dot" aria-hidden="true"></span>
+                <span class="nx-mermaid-num hl-tabular">FIG ${figNum}</span>
+                <span class="nx-mermaid-tag" title="${escapeHtml(figTitle)}">${escapeHtml(figTitle)}</span>
+              </div>
+              <button type="button" class="nx-mermaid-zoom-btn" data-zoom-mermaid="${figIndex}" aria-label="${escapeHtml(ariaZoom)}">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                  <line x1="21" y1="3" x2="14" y2="10"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+                <span>${escapeHtml(zoomLabel)}</span>
+              </button>
             </div>
-            <div class="nx-mermaid-stage" data-mermaid="${encoded}">
-              <pre class="nx-mermaid-fallback">${escapeHtml(rawCode)}</pre>
+            <div class="nx-mermaid-stage" data-mermaid="${encoded}" data-zoom-mermaid="${figIndex}">
+              <div class="nx-mermaid-skeleton" aria-hidden="true">
+                <div class="nx-mermaid-skel-bar is-w65"></div>
+                <div class="nx-mermaid-skel-bar is-w90"></div>
+                <div class="nx-mermaid-skel-bar is-w75"></div>
+              </div>
+              <div class="nx-mermaid-error">
+                <div class="nx-mermaid-error-bar">
+                  <span>${escapeHtml(errLabel)}</span>
+                  <button type="button" class="nx-mermaid-retry-btn" data-retry-mermaid="${figIndex}">${escapeHtml(retryLabel)}</button>
+                </div>
+                <pre class="nx-mermaid-fallback">${escapeHtml(rawCode)}</pre>
+              </div>
             </div>
-          </div>
+          </figure>
         `)
       } else {
         const encodedCopy = encodeURIComponent(rawCode)
@@ -142,7 +192,7 @@ export function renderEnterpriseMarkdown(rawMd) {
           <div class="nx-code-block">
             <div class="nx-code-header">
               <div class="nx-code-dots"><span></span><span></span><span></span></div>
-              <span class="nx-code-lang">${escapeHtml(lang.toUpperCase())}</span>
+              <span class="nx-code-lang">${escapeHtml(codeLang.toUpperCase())}</span>
               <button type="button" class="nx-code-copy-btn" data-copy-code="${encodedCopy}">COPY</button>
             </div>
             <pre class="nx-code-pre"><code>${escapeHtml(rawCode)}</code></pre>
@@ -170,6 +220,7 @@ export function renderEnterpriseMarkdown(rawMd) {
       const cleanLabel = rawTitle.replace(/`([^`]+)`/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1')
       if (level === 2 || level === 3) {
         toc.push({ id, text: cleanLabel, level })
+        currentSectionTitle = cleanLabel
       }
       htmlParts.push(
         `<h${level} id="${id}" class="nx-doc-h${level}"><a class="nx-heading-anchor" href="#${id}">#</a><span>${parseInline(rawTitle)}</span></h${level}>`
