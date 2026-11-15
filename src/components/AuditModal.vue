@@ -67,9 +67,9 @@ function jumpTo(url) {
             <p>
               {{
                 t(
-                  'Helm 面向个人与企业研发团队提供开箱即用的 Windows 安装包（内嵌 Electron 44、Vue 3.5 与 Python 3.13 运行时）。为便于在安装前审阅底层工程质量，本站完整公开了「1:1 在线交互工作台」、「全 6 卷工程架构白皮书」以及「6 套 SHA-256 签名实测证据包」。',
-                  'Helm はすぐに使える Windows デスクトップ製品として提供されます。導入前に信頼性を検証いただけるよう、「1:1 対話型ワークベンチ」「全6章の技術白書」「SHA-256 署名付き6大ベンチマーク証跡」をすべて公開しています。',
-                  'Helm ships as a turnkey Windows installer bundling Electron 44, Vue 3.5, and Python 3.13. Prior to installation, you can inspect our 1:1 Interactive Workbench, 6-volume Architecture Whitepaper, and 6 SHA-256 signed benchmark bundles.'
+                  'Helm 面向个人与企业研发团队提供开箱即用的 Windows 安装包（内嵌 Electron 44、Vue 3.5 与 Python 3.13 运行时）。为便于在安装前审阅底层工程质量，本站完整公开了「5 大场景实机录屏与复现提示词」、「全 6 卷工程架构白皮书」以及「6 套 SHA-256 签名实测证据包」。',
+                  'Helm はすぐに使える Windows デスクトップ製品として提供されます。導入前に信頼性を検証いただけるよう、「5大シナリオ実機収録デモ＆再現プロンプト」「全6章の技術白書」「SHA-256 署名付き6大ベンチマーク証跡」をすべて公開しています。',
+                  'Helm ships as a turnkey Windows installer bundling Electron 44, Vue 3.5, and Python 3.13. Prior to installation, you can inspect our 5 Live Desktop Recordings & Prompts, 6-volume Architecture Whitepaper, and 6 SHA-256 signed benchmark bundles.'
                 )
               }}
             </p>

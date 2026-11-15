@@ -7,27 +7,34 @@
  * 2. 全胶囊按钮几何（Pill Geometry），将版本号、体积、VirusTotal 0/57 与 SHA-256 剥离至静谧校验条。
  * 3. 通过 Bento 右下角圆形 `+` 触发 `BentoSheetModal` 抽屉，兼顾首屏留白与全量硬核实证数据。
  */
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import {
   SITE_META,
   tt,
   getLangPrefix,
   getArchitectureChapters
 } from '../data/siteData.js'
+import { getDemoScenarios } from '../data/demoVideos.js'
 import { useAppRouter } from '../router.js'
-import ProductPlayground from '../components/ProductPlayground.vue'
 import BentoSheetModal from '../components/BentoSheetModal.vue'
 
 const { currentLang, navigate, openAuditModal } = useAppRouter()
 
-const showcaseTab = ref('video')
+const activeDemoIdx = ref(0)
+const videoLoading = ref(true)
 const videoLoadError = ref(false)
 const videoPlayerRef = ref(null)
+const demoTablistRef = ref(null)
 const playbackRate = ref(1)
 const activeFeatureIdx = ref(0)
 const activeBentoSheet = ref('')
 const showAllCompareRows = ref(false)
 const copiedKey = ref('')
+const prefersReducedMotion = ref(
+  typeof window !== 'undefined' && window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false
+)
 
 // 首屏交互式微罗盘引力场（Azimuth Compass Vector Field）
 const azimuthCanvasRef = ref(null)
@@ -36,6 +43,10 @@ let removeCanvasListeners = null
 
 const prefix = computed(() => getLangPrefix(currentLang.value))
 const archChapters = computed(() => getArchitectureChapters(currentLang.value))
+const demoScenarios = computed(() => getDemoScenarios(currentLang.value))
+const activeScenario = computed(
+  () => demoScenarios.value[activeDemoIdx.value] || demoScenarios.value[0]
+)
 
 function t(zh, ja, en) {
   return tt(currentLang.value, zh, ja, en)
@@ -64,51 +75,79 @@ function setVideoSpeed(rate) {
 }
 
 function handleVideoLoaded() {
+  videoLoading.value = false
   if (videoPlayerRef.value) {
     videoPlayerRef.value.playbackRate = playbackRate.value
   }
 }
 
-function openInteractiveStage() {
-  showcaseTab.value = 'interactive'
+function selectDemoScenario(idx, forcePlay = true) {
+  if (idx < 0 || idx >= demoScenarios.value.length) return
+  if (activeDemoIdx.value === idx) {
+    if (forcePlay && videoPlayerRef.value) {
+      videoPlayerRef.value.play().catch(() => {})
+    }
+    return
+  }
+  activeDemoIdx.value = idx
+  videoLoadError.value = false
+  videoLoading.value = true
+  nextTick(() => {
+    if (demoTablistRef.value) {
+      const btns = demoTablistRef.value.querySelectorAll('[role="tab"]')
+      btns[idx]?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })
+    }
+    const v = videoPlayerRef.value
+    if (v) {
+      v.playbackRate = playbackRate.value
+      if (forcePlay && !prefersReducedMotion.value) {
+        v.play().catch(() => {})
+      }
+    }
+  })
+}
+
+function onDemoTabKeydown(event) {
+  const total = demoScenarios.value.length
+  if (!total) return
+  let nextIdx = activeDemoIdx.value
+  if (event.key === 'ArrowRight') nextIdx = (activeDemoIdx.value + 1) % total
+  else if (event.key === 'ArrowLeft') nextIdx = (activeDemoIdx.value - 1 + total) % total
+  else if (event.key === 'Home') nextIdx = 0
+  else if (event.key === 'End') nextIdx = total - 1
+  else return
+  event.preventDefault()
+  selectDemoScenario(nextIdx, true)
+  nextTick(() => {
+    if (!demoTablistRef.value) return
+    const btns = demoTablistRef.value.querySelectorAll('[role="tab"]')
+    if (btns[nextIdx]) btns[nextIdx].focus()
+  })
+}
+
+function retryVideoLoad() {
+  videoLoadError.value = false
+  videoLoading.value = true
+  nextTick(() => {
+    if (videoPlayerRef.value) {
+      videoPlayerRef.value.load()
+      videoPlayerRef.value.playbackRate = playbackRate.value
+      videoPlayerRef.value.play().catch(() => {})
+    }
+  })
+}
+
+function scrollToDemoStage() {
   if (typeof document !== 'undefined') {
     const el = document.getElementById('hero-stage')
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
-}
-
-// 首屏实机录屏三段导读
-const videoHighlights = computed(() => [
-  {
-    step: '01',
-    title: t('一句话零干预工程拆解', '1文からの自律設計・構築', 'Single-Prompt Engineering Plan'),
-    desc: t(
-      '仅输入「帮我制作一个记账软件」，自主完成目录规划、账目持久化与现代 UI 编写。',
-      '「家計簿ソフトを作って」の1文だけで、設計・データ永続化・UI構築を自律完遂。',
-      'From a single sentence, Helm plans project structure, persistence, and clean UI.'
-    )
-  },
-  {
-    step: '02',
-    title: t('7 分 35 秒连续自检闭环', '7分35秒の自己検証ループ', '7m 35s Self-Verifying Loop'),
-    desc: t(
-      '高密度串联文件读写、依赖安装与终端验证，遇到运行细节自动自检修复，零人工中断。',
-      'ファイル操作・依存解決・コマンド検証を連続実行し、問題も自己修正して完走。',
-      'Chains file edits, dependency checks, and shell tests with automatic self-correction.'
-    )
-  },
-  {
-    step: '03',
-    title: t('编码完成后直接本机拉起成品', '完了後にローカルで即時起動', 'Verified Local App Launch'),
-    desc: t(
-      '拒绝无法跑通的代码片段演示——完成后直接在本机启动服务并打开可交互记账软件。',
-      'コード断片だけでなく、構築完了後にローカルで実際のアプリを起動して動作実証。',
-      'Goes beyond raw snippets—launches and opens the working app locally upon completion.'
-    )
+  if (videoPlayerRef.value) {
+    videoPlayerRef.value.play().catch(() => {})
   }
-])
+}
 
 // 第 3 章：Apple Pro 曜石深色剧场 — 五大核心状态机引擎
 const featurePillars = computed(() => [
@@ -609,12 +648,11 @@ onUnmounted(() => {
             <span>{{ t('下载 Windows 版', 'Windows 版をダウンロード', 'Download for Windows') }}</span>
           </a>
 
-          <button type="button" class="hl-btn hl-btn-tonal hl-btn-lg" @click="openInteractiveStage">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect width="18" height="14" x="3" y="5" rx="2" />
-              <path d="M9 9h6M9 13h4" />
+          <button type="button" class="hl-btn hl-btn-tonal hl-btn-lg" @click="scrollToDemoStage">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5.14v14l11-7-11-7z" />
             </svg>
-            <span>{{ t('在线体验 1:1 工作台', '1:1 ワークベンチを体験', 'Launch 1:1 Workbench') }}</span>
+            <span>{{ t('观看 5 大实机演示', '5つの実機デモを見る', 'Watch 5 Live Demos') }}</span>
           </button>
         </div>
 
@@ -644,44 +682,50 @@ onUnmounted(() => {
             </span>
           </button>
         </div>
-
-        <!-- 舞台切换分段胶囊（默认展示 7m 35s 实机交付录屏） -->
-        <div id="hero-stage" class="hl-stage-Controls">
-          <div class="hl-segmented" role="tablist" :aria-label="t('首屏产品演示模式', 'デモ表示モード', 'Product Showcase Mode')">
-            <button
-              type="button"
-              role="tab"
-              class="hl-seg-btn"
-              :class="{ 'is-active': showcaseTab === 'video' }"
-              :aria-selected="showcaseTab === 'video'"
-              @click="showcaseTab = 'video'"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M8 5.14v14l11-7-11-7z" />
-              </svg>
-              <span>{{ t('7m 35s 一句话实机交付录屏', '7分35秒 実機アプリ構築デモ', '7m 35s Live Delivery Recording') }}</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              class="hl-seg-btn"
-              :class="{ 'is-active': showcaseTab === 'interactive' }"
-              :aria-selected="showcaseTab === 'interactive'"
-              @click="showcaseTab = 'interactive'"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-              </svg>
-              <span>{{ t('1:1 实时交互桌面工作台', '1:1 インタラクティブ操作体験', '1:1 Interactive Desktop Sandbox') }}</span>
-            </button>
-          </div>
-        </div>
       </div>
 
-      <!-- 宽幅钛金属质感产品视窗 -->
+      <!-- 宽幅钛金属质感实机录屏视窗与 5 合 1 场景胶囊切换器 -->
       <div class="hl-container-wide hl-stage-wrap">
-        <!-- 模式 A：7m 35s 真实录屏视窗 -->
-        <div v-if="showcaseTab === 'video'" class="hl-studio-window">
+        <div id="hero-stage" class="hl-stage-Controls">
+          <div class="hl-demo-tabs-scroll">
+            <div
+              ref="demoTablistRef"
+              class="hl-segmented hl-demo-segmented"
+              role="tablist"
+              :aria-label="t('首屏实机功能演示切换', '実機デモシナリオ切替', 'Live Feature Recording Switcher')"
+              @keydown="onDemoTabKeydown"
+            >
+              <button
+                v-for="(sc, idx) in demoScenarios"
+                :key="sc.id"
+                type="button"
+                role="tab"
+                class="hl-seg-btn hl-demo-tab"
+                :class="{ 'is-active': activeDemoIdx === idx }"
+                :aria-selected="activeDemoIdx === idx"
+                :tabindex="activeDemoIdx === idx ? 0 : -1"
+                @click="selectDemoScenario(idx, true)"
+              >
+                <svg
+                  v-if="activeDemoIdx === idx"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="hl-seg-play-icon"
+                  aria-hidden="true"
+                >
+                  <path d="M8 5.14v14l11-7-11-7z" />
+                </svg>
+                <span class="hl-seg-num hl-tabular" v-else>{{ sc.num }}</span>
+                <span class="hl-seg-label">{{ sc.shortTab }}</span>
+                <span class="hl-seg-dur hl-tabular">{{ sc.duration }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hl-studio-window" role="tabpanel" :aria-label="activeScenario.title">
           <div class="hl-studio-bar">
             <div class="hl-studio-dots" aria-hidden="true">
               <span class="is-r"></span>
@@ -689,69 +733,125 @@ onUnmounted(() => {
               <span class="is-g"></span>
             </div>
             <div class="hl-studio-title">
-              {{
-                t(
-                  'Helm Desktop — 一句话生成并启动本地记账软件（7m 35s 全程无剪辑）',
-                  'Helm Desktop — 1文から家計簿ソフトを自律構築＆ローカル起動（7分35秒）',
-                  'Helm Desktop — Single-Prompt Bookkeeping App Build & Local Launch (7m 35s)'
-                )
-              }}
+              {{ activeScenario.windowTitle }}
             </div>
-            <div class="hl-speed-group hl-tabular" role="group" :aria-label="t('视频倍速', '再生速度', 'Playback speed')">
+            <div class="hl-studio-actions">
               <button
-                v-for="spd in [1, 1.5, 2]"
-                :key="spd"
                 type="button"
-                class="hl-speed-pill"
-                :class="{ 'is-active': playbackRate === spd }"
-                @click="setVideoSpeed(spd)"
+                class="hl-copy-prompt-pill"
+                :class="{ 'is-copied': copiedKey === `hero-prompt-${activeScenario.id}` }"
+                @click="copyText(`hero-prompt-${activeScenario.id}`, activeScenario.prompt)"
               >
-                {{ spd }}×
+                <svg v-if="copiedKey === `hero-prompt-${activeScenario.id}`" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                <svg v-else width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+                <span>
+                  {{
+                    copiedKey === `hero-prompt-${activeScenario.id}`
+                      ? t('已复制提示词', 'プロンプトをコピー済', 'Prompt Copied')
+                      : t('复制同款提示词', 'プロンプトをコピー', 'Copy Prompt')
+                  }}
+                </span>
               </button>
-            </div>
-          </div>
 
-          <div class="hl-video-viewport">
-            <video
-              v-if="!videoLoadError"
-              ref="videoPlayerRef"
-              class="hl-video-el"
-              :src="SITE_META.demoVideoUrl"
-              controls
-              playsinline
-              preload="metadata"
-              @loadedmetadata="handleVideoLoaded"
-              @error="videoLoadError = true"
-            ></video>
-
-            <div v-else class="hl-video-fallback">
-              <p>{{ t('实机演示视频暂时未能加载，您可立即切换至 1:1 实时交互桌面工作台体验完整界面。', '動画を読み込めませんでした。1:1 インタラクティブワークベンチをお試しください。', 'Demo video unavailable right now—switch to the 1:1 interactive workbench below.') }}</p>
-              <div class="hl-fallback-actions">
-                <button type="button" class="hl-btn hl-btn-ink hl-btn-sm" @click="videoLoadError = false">
-                  {{ t('重试加载视频', '再試行', 'Retry Video') }}
-                </button>
-                <button type="button" class="hl-btn hl-btn-tonal hl-btn-sm" @click="showcaseTab = 'interactive'">
-                  {{ t('切换至 1:1 交互工作台', '1:1 ワークベンチへ切替', 'Open 1:1 Sandbox') }}
+              <div class="hl-speed-group hl-tabular" role="group" :aria-label="t('视频倍速', '再生速度', 'Playback speed')">
+                <button
+                  v-for="spd in [1, 1.5, 2]"
+                  :key="spd"
+                  type="button"
+                  class="hl-speed-pill"
+                  :class="{ 'is-active': playbackRate === spd }"
+                  @click="setVideoSpeed(spd)"
+                >
+                  {{ spd }}×
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- 视窗底部三栏精炼叙事带 -->
+          <div class="hl-video-viewport">
+            <div v-if="videoLoading && !videoLoadError" class="hl-video-skeleton" aria-hidden="true">
+              <div class="hl-skeleton-bar"></div>
+              <div class="hl-skeleton-panes">
+                <div class="hl-skeleton-chat"></div>
+                <div class="hl-skeleton-dock"></div>
+              </div>
+            </div>
+
+            <video
+              v-if="!videoLoadError"
+              :key="activeScenario.id"
+              ref="videoPlayerRef"
+              class="hl-video-el"
+              :src="activeScenario.videoUrl"
+              :autoplay="!prefersReducedMotion"
+              muted
+              loop
+              controls
+              playsinline
+              preload="metadata"
+              @loadstart="videoLoading = true"
+              @loadedmetadata="handleVideoLoaded"
+              @canplay="videoLoading = false"
+              @error="videoLoadError = true; videoLoading = false"
+            ></video>
+
+            <div v-else class="hl-video-fallback">
+              <p>
+                {{
+                  t(
+                    '当前场景实机演示视频暂时未能加载，请检查本地媒体文件或点击重试。',
+                    '現在のデモ動画を読み込めませんでした。再試行するか、デモ一覧ページをご確認ください。',
+                    'Unable to load this screen recording right now—retry below or open the full demo theater.'
+                  )
+                }}
+              </p>
+              <div class="hl-fallback-actions">
+                <button type="button" class="hl-btn hl-btn-ink hl-btn-sm" @click="retryVideoLoad">
+                  {{ t('重试加载视频', '動画を再読込', 'Retry Video') }}
+                </button>
+                <button
+                  type="button"
+                  class="hl-btn hl-btn-tonal hl-btn-sm"
+                  @click="navigate(`${prefix}/demo?scene=${activeScenario.id}`)"
+                >
+                  {{ t('打开实机演示中心', '実機デモ一覧を開く', 'Open Demo Center') }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 视窗底部三栏精炼叙事带（随当前激活视频实时切换） -->
           <div class="hl-video-digest">
-            <div v-for="vh in videoHighlights" :key="vh.step" class="hl-digest-item">
+            <div v-for="vh in activeScenario.highlights" :key="`${activeScenario.id}-${vh.step}`" class="hl-digest-item">
               <span class="hl-digest-num hl-tabular">{{ vh.step }}</span>
-              <div>
+              <div class="hl-digest-copy">
                 <strong>{{ vh.title }}</strong>
                 <p>{{ vh.desc }}</p>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- 模式 B：1:1 桌面客户端交互沙盒 -->
-        <div v-else class="hl-playground-wrap">
-          <ProductPlayground :lang="currentLang" :standalone="true" />
+          <!-- 静谧复现说明与全文跳转底栏 -->
+          <div class="hl-studio-foot">
+            <p class="hl-studio-prep">{{ activeScenario.prepNote }}</p>
+            <div class="hl-studio-links">
+              <a
+                class="hl-link hl-studio-link"
+                :href="`${prefix}/demo?scene=${activeScenario.id}`"
+                @click.prevent="navigate(`${prefix}/demo?scene=${activeScenario.id}`)"
+              >
+                <span>{{ t('查看完整复现提示词与全部 5 场演示', 'プロンプト全文と全5デモを見る', 'Inspect Full Prompt & All 5 Demos') }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1345,7 +1445,7 @@ onUnmounted(() => {
             :href="`${prefix}/demo`"
             @click.prevent="navigate(`${prefix}/demo`)"
           >
-            <span>{{ t('全屏打开 1:1 交互沙盒', '1:1 サンドボックスを全画面で開く', 'Open Fullscreen 1:1 Sandbox') }}</span>
+            <span>{{ t('浏览全部 5 场实机演示', '全5つの実機デモを見る', 'Explore All 5 Live Demos') }}</span>
           </a>
         </div>
       </div>
@@ -1540,14 +1640,87 @@ onUnmounted(() => {
 }
 
 .hl-stage-Controls {
-  margin-top: 44px;
+  margin-bottom: 20px;
   scroll-margin-top: 72px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.hl-demo-tabs-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 2px;
+  -ms-overflow-style: none;
+}
+
+.hl-demo-tabs-scroll::-webkit-scrollbar {
+  height: 0;
+  background: transparent;
+}
+
+.hl-demo-segmented {
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding: 4px;
+}
+
+.hl-demo-tab {
+  flex-shrink: 0;
+  white-space: nowrap;
+  height: 36px;
+  padding: 0 12px;
+  gap: 6px;
+  transition:
+    background-color 160ms var(--hl-ease),
+    color 160ms var(--hl-ease),
+    box-shadow 160ms var(--hl-ease),
+    transform 160ms var(--hl-ease);
+}
+
+.hl-demo-tab:active {
+  transform: scale(0.985);
+}
+
+.hl-seg-play-icon {
+  color: var(--hl-accent);
+  flex-shrink: 0;
+}
+
+.hl-seg-num {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--hl-ink-4);
+}
+
+.hl-seg-label {
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.hl-seg-dur {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: var(--hl-radius-pill);
+  background-color: var(--hl-surface);
+  color: var(--hl-ink-4);
+  transition:
+    background-color 160ms var(--hl-ease),
+    color 160ms var(--hl-ease);
+}
+
+.hl-demo-tab.is-active .hl-seg-dur {
+  background-color: var(--hl-accent-soft);
+  color: var(--hl-accent);
 }
 
 .hl-stage-wrap {
   position: relative;
   z-index: 2;
-  margin-top: 20px;
+  margin-top: 38px;
 }
 
 .hl-studio-window {
@@ -1594,19 +1767,65 @@ onUnmounted(() => {
 }
 
 .hl-studio-title {
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 12.5px;
+  text-align: center;
+  font-size: 13px;
   font-weight: 500;
   color: var(--hl-ink-3);
+}
+
+.hl-studio-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.hl-copy-prompt-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--hl-radius-pill);
+  border: 1px solid var(--hl-border);
+  background-color: var(--hl-surface);
+  color: var(--hl-ink-2);
+  font-size: 12px;
+  font-weight: 550;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--hl-ease),
+    border-color 160ms var(--hl-ease),
+    color 160ms var(--hl-ease),
+    transform 160ms var(--hl-ease);
+}
+
+.hl-copy-prompt-pill:hover {
+  border-color: var(--hl-border-strong);
+  background-color: var(--hl-surface-subtle);
+  color: var(--hl-ink);
+}
+
+.hl-copy-prompt-pill:active {
+  transform: scale(0.98);
+}
+
+.hl-copy-prompt-pill.is-copied {
+  border-color: var(--hl-ok-border);
+  background-color: var(--hl-ok-soft);
+  color: var(--hl-ok);
 }
 
 .hl-speed-group {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   padding: 2px;
   border-radius: var(--hl-radius-pill);
   background-color: var(--hl-surface);
@@ -1624,11 +1843,18 @@ onUnmounted(() => {
   font-weight: 600;
   color: var(--hl-ink-4);
   cursor: pointer;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition:
+    background-color 150ms var(--hl-ease),
+    color 150ms var(--hl-ease),
+    transform 150ms var(--hl-ease);
 }
 
 .hl-speed-pill:hover {
   color: var(--hl-ink);
+}
+
+.hl-speed-pill:active {
+  transform: scale(0.96);
 }
 
 .hl-speed-pill.is-active {
@@ -1637,12 +1863,59 @@ onUnmounted(() => {
 }
 
 .hl-video-viewport {
+  position: relative;
   width: 100%;
   background-color: var(--hl-pro-code);
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1918 / 1030;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.hl-video-skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--hl-pro-bg);
+  pointer-events: none;
+}
+
+.hl-skeleton-bar {
+  height: 28px;
+  width: 36%;
+  border-radius: var(--hl-radius-sm);
+  background-color: var(--hl-pro-surface-2);
+  animation: hlSkeletonPulse 1.5s ease-in-out infinite;
+}
+
+.hl-skeleton-panes {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 38fr 62fr;
+  gap: 16px;
+  min-height: 0;
+}
+
+.hl-skeleton-chat,
+.hl-skeleton-dock {
+  border-radius: var(--hl-radius-md);
+  background-color: var(--hl-pro-surface);
+  border: 1px solid var(--hl-pro-border);
+  animation: hlSkeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hlSkeletonPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
 }
 
 .hl-video-el {
@@ -1691,6 +1964,10 @@ onUnmounted(() => {
   border-right: 0;
 }
 
+.hl-digest-copy {
+  min-width: 0;
+}
+
 .hl-digest-num {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -1713,6 +1990,38 @@ onUnmounted(() => {
   font-size: 13px;
   line-height: 1.55;
   color: var(--hl-ink-3);
+}
+
+.hl-studio-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--hl-border);
+  background-color: var(--hl-surface);
+}
+
+.hl-studio-prep {
+  margin: 0;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--hl-ink-4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hl-studio-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.hl-studio-link {
+  font-size: 13px;
+  font-weight: 600;
 }
 
 /* ==================== CHAPTER 02 · APPLE BENTO GRID ==================== */
@@ -2540,6 +2849,16 @@ onUnmounted(() => {
 
   .hl-digest-item:last-child {
     border-bottom: 0;
+  }
+
+  .hl-studio-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .hl-studio-prep {
+    white-space: normal;
   }
 }
 

@@ -79,7 +79,7 @@ async function copyFooterText(key, text) {
             </li>
             <li>
               <a :href="`${prefix}/demo`" @click.prevent="navigate(`${prefix}/demo`)">
-                {{ t('1:1 在线交互工作台', '1:1 対話型ワークベンチ', '1:1 Live Workbench') }}
+                {{ t('5 大场景实机演示', '5つの実機ワークフローデモ', '5 Live Workflow Demos') }}
               </a>
             </li>
             <li>

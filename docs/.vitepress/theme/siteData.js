@@ -26,6 +26,6 @@ export const SITE_META = {
   contactEmail: '785430621@qq.com',
   brandIconUrl: '/helm-icon.jpg',
   logoSvgUrl: '/logo.svg',
-  demoVideoUrl: '/media/hero-demo.mp4',
+  demoVideoUrl: '/media/hero-q3-delivery.mp4',
   demoPosterUrl: '/media/hero-poster.png'
 }

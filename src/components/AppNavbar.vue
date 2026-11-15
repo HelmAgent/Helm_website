@@ -134,7 +134,7 @@ const isBenchActive = computed(() => strippedPath.value.startsWith('/benchmarks'
           :href="`${prefix}/demo`"
           @click.prevent="go(`${prefix}/demo`)"
         >
-          {{ t('在线工作台', 'Web体験デモ', 'Live Workbench') }}
+          {{ t('实机演示', '実機デモ', 'Live Demos') }}
         </a>
       </nav>
 
@@ -287,7 +287,7 @@ const isBenchActive = computed(() => strippedPath.value.startsWith('/benchmarks'
             {{ t('工程架构白皮书 (全 6 卷)', '技術アーキテクチャ白書 (全6章)', 'Architecture Whitepaper (6 Vols)') }}
           </a>
           <a class="hl-mobile-link" :href="`${prefix}/demo`" @click.prevent="go(`${prefix}/demo`)">
-            {{ t('1:1 在线交互工作台', '1:1 Web体験デモ', '1:1 Live Workbench') }}
+            {{ t('5 大场景实机演示', '5つの実機ワークフローデモ', '5 Live Workflow Demos') }}
           </a>
           <a class="hl-mobile-link" :href="`${prefix}/download`" @click.prevent="go(`${prefix}/download`)">
             {{ t('客户端下载与安全校验', 'ダウンロード・安全性検証', 'Download & Security Audit') }}

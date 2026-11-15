@@ -22,12 +22,14 @@ function normalizePath(rawPath) {
 const currentPath = ref(
   typeof window !== 'undefined' ? normalizePath(window.location.pathname) : '/'
 )
+const currentSearch = ref(typeof window !== 'undefined' ? window.location.search : '')
 const currentHash = ref(typeof window !== 'undefined' ? window.location.hash : '')
 export const isAuditModalOpen = ref(false)
 
 if (typeof window !== 'undefined') {
   window.addEventListener('popstate', () => {
     currentPath.value = normalizePath(window.location.pathname)
+    currentSearch.value = window.location.search
     currentHash.value = window.location.hash
   })
 }
@@ -65,16 +67,23 @@ export function navigate(targetUrl, options = { scrollTop: true }) {
     return
   }
 
-  const [pathPart, hashPart] = targetUrl.split('#')
-  const nextPath = pathPart ? normalizePath(pathPart) : currentPath.value
+  const [beforeHash, hashPart] = targetUrl.split('#')
+  const [rawPathPart, queryPart] = beforeHash.split('?')
+  const nextPath = rawPathPart ? normalizePath(rawPathPart) : currentPath.value
+  const nextSearch = queryPart ? `?${queryPart}` : ''
   const nextHash = hashPart ? `#${hashPart}` : ''
 
-  const fullUrl = `${nextPath}${nextHash}`
-  if (window.location.pathname + window.location.hash !== fullUrl) {
-    window.history.pushState({}, '', fullUrl)
+  const fullUrl = `${nextPath}${nextSearch}${nextHash}`
+  if (window.location.pathname + window.location.search + window.location.hash !== fullUrl) {
+    if (options.replace) {
+      window.history.replaceState({}, '', fullUrl)
+    } else {
+      window.history.pushState({}, '', fullUrl)
+    }
   }
 
   currentPath.value = nextPath
+  currentSearch.value = nextSearch
   currentHash.value = nextHash
 
   if (nextHash) {
@@ -99,7 +108,7 @@ export function switchLocale(targetLang) {
   } else {
     target = sp
   }
-  navigate(target, { scrollTop: false })
+  navigate(`${target}${currentSearch.value}`, { scrollTop: false })
 }
 
 export function openAuditModal() {
@@ -113,6 +122,7 @@ export function closeAuditModal() {
 export function useAppRouter() {
   return {
     currentPath,
+    currentSearch,
     currentHash,
     currentLang,
     strippedPath,

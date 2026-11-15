@@ -293,14 +293,14 @@ watch(
             </div>
 
             <div class="hl-toc-promo">
-              <span class="hl-pill-tag">1:1 SANDBOX</span>
-              <h4>{{ t('在交互工作台中验证架构', '対話型デモで設計を体験', 'Test in 1:1 Sandbox') }}</h4>
+              <span class="hl-pill-tag">LIVE WORKFLOWS</span>
+              <h4>{{ t('在实机录屏中印证架构', '実機映像で設計を確認', 'See Architecture in Action') }}</h4>
               <p>
                 {{
                   t(
-                    '在线操作影子 Git 检查点、Worktree 多智能体协同与 Office 划词热补丁。',
-                    'シャドウGit・Worktree協調・Office部分更新をブラウザで操作できます。',
-                    'Try Shadow Git, Worktree teams, and surgical Office hot-patching in browser.'
+                    '观看全栈看板交付、PPT 靶向热补丁、Worktree 双方案赛马与 /plan 门禁的真实录屏。',
+                    '分析ボード交付・PPT部分更新・Worktree並列比較・/planゲートの実機収録を公開中。',
+                    'Watch unedited recordings of Web+Office delivery, surgical PPT patches, and Worktree races.'
                   )
                 }}
               </p>
@@ -309,7 +309,7 @@ watch(
                 :href="`${prefix}/demo`"
                 @click.prevent="navigate(`${prefix}/demo`)"
               >
-                <span>{{ t('打开 1:1 工作台', '1:1 デモを開く', 'Open 1:1 Sandbox') }}</span>
+                <span>{{ t('观看 5 大实机演示', '5つの実機デモを見る', 'Watch 5 Live Demos') }}</span>
               </a>
             </div>
           </div>
