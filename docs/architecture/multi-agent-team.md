@@ -17,7 +17,7 @@ Helm 在底层设计了职责泾渭分明的**双轨多智能体架构**：轻�
 
 ```mermaid
 flowchart TD
-  User["人类工程师 / 面试演示者 (独占高危审批与全局权限上限)"] --> Lead["Team Lead 主控协调智能体 (任务拆解 · 计划审批 · 3-Way 归并)"]
+  User["人类工程师 (独占高危审批与全局权限上限)"] --> Lead["Team Lead 主控协调智能体 (任务拆解 · 计划审批 · 3-Way 归并)"]
 
   subgraph Ephemeral["轨道 A: 瞬态子代理池 (subagent.py · 独立纯净上下文)"]
     Explore["explore 探查代理 (数学级证明只读工具集 · 零副作用并发)"]

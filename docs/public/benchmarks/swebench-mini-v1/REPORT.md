@@ -16,7 +16,7 @@
 |---|---:|---:|---:|---|
 | **`hyn_flash_r1_clean`（HYN 单次 Pass@1，第 1 轮干净全量）** | **42 / 50** | **84.00%** | **[71.49%, 91.66%]** | `7985` 在 `--network none` 下独立写出 `check_local_link` 并通过，全集 50 题零泄漏 |
 | **`hyn_flash_r2`（HYN 单次 Pass@1，第 2 轮全新全量）** | **39 / 50** | **78.00%** | **[64.76%, 87.25%]** | 50/50 题全程断网，`gate_full` 无警告 `PASS`，总成本降至 ¥10.39（降幅 14.5%） |
-| **HYN 两轮干净运行均值 ± 标准差（推荐主汇报口径）** | **40.5 / 50** | **81.00%** | **± 4.24%（样本 SD）** | 两轮交集（均解决）`38/50`（76.00%）；两轮并集（任一解决，仅作波动参考）`43/50`（86.00%） |
+| **HYN 两轮干净运行均值 ± 标准差（推荐主统计口径）** | **40.5 / 50** | **81.00%** | **± 4.24%（样本 SD）** | 两轮交集（均解决）`38/50`（76.00%）；两轮并集（任一解决，仅作波动参考）`43/50`（86.00%） |
 | **`mini_swe_flash_r1`（同模型 `mini-SWE-agent` 参照组 Pass@1）** | **41 / 50** | **82.00%** | **[69.20%, 90.23%]** | 配对精确 McNemar 检验：vs `r1_clean`（+2.0%，$p=1.00$）、vs `r2`（-4.0%，$p=0.73$），无统计学显著差异 |
 | `hyn_flash_r1`（首轮原始 / 有效性修正） | 42 / 50（修正 41 / 50） | 84.00%（82.00%） | [69.20%, 90.23%] | 首轮 `7985` 因运行期容器未断网存在参考答案泄漏，已由 `hyn_flash_r1_clean` 替代 |
 | 剔除 2 道上游 linkcheck 异常题（`n=48`） | `r1_clean` 40/48｜`r2` 38/48｜`mini` 39/48 | 83.33%｜79.17%｜81.25% | HYN 均值 **81.25% ± 2.95%** | 剔除 `sphinx-doc__sphinx-7985` 与 `8269` 后的 48 题稳定口径 |
@@ -109,8 +109,8 @@
   - **HYN vs `mini_swe_flash_r1` 之间**：
     - **HYN 稳定解决而 `mini-SWE-agent` 未解决的题目**：`django__django-11848` 与 `sphinx-doc__sphinx-8548` 在 `mini_swe_flash_r1` 中均因纯 bash 循环耗尽 80 步触发 `LimitsExceeded` 产出**空补丁**，而在 HYN 的 `r1_clean` 和 `r2` 两轮中**100% 稳定解决**；此外 `sphinx-9229`、`sphinx-9461`（`r1_clean` 解决）和 `django-12308`（`r2` 解决）也仅由 HYN 解决。
     - **`mini-SWE-agent` 解决而 HYN 两轮均未解决的题目（3 题）**：`django__django-12325`、`sphinx-doc__sphinx-8056`、`sphinx-doc__sphinx-8638`。这 3 题在 HYN 中均已读到 Gold 文件与目标代码行，但模型在修复策略选择上出现了偏差（见 §4）。
-- **严谨性结论（遵循 step4 §5.4 诚实汇报准则）**：
-  - 在同模型（`deepseek-flash`）、同题集（`n=50`）下，HYN 单轮最高 **84.00%**、两轮均值 **81.00% ± 4.24%**，与 `mini-SWE-agent` 的 **82.00%** 处于同一水平线（配对 McNemar $p = 1.00 / 0.73 \ge 0.05$）。因此，**对外不得声称“HYN 脚手架在解决率上统计显著超越 `mini-SWE-agent`”**，而应客观陈述：`HYN Agent + DeepSeek-V4.1-Flash` 取得了 **81.0% ± 4.2%（最高 84.0%）** 的第一梯队 Pass@1 解决率，且相比极简 bash 脚手架消除了步数耗尽导致的空补丁问题（非空有效补丁率 **100% vs 96%**）。
+- **严谨性统计结论（step4 §5.4）**：
+  - 在同模型（`deepseek-flash`）、同题集（`n=50`）下，HYN 单轮最高 **84.00%**、两轮均值 **81.00% ± 4.24%**，与 `mini-SWE-agent` 的 **82.00%** 处于同一水平线（配对 McNemar $p = 1.00 / 0.73 \ge 0.05$）。因此，**两套脚手架在同模型解决率上无统计学显著差异**，客观结论为：`HYN Agent + DeepSeek-V4.1-Flash` 取得了 **81.0% ± 4.2%（最高 84.0%）** 的第一梯队 Pass@1 解决率，且相比极简 bash 脚手架消除了步数耗尽导致的空补丁问题（非空有效补丁率 **100% vs 96%**）。
 
 ### 3.3 阶梯加码（T1 Canary → T2 Probe → T3 Full）预测准确度评估（step4 §6）
 | 层级 | 题数 | `hyn_flash_r1_clean` | `hyn_flash_r2` | `mini_swe_flash_r1` |
@@ -236,7 +236,7 @@
 | **HYN Agent + DeepSeek-V4.1-Flash（两轮均值 `r1_clean + r2`）** | **Verified Mini, n=50 × 2** | **81.00% (40.5/50)** | **± 4.24% (SD)** | **¥0.226（错峰均值）** | **本报告实测（2 轮 × 50 题）** |
 | **HYN Agent + DeepSeek-V4.1-Flash（`hyn_flash_r2`）** | **Verified Mini, n=50** | **78.00% (39/50)** | **[64.76%, 87.25%]** | **¥0.208（错峰）** | **本报告实测（`779dd59` 全新跑）** |
 | **mini-SWE-agent + DeepSeek-V4.1-Flash（`mini_swe_flash_r1`）** | **Verified Mini, n=50** | **82.00% (41/50)** | **[69.20%, 90.23%]** | **¥0.136（错峰重算）** | **本报告实测（同模型同题集参照组）** |
-| DeepSeek-V4-Pro（厂商公布成绩） | Verified, n=500 | 80.6% | — | — | 公开检索摘要（上官网前须核对原网页） |
+| DeepSeek-V4-Pro（厂商公布成绩） | Verified, n=500 | 80.6% | — | — | 公开榜单检索摘要 |
 | mini-SWE-agent v2.0.0 + Claude 4.5 Opus (high) | Verified, n=500 | 76.8% | — | — | swebench.com bash-only 检索摘要 |
 | mini-SWE-agent v2.0.0 + Gemini 3 Flash (high) | Verified, n=500 | 75.8% | — | — | swebench.com bash-only 检索摘要 |
 | mini-SWE-agent v2.0.0 + MiniMax M2.5 (high) | Verified, n=500 | 75.8% | — | — | swebench.com bash-only 检索摘要 |
@@ -244,7 +244,7 @@
 
 ---
 
-## 7. 官网与对外宣传文案草稿（合规修订版，step4 §5.4）
+## 7. 核心评测结论摘要（合规统计版，step4 §5.4）
 
 > **HYN Agent 搭载 DeepSeek-V4.1-Flash 在 SWE-bench Verified Mini 上取得最高 84.0%（两轮均值 81.0% ± 4.2%）的端到端 Pass@1 解决率**
 >
@@ -272,7 +272,7 @@
 
 ## 9. 四组运行全量数据可追溯清单
 
-根目录：`d:\apps\hyn_agent\hyn_agent_backend\benchmarks\results\swebench_mini\`
+归档目录：`hyn_agent_backend/benchmarks/results/swebench_mini/`
 
 | 目录 / 文件路径 | 核心内容说明 |
 |---|---|

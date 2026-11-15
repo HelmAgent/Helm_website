@@ -211,7 +211,7 @@ export default defineConfig({
           ],
           '/en/architecture/': [
             {
-              text: 'Engineering Whitepaper (For Tech Reviewers)',
+              text: 'Engineering Whitepaper',
               items: [
                 { text: '1. System Overview & Dual-Process', link: '/en/architecture/overview' },
                 { text: '2. Long-Horizon Engine (P0–P3)', link: '/en/architecture/long-running' },

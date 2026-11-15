@@ -24,9 +24,9 @@
     "django_two_run_mean_pass_at_1": 0.88,
     "mini_swe_reference_pass_at_1": 0.82,
     "mini_swe_reference_resolved": "41/50",
-    "mcnemar_p_value_r1_clean_vs_mini": 1.0,
+    "mcnemar_p_value_r1_clean_vs_mini": 1,
     "mcnemar_p_value_r2_vs_mini": 0.726562,
-    "valid_non_empty_patch_rate_hyn": 1.0,
+    "valid_non_empty_patch_rate_hyn": 1,
     "valid_non_empty_patch_rate_mini_swe": 0.96,
     "gold_file_edited_rate_hyn": 0.98,
     "prefix_cache_hit_rate_r1_clean": 0.9774,
@@ -39,8 +39,8 @@
   "files": [
     {
       "path": "REPORT.md",
-      "bytes": 38042,
-      "sha256": "c0311572346e47e833ab5d5cc87a15cd5259644798a5754b14dfae6965c55119"
+      "bytes": 37941,
+      "sha256": "ad89001ab061b6ae61bf766209449631b9802c029fd6c8c4472799bbaa8be611"
     },
     {
       "path": "hyn_flash_r1_blind_review_agreement.json",

@@ -432,42 +432,6 @@ const auditSteps = computed(() => [
   overflow-x: auto;
 }
 
-.dl-recruiter-banner {
-  padding: 28px 32px;
-  background: var(--bg-app);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.dl-recruiter-left {
-  flex: 1;
-  min-width: 300px;
-}
-
-.dl-recruiter-left h3 {
-  margin: 6px 0 10px;
-  font-size: 18px;
-  font-weight: 750;
-}
-
-.dl-recruiter-left p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.7;
-  color: var(--text-secondary);
-}
-
-.dl-recruiter-right {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 @media (max-width: 960px) {
   .dl-grid,
   .dl-audit-grid {

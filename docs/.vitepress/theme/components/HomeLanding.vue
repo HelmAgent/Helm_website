@@ -32,7 +32,7 @@ const prefix = computed(() => {
   return ''
 })
 
-// 顶部 4 格定量技术指标（日本企业极为看重的定量化背书）
+// 顶部 4 格核心定量技术指标
 const kpiMetrics = computed(() => [
   {
     num: '0 Byte',
