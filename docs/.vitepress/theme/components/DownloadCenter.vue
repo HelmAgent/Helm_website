@@ -53,7 +53,7 @@ const auditSteps = computed(() => [
       'ダウンロード完了後、PowerShell で SHA-256 ハッシュ値を照合し、ファイルの完全性を確認します。クライアントには公式 Python 3.13 ランタイムが同梱されており、127.0.0.1:8001 のループバック通信のみで動作します。',
       'Verify binary integrity via PowerShell SHA-256. The client bundles an official Python 3.13 runtime communicating strictly over 127.0.0.1:8001.'
     ),
-    cmd: 'Get-FileHash .\\Helm.Setup.1.0.0.exe -Algorithm SHA256   # SHA-256: c93002b2...536ccf0f'
+    cmd: `Get-FileHash .\\${SITE_META.installerAssetName} -Algorithm SHA256   # SHA-256: ${SITE_META.installerSha256Short}`
   },
   {
     step: 'AUDIT 02 // AIR-GAPPED EXECUTION',

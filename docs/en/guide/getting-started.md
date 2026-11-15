@@ -10,12 +10,12 @@ Helm pairs an **Electron 44 + Vue 3.5 frontend** with an **embedded Python 3.13 
 ## 1. Launch the Desktop Client
 
 Download the Windows installer from [Download & Security](/en/download):
-- **[Download for Windows (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.1.0.0.exe)**: Supports custom non-system drive installation and isolated `.hyn_agent` storage.
-- **100% Local & DPAPI Encrypted** · [VirusTotal Security Scan Report (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) · `SHA-256: c93002b2...536ccf0f`
+- **[Download for Windows (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.0.2.0.exe)**: Supports custom non-system drive installation and isolated `.hyn_agent` storage.
+- **100% Local & DPAPI Encrypted** · [VirusTotal Security Scan Report (0/57)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) · `SHA-256: d810b97a...9e3fe3cb`
 
 | File | SHA-256 Checksum | VirusTotal Scan Report |
 | :--- | :--- | :--- |
-| `Helm Setup 1.0.0.exe` | `c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f` | [View Report on VirusTotal (0/57)](https://www.virustotal.com/gui/file/c93002b281b848c534538236819c135139aa78e9ae85e88a04e67ba9536ccf0f?nocache=1) |
+| `Helm Setup 0.2.0.exe` | `d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb` | [View Report on VirusTotal (0/57)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) |
 
 ## 2. Three Steps to Your First Autonomous Task
 
