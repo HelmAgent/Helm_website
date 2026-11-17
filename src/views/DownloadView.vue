@@ -44,9 +44,9 @@ const auditSteps = computed(() => [
       'Verify SHA-256 Checksum & Embedded Runtime'
     ),
     desc: t(
-      '下载后可在 PowerShell 一键比对哈希值，确认分发包未经任何篡改（VirusTotal 57 家引擎扫描 0/57 零报毒）。渲染进程仅通过 127.0.0.1:8001 与本机 FastAPI 通信。',
-      'PowerShell で SHA-256 ハッシュ値を照合し完全性を確認できます（VirusTotal 0/57 検証済）。内蔵 Python 3.13 ランタイムと 127.0.0.1:8001 ループバックのみで通信します。',
-      'Verify binary integrity via PowerShell SHA-256 (VirusTotal 0/57 clean). Communicates strictly with bundled Python 3.13 over 127.0.0.1:8001.'
+      `下载后可在 PowerShell 一键比对哈希值，确认分发包未经任何篡改（VirusTotal 安全扫描 ${SITE_META.virusTotalScore}）。渲染进程仅通过 127.0.0.1:8001 与本机 FastAPI 通信。`,
+      `PowerShell で SHA-256 ハッシュ値を照合し完全性を確認できます（VirusTotal ${SITE_META.virusTotalScore} 検証済）。内蔵 Python 3.13 ランタイムと 127.0.0.1:8001 ループバックのみで通信します。`,
+      `Verify binary integrity via PowerShell SHA-256 (VirusTotal ${SITE_META.virusTotalScore} clean). Communicates strictly with bundled Python 3.13 over 127.0.0.1:8001.`
     ),
     cmd: `Get-FileHash .\\${SITE_META.installerAssetName} -Algorithm SHA256`
   },

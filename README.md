@@ -11,8 +11,8 @@
 [![Official Website](https://img.shields.io/badge/🌐_Official_Website-www.helm--ai.website-0ea5e9?style=for-the-badge)](https://www.helm-ai.website/)
 [![SWE-bench Verified Mini](https://img.shields.io/badge/🏆_SWE--bench_Verified_Mini-84.0%25_Pass%401_(81.0%25_Mean)-10b981?style=for-the-badge)](https://www.helm-ai.website/#benchmarks)
 [![Live Interactive Sandbox](https://img.shields.io/badge/🎮_1:1_Web_Workbench-Live_Demo-2563eb?style=for-the-badge)](https://www.helm-ai.website/demo)
-[![Windows Installer](https://img.shields.io/badge/📥_Download_Windows_x64-v0.2.0_Beta-10b981?style=for-the-badge)](https://www.helm-ai.website/download)
-[![VirusTotal 0/57 Clean](https://img.shields.io/badge/🛡️_VirusTotal-0%2F57_Clean-059669?style=for-the-badge)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1)
+[![Windows Installer](https://img.shields.io/badge/📥_Download_Windows_x64-v0.3.0_Beta-10b981?style=for-the-badge)](https://www.helm-ai.website/download)
+[![VirusTotal 0/56 Clean](https://img.shields.io/badge/🛡️_VirusTotal-0%2F56_Clean-059669?style=for-the-badge)](https://www.virustotal.com/gui/file/f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da?nocache=1)
 
 </div>
 
@@ -37,17 +37,17 @@
 
 您可以通过 **[Helm 官网下载中心 (https://www.helm-ai.website/download)](https://www.helm-ai.website/download)** 或下方 GitHub Releases 直链获取 Windows 64 位桌面安装版（已内嵌完整 **Electron 44 + Vue 3.5 + Python 3.13 FastAPI** 运行时与 Office 文档处理引擎，无需额外配置环境，安装即用，零 C 盘空间污染）：
 
-**[📥 無料ダウンロード / 立即下载 Windows 版 (.exe) · v0.2.0 内测版](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.0.2.0.exe)**  
-🔒 **100% Local & Safe** · [✅ VirusTotal 安全扫描报告 (0/57 零报毒)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) · `SHA-256: d810b97a...9e3fe3cb`
+**[📥 無料ダウンロード / 立即下载 Windows 版 (.exe) · v0.3.0 内测版](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.0.3.0.exe)**  
+🔒 **100% Local & Safe** · [✅ VirusTotal 安全扫描报告 (0/56 零报毒)](https://www.virustotal.com/gui/file/f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da?nocache=1) · `SHA-256: f57dbb58...c428b1da`
 
 | File / ファイル | Version & Size | SHA-256 Checksum | VirusTotal Scan Report |
 | :--- | :--- | :--- | :--- |
-| `Helm Setup 0.2.0.exe`<br/>(`Helm.Setup.0.2.0.exe`) | `v0.2.0 Beta` · `163 MB` | `d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb` | [✅ View Report on VirusTotal (0/57 Clean)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) |
+| `Helm Setup 0.3.0.exe`<br/>(`Helm.Setup.0.3.0.exe`) | `v0.3.0 Beta` · `163 MB` | `f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da` | [✅ View Report on VirusTotal (0/56 Clean)](https://www.virustotal.com/gui/file/f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da?nocache=1) |
 
 ```powershell
 # PowerShell 本地校验命令：
-Get-FileHash .\Helm.Setup.0.2.0.exe -Algorithm SHA256
-# 预期输出：D810B97A595A2D0F0EB2E02EB0E1B13D5CAFB427FA12ED6B7B1A02BF9E3FE3CB
+Get-FileHash .\Helm.Setup.0.3.0.exe -Algorithm SHA256
+# 预期输出：F57DBB588AABFBA6C39537404920C510C08F2DC92FDD9090867A45D5C428B1DA
 ```
 
 ---

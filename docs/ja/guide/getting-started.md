@@ -10,12 +10,12 @@ Helm は **Electron 44 + Vue 3.5 フロントエンド + 同梱 Python 3.13 Fast
 ## 1. クライアントの起動
 
 [ダウンロード・安全性検証](/ja/download) ページより Windows インストーラーを取得して起動してください：
-- **[無料ダウンロード Windows版 (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.0.2.0.exe)**：任意のドライブへの導入および隔離 `.hyn_agent` データ保存に対応。
-- **100% ローカル完結＆DPAPI 暗号化** · [VirusTotal セキュリティ検査レポート (0/57)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) · `SHA-256: d810b97a...9e3fe3cb`
+- **[無料ダウンロード Windows版 (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.0.3.0.exe)**：任意のドライブへの導入および隔離 `.hyn_agent` データ保存に対応。
+- **100% ローカル完結＆DPAPI 暗号化** · [VirusTotal セキュリティ検査レポート (0/56)](https://www.virustotal.com/gui/file/f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da?nocache=1) · `SHA-256: f57dbb58...c428b1da`
 
 | ファイル名 | SHA-256 チェックサム | 第三者セキュリティ検査 |
 | :--- | :--- | :--- |
-| `Helm Setup 0.2.0.exe` | `d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb` | [VirusTotal レポートを確認 (0/57)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) |
+| `Helm Setup 0.3.0.exe` | `f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da` | [VirusTotal レポートを確認 (0/56)](https://www.virustotal.com/gui/file/f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da?nocache=1) |
 
 > [!TIP] Cドライブを圧迫しない隔離設計＆Windows DPAPI 保護
 > 会話履歴・2層メモリ・スナップショットは `.hyn_agent` フォルダに隔離保存され、APIキーや OAuth トークンはすべて **Windows DPAPI (`CryptProtectData`)** で暗号化保護されます。

@@ -10,12 +10,12 @@ Helm 采用 **Electron 44 + Vue 3.5 前端 + 内嵌 Python 3.13 FastAPI 本地�
 ## 1. 获取并启动客户端
 
 请前往 [客户端下载与安全验证](/download) 获取 Windows 桌面安装程序：
-- **[立即下载 Windows 安装包 (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.0.2.0.exe)**：支持自定义非系统盘安装路径，双击安装后自动创建桌面快捷方式。
-- **100% 本地闭环与硬件级加密** · [VirusTotal 安全扫描报告 (0/57 零报毒)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) · `SHA-256: d810b97a...9e3fe3cb`
+- **[立即下载 Windows 安装包 (.exe)](https://github.com/HelmAgent/Helm_website/releases/latest/download/Helm.Setup.0.3.0.exe)**：支持自定义非系统盘安装路径，双击安装后自动创建桌面快捷方式。
+- **100% 本地闭环与硬件级加密** · [VirusTotal 安全扫描报告 (0/56 零报毒)](https://www.virustotal.com/gui/file/f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da?nocache=1) · `SHA-256: f57dbb58...c428b1da`
 
 | 安装包文件 | SHA-256 完整性校验值 | 第三方安全扫描报告 |
 | :--- | :--- | :--- |
-| `Helm Setup 0.2.0.exe` | `d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb` | [查看 VirusTotal 扫描报告 (0/57)](https://www.virustotal.com/gui/file/d810b97a595a2d0f0eb2e02eb0e1b13d5cafb427fa12ed6b7b1a02bf9e3fe3cb?nocache=1) |
+| `Helm Setup 0.3.0.exe` | `f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da` | [查看 VirusTotal 扫描报告 (0/56)](https://www.virustotal.com/gui/file/f57dbb588aabfba6c39537404920c510c08f2dc92fdd9090867a45d5c428b1da?nocache=1) |
 
 > [!TIP] 零 C 盘空间侵占与 Windows DPAPI 密钥金库
 > Helm 默认将所有会话记录、双层 Markdown 记忆库、文件历史快照与便携工具链存储在隔离目录 `.hyn_agent` 中（支持在 **「设置 → 存储位置」** 一键迁移至任意磁盘）；所有 API Key 与 OAuth 令牌均通过 **Windows DPAPI (`CryptProtectData`)** 绑定当前系统账户硬件级加密存储，绝不明文落盘。

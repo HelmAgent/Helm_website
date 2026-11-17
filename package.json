@@ -1,6 +1,6 @@
 {
   "name": "helm-flagship-website",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Helm 官方旗舰产品官网与工程架构白皮书（基于 Vue 3 + Vite 极昼旗舰设计体系，支持中 / 日 / 英三语）",
   "type": "module",
